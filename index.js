@@ -455,13 +455,37 @@ function refineGeneralLog(text) {
 }
 
 function classifyDomains(text) {
-    let results = [];
-    Object.values(AI_RECORD_DOMAINS).forEach(d => {
-        if (d.keywords.some(kw => text.includes(kw))) {
-            results.push(d);
+    const results = [];
+
+    Object.values(AI_RECORD_DOMAINS).forEach(domain => {
+        let bestPhrase = null;
+        let bestCount = 0;
+
+        domain.subContexts.forEach(ctx => {
+            const count = ctx.keywords.filter(kw => text.includes(kw)).length;
+            if (count > bestCount) {
+                bestCount = count;
+                bestPhrase = ctx.phrase;
+            }
+        });
+
+        // Also check any keyword match
+        const anyMatch = domain.subContexts.some(ctx =>
+            ctx.keywords.some(kw => text.includes(kw))
+        );
+
+        if (anyMatch && bestPhrase) {
+            results.push({ label: domain.label, phrase: bestPhrase });
         }
     });
-    if (results.length === 0) results.push({ label: "종합", phrase: "전반적인 가구 실태 조사 및 욕구 파악 실시함" });
+
+    if (results.length === 0) {
+        results.push({
+            label: "종합",
+            phrase: "입력된 내용을 기반으로 특정 위험군에 해당하지 않을 수 있으나, 전반적인 생활 실태 면담 및 정서적 지지 제공이 필요한 것으로 판단됨. 추가 욕구 파악 면담 실시 예정"
+        });
+    }
+
     return results;
 }
 
@@ -1013,25 +1037,72 @@ window.checkBudget = function () {
 
 /* --- Beginner Social Worker Dictionary --- */
 const VOCABULARY_DATA = [
-    { category: "회계/행정", icon: "📢", word: "기안문", meaning: "우리 이거 할게요!", desc: "행사나 사업을 시작하겠다는 선전포고" },
-    { category: "회계/행정", icon: "💰", word: "품의서", meaning: "이거 할 건데, 돈 좀 쓸게요!", desc: "물건 사기 전 허락받기" },
-    { category: "회계/행정", icon: "🧾", word: "지출결의서", meaning: "허락하신 돈, 이렇게 썼어요!", desc: "영수증 딱풀로 붙여서 제출" },
-    { category: "회계/행정", icon: "📑", word: "결과보고서", meaning: "우리 이거 무사히 끝냈어요!", desc: "사진 박고, 남은 돈 반납할 때 씀" },
-    { category: "회계/행정", icon: "🙏", word: "프로포절 (Proposal)", meaning: "저희한테 돈 주시면 진짜 기깔나게 써볼게요!", desc: "외부 재단에 보내는 눈물의 제안서" },
-    { category: "회계/행정", icon: "😭", word: "자부담", meaning: "지원금 말고, 우리 기관 쌩돈", desc: "매칭 비율 맞출 때 피눈물 나는 돈" },
-    { category: "회계/행정", icon: "🔄", word: "전용 (예산 전용)", meaning: "A 주머니 돈을 B 주머니로 옮길게요", desc: "관할 관청에 허락받아야 함" },
-    { category: "회계/행정", icon: "📥", word: "수입결의서", meaning: "우와, 우리 통장에 돈 들어왔어요!", desc: "후원금, 보조금 등 입금" },
-    { category: "회계/행정", icon: "🚌", word: "여비교통비", meaning: "출장 가서 쓴 밥값, 차비 (내 돈 먼저 쓰고 나중에 받기)", desc: "여비 교부" },
-    { category: "사례관리", icon: "🕵️", word: "인테이크 (Intake)", meaning: "첫 만남. 기초 현황 조사하면서 우리 기관이랑 맞는지 간 보기", desc: "초기 면접" },
-    { category: "사례관리", icon: "🔍", word: "어세스먼트 (Assessment)", meaning: "이 분에게 진짜 뭐가 필요한지 샅샅이 파악하기", desc: "사정 (문제 및 욕구 파악)" },
-    { category: "사례관리", icon: "🤝", word: "라포 (Rapport) 형성", meaning: "클라이언트랑 짱친 먹기. (이거 안 되면 아무것도 안 됨)", desc: "친밀한 신뢰 관계 형성" },
-    { category: "사례관리", icon: "📞", word: "모니터링", meaning: "계획대로 잘 지내시나~ 하고 슬쩍 엿보거나 안부 전화하기", desc: "서비스 개입 후 점검" },
-    { category: "사례관리", icon: "🔗", word: "자원 연계", meaning: "우리가 못 도와주니까, 이거 해줄 수 있는 옆 동네 단체 연결시켜 주기", desc: "지역사회 자원 동원" },
-    { category: "사례관리", icon: "👋", word: "종결", meaning: "이별의 시간. 다 나아서 자립했거나, 이사 가셔서 그만 만나요", desc: "사례관리 목표 달성 후 마무리" },
-    { category: "기관생활", icon: "😎", word: "공가", meaning: "나라 일이나 예비군, 건강검진 때문에 당당하게 합법적으로 쉬는 날", desc: "공적 업무로 인한 휴가" },
-    { category: "기관생활", icon: "🤒", word: "병가", meaning: "나 진짜 아파서 쉬는 거임 (진단서 떼와야 할 수도 있음)", desc: "질병 또는 부상으로 인한 휴가" },
-    { category: "기관생활", icon: "📦", word: "수불부", meaning: "물건이나 후원품 언제/누구한테 들어와서 나갔는지 적는 깐깐한 장부", desc: "물품 수입 및 불출 대장" },
-    { category: "기관생활", icon: "💻", word: "W4C / 희망이음", meaning: "사회복지사들의 영혼을 갈아 넣는 매운맛 국가 전산망 시스템", desc: "사회복지시설 정보시스템 / 차세대 시스템" }
+
+    /* ─── 💰 회계/행정 (20개) ─── */
+    { category: "회계/행정", icon: "📢", word: "기안문", meaning: "우리 이거 할게요!", desc: "행사나 사업을 시작하겠다는 공식 선전포고" },
+    { category: "회계/행정", icon: "💰", word: "품의서", meaning: "이거 살 건데, 돈 좀 쓸게요!", desc: "물건 구매·용역 계약 전 결재권자에게 사전 허락받는 문서" },
+    { category: "회계/행정", icon: "🧾", word: "지출결의서", meaning: "허락하신 돈, 이렇게 썼어요!", desc: "영수증 딱풀로 붙여서 회계에 제출하는 정산 문서" },
+    { category: "회계/행정", icon: "📑", word: "결과보고서", meaning: "우리 이거 무사히 끝냈어요!", desc: "사진 첨부 + 집행내역 + 남은 돈 반납할 때 쓰는 마무리 문서" },
+    { category: "회계/행정", icon: "🙏", word: "프로포절 (Proposal)", meaning: "저희한테 돈 주시면 진짜 기깔나게 써볼게요!", desc: "외부 재단·관청에 보내는 사업 제안서" },
+    { category: "회계/행정", icon: "😭", word: "자부담", meaning: "지원금 말고, 우리 기관 쌩돈", desc: "매칭 비율 맞출 때 피눈물 나는 자체 부담금" },
+    { category: "회계/행정", icon: "🔄", word: "예산 전용", meaning: "A 주머니 돈을 B 주머니로 옮기기", desc: "관할 관청 허가 없이 하면 지적사항, 반드시 승인 후 집행" },
+    { category: "회계/행정", icon: "📥", word: "수입결의서", meaning: "우리 통장에 돈 들어왔어요!", desc: "후원금·보조금 등 입금 시 작성하는 회계 문서" },
+    { category: "회계/행정", icon: "🚖", word: "여비교통비", meaning: "출장 가서 쓴 밥값·차비, 내 돈 먼저 내고 나중에 돌려받기", desc: "여비 신청서 작성 후 증빙 첨부" },
+    { category: "회계/행정", icon: "✂️", word: "원천징수", meaning: "강사에게 줄 돈에서 세금 미리 떼고 나라에 대신 납부해 주기", desc: "사업소득 3.3%, 기타소득 8.8%" },
+    { category: "회계/행정", icon: "🧮", word: "공급가액", meaning: "부가세 빼고 물건·서비스의 실제 가격", desc: "총액 ÷ 1.1 = 공급가액, 세금계산서 발행 때 핵심" },
+    { category: "회계/행정", icon: "📊", word: "세입/세출", meaning: "들어온 돈(세입) / 나간 돈(세출)", desc: "사회복지법인·시설 회계는 세입·세출 예산으로 관리" },
+    { category: "회계/행정", icon: "📋", word: "사업비", meaning: "이 사업에만 써야 하는 지정된 돈", desc: "목적 외 사용 시 환수 대상, 용도 엄격히 구분" },
+    { category: "회계/행정", icon: "🔒", word: "이월", meaning: "올해 사업비가 남아서 내년으로 넘기기", desc: "계획에 없던 이월은 관할 기관 승인 필요" },
+    { category: "회계/행정", icon: "📝", word: "협약서", meaning: "우리 이렇게 하기로 서로 서명하고 도장 찍었어요", desc: "공동사업·후원 시 체결하는 구속력 있는 약속 문서" },
+    { category: "회계/행정", icon: "🏦", word: "보조금", meaning: "나라·지자체에서 주는 공식 지원금", desc: "보조금관리에관한법률 적용, 정산 및 감사 대상" },
+    { category: "회계/행정", icon: "💳", word: "법인카드", meaning: "기관 공식 신용카드. 개인 용도 절대 금지!", desc: "전표 처리 필수, 사적 사용 시 징계 사유" },
+    { category: "회계/행정", icon: "📦", word: "수불부", meaning: "물건이 언제 들어와서 누구한테 나갔는지 적는 깐깐한 장부", desc: "재물조사·감사 때 반드시 대조하는 물품 수불 대장" },
+    { category: "회계/행정", icon: "🗂️", word: "세금계산서", meaning: "부가세 포함 거래 공식 영수증", desc: "전자세금계산서는 발행일로부터 60일 이내 발급 원칙" },
+    { category: "회계/행정", icon: "🔎", word: "지도·감독", meaning: "관할 행정기관이 우리 기관 들여다보러 오는 날", desc: "회계 서류, 사업 실적, 인력 기준 등 전반 점검" },
+
+    /* ─── 🤝 사례관리 (20개) ─── */
+    { category: "사례관리", icon: "🕵️", word: "인테이크 (Intake)", meaning: "첫 만남. 기초 현황 조사하면서 우리 기관이랑 맞는지 간 보기", desc: "초기 면접 — 주호소 문제, 의뢰 경위, 서비스 욕구 파악" },
+    { category: "사례관리", icon: "🔍", word: "어세스먼트 (Assessment)", meaning: "이 분에게 진짜 뭐가 필요한지 샅샅이 파악하기", desc: "사정(査定) — 강점·문제·욕구를 다면적으로 분석" },
+    { category: "사례관리", icon: "🤝", word: "라포 (Rapport) 형성", meaning: "클라이언트랑 짱친 먹기. 이거 안 되면 아무것도 안 됨", desc: "신뢰 관계 형성 — 비밀 보장·공감·일관성이 핵심" },
+    { category: "사례관리", icon: "📞", word: "모니터링", meaning: "계획대로 잘 지내시나~ 하고 슬쩍 엿보거나 안부 전화하기", desc: "서비스 개입 후 정기적 점검 — 면담·전화·방문 병행" },
+    { category: "사례관리", icon: "🔗", word: "자원 연계", meaning: "우리가 못 도와주니까, 이거 해줄 수 있는 옆 동네 단체 연결시켜 주기", desc: "지역사회 자원 동원 — 연계 후 사후 관리까지 책임" },
+    { category: "사례관리", icon: "👋", word: "종결", meaning: "이별의 시간. 다 나아서 자립했거나 이사 가셔서 그만 만나요", desc: "목표 달성·이관·사망·거부 등 사유로 사례 마무리" },
+    { category: "사례관리", icon: "🗺️", word: "욕구 (Need)", meaning: "이 분이 진짜 원하고 필요로 하는 것 (본인도 모를 때 있음)", desc: "표현 욕구·규범적 욕구·비교 욕구·잠재 욕구로 구분" },
+    { category: "사례관리", icon: "💪", word: "강점 관점", meaning: "문제만 보지 말고, 이 분이 가진 강점을 먼저 보기", desc: "역량강화(Empowerment) 실천의 핵심 철학" },
+    { category: "사례관리", icon: "🎯", word: "개입 목표", meaning: "우리가 이 사례를 통해 달성하려는 구체적인 목표", desc: "SMART 원칙(구체적·측정가능·달성가능·현실적·기한)으로 설정" },
+    { category: "사례관리", icon: "📋", word: "서비스 계획서", meaning: "누가, 언제, 뭘, 어떻게 도와줄지 적어 두는 약속 문서", desc: "클라이언트 동의 서명 필수 — 주기적으로 재검토" },
+    { category: "사례관리", icon: "⚠️", word: "위기 개입", meaning: "갑자기 상황이 심각해졌을 때 빠르게 투입!", desc: "자해·학대·화재 등 긴급 상황 — 72시간 내 집중 개입 원칙" },
+    { category: "사례관리", icon: "🔁", word: "재사정 (Re-assessment)", meaning: "시간 지나서 상황 바뀌었으니까 처음부터 다시 파악해 보기", desc: "보통 6개월~1년마다 실시, 목표 달성 여부도 확인" },
+    { category: "사례관리", icon: "🧑‍🤝‍🧑", word: "사례 회의", meaning: "이 분 어떻게 도울지 팀원·관련 기관들이 모여서 머리 맞대기", desc: "다학제적 접근 — 의사·간호사·복지사·치료사 등 협력" },
+    { category: "사례관리", icon: "🏠", word: "아웃리치 (Outreach)", meaning: "기다리지 말고 직접 찾아가기! 복지사가 먼저 나가기", desc: "은둔형 취약계층 발굴 — 정기 방문으로 단절 예방" },
+    { category: "사례관리", icon: "📊", word: "사례 분류", meaning: "이 분 얼마나 도움이 필요한지 등급 나누기", desc: "위기·고위험·일반 등으로 분류, 개입 강도 결정" },
+    { category: "사례관리", icon: "💬", word: "슈퍼비전 (Supervision)", meaning: "경험 많은 선배가 내 사례를 코칭해 주는 시간", desc: "교육적·지지적·행정적 기능 — 번아웃 예방에도 필수" },
+    { category: "사례관리", icon: "📜", word: "동의서", meaning: "이 분이 서비스 받겠다고 서명한 공식 허락 문서", desc: "정보 공유·사례관리 참여 동의 — 없으면 정보 제공 불가" },
+    { category: "사례관리", icon: "🔐", word: "비밀 보장", meaning: "들은 것 절대 함부로 말하지 않겠다는 복지사의 철칙", desc: "단, 생명 위협·아동학대 등은 신고 의무가 우선" },
+    { category: "사례관리", icon: "🏥", word: "의뢰 (Referral)", meaning: "우리 역량 밖이니까, 더 잘 도울 수 있는 곳으로 보내기", desc: "공식 의뢰서 작성 + 인수인계 미팅 필수" },
+    { category: "사례관리", icon: "🌐", word: "통합사례관리", meaning: "여러 기관이 한 팀 되어 복합 욕구 가진 분 집중 돌보기", desc: "희망복지지원단·드림스타트 등 주거·건강·경제 통합 지원" },
+
+    /* ─── 🏢 기관생활 (20개) ─── */
+    { category: "기관생활", icon: "😎", word: "공가", meaning: "나라 일이나 예비군, 건강검진 때문에 당당하게 합법적으로 쉬는 날", desc: "공적 업무 수행으로 인한 특별 휴가 — 연차 차감 없음" },
+    { category: "기관생활", icon: "🤒", word: "병가", meaning: "나 진짜 아파서 쉬는 거임 (진단서 떼와야 할 수도 있음)", desc: "취업규칙·단체협약마다 기준 상이, 유급/무급 확인 필요" },
+    { category: "기관생활", icon: "💻", word: "W4C / 희망이음", meaning: "사회복지사들의 영혼을 갈아 넣는 매운맛 국가 전산망", desc: "사회복지시설정보시스템(W4C) → 차세대 희망이음으로 전환 중" },
+    { category: "기관생활", icon: "📅", word: "주간 업무 보고", meaning: "이번 주에 뭐 했는지, 다음 주엔 뭐 할 건지 상사에게 보고하기", desc: "주간업무계획서 — 팀 내 업무 조율 및 기록의 기초" },
+    { category: "기관생활", icon: "🏅", word: "보수교육", meaning: "사회복지사 자격증 유지하려면 채워야 하는 의무 교육 시간", desc: "2년마다 8시간 이상, 미이수 시 자격증 효력 정지" },
+    { category: "기관생활", icon: "📣", word: "직원 회의", meaning: "전 직원이 모여서 사업 공유하고 안건 논의하는 시간", desc: "회의록 작성 필수 — 의결 사항은 이사회 보고 대상일 수도" },
+    { category: "기관생활", icon: "📰", word: "사업 계획서", meaning: "올해 우리 기관 이렇게 운영할 거예요! 선포문", desc: "회계연도 시작 전 수립 — 사업비 편성의 근거 문서" },
+    { category: "기관생활", icon: "📓", word: "사업 실적 보고서", meaning: "연말에 올 한 해 동안 뭉텅이로 정리하는 결산 성과물", desc: "관할 행정기관 제출 의무, 통계·만족도 조사 포함" },
+    { category: "기관생활", icon: "🚨", word: "시설 감사", meaning: "행정기관이 우리 기관 제대로 운영하나 들여다보는 무서운 날", desc: "정기·수시감사 구분, 지적사항은 시정명령·과태료 대상" },
+    { category: "기관생활", icon: "📜", word: "취업규칙", meaning: "이 기관에서 일할 때 지켜야 하는 내부 규정서", desc: "10인 이상 사업장 필수 비치·신고, 불이익 변경 시 직원 동의 필요" },
+    { category: "기관생활", icon: "🧑‍💼", word: "승인 결재", meaning: "상사 도장 또는 전자 서명 받기. 이게 없으면 아무것도 시작 못 함", desc: "전결 규정에 따라 결재 라인 상이 — 규정 미리 확인 필수" },
+    { category: "기관생활", icon: "🎓", word: "직무 교육", meaning: "직무 향상을 위해 기관이 보내주거나 본인이 들어야 하는 교육", desc: "아동학대·인권·성희롱 예방 교육 등 별도 의무 존재" },
+    { category: "기관생활", icon: "🤝", word: "인수인계", meaning: "내가 맡던 일을 다음 담당자에게 빠짐없이 넘겨주기", desc: "미흡한 인수인계는 업무 공백·민원의 원인" },
+    { category: "기관생활", icon: "🏖️", word: "연차휴가", meaning: "1년에 정해진 만큼 당당히 쉴 권리 (안 쓰면 돈으로 받을 수도)", desc: "1년 만근 시 15일, 이후 2년마다 1일씩 추가(최대 25일)" },
+    { category: "기관생활", icon: "📲", word: "온콜 (On-call)", meaning: "퇴근했어도 긴급 상황 생기면 전화 받고 달려가야 하는 상태", desc: "시설 종류에 따라 야간 당직·온콜 규정 상이" },
+    { category: "기관생활", icon: "🧹", word: "환경 정비", meaning: "이용자 및 직원 근무 공간을 안전하고 쾌적하게 유지하기", desc: "소방·위생·안전 점검 — 행정감사 시 주요 체크 항목" },
+    { category: "기관생활", icon: "🎤", word: "욕구 조사", meaning: "이용자들이 뭘 원하는지 설문·면담으로 물어보는 기초 조사", desc: "사업 계획 수립의 근거 — 통계 처리 후 계획서에 첨부" },
+    { category: "기관생활", icon: "🗳️", word: "이사회", meaning: "법인의 사장님들 모임. 중요한 것들은 여기서 최종 결정됨", desc: "정관에 따라 정기·임시 이사회 개최, 회의록 보관 의무" },
+    { category: "기관생활", icon: "📊", word: "만족도 조사", meaning: "이용자·보호자가 우리 서비스에 얼마나 만족하는지 측정하기", desc: "사업 실적의 질적 지표 — 시설평가·보조금 심사에 반영" },
+    { category: "기관생활", icon: "🧾", word: "복무 규정", meaning: "출퇴근·휴가·복장 등 직원이 지켜야 할 근무 질서 규칙", desc: "취업규칙의 하위 규정, 기관별 세부 내용 상이" },
 ];
 
 // Currently active voca category ('all' | '회계/행정' | '사례관리' | '기관생활')
