@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>사회복지사 비밀노트</title>
+    <link rel="stylesheet" href="index.css">
+    <!-- Pretendard Font -->
+    <link rel="stylesheet" as="style" crossorigin
+        href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+</head>
+
+<body>
+    <div id="app">
+        <header>
+            <div class="header-top">
+                <h1>사회복지사 비밀노트</h1>
+                <div class="settings-icon">⚙️</div>
+            </div>
+            <div class="announcement">
+                <span>📢</span>
+                <p>2026년 기준 중위소득 데이터 업데이트 완료!</p>
+            </div>
+        </header>
+
+        <main>
+            <div class="main-grid">
+                <!-- 1. 지원정보 찾기 -->
+                <a href="https://welfarescore-slnc.vercel.app/" target="_blank" class="tool-card accent-green"
+                    style="text-decoration:none; display:flex; flex-direction:column;">
+                    <span class="icon">🔍</span>
+                    <div class="title" style="color:#0f172a;">지원정보 찾기</div>
+                    <div class="desc" style="color:#64748b;">맞춤형 복지 서비스를<br>빠르게 찾아보세요.</div>
+                </a>
+
+                <!-- 2. 자격 판정 -->
+                <div class="tool-card" id="calc-eligibility">
+                    <div class="icon">💰</div>
+                    <div class="title">자격 판정(수급 모의계산기)</div>
+                    <div class="desc">2026 통합 계산기</div>
+                </div>
+
+                <!-- 3. AI 상담기록지 -->
+                <div class="tool-card accent-blue" id="open-counseling-log">
+                    <span class="icon">📝</span>
+                    <div class="title">AI 상담기록지</div>
+                    <div class="desc">일상어를 행정 용어로<br>정교하게 변환합니다.</div>
+                </div>
+
+                <!-- 4. AI 사례관리기록지 -->
+                <div class="tool-card accent-purple" id="open-case-log">
+                    <span class="icon">📋</span>
+                    <div class="title">AI 사례관리기록지</div>
+                    <div class="desc">5대 핵심 영역별로<br>전문 요약 및 분석합니다.</div>
+                </div>
+
+                <!-- 5. 행정/회계 실무 계산기 -->
+                <div class="tool-card accent-green" id="open-admin-calc"
+                    style="background:#f0fdf4; border-color:#bbf7d0">
+                    <span class="icon">💸</span>
+                    <div class="title">행정/회계 마스터</div>
+                    <div class="desc">부가세 역산, 강사료 세금,<br>장기요양계산기를 지원합니다.</div>
+                </div>
+
+                <!-- 6. 초보 복지사 단어장 -->
+                <div class="tool-card accent-purple" id="open-voca-dict"
+                    style="background:#f5f3ff; border-color:#ddd6fe">
+                    <span class="icon">📖</span>
+                    <div class="title">복지사 생존 단어장</div>
+                    <div class="desc">어려운 행정·현장 용어를<br>찰떡같이 번역해 드립니다.</div>
+                </div>
+
+                <!-- 7. 2026년 핵심 지표 -->
+                <div class="tool-card" id="open-dashboard">
+                    <span class="icon">📊</span>
+                    <div class="title">2026 핵심 지표</div>
+                    <div class="desc">중위소득, 최저임금 등<br>올해의 숫자를 확인하세요.</div>
+                </div>
+            </div>
+    </div>
+    </main>
+
+    <footer>
+        <div class="nav-item active">
+            <span class="nav-icon">🏠</span>
+            <span>홈</span>
+        </div>
+        <div class="nav-item">
+            <span class="nav-icon">📋</span>
+            <span>기록</span>
+        </div>
+        <div class="nav-item">
+            <span class="nav-icon">💬</span>
+            <span>커뮤니티</span>
+        </div>
+        <div class="nav-item">
+            <span class="nav-icon">👤</span>
+            <span>내 정보</span>
+        </div>
+    </footer>
+
+    <!-- Calculator Modal -->
+    <div id="modal-container" class="hidden">
+        <div class="modal">
+            <div class="modal-header">
+                <button id="close-modal">←</button>
+                <h2 id="modal-title">자격 판정기</h2>
+            </div>
+            <div class="modal-content" id="modal-body">
+                <!-- Dynamic Content -->
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <script src="index.js"></script>
+</body>
+
+</html>
