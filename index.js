@@ -865,15 +865,20 @@ function initAdminCalculator() {
 
 // Global functions for Admin calculator scoping
 window.switchAdminTab = function (tabName) {
-    document.getElementById('admin-content-vat').style.display = tabName === 'vat' ? 'block' : 'none';
-    document.getElementById('admin-content-tax').style.display = tabName === 'tax' ? 'block' : 'none';
-    document.getElementById('admin-content-ltc').style.display = tabName === 'ltc' ? 'block' : 'none';
+    const contentVat = document.getElementById('admin-content-vat');
+    const contentTax = document.getElementById('admin-content-tax');
+    const contentLtc = document.getElementById('admin-content-ltc');
+
+    if (contentVat) contentVat.style.display = tabName === 'vat' ? 'block' : 'none';
+    if (contentTax) contentTax.style.display = tabName === 'tax' ? 'block' : 'none';
+    if (contentLtc) contentLtc.style.display = tabName === 'ltc' ? 'block' : 'none';
 
     const btnVat = document.getElementById('tab-vat');
     const btnTax = document.getElementById('tab-tax');
     const btnLtc = document.getElementById('tab-ltc');
 
     const setActive = (btn) => {
+        if (!btn) return;
         btn.style.background = 'white';
         btn.style.color = 'var(--primary)';
         btn.style.fontWeight = '700';
@@ -881,6 +886,7 @@ window.switchAdminTab = function (tabName) {
     };
 
     const setInactive = (btn) => {
+        if (!btn) return;
         btn.style.background = 'transparent';
         btn.style.color = '#64748b';
         btn.style.fontWeight = '600';
