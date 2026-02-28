@@ -604,101 +604,6 @@ body {
 }
 
 
-/* ============================================
-   MODAL
-   ============================================ */
-#modal-container {
-  position: fixed;
-  inset: 0;
-  background: rgba(10, 15, 30, 0.55);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  display: flex;
-  justify-content: center;
-  align-items: flex-end;
-  z-index: 1000;
-}
-
-#modal-container.hidden {
-  display: none !important;
-}
-
-.modal {
-  width: 100%;
-  max-width: 480px;
-  background: var(--bg-white);
-  border-radius: 26px 26px 0 0;
-  max-height: 92vh;
-  overflow-y: auto;
-  animation: slideUp 0.42s cubic-bezier(0.16, 1, 0.3, 1);
-  padding-bottom: 50px;
-  box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.12);
-  scrollbar-width: none;
-}
-
-.modal::-webkit-scrollbar {
-  display: none;
-}
-
-@keyframes slideUp {
-  from {
-    transform: translateY(100%);
-  }
-
-  to {
-    transform: translateY(0);
-  }
-}
-
-.modal-header {
-  position: sticky;
-  top: 0;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(12px);
-  padding: 18px 20px;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  border-bottom: 1px solid #f1f5f9;
-  z-index: 20;
-}
-
-#close-modal {
-  background: var(--primary);
-  border: none;
-  font-size: 20px;
-  font-weight: 900;
-  cursor: pointer;
-  color: #ffffff;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.2s, transform 0.15s;
-  flex-shrink: 0;
-  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
-}
-
-#close-modal:hover {
-  background: var(--primary-dark);
-  transform: scale(1.08);
-}
-
-#close-modal:active {
-  transform: scale(0.93);
-}
-
-.modal-header h2 {
-  font-size: 1.05rem;
-  font-weight: 800;
-  color: var(--text-900);
-}
-
-.modal-content {
-  padding: 22px 18px;
-}
 
 /* ============================================
    UTILITY
@@ -1142,52 +1047,87 @@ select:focus {
 
 
 /* ============================================
-   QA CARD STYLES
+   MODAL (Bottom Sheet Style)
    ============================================ */
-.qa-card {
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-container {
     background: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-radius: 16px;
-    padding: 16px;
-    margin-bottom: 12px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    width: 100%;
+    max-width: 600px;
+    max-height: 90vh;
+    border-radius: 28px 28px 0 0;
+    display: flex;
+    flex-direction: column;
+    transform: translateY(100%);
+    transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.1);
 }
 
-.qa-card:hover {
-    border-color: var(--primary);
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
-    transform: translateY(-2px);
+.modal-overlay.active .modal-container {
+    transform: translateY(0);
 }
 
-.qa-card:active {
-    transform: scale(0.98);
-}
-
-.qa-category {
-    display: inline-block;
-    background: #e0e7ff;
-    color: #4338ca;
-    font-size: 0.7rem;
-    font-weight: 800;
-    padding: 4px 10px;
-    border-radius: 12px;
-    margin-bottom: 8px;
-}
-
-.qa-title {
-    font-size: 1rem;
-    font-weight: 800;
-    color: var(--text-900);
-    margin-bottom: 8px;
-    line-height: 1.4;
-}
-
-.qa-meta {
+.modal-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 0.8rem;
-    color: #94a3b8;
+    padding: 24px 24px 16px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.modal-title {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0;
+    letter-spacing: -0.01em;
+}
+
+.modal-close {
+    background: #f1f5f9;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    font-size: 1.1rem;
+    color: #64748b;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease;
+}
+
+.modal-close:hover {
+    background: #e2e8f0;
+    color: #0f172a;
+}
+
+.modal-body {
+    flex: 1;
+    padding: 24px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: env(safe-area-inset-bottom, 40px);
 }
