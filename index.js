@@ -1513,9 +1513,12 @@ async function initHelpMe() {
     if (!listContainer) return;
 
     if (!supabase) {
-        console.warn('Supabase not configured. Using dummy data.');
-        return; // UI already has dummy data from HTML
+        listContainer.innerHTML = '<p style="text-align:center; color:#94a3b8; padding:20px 0; font-size:0.9rem;">Supabase 설정이 필요합니다.</p>';
+        return;
     }
+
+    // Show loading
+    listContainer.innerHTML = '<div style="text-align:center; padding:40px 20px; color:#94a3b8;"><p style="font-size:0.9rem;">불러오는 중...</p></div>';
 
     try {
         const { data, error } = await supabase
@@ -1524,18 +1527,27 @@ async function initHelpMe() {
             .order('created_at', { ascending: false });
 
         if (error) throw error;
-        if (!data || data.length === 0) return;
+
+        if (!data || data.length === 0) {
+            listContainer.innerHTML = `
+                <div style="text-align:center; padding:48px 20px;">
+                    <div style="font-size:3rem; margin-bottom:12px;">🌱</div>
+                    <p style="font-size:1rem; font-weight:800; color:#334155; margin-bottom:6px;">아직 질문이 없어요</p>
+                    <p style="font-size:0.85rem; color:#94a3b8;">첫 번째 질문의 주인공이 되어보세요!</p>
+                </div>`;
+            return;
+        }
 
         let html = '';
         data.forEach(post => {
             html += `
                 <div style="background:#fff; border-radius:16px; padding:18px; border:1px solid #e2e8f0; box-shadow:var(--shadow-card); cursor:pointer;" onclick="openQaDetail('${post.id}')">
                     <div style="display:flex; gap:8px; margin-bottom:10px;">
-                        <span style="background:#e0e7ff; color:#4338ca; font-size:0.7rem; font-weight:800; padding:4px 8px; border-radius:12px;">${post.category}</span>
+                        <span style="background:#e0e7ff; color:#4338ca; font-size:0.7rem; font-weight:800; padding:4px 8px; border-radius:12px;">${post.category || '일반'}</span>
                     </div>
                     <div style="font-size:1.05rem; font-weight:800; color:var(--text-900); line-height:1.4; margin-bottom:8px;">${post.title}</div>
                     <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.8rem; color:#94a3b8;">
-                        <span>${post.author}</span>
+                        <span>${post.author || '익명'}</span>
                         <span>${formatDate(post.created_at)}</span>
                     </div>
                 </div>
@@ -1544,6 +1556,11 @@ async function initHelpMe() {
         listContainer.innerHTML = html;
     } catch (err) {
         console.error('Error fetching posts:', err);
+        listContainer.innerHTML = `
+            <div style="text-align:center; padding:40px 20px; color:#ef4444;">
+                <div style="font-size:2rem; margin-bottom:8px;">⚠️</div>
+                <p style="font-size:0.9rem;">데이터를 불러오지 못했습니다.<br><span style="font-size:0.8rem; color:#94a3b8;">${err.message}</span></p>
+            </div>`;
     }
 }
 

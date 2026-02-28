@@ -128,6 +128,22 @@ body {
 .app-main::-webkit-scrollbar {
   display: none;
 }
+/* ============================================
+   VIEW SWITCHER
+   ============================================ */
+.view-content {
+  display: block;
+}
+
+.view-content.hidden {
+  display: none;
+}
+
+.view-content.active {
+  display: block;
+}
+
+
 
 /* ============================================
    ① HERO BANNER  ← 이미지 참고: 상단 큰 사진형 배너
