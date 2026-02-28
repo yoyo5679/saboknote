@@ -517,42 +517,76 @@ body {
 .bottom-nav {
   position: fixed;
   bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
   width: 100%;
   max-width: 480px;
   background: rgba(255, 255, 255, 0.97);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  border-top: 1px solid rgba(0, 0, 0, 0.07);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
   display: flex;
   justify-content: space-around;
-  padding: 10px 0 calc(10px + env(safe-area-inset-bottom));
+  align-items: center;
+  padding: 6px 4px calc(6px + env(safe-area-inset-bottom));
   z-index: 200;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.05);
 }
 
 .nav-item {
+  background: none;
+  border: none;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+  -webkit-tap-highlight-color: transparent;
+  box-shadow: none;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 3px;
-  font-size: 0.68rem;
-  color: var(--text-400);
+  gap: 2px;
+  font-size: 0.65rem;
+  font-family: inherit;
+  color: #94a3b8;
   cursor: pointer;
-  min-width: 54px;
-  transition: color 0.15s;
+  padding: 4px 8px;
+  border-radius: 14px;
+  flex: 1;
+  transition: color 0.2s;
 }
 
 .nav-item.active {
   color: var(--primary);
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .nav-item:hover {
-  color: var(--text-600);
+  color: #64748b;
 }
 
 .nav-icon {
-  font-size: 21px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  font-size: 20px;
+  background: transparent;
+  transition: background 0.2s, transform 0.15s;
+  line-height: 1;
 }
+
+.nav-item.active .nav-icon {
+  background: #eff6ff;
+  transform: scale(1.08);
+}
+
+.nav-label {
+  font-size: 0.65rem;
+  letter-spacing: -0.01em;
+}
+
 
 /* ============================================
    MODAL
@@ -950,3 +984,143 @@ select:focus {
     transform: translateY(-8px);
   }
 }
+/* --- 사복천재의 비밀 프롬프트 (AI Work Prompter) Styles --- */
+
+.prompter-intro {
+    text-align: center;
+    padding: 24px;
+    background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
+    border-radius: 20px;
+    margin-bottom: 24px;
+    border: 1px solid #c7d2fe;
+    position: relative;
+    overflow: hidden;
+}
+
+.prompter-badge {
+    position: absolute;
+    top: 10px;
+    right: -25px;
+    background: #4338ca;
+    color: white;
+    padding: 4px 30px;
+    font-size: 0.7rem;
+    font-weight: 900;
+    transform: rotate(45deg);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.prompter-intro h3 {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #312e81;
+    margin-bottom: 8px;
+}
+
+.prompter-intro p {
+    font-size: 0.9rem;
+    color: #4338ca;
+    line-height: 1.5;
+}
+
+.prompt-options-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.prompt-option-card {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.prompt-option-card:active {
+    transform: scale(0.98);
+    background: #f8fafc;
+}
+
+.prompt-option-icon {
+    width: 48px;
+    height: 48px;
+    background: #f1f5f9;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-right: 16px;
+}
+
+.prompt-option-info {
+    flex: 1;
+}
+
+.prompt-option-title {
+    font-weight: 800;
+    font-size: 1.05rem;
+    color: #1e293b;
+    margin-bottom: 20px;
+}
+
+.prompt-option-desc {
+    font-size: 0.8rem;
+    color: #64748b;
+    line-height: 1.4;
+}
+
+.prompt-option-arrow {
+    font-size: 1.2rem;
+    color: #cbd5e1;
+    margin-left: 8px;
+}
+
+.prompt-header-box {
+    text-align: center;
+    background: #f8fafc;
+    padding: 24px;
+    border-radius: 20px;
+    margin-bottom: 24px;
+    border: 1px solid #e2e8f0;
+}
+
+.prompt-content-box {
+    background: #ffffff;
+    border: 2px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 24px;
+}
+
+.prompt-content-label {
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: #64748b;
+    margin-bottom: 12px;
+}
+
+.prompt-text-area {
+    background: #f1f5f9;
+    padding: 14px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: #334155;
+    white-space: pre-wrap;
+    max-height: 200px;
+    overflow-y: auto;
+    font-family: 'Pretendard', sans-serif;
+}
+
+.prompt-guide-box {
+    background: #eff6ff;
+    padding: 16px;
+    border-radius: 16px;
+    border: 1px solid #dbeafe;
+}
+
