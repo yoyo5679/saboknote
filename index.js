@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Social Worker's Secret Note - Core Logic
  */
 
@@ -614,30 +614,40 @@ function initModal() {
 
     if (closeBtn) {
         closeBtn.onclick = () => {
-            modalContainer.classList.add('hidden');
-            modalContainer.classList.remove('active');
+            const overlay = document.getElementById('modal-overlay');
+            if (overlay) { overlay.classList.add('hidden'); overlay.classList.remove('active'); }
+            if (modalContainer) { modalContainer.classList.add('hidden'); modalContainer.classList.remove('active'); }
         };
     }
 
     window.addEventListener('click', (event) => {
-        if (event.target === modalContainer) {
-            modalContainer.classList.add('hidden');
-            modalContainer.classList.remove('active');
+        const overlay = document.getElementById('modal-overlay');
+        if (overlay && event.target === overlay) {
+            overlay.classList.add('hidden');
+            overlay.classList.remove('active');
+            if (modalContainer) { modalContainer.classList.add('hidden'); modalContainer.classList.remove('active'); }
         }
     });
 }
 
 function openModal(title, contentHtml) {
+    const modalOverlay = document.getElementById('modal-overlay');
     const modalContainer = document.getElementById('modal-container');
     const modalTitle = document.getElementById('modal-title');
     const modalBody = document.getElementById('modal-body');
 
-    if (modalContainer && modalTitle && modalBody) {
+    if (modalTitle && modalBody) {
         modalTitle.innerText = title;
         modalBody.innerHTML = contentHtml;
-        modalContainer.classList.remove('hidden');
-        modalContainer.classList.add('active');
-        modalBody.scrollTop = 0;
+        if (modalOverlay) {
+            modalOverlay.classList.remove('hidden');
+            modalOverlay.classList.add('active');
+        }
+        if (modalContainer) {
+            modalContainer.classList.remove('hidden');
+            modalContainer.classList.add('active');
+        }
+        if (modalBody) modalBody.scrollTop = 0;
     }
 }
 
