@@ -1140,3 +1140,54 @@ select:focus {
     border: 1px solid #dbeafe;
 }
 
+
+/* ============================================
+   QA CARD STYLES
+   ============================================ */
+.qa-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.qa-card:hover {
+    border-color: var(--primary);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+    transform: translateY(-2px);
+}
+
+.qa-card:active {
+    transform: scale(0.98);
+}
+
+.qa-category {
+    display: inline-block;
+    background: #e0e7ff;
+    color: #4338ca;
+    font-size: 0.7rem;
+    font-weight: 800;
+    padding: 4px 10px;
+    border-radius: 12px;
+    margin-bottom: 8px;
+}
+
+.qa-title {
+    font-size: 1rem;
+    font-weight: 800;
+    color: var(--text-900);
+    margin-bottom: 8px;
+    line-height: 1.4;
+}
+
+.qa-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8rem;
+    color: #94a3b8;
+}

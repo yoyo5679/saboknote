@@ -123,17 +123,8 @@ window.submitRequest = function () {
     }, 800);
 };
 
-document.addEventListener('DOMContentLoaded', () => {
-    initModal();
-    initEligibilityCalculator();
-    initDashboard();
-    initAIPrompter();
-    initAdminCalculator();
-    initVocaDictionary();
-    initNewsletterReader();
-    initRequestModal();
-    initRecordTemplates();
-});
+// DOMContentLoaded is handled by window.onload below
+// Removed to avoid duplicate initialization
 
 // ... (preceding functions) ...
 
@@ -1760,13 +1751,94 @@ window.switchView = function (view) {
     });
 };
 
+/* --- Missing Functions --- */
+// Format date function
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffMs = now - date;
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+
+    if (diffMins < 1) return '방금 전';
+    if (diffMins < 60) return `${diffMins}분 전`;
+    if (diffHours < 24) return `${diffHours}시간 전`;
+    if (diffDays < 7) return `${diffDays}일 전`;
+    
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}.${month}.${day}`;
+}
+
+// Initialize Record Templates (placeholder)
+function initRecordTemplates() {
+    console.log('Record templates initialized');
+    // Add your record templates initialization logic here
+}
+
+// Initialize Help Me section
+async function initHelpMe() {
+    const qaList = document.getElementById('qa-list');
+    if (!qaList) return;
+
+    if (!supabase) {
+        qaList.innerHTML = `
+            <div style="text-align:center; padding:40px 20px; color:#94a3b8;">
+                <p style="font-size:0.9rem;">데모 모드입니다.<br>실제 데이터를 보려면 Supabase 설정이 필요합니다.</p>
+            </div>
+        `;
+        return;
+    }
+
+    try {
+        const { data: posts, error } = await supabase
+            .from('posts')
+            .select('*')
+            .order('created_at', { ascending: false })
+            .limit(20);
+
+        if (error) throw error;
+
+        if (posts && posts.length > 0) {
+            qaList.innerHTML = posts.map(post => `
+                <div class="qa-card" onclick="openQaDetail('${post.id}')">
+                    <div class="qa-category">${post.category || '일반'}</div>
+                    <div class="qa-title">${post.title}</div>
+                    <div class="qa-meta">
+                        <span>${post.author || '익명'}</span>
+                        <span>${formatDate(post.created_at)}</span>
+                    </div>
+                </div>
+            `).join('');
+        } else {
+            qaList.innerHTML = `
+                <div style="text-align:center; padding:40px 20px; color:#94a3b8;">
+                    <p style="font-size:0.9rem;">아직 등록된 질문이 없습니다.<br>첫 번째 질문의 주인공이 되어보세요! ✨</p>
+                </div>
+            `;
+        }
+    } catch (err) {
+        console.error('Error loading posts:', err);
+        qaList.innerHTML = `
+            <div style="text-align:center; padding:40px 20px; color:#ef4444;">
+                <p style="font-size:0.9rem;">질문을 불러오는 중 오류가 발생했습니다.</p>
+            </div>
+        `;
+    }
+}
+
 /* --- Global Init --- */
 window.onload = () => {
     initModal();
-    initAIPrompter();
     initEligibilityCalculator();
+    initDashboard();
+    initAIPrompter();
     initAdminCalculator();
     initVocaDictionary();
+    initNewsletterReader();
+    initRequestModal();
     initRecordTemplates();
     initHelpMe();
 };
