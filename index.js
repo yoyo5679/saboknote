@@ -1404,10 +1404,10 @@ AI는 반드시 동일한 내용을 아래 **두 가지 버전**으로 각각 �
                     ${item.icon}
                 </div>
                 <div style="flex:1; min-width:0;">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; gap:8px;">
-                        <h4 style="font-size:1.05rem; font-weight:800; color:var(--text-dark); margin:0; flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${item.word}</h4>
-                        <span style="background:#e0e7ff; color:#4f46e5; font-size:0.7rem; font-weight:800; padding:3px 8px; border-radius:20px; white-space:nowrap; flex-shrink:0;">${item.category}</span>
+                    <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+                        <span style="background:#e0e7ff; color:#4f46e5; font-size:0.68rem; font-weight:800; padding:2px 8px; border-radius:20px; white-space:nowrap; flex-shrink:0;">${item.category}</span>
                     </div>
+                    <h4 style="font-size:1.05rem; font-weight:800; color:var(--text-dark); margin:0 0 8px 0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${item.word}</h4>
                     <p style="font-size:0.9rem; color:#1e293b; line-height:1.5; font-weight:600; margin-bottom:8px;">${item.meaning}</p>
                     <p style="font-size:0.78rem; color:#64748b; margin:0; display:inline-block; border-left:3px solid #cbd5e1; padding-left:8px;">📝 행정 의미: ${item.desc}</p>
                 </div>
