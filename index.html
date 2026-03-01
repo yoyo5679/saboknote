@@ -232,32 +232,29 @@
 
 
     <!-- ===== COMMUNITY VIEW ===== -->
-    <div id="view-community" class="view-content hidden" style="overflow:hidden;">
-        <!-- 상단 헤더 섹션 (파란 배경) -->
+    <div id="view-community" class="view-content hidden" style="background:var(--bg-page);">
+        <!-- 상단 파란 헤더 -->
         <div
-            style="background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); padding: 24px 20px 64px; position: relative;">
-            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+            style="background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); padding: 20px 20px 28px; border-radius: 0 0 24px 24px;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
                 <div>
                     <div
-                        style="font-size:0.75rem; font-weight:700; color:rgba(255,255,255,0.7); margin-bottom:4px; letter-spacing:0.04em;">
+                        style="font-size:0.72rem; font-weight:700; color:rgba(255,255,255,0.7); margin-bottom:3px; letter-spacing:0.04em;">
                         사복천재 커뮤니티</div>
-                    <h2 style="font-size:1.5rem; font-weight:900; color:#fff; letter-spacing:-0.02em;">커뮤니티 💬</h2>
+                    <h2 style="font-size:1.4rem; font-weight:900; color:#fff; letter-spacing:-0.02em;">커뮤니티 💬</h2>
                 </div>
-                <!-- 글쓰기 버튼 -->
                 <button onclick="openCommunityPostModal()"
-                    style="flex-shrink:0; padding:9px 16px; border-radius:20px; border:none; background:rgba(255,255,255,0.25); color:#fff; font-size:0.85rem; font-weight:700; cursor:pointer; backdrop-filter:blur(6px); border:1px solid rgba(255,255,255,0.3);">
+                    style="flex-shrink:0; padding:9px 16px; border-radius:20px; border:1px solid rgba(255,255,255,0.4); background:rgba(255,255,255,0.2); color:#fff; font-size:0.85rem; font-weight:700; cursor:pointer; backdrop-filter:blur(6px);">
                     ✏️ 글쓰기
                 </button>
             </div>
         </div>
 
-        <!-- 흰색 메인 카드 (위로 올라오게) -->
-        <div
-            style="background:#fff; border-radius:24px 24px 0 0; margin-top:-40px; padding:20px 16px; min-height:60vh; position:relative; z-index:1;">
-
-            <!-- 커뮤니티 카테고리 탭 (가로 스크롤) -->
+        <!-- 흰 배경 컨텐츠 영역 (헤더에 바짝 붙음) -->
+        <div style="background:#fff; padding:16px;">
+            <!-- 커뮤니티 카테고리 탭 -->
             <div
-                style="display:flex; gap:8px; overflow-x:auto; padding-bottom:4px; margin-bottom:20px; scrollbar-width:none; -ms-overflow-style:none;">
+                style="display:flex; gap:8px; overflow-x:auto; padding-bottom:4px; margin-bottom:16px; scrollbar-width:none; -ms-overflow-style:none;">
                 <button id="cat-all" onclick="loadCommunityPosts('all')"
                     style="white-space:nowrap; padding:8px 18px; border-radius:20px; border:none; background:var(--primary); color:#fff; font-size:0.82rem; font-weight:700; cursor:pointer; flex-shrink:0;">전체</button>
                 <button id="cat-free" onclick="loadCommunityPosts('자유게시판')"
@@ -282,6 +279,7 @@
             <div style="height:80px;"></div>
         </div>
     </div>
+
 
     <!-- ===== MYPAGE VIEW ===== -->
     <div id="view-mypage" class="view-content hidden">

@@ -52,6 +52,8 @@ body {
   flex-direction: column;
   background: var(--bg-page);
   position: relative;
+  overflow: hidden;
+  /* 자식 요소가 앱 바깥으로 절대 못 나가게 */
   /* 모바일 앱처럼 좌우 그림자 */
   box-shadow: 0 0 60px rgba(0, 0, 0, 0.10);
 }
