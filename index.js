@@ -1651,6 +1651,288 @@ AI는 반드시 동일한 내용을 아래 **두 가지 버전**으로 각각 �
         }
     };
 
+    /* --- Community Board --- */
+    window.initCommunity = function () {
+        loadCommunityPosts('all');
+    };
+
+    window.loadCommunityPosts = async function (category) {
+        const listContainer = document.getElementById('community-list');
+        if (!listContainer) return;
+
+        // 탭 활성화 UI 업데이트
+        ['all', 'free', 'info', 'job'].forEach(c => {
+            const btn = document.getElementById('cat-' + c);
+            if (btn) {
+                btn.style.background = '#fff';
+                btn.style.color = '#475569';
+                btn.style.border = '1px solid #e2e8f0';
+            }
+        });
+
+        let activeBtnId = 'cat-all';
+        if (category === '자유게시판') activeBtnId = 'cat-free';
+        if (category === '정보 공유방') activeBtnId = 'cat-info';
+        if (category === '취업/이직') activeBtnId = 'cat-job';
+
+        const activeBtn = document.getElementById(activeBtnId);
+        if (activeBtn) {
+            activeBtn.style.background = 'var(--primary)';
+            activeBtn.style.color = '#fff';
+            activeBtn.style.border = 'none';
+        }
+
+        if (!supabase) {
+            listContainer.innerHTML = '<p style="text-align:center; color:#94a3b8; padding:20px 0; font-size:0.9rem;">Supabase 설정이 필요합니다.</p>';
+            return;
+        }
+
+        listContainer.innerHTML = '<div style="text-align:center; padding:40px 20px; color:#94a3b8;"><div class="loading-spinner" style="margin: 0 auto 12px auto;"></div><p style="font-size:0.9rem;">게시글을 불러오는 중...</p></div>';
+
+        try {
+            let query = supabase.from('community_posts').select('*').order('created_at', { ascending: false });
+            if (category !== 'all') {
+                query = query.eq('category', category);
+            }
+            const { data, error } = await query;
+
+            if (error) throw error;
+
+            if (!data || data.length === 0) {
+                listContainer.innerHTML = `
+                <div style="text-align:center; padding:48px 20px;">
+                    <div style="font-size:3rem; margin-bottom:12px;">📭</div>
+                    <p style="font-size:1rem; font-weight:800; color:#334155; margin-bottom:6px;">아직 작성된 글이 없어요</p>
+                    <p style="font-size:0.85rem; color:#94a3b8;">새로운 이야기를 시작해보세요!</p>
+                </div>`;
+                return;
+            }
+
+            let html = '';
+            data.forEach(post => {
+                let badgeColor = '#e0e7ff';
+                let textColor = '#4338ca';
+                if (post.category === '정보 공유방') { badgeColor = '#fee2e2'; textColor = '#b91c1c'; }
+                if (post.category === '취업/이직') { badgeColor = '#dcfce3'; textColor = '#15803d'; }
+
+                html += `
+                <div style="background:#fff; border-radius:16px; padding:18px; border:1px solid #e2e8f0; box-shadow:var(--shadow-card); cursor:pointer;" onclick="openCommunityDetailModal('${post.id}')">
+                    <div style="display:flex; gap:8px; margin-bottom:10px;">
+                        <span style="background:${badgeColor}; color:${textColor}; font-size:0.7rem; font-weight:800; padding:4px 8px; border-radius:12px;">${post.category || '일반'}</span>
+                    </div>
+                    <div style="font-size:1.05rem; font-weight:800; color:var(--text-900); line-height:1.4; margin-bottom:8px;">${post.title}</div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.8rem; color:#94a3b8;">
+                        <span>${post.author || '익명'}</span>
+                        <span>${formatDate(post.created_at)}</span>
+                    </div>
+                </div>
+            `;
+            });
+            listContainer.innerHTML = html;
+        } catch (err) {
+            console.error('Error fetching community posts:', err);
+            listContainer.innerHTML = `
+            <div style="text-align:center; padding:40px 20px; color:#ef4444;">
+                <div style="font-size:2rem; margin-bottom:8px;">⚠️</div>
+                <p style="font-size:0.9rem;">데이터를 불러오지 못했습니다.<br><span style="font-size:0.8rem; color:#94a3b8;">${err.message}</span></p>
+            </div>`;
+        }
+    };
+
+    window.openCommunityPostModal = function () {
+        const content = `
+        <div style="display:flex; flex-direction:column; gap:20px;">
+            <div class="form-group">
+                <label>게시판 카테고리</label>
+                <select id="comm-category" class="calc-input">
+                    <option value="자유게시판">📢 자유게시판</option>
+                    <option value="정보 공유방">🔥 정보 공유방</option>
+                    <option value="취업/이직">🤝 취업/이직</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>글 제목</label>
+                <input type="text" id="comm-title" class="calc-input" placeholder="어떤 이야기를 나누고 싶으신가요?">
+            </div>
+            <div class="form-group">
+                <label>상세 내용</label>
+                <textarea id="comm-content" class="calc-input" style="height:150px; resize:none; padding:12px;" placeholder="자유롭게 작성해주세요."></textarea>
+            </div>
+            <div style="background:#f8fafc; padding:16px; border-radius:12px; border:1px solid #e2e8f0; font-size:0.85rem; color:#64748b;">
+                📢 게시판 별 성격에 맞게 작성해 주시고, 비방이나 욕설은 통보 없이 삭제될 수 있습니다.
+            </div>
+            <button class="btn-primary" id="btn-submit-comm" onclick="submitCommunityPost()">✏️ 커뮤니티에 글 남기기</button>
+        </div>
+    `;
+        openModal('글쓰기 📝', content);
+    };
+
+    window.submitCommunityPost = async function () {
+        const title = document.getElementById('comm-title').value;
+        const category = document.getElementById('comm-category').value.replace(/[^가-힣/]/g, '').trim(); // Remove emojis just in case
+        let cleanCategory = "자유게시판";
+        if (category.includes('정보')) cleanCategory = "정보 공유방";
+        if (category.includes('취업') || category.includes('이직')) cleanCategory = "취업/이직";
+
+        const content = document.getElementById('comm-content').value;
+        const btn = document.getElementById('btn-submit-comm');
+
+        if (!title.trim() || !content.trim()) {
+            alert('모든 내용을 입력해주세요.');
+            return;
+        }
+
+        if (!supabase) {
+            alert('Supabase 설정이 필요합니다.');
+            return;
+        }
+
+        try {
+            btn.disabled = true;
+            btn.innerText = '게시 중...';
+
+            const { error } = await supabase
+                .from('community_posts')
+                .insert([
+                    { title, category: cleanCategory, content, author: '익명의 복지사' }
+                ]);
+
+            if (error) throw error;
+
+            alert('글이 등록되었습니다!');
+            document.getElementById('close-modal').click();
+
+            // Navigate back to the submitted category
+            if (cleanCategory === '자유게시판') loadCommunityPosts('자유게시판');
+            else if (cleanCategory === '정보 공유방') loadCommunityPosts('정보 공유방');
+            else if (cleanCategory === '취업/이직') loadCommunityPosts('취업/이직');
+            else loadCommunityPosts('all');
+
+        } catch (err) {
+            console.error('Error submitting community post:', err);
+            alert('등록 중 오류가 발생했습니다.');
+        } finally {
+            btn.disabled = false;
+            btn.innerText = '✏️ 커뮤니티에 글 남기기';
+        }
+    };
+
+    window.openCommunityDetailModal = async function (id) {
+        if (!supabase) {
+            alert('Supabase 설정이 필요합니다.');
+            return;
+        }
+
+        try {
+            const { data: post, error: postErr } = await supabase
+                .from('community_posts')
+                .select('*')
+                .eq('id', id)
+                .single();
+
+            if (postErr) throw postErr;
+
+            const { data: replies, error: replyErr } = await supabase
+                .from('community_replies')
+                .select('*')
+                .eq('post_id', id)
+                .order('created_at', { ascending: true });
+
+            if (replyErr && replyErr.code !== '42P01') throw replyErr; // Ignore table not found if user didn't create replies yet
+
+            const safeReplies = replies || [];
+
+            let repliesHtml = safeReplies.length > 0 ? '' : '<p style="text-align:center; padding:30px 0; color:#94a3b8; font-size:0.9rem;">아직 댓글이 없습니다.<br>첫 번째 댓글을 남겨보세요! ✨</p>';
+
+            safeReplies.forEach(r => {
+                repliesHtml += `
+                <div style="background:#f8fafc; padding:16px; border-radius:14px; border:1px solid #f1f5f9; margin-bottom:12px;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                        <span style="font-weight:800; font-size:0.85rem; color:var(--text-900);">${r.author}</span>
+                        <span style="font-size:0.75rem; color:#94a3b8;">${formatDate(r.created_at)}</span>
+                    </div>
+                    <div style="font-size:0.9rem; color:#475569; line-height:1.5;">${r.content}</div>
+                </div>
+            `;
+            });
+
+            let badgeColor = '#e0e7ff';
+            let textColor = '#4338ca';
+            if (post.category === '정보 공유방') { badgeColor = '#fee2e2'; textColor = '#b91c1c'; }
+            if (post.category === '취업/이직') { badgeColor = '#dcfce3'; textColor = '#15803d'; }
+
+            const modalContent = `
+            <div style="display:flex; flex-direction:column; gap:20px;">
+                <div style="padding-bottom:16px; border-bottom:1px solid #f1f5f9;">
+                    <span style="background:${badgeColor}; color:${textColor}; font-size:0.75rem; font-weight:800; padding:4px 10px; border-radius:12px; display:inline-block; margin-bottom:12px;">${post.category}</span>
+                    <h3 style="font-size:1.3rem; font-weight:900; color:var(--text-900); line-height:1.4; margin-bottom:12px;">${post.title}</h3>
+                    <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.85rem; color:#64748b;">
+                        <span>${post.author}</span>
+                        <span>${formatDate(post.created_at)}</span>
+                    </div>
+                </div>
+                
+                <div style="font-size:1rem; color:#334155; line-height:1.7; white-space:pre-wrap;">${post.content}</div>
+                
+                <div style="padding-top:24px;">
+                    <h4 style="font-size:1rem; font-weight:800; color:var(--text-900); margin-bottom:16px; display:flex; align-items:center; gap:6px;">
+                        💬 댓글 <span style="color:var(--primary);">${safeReplies.length}</span>
+                    </h4>
+                    <div id="comm-replies-list">${repliesHtml}</div>
+                </div>
+                
+                <div style="margin-top:10px; border-top:1px solid #f1f5f9; padding-top:20px;">
+                    <textarea id="comm-reply-input" class="calc-input" style="height:80px; resize:none; font-size:0.9rem; margin-bottom:12px;" placeholder="댓글을 남겨보세요."></textarea>
+                    <div style="display:flex; justify-content:flex-end;">
+                        <button class="btn-primary btn-outline" id="btn-submit-comm-reply" style="width:auto; padding:8px 16px;" onclick="submitCommunityReply('${post.id}')">댓글 작성</button>
+                    </div>
+                </div>
+            </div>
+        `;
+            openModal('게시글 보기 👀', modalContent);
+        } catch (err) {
+            console.error('Error fetching details:', err);
+            alert('정보를 불러오는 중 오류가 발생했습니다.');
+        }
+    };
+
+    window.submitCommunityReply = async function (postId) {
+        const content = document.getElementById('comm-reply-input').value;
+        const btn = document.getElementById('btn-submit-comm-reply');
+
+        if (!content.trim()) {
+            alert('댓글 내용을 입력해주세요.');
+            return;
+        }
+
+        try {
+            btn.disabled = true;
+            btn.innerText = '등록 중...';
+
+            const { error } = await supabase
+                .from('community_replies')
+                .insert([
+                    { post_id: postId, content: content, author: '익명의 복지사' }
+                ]);
+
+            if (error) {
+                if (error.code === '42P01') {
+                    alert("답변 테이블(community_replies)이 아직 생성되지 않았습니다.");
+                    throw error;
+                }
+                throw error;
+            }
+
+            // Refresh details modal
+            openCommunityDetailModal(postId);
+        } catch (err) {
+            console.error('Error submitting reply:', err);
+        } finally {
+            btn.disabled = false;
+            btn.innerText = '댓글 작성';
+        }
+    };
+
     /* --- View Switcher --- */
     window.switchView = function (view) {
         const views = ['home', 'record', 'community', 'mypage'];
@@ -1660,6 +1942,11 @@ AI는 반드시 동일한 내용을 아래 **두 가지 버전**으로 각각 �
             const navBtn = document.getElementById('nav-' + v);
             if (navBtn) navBtn.classList.toggle('active', v === view);
         });
+
+        // 커뮤니티 탭 진입 시 데이터 로딩
+        if (view === 'community') {
+            loadCommunityPosts('all');
+        }
     };
 
     /* --- Global Init --- */
@@ -1671,6 +1958,7 @@ AI는 반드시 동일한 내용을 아래 **두 가지 버전**으로 각각 �
         initVocaDictionary();
         initRecordTemplates();
         initHelpMe();
+        initCommunity();
     };
 
 

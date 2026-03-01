@@ -128,6 +128,7 @@ body {
 .app-main::-webkit-scrollbar {
   display: none;
 }
+
 /* ============================================
    VIEW SWITCHER
    ============================================ */
@@ -524,12 +525,16 @@ body {
   font-size: 0.78rem;
   font-weight: 600;
   color: var(--text-600);
-  line-height: 1.45;
+  -webkit-tap-highlight-color: transparent;
+  word-break: keep-all;
+  /* 한글 단어 단위 줄바꿈 유지 주의 */
+  overflow-wrap: break-word;
+  /* 긴 텍스트는 박스 안에서 줄바꿈 강제 */
 }
 
-/* ============================================
-   BOTTOM NAV
-   ============================================ */
+/* ==========================================================================
+   2. Typography & Essentials
+   ========================================================================== */
 .bottom-nav {
   position: fixed;
   bottom: 0;
@@ -546,7 +551,7 @@ body {
   align-items: center;
   padding: 6px 4px calc(6px + env(safe-area-inset-bottom));
   z-index: 200;
-  box-shadow: 0 -4px 20px rgba(0,0,0,0.05);
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.05);
 }
 
 .nav-item {
@@ -905,144 +910,145 @@ select:focus {
     transform: translateY(-8px);
   }
 }
+
 /* --- 사복천재의 비밀 프롬프트 (AI Work Prompter) Styles --- */
 
 .prompter-intro {
-    text-align: center;
-    padding: 24px;
-    background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
-    border-radius: 20px;
-    margin-bottom: 24px;
-    border: 1px solid #c7d2fe;
-    position: relative;
-    overflow: hidden;
+  text-align: center;
+  padding: 24px;
+  background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
+  border-radius: 20px;
+  margin-bottom: 24px;
+  border: 1px solid #c7d2fe;
+  position: relative;
+  overflow: hidden;
 }
 
 .prompter-badge {
-    position: absolute;
-    top: 10px;
-    right: -25px;
-    background: #4338ca;
-    color: white;
-    padding: 4px 30px;
-    font-size: 0.7rem;
-    font-weight: 900;
-    transform: rotate(45deg);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  position: absolute;
+  top: 10px;
+  right: -25px;
+  background: #4338ca;
+  color: white;
+  padding: 4px 30px;
+  font-size: 0.7rem;
+  font-weight: 900;
+  transform: rotate(45deg);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .prompter-intro h3 {
-    font-size: 1.4rem;
-    font-weight: 800;
-    color: #312e81;
-    margin-bottom: 8px;
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #312e81;
+  margin-bottom: 8px;
 }
 
 .prompter-intro p {
-    font-size: 0.9rem;
-    color: #4338ca;
-    line-height: 1.5;
+  font-size: 0.9rem;
+  color: #4338ca;
+  line-height: 1.5;
 }
 
 .prompt-options-list {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .prompt-option-card {
-    display: flex;
-    align-items: center;
-    padding: 16px;
-    background: white;
-    border: 1px solid #e2e8f0;
-    border-radius: 16px;
-    cursor: pointer;
-    transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  padding: 16px;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 .prompt-option-card:active {
-    transform: scale(0.98);
-    background: #f8fafc;
+  transform: scale(0.98);
+  background: #f8fafc;
 }
 
 .prompt-option-icon {
-    width: 48px;
-    height: 48px;
-    background: #f1f5f9;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5rem;
-    margin-right: 16px;
+  width: 48px;
+  height: 48px;
+  background: #f1f5f9;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  margin-right: 16px;
 }
 
 .prompt-option-info {
-    flex: 1;
+  flex: 1;
 }
 
 .prompt-option-title {
-    font-weight: 800;
-    font-size: 1.05rem;
-    color: #1e293b;
-    margin-bottom: 20px;
+  font-weight: 800;
+  font-size: 1.05rem;
+  color: #1e293b;
+  margin-bottom: 20px;
 }
 
 .prompt-option-desc {
-    font-size: 0.8rem;
-    color: #64748b;
-    line-height: 1.4;
+  font-size: 0.8rem;
+  color: #64748b;
+  line-height: 1.4;
 }
 
 .prompt-option-arrow {
-    font-size: 1.2rem;
-    color: #cbd5e1;
-    margin-left: 8px;
+  font-size: 1.2rem;
+  color: #cbd5e1;
+  margin-left: 8px;
 }
 
 .prompt-header-box {
-    text-align: center;
-    background: #f8fafc;
-    padding: 24px;
-    border-radius: 20px;
-    margin-bottom: 24px;
-    border: 1px solid #e2e8f0;
+  text-align: center;
+  background: #f8fafc;
+  padding: 24px;
+  border-radius: 20px;
+  margin-bottom: 24px;
+  border: 1px solid #e2e8f0;
 }
 
 .prompt-content-box {
-    background: #ffffff;
-    border: 2px solid #e2e8f0;
-    border-radius: 16px;
-    padding: 16px;
-    margin-bottom: 24px;
+  background: #ffffff;
+  border: 2px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 24px;
 }
 
 .prompt-content-label {
-    font-size: 0.85rem;
-    font-weight: 800;
-    color: #64748b;
-    margin-bottom: 12px;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #64748b;
+  margin-bottom: 12px;
 }
 
 .prompt-text-area {
-    background: #f1f5f9;
-    padding: 14px;
-    border-radius: 10px;
-    font-size: 0.9rem;
-    line-height: 1.6;
-    color: #334155;
-    white-space: pre-wrap;
-    max-height: 200px;
-    overflow-y: auto;
-    font-family: 'Pretendard', sans-serif;
+  background: #f1f5f9;
+  padding: 14px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: #334155;
+  white-space: pre-wrap;
+  max-height: 200px;
+  overflow-y: auto;
+  font-family: 'Pretendard', sans-serif;
 }
 
 .prompt-guide-box {
-    background: #eff6ff;
-    padding: 16px;
-    border-radius: 16px;
-    border: 1px solid #dbeafe;
+  background: #eff6ff;
+  padding: 16px;
+  border-radius: 16px;
+  border: 1px solid #dbeafe;
 }
 
 
@@ -1050,84 +1056,84 @@ select:focus {
    MODAL (Bottom Sheet Style)
    ============================================ */
 .modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(15, 23, 42, 0.6);
-    backdrop-filter: blur(4px);
-    z-index: 9999;
-    display: flex;
-    justify-content: center;
-    align-items: flex-end;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
 }
 
 .modal-overlay.active {
-    opacity: 1;
-    pointer-events: auto;
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .modal-container {
-    background: #ffffff;
-    width: 100%;
-    max-width: 600px;
-    max-height: 90vh;
-    border-radius: 28px 28px 0 0;
-    display: flex;
-    flex-direction: column;
-    transform: translateY(100%);
-    transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.1);
-    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.1);
+  background: #ffffff;
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  border-radius: 28px 28px 0 0;
+  display: flex;
+  flex-direction: column;
+  transform: translateY(100%);
+  transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.1);
 }
 
 .modal-overlay.active .modal-container {
-    transform: translateY(0);
+  transform: translateY(0);
 }
 
 .modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 24px 24px 16px;
-    border-bottom: 1px solid #f1f5f9;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 24px 16px;
+  border-bottom: 1px solid #f1f5f9;
 }
 
 .modal-title {
-    font-size: 1.35rem;
-    font-weight: 800;
-    color: #0f172a;
-    margin: 0;
-    letter-spacing: -0.01em;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+  letter-spacing: -0.01em;
 }
 
 .modal-close {
-    background: #f1f5f9;
-    border: none;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    font-size: 1.1rem;
-    color: #64748b;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background 0.2s ease;
+  background: #f1f5f9;
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 1.1rem;
+  color: #64748b;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
 }
 
 .modal-close:hover {
-    background: #e2e8f0;
-    color: #0f172a;
+  background: #e2e8f0;
+  color: #0f172a;
 }
 
 .modal-body {
-    flex: 1;
-    padding: 24px;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    padding-bottom: env(safe-area-inset-bottom, 40px);
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: env(safe-area-inset-bottom, 40px);
 }

@@ -234,44 +234,45 @@
     <!-- ===== COMMUNITY VIEW ===== -->
     <div id="view-community" class="view-content hidden">
         <div style="padding: 24px 16px;">
-            <div style="margin-bottom:24px;">
-                <div style="font-size:0.8rem; font-weight:800; color:var(--primary); margin-bottom:4px;">사복천재 커뮤니티</div>
-                <h2 style="font-size:1.6rem; font-weight:900; color:var(--text-900); letter-spacing:-0.02em;">커뮤니티 💬
-                </h2>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <div>
+                    <div style="font-size:0.8rem; font-weight:800; color:var(--primary); margin-bottom:4px;">사복천재 커뮤니티
+                    </div>
+                    <h2 style="font-size:1.6rem; font-weight:900; color:var(--text-900); letter-spacing:-0.02em;">커뮤니티
+                        💬</h2>
+                </div>
+                <!-- 글쓰기 버튼 -->
+                <button onclick="openCommunityPostModal()" class="btn-primary"
+                    style="width:auto; padding:8px 16px; border-radius:20px; font-size:0.9rem; margin:0; box-shadow:0 4px 12px rgba(37, 99, 235, 0.2);">
+                    + 글쓰기
+                </button>
             </div>
+
+            <!-- 커뮤니티 카테고리 탭 -->
             <div
-                style="background:linear-gradient(135deg,#eff6ff,#dbeafe); border-radius:20px; padding:32px 24px; text-align:center; margin-bottom:24px;">
-                <div style="font-size:3rem; margin-bottom:12px;">🚧</div>
-                <h3 style="font-size:1.2rem; font-weight:800; color:#1e40af; margin-bottom:8px;">준비 중이에요!</h3>
-                <p style="font-size:0.9rem; color:#3b82f6; line-height:1.5;">사회복지사들이 자유롭게 소통하는<br>커뮤니티가 곧 오픈됩니다 🎉</p>
+                style="display:flex; gap:8px; overflow-x:auto; padding-bottom:12px; margin-bottom:16px; scrollbar-width:none;">
+                <button id="cat-all" onclick="loadCommunityPosts('all')"
+                    style="white-space:nowrap; padding:8px 16px; border-radius:20px; border:none; background:var(--primary); color:#fff; font-size:0.85rem; font-weight:700; cursor:pointer; flex-shrink:0;">전체보기</button>
+                <button id="cat-free" onclick="loadCommunityPosts('자유게시판')"
+                    style="white-space:nowrap; padding:8px 16px; border-radius:20px; border:1px solid #e2e8f0; background:#fff; color:#475569; font-size:0.85rem; font-weight:700; cursor:pointer; flex-shrink:0;">📢
+                    자유게시판</button>
+                <button id="cat-info" onclick="loadCommunityPosts('정보 공유방')"
+                    style="white-space:nowrap; padding:8px 16px; border-radius:20px; border:1px solid #e2e8f0; background:#fff; color:#475569; font-size:0.85rem; font-weight:700; cursor:pointer; flex-shrink:0;">🔥
+                    정보 공유방</button>
+                <button id="cat-job" onclick="loadCommunityPosts('취업/이직')"
+                    style="white-space:nowrap; padding:8px 16px; border-radius:20px; border:1px solid #e2e8f0; background:#fff; color:#475569; font-size:0.85rem; font-weight:700; cursor:pointer; flex-shrink:0;">🤝
+                    취업/이직</button>
             </div>
-            <div style="display:flex; flex-direction:column; gap:12px;">
-                <div
-                    style="background:#fff; border-radius:16px; padding:16px; border:1px solid #e2e8f0; display:flex; align-items:center; gap:16px;">
-                    <span style="font-size:1.8rem;">📢</span>
-                    <div>
-                        <div style="font-weight:800; font-size:0.95rem; color:#1e293b; margin-bottom:3px;">자유게시판</div>
-                        <div style="font-size:0.8rem; color:#94a3b8;">일상·고민·정보 자유롭게</div>
-                    </div>
-                </div>
-                <div
-                    style="background:#fff; border-radius:16px; padding:16px; border:1px solid #e2e8f0; display:flex; align-items:center; gap:16px;">
-                    <span style="font-size:1.8rem;">🔥</span>
-                    <div>
-                        <div style="font-weight:800; font-size:0.95rem; color:#1e293b; margin-bottom:3px;">정보 공유방</div>
-                        <div style="font-size:0.8rem; color:#94a3b8;">유용한 복지 정보, 법령 변경 등</div>
-                    </div>
-                </div>
-                <div
-                    style="background:#fff; border-radius:16px; padding:16px; border:1px solid #e2e8f0; display:flex; align-items:center; gap:16px;">
-                    <span style="font-size:1.8rem;">🤝</span>
-                    <div>
-                        <div style="font-weight:800; font-size:0.95rem; color:#1e293b; margin-bottom:3px;">취업·이직 게시판
-                        </div>
-                        <div style="font-size:0.8rem; color:#94a3b8;">복지 분야 채용 정보 공유</div>
-                    </div>
+
+            <!-- 게시글 리스트 컨테이너 -->
+            <div id="community-list" style="display:flex; flex-direction:column; gap:12px;">
+                <div style="text-align:center; padding:40px 20px; color:#94a3b8;">
+                    <div class="loading-spinner" style="margin: 0 auto 12px auto;"></div>
+                    <p style="font-size:0.9rem;">게시글을 불러오는 중...</p>
                 </div>
             </div>
+
+            <div style="height:40px;"></div>
         </div>
     </div>
 
