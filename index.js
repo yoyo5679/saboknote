@@ -2207,6 +2207,106 @@ AI는 반드시 동일한 내용을 아래 **두 가지 버전**으로 각각 �
         }
     };
 
+    /* ─── 내정보 메뉴 핸들러 (Justy 작성) ─── */
+    function initMyPageMenus() {
+        // 서비스 이용약관
+        const tosContent = `
+        <div style="font-size:0.88rem; color:#334155; line-height:1.8;">
+            <p style="font-size:0.75rem; color:#94a3b8; margin-bottom:16px;">시행일: 2025년 1월 1일 &nbsp;|&nbsp; 버전: v1.0</p>
+
+            <h4 style="font-size:0.95rem; font-weight:800; color:#1e293b; margin-bottom:8px;">제1조 (목적)</h4>
+            <p style="margin-bottom:16px;">본 약관은 사회복지사 비밀노트(이하 "서비스")의 이용 조건 및 절차, 이용자와 서비스 운영자 간의 권리·의무 및 책임사항을 규정함을 목적으로 합니다.</p>
+
+            <h4 style="font-size:0.95rem; font-weight:800; color:#1e293b; margin-bottom:8px;">제2조 (서비스 내용)</h4>
+            <p style="margin-bottom:16px;">서비스는 사회복지사의 실무를 지원하기 위해 다음의 기능을 제공합니다.<br>① AI 프롬프트 라이브러리 ② 복지 용어 생존단어장 ③ 행정·회계 계산기 ④ 익명 Q&A(도와줘요) ⑤ 커뮤니티 게시판</p>
+
+            <h4 style="font-size:0.95rem; font-weight:800; color:#1e293b; margin-bottom:8px;">제3조 (이용자의 의무)</h4>
+            <p style="margin-bottom:16px;">① 이용자는 허위 정보를 게시하거나 타인을 비방하는 콘텐츠를 작성해서는 안 됩니다.<br>② 이용자는 타인의 개인정보를 무단으로 게시하거나 수집해서는 안 됩니다.<br>③ 서비스의 안정적인 운영을 방해하는 행위를 해서는 안 됩니다.</p>
+
+            <h4 style="font-size:0.95rem; font-weight:800; color:#1e293b; margin-bottom:8px;">제4조 (면책조항)</h4>
+            <p style="margin-bottom:16px;">① 서비스에서 제공하는 정보(수급판정 계산, 복지 제도 등)는 참고용이며, 실제 업무에서는 관련 법령 및 공식 기관의 안내를 최우선으로 따르시기 바랍니다.<br>② 이용자 간의 분쟁 또는 이용자가 게시한 콘텐츠로 인한 손해에 대해 운영자는 책임을 지지 않습니다.</p>
+
+            <h4 style="font-size:0.95rem; font-weight:800; color:#1e293b; margin-bottom:8px;">제5조 (약관 변경)</h4>
+            <p style="margin-bottom:8px;">운영자는 관련 법령을 위반하지 않는 범위 내에서 본 약관을 변경할 수 있으며, 변경 시 서비스 내 공지합니다.</p>
+        </div>`;
+
+        // 개인정보처리방침
+        const ppContent = `
+        <div style="font-size:0.88rem; color:#334155; line-height:1.8;">
+            <p style="font-size:0.75rem; color:#94a3b8; margin-bottom:16px;">시행일: 2025년 1월 1일 &nbsp;|&nbsp; 관련 법령: 개인정보 보호법</p>
+
+            <h4 style="font-size:0.95rem; font-weight:800; color:#1e293b; margin-bottom:8px;">1. 수집하는 개인정보 항목</h4>
+            <p style="margin-bottom:16px;">서비스는 회원가입 없이 이용 가능하며, 다음의 정보만 자동 생성됩니다.<br>• <strong>익명 사용자 ID</strong>: 기기 브라우저 로컬스토리지에 저장되는 임의 식별자(예: user_abc123). 서버에 저장되지 않습니다.<br>• <strong>게시물 데이터</strong>: Q&A 및 커뮤니티 게시글·댓글 (익명 ID와 함께 Supabase에 저장)</p>
+
+            <h4 style="font-size:0.95rem; font-weight:800; color:#1e293b; margin-bottom:8px;">2. 개인정보 수집 및 이용 목적</h4>
+            <p style="margin-bottom:16px;">① 게시물 작성자 본인 확인 (수정·삭제 권한 부여)<br>② 서비스 품질 개선을 위한 통계적 분석</p>
+
+            <h4 style="font-size:0.95rem; font-weight:800; color:#1e293b; margin-bottom:8px;">3. 개인정보 보유 및 이용기간</h4>
+            <p style="margin-bottom:16px;">게시물은 이용자가 삭제하거나 서비스 종료 시까지 보관됩니다. 익명 ID는 브라우저 데이터 삭제 시 자동 소멸됩니다.</p>
+
+            <h4 style="font-size:0.95rem; font-weight:800; color:#1e293b; margin-bottom:8px;">4. 제3자 제공</h4>
+            <p style="margin-bottom:16px;">서비스는 이용자의 정보를 법령에 규정된 경우를 제외하고 제3자에게 제공하지 않습니다. 데이터는 Supabase(미국 소재)에 암호화 저장됩니다.</p>
+
+            <h4 style="font-size:0.95rem; font-weight:800; color:#1e293b; margin-bottom:8px;">5. 이용자의 권리</h4>
+            <p style="margin-bottom:8px;">이용자는 자신이 작성한 게시물을 언제든지 직접 삭제할 수 있습니다. 기타 문의는 서비스 내 '요청하기' 기능을 이용해 주세요.</p>
+        </div>`;
+
+        // 알림 설정
+        const notifContent = `
+        <div style="text-align:center; padding:20px 0;">
+            <div style="font-size:3rem; margin-bottom:16px;">🔔</div>
+            <h3 style="font-size:1.1rem; font-weight:800; color:#1e293b; margin-bottom:8px;">알림 설정</h3>
+            <p style="font-size:0.9rem; color:#64748b; line-height:1.6;">푸시 알림 기능은 현재 준비 중입니다.<br>빠른 시일 내에 업데이트될 예정이에요! 🚀</p>
+        </div>`;
+
+        // 메뉴 연결
+        document.querySelectorAll('#view-mypage [style*="cursor:pointer"]').forEach(el => {
+            const text = el.innerText || '';
+            if (text.includes('알림 설정')) {
+                el.onclick = () => openModal('🔔 알림 설정', notifContent);
+            } else if (text.includes('이용약관')) {
+                el.onclick = () => openModal('📋 서비스 이용약관', tosContent);
+            } else if (text.includes('개인정보')) {
+                el.onclick = () => openModal('🔒 개인정보처리방침', ppContent);
+            }
+        });
+    }
+
+    /* ─── 헤더 버튼 핸들러 ─── */
+    function initHeaderButtons() {
+        // 알림 버튼
+        const bellBtn = document.querySelector('.icon-btn[aria-label="알림"]');
+        if (bellBtn) {
+            bellBtn.onclick = () => openModal('🔔 알림', `
+                <div style="text-align:center; padding:20px 0;">
+                    <div style="font-size:3rem; margin-bottom:16px;">🔔</div>
+                    <h3 style="font-size:1.1rem; font-weight:800; color:#1e293b; margin-bottom:8px;">아직 새 알림이 없어요</h3>
+                    <p style="font-size:0.9rem; color:#64748b; line-height:1.6;">새로운 업데이트나 공지가 있으면<br>여기서 확인할 수 있어요!</p>
+                </div>`);
+        }
+        // 설정 버튼
+        const settingBtns = document.querySelectorAll('.icon-btn');
+        settingBtns.forEach(btn => {
+            if (btn.textContent.trim() === '⚙️') {
+                btn.onclick = () => openModal('⚙️ 설정', `
+                    <div style="font-size:0.9rem; color:#334155; line-height:1.8;">
+                        <div style="padding:14px 0; border-bottom:1px solid #f1f5f9; display:flex; justify-content:space-between; align-items:center;">
+                            <span style="font-weight:700;">🌙 다크 모드</span>
+                            <span style="font-size:0.8rem; color:#94a3b8; background:#f1f5f9; padding:4px 10px; border-radius:20px;">준비 중</span>
+                        </div>
+                        <div style="padding:14px 0; border-bottom:1px solid #f1f5f9; display:flex; justify-content:space-between; align-items:center;">
+                            <span style="font-weight:700;">🔔 알림 설정</span>
+                            <span style="font-size:0.8rem; color:#94a3b8; background:#f1f5f9; padding:4px 10px; border-radius:20px;">준비 중</span>
+                        </div>
+                        <div style="padding:14px 0; display:flex; justify-content:space-between; align-items:center;">
+                            <span style="font-weight:700;">📱 앱 버전</span>
+                            <span style="font-size:0.8rem; color:#64748b;">v1.0.0</span>
+                        </div>
+                    </div>`);
+            }
+        });
+    }
+
     /* --- View Switcher --- */
     window.switchView = function (view) {
         const views = ['home', 'record', 'community', 'mypage'];
@@ -2230,6 +2330,7 @@ AI는 반드시 동일한 내용을 아래 **두 가지 버전**으로 각각 �
     /* --- Global Init --- */
     window.onload = () => {
         initModal();
+        initRequestModal();
         initAIPrompter();
         initEligibilityCalculator();
         initAdminCalculator();
@@ -2237,8 +2338,8 @@ AI는 반드시 동일한 내용을 아래 **두 가지 버전**으로 각각 �
         initRecordTemplates();
         initHelpMe();
         initCommunity();
+        initMyPageMenus();
+        initHeaderButtons();
     };
 
-
-
-} catch (e) { alert("Global JS Error: " + e.message); console.error(e); }
+} catch (e) { console.error('Global JS Error:', e); }
