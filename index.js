@@ -8,6 +8,16 @@
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNlbGRybnBvaGRrZ2dlbm5qaWVvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIyMzI3MjksImV4cCI6MjA4NzgwODcyOX0.PyzWPa-kwYgh-HmuDELD642TCVn7Ajri54FsR7Ik2Gs';
     const supabase = window.supabase ? window.supabase.createClient(supabaseUrl, supabaseKey) : null;
 
+    /* --- Anonymous User ID (localStorage) --- */
+    function getOrCreateUserId() {
+        let userId = localStorage.getItem('sabok_user_id');
+        if (!userId) {
+            userId = 'user_' + Math.random().toString(36).substr(2, 9);
+            localStorage.setItem('sabok_user_id', userId);
+        }
+        return userId;
+    }
+
     /* --- Bokjiro Gateway Configuration --- */
     const BOKJIRO_SIMULATOR_URL = "https://www.bokjiro.go.kr/ssis-tbu/twatbz/mkclAsis/mkclInsertNblgPage.do";
 
@@ -1791,10 +1801,12 @@ AI는 반드시 동일한 내용을 아래 **두 가지 버전**으로 각각 �
             btn.disabled = true;
             btn.innerText = '게시 중...';
 
+            const myUserId = getOrCreateUserId();
+
             const { error } = await supabase
                 .from('community_posts')
                 .insert([
-                    { title, category: cleanCategory, content, author: '익명의 복지사' }
+                    { title, category: cleanCategory, content, author: '익명의 복지사', user_id: myUserId }
                 ]);
 
             if (error) throw error;
@@ -1861,6 +1873,16 @@ AI는 반드시 동일한 내용을 아래 **두 가지 버전**으로 각각 �
             if (post.category === '정보 공유방') { badgeColor = '#fee2e2'; textColor = '#b91c1c'; }
             if (post.category === '취업/이직') { badgeColor = '#dcfce3'; textColor = '#15803d'; }
 
+            // 내가 쓴 글인지 확인
+            const myUserId = getOrCreateUserId();
+            const isMyPost = post.user_id && post.user_id === myUserId;
+            const myPostActions = isMyPost ? `
+                <div style="display:flex; gap:8px; margin-top:12px;">
+                    <button onclick="openEditCommunityModal('${post.id}')" style="flex:1; padding:8px; border-radius:12px; border:1px solid #e2e8f0; background:#f8fafc; color:#475569; font-size:0.82rem; font-weight:700; cursor:pointer;">✏️ 수정</button>
+                    <button onclick="deleteCommunityPost('${post.id}')" style="flex:1; padding:8px; border-radius:12px; border:1px solid #fee2e2; background:#fff5f5; color:#ef4444; font-size:0.82rem; font-weight:700; cursor:pointer;">🗑️ 삭제</button>
+                </div>
+            ` : '';
+
             const modalContent = `
             <div style="display:flex; flex-direction:column; gap:20px;">
                 <div style="padding-bottom:16px; border-bottom:1px solid #f1f5f9;">
@@ -1870,6 +1892,7 @@ AI는 반드시 동일한 내용을 아래 **두 가지 버전**으로 각각 �
                         <span>${post.author}</span>
                         <span>${formatDate(post.created_at)}</span>
                     </div>
+                    ${myPostActions}
                 </div>
                 
                 <div style="font-size:1rem; color:#334155; line-height:1.7; white-space:pre-wrap;">${post.content}</div>
@@ -1933,6 +1956,148 @@ AI는 반드시 동일한 내용을 아래 **두 가지 버전**으로 각각 �
         }
     };
 
+    /* --- Community Edit / Delete --- */
+    window.deleteCommunityPost = async function (postId) {
+        if (!confirm('정말 이 글을 삭제하시겠습니까?')) return;
+        try {
+            const myUserId = getOrCreateUserId();
+            const { error } = await supabase
+                .from('community_posts')
+                .delete()
+                .eq('id', postId)
+                .eq('user_id', myUserId); // 본인 글만 삭제 가능
+            if (error) throw error;
+            alert('글이 삭제되었습니다.');
+            document.getElementById('close-modal').click();
+            loadCommunityPosts('all');
+        } catch (err) {
+            console.error('Delete error:', err);
+            alert('삭제 중 오류가 발생했습니다.');
+        }
+    };
+
+    window.openEditCommunityModal = async function (postId) {
+        try {
+            const { data: post, error } = await supabase
+                .from('community_posts')
+                .select('*')
+                .eq('id', postId)
+                .single();
+            if (error) throw error;
+
+            const content = `
+            <div style="display:flex; flex-direction:column; gap:20px;">
+                <div class="form-group">
+                    <label>게시판 카테고리</label>
+                    <select id="edit-comm-category" class="calc-input">
+                        <option value="자유게시판" ${post.category === '자유게시판' ? 'selected' : ''}>📢 자유게시판</option>
+                        <option value="정보 공유방" ${post.category === '정보 공유방' ? 'selected' : ''}>🔥 정보 공유방</option>
+                        <option value="취업/이직" ${post.category === '취업/이직' ? 'selected' : ''}>🤝 취업/이직</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>글 제목</label>
+                    <input type="text" id="edit-comm-title" class="calc-input" value="${post.title.replace(/"/g, '&quot;')}">
+                </div>
+                <div class="form-group">
+                    <label>상세 내용</label>
+                    <textarea id="edit-comm-content" class="calc-input" style="height:150px; resize:none; padding:12px;">${post.content}</textarea>
+                </div>
+                <button class="btn-primary" id="btn-update-comm" onclick="updateCommunityPost('${postId}')">💾 수정 완료</button>
+            </div>
+        `;
+            openModal('글 수정하기 ✏️', content);
+        } catch (err) {
+            console.error('Edit load error:', err);
+            alert('글 정보를 불러오지 못했습니다.');
+        }
+    };
+
+    window.updateCommunityPost = async function (postId) {
+        const title = document.getElementById('edit-comm-title').value;
+        const category = document.getElementById('edit-comm-category').value;
+        const content = document.getElementById('edit-comm-content').value;
+        const btn = document.getElementById('btn-update-comm');
+
+        if (!title.trim() || !content.trim()) {
+            alert('제목과 내용을 모두 입력해주세요.');
+            return;
+        }
+
+        try {
+            btn.disabled = true;
+            btn.innerText = '수정 중...';
+
+            const myUserId = getOrCreateUserId();
+            const { error } = await supabase
+                .from('community_posts')
+                .update({ title, category, content })
+                .eq('id', postId)
+                .eq('user_id', myUserId); // 본인 글만 수정 가능
+
+            if (error) throw error;
+
+            alert('글이 수정되었습니다!');
+            document.getElementById('close-modal').click();
+            loadCommunityPosts('all');
+        } catch (err) {
+            console.error('Update error:', err);
+            alert('수정 중 오류가 발생했습니다.');
+        } finally {
+            btn.disabled = false;
+            btn.innerText = '💾 수정 완료';
+        }
+    };
+    /* --- My Page --- */
+    window.initMypage = async function () {
+        const listEl = document.getElementById('my-posts-list');
+        if (!listEl) return;
+
+        const myUserId = getOrCreateUserId();
+
+        if (!supabase) {
+            listEl.innerHTML = '<p style="text-align:center; color:#94a3b8; font-size:0.85rem; padding:16px;">Supabase 설정이 필요합니다.</p>';
+            return;
+        }
+
+        listEl.innerHTML = '<div style="text-align:center; padding:20px; color:#94a3b8;"><div class="loading-spinner" style="margin: 0 auto 8px auto;"></div><p style="font-size:0.85rem;">불러오는 중...</p></div>';
+
+        try {
+            const { data, error } = await supabase
+                .from('community_posts')
+                .select('id, title, category, created_at')
+                .eq('user_id', myUserId)
+                .order('created_at', { ascending: false });
+
+            if (error) throw error;
+
+            if (!data || data.length === 0) {
+                listEl.innerHTML = '<div style="text-align:center; padding:24px; color:#94a3b8;"><div style="font-size:2rem; margin-bottom:8px;">📭</div><p style="font-size:0.85rem;">아직 작성한 글이 없어요!</p></div>';
+                return;
+            }
+
+            let html = '';
+            data.forEach(post => {
+                let badgeColor = '#e0e7ff', textColor = '#4338ca';
+                if (post.category === '정보 공유방') { badgeColor = '#fee2e2'; textColor = '#b91c1c'; }
+                if (post.category === '취업/이직') { badgeColor = '#dcfce3'; textColor = '#15803d'; }
+
+                html += `
+                <div style="padding:12px 0; border-bottom:1px solid #f1f5f9; cursor:pointer;" onclick="openCommunityDetailModal('${post.id}')">
+                    <div style="display:flex; gap:6px; align-items:center; margin-bottom:6px;">
+                        <span style="background:${badgeColor}; color:${textColor}; font-size:0.68rem; font-weight:800; padding:3px 8px; border-radius:10px;">${post.category}</span>
+                        <span style="font-size:0.75rem; color:#94a3b8;">${formatDate(post.created_at)}</span>
+                    </div>
+                    <div style="font-size:0.95rem; font-weight:700; color:var(--text-900); line-height:1.4;">${post.title}</div>
+                </div>`;
+            });
+            listEl.innerHTML = html;
+        } catch (err) {
+            console.error('My posts load error:', err);
+            listEl.innerHTML = '<p style="text-align:center; color:#ef4444; font-size:0.85rem; padding:16px;">불러오기 실패: ' + err.message + '</p>';
+        }
+    };
+
     /* --- View Switcher --- */
     window.switchView = function (view) {
         const views = ['home', 'record', 'community', 'mypage'];
@@ -1946,6 +2111,10 @@ AI는 반드시 동일한 내용을 아래 **두 가지 버전**으로 각각 �
         // 커뮤니티 탭 진입 시 데이터 로딩
         if (view === 'community') {
             loadCommunityPosts('all');
+        }
+        // 내 정보 탭 진입 시 내 글 로딩
+        if (view === 'mypage') {
+            initMypage();
         }
     };
 
