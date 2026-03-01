@@ -480,10 +480,13 @@ body {
 }
 
 .svc-desc {
-  font-size: 0.66rem;
+  font-size: 0.63rem;
   color: var(--text-400);
   line-height: 1.35;
   margin-top: auto;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* ============================================

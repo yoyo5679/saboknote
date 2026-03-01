@@ -1400,16 +1400,16 @@ AI는 반드시 동일한 내용을 아래 **두 가지 버전**으로 각각 �
         container.innerHTML = data.map(item => `
         <div class="voca-card" style="background:white; border-radius:16px; padding:20px; border:1px solid #e2e8f0; box-shadow:0 4px 6px rgba(0,0,0,0.02); transition:transform 0.2s">
             <div style="display:flex; align-items:flex-start; gap:16px;">
-                <div style="background:#f1f5f9; min-width:54px; height:54px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:1.8rem;">
+                <div style="background:#f1f5f9; min-width:54px; height:54px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:1.8rem; flex-shrink:0;">
                     ${item.icon}
                 </div>
-                <div style="flex:1;">
-                    <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
-                        <h4 style="font-size:1.2rem; font-weight:800; color:var(--text-dark); margin:0;">${item.word}</h4>
-                        <span style="background:#e0e7ff; color:#4f46e5; font-size:0.75rem; font-weight:800; padding:4px 10px; border-radius:20px;">${item.category}</span>
+                <div style="flex:1; min-width:0;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; gap:8px;">
+                        <h4 style="font-size:1.05rem; font-weight:800; color:var(--text-dark); margin:0; flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${item.word}</h4>
+                        <span style="background:#e0e7ff; color:#4f46e5; font-size:0.7rem; font-weight:800; padding:3px 8px; border-radius:20px; white-space:nowrap; flex-shrink:0;">${item.category}</span>
                     </div>
-                    <p style="font-size:0.95rem; color:#1e293b; line-height:1.5; font-weight:600; margin-bottom:8px;">${item.meaning}</p>
-                    <p style="font-size:0.8rem; color:#64748b; margin:0; display:inline-block; border-left:3px solid #cbd5e1; padding-left:8px;">📝 행정 의미: ${item.desc}</p>
+                    <p style="font-size:0.9rem; color:#1e293b; line-height:1.5; font-weight:600; margin-bottom:8px;">${item.meaning}</p>
+                    <p style="font-size:0.78rem; color:#64748b; margin:0; display:inline-block; border-left:3px solid #cbd5e1; padding-left:8px;">📝 행정 의미: ${item.desc}</p>
                 </div>
             </div>
         </div>
