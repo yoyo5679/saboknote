@@ -1537,10 +1537,12 @@ AI는 반드시 동일한 내용을 아래 **두 가지 버전**으로 각각 �
             btn.disabled = true;
             btn.innerText = '게시 중...';
 
+            const myUserId = getOrCreateUserId();
+
             const { error } = await supabase
                 .from('posts')
                 .insert([
-                    { title, category, content, author: '익명의 복지사' }
+                    { title, category, content, author: '익명의 복지사', user_id: myUserId }
                 ]);
 
             if (error) throw error;
@@ -1594,6 +1596,16 @@ AI는 반드시 동일한 내용을 아래 **두 가지 버전**으로 각각 �
             `;
             });
 
+            // 본인 글 확인 후 수정/삭제 버튼 생성
+            const myUserId = getOrCreateUserId();
+            const isMyPost = post.user_id && post.user_id === myUserId;
+            const myPostActions = isMyPost ? `
+                <div style="display:flex; gap:8px; margin-top:12px;">
+                    <button onclick="openEditHelpMeModal('${post.id}')" style="flex:1; padding:8px; border-radius:12px; border:1px solid #e2e8f0; background:#f8fafc; color:#475569; font-size:0.82rem; font-weight:700; cursor:pointer;">✏️ 수정</button>
+                    <button onclick="deleteHelpMePost('${post.id}')" style="flex:1; padding:8px; border-radius:12px; border:1px solid #fee2e2; background:#fff5f5; color:#ef4444; font-size:0.82rem; font-weight:700; cursor:pointer;">🗑️ 삭제</button>
+                </div>
+            ` : '';
+
             const modalContent = `
             <div style="display:flex; flex-direction:column; gap:20px;">
                 <div style="padding-bottom:16px; border-bottom:1px solid #f1f5f9;">
@@ -1603,6 +1615,7 @@ AI는 반드시 동일한 내용을 아래 **두 가지 버전**으로 각각 �
                         <span>${post.author}</span>
                         <span>${formatDate(post.created_at)}</span>
                     </div>
+                    ${myPostActions}
                 </div>
                 
                 <div style="font-size:1rem; color:#334155; line-height:1.7; white-space:pre-wrap;">${post.content}</div>
@@ -1660,6 +1673,102 @@ AI는 반드시 동일한 내용을 아래 **두 가지 버전**으로 각각 �
             btn.innerText = '답변 등록';
         }
     };
+
+    /* --- Help Me Edit / Delete --- */
+    window.deleteHelpMePost = async function (postId) {
+        if (!confirm('정말 이 질문을 삭제하시겠습니까?')) return;
+        try {
+            const myUserId = getOrCreateUserId();
+            const { error } = await supabase
+                .from('posts')
+                .delete()
+                .eq('id', postId)
+                .eq('user_id', myUserId);
+            if (error) throw error;
+            alert('질문이 삭제되었습니다.');
+            document.getElementById('close-modal').click();
+            initHelpMe();
+        } catch (err) {
+            console.error('Delete error:', err);
+            alert('삭제 중 오류가 발생했습니다.');
+        }
+    };
+
+    window.openEditHelpMeModal = async function (postId) {
+        try {
+            const { data: post, error } = await supabase
+                .from('posts')
+                .select('*')
+                .eq('id', postId)
+                .single();
+            if (error) throw error;
+
+            const content = `
+            <div style="display:flex; flex-direction:column; gap:20px;">
+                <div class="form-group">
+                    <label>질문 카테고리</label>
+                    <select id="edit-ask-category" class="calc-input">
+                        <option value="사례관리" ${post.category === '사례관리' ? 'selected' : ''}>🤝 사례관리</option>
+                        <option value="행정/회계" ${post.category === '행정/회계' ? 'selected' : ''}>💰 행정/회계</option>
+                        <option value="프로그램" ${post.category === '프로그램' ? 'selected' : ''}>🎯 프로그램</option>
+                        <option value="기관생활" ${post.category === '기관생활' ? 'selected' : ''}>🏢 기관생활</option>
+                        <option value="기타" ${post.category === '기타' ? 'selected' : ''}>ETC 기타</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>질문 제목</label>
+                    <input type="text" id="edit-ask-title" class="calc-input" value="${post.title.replace(/"/g, '&quot;')}">
+                </div>
+                <div class="form-group">
+                    <label>상세 내용</label>
+                    <textarea id="edit-ask-content" class="calc-input" style="height:150px; resize:none; padding:12px;">${post.content}</textarea>
+                </div>
+                <button class="btn-primary" id="btn-update-helpme" onclick="updateHelpMePost('${postId}')">💾 수정 완료</button>
+            </div>
+        `;
+            openModal('질문 수정하기 ✏️', content);
+        } catch (err) {
+            console.error('Edit load error:', err);
+            alert('질문 정보를 불러오지 못했습니다.');
+        }
+    };
+
+    window.updateHelpMePost = async function (postId) {
+        const title = document.getElementById('edit-ask-title').value;
+        const category = document.getElementById('edit-ask-category').value;
+        const content = document.getElementById('edit-ask-content').value;
+        const btn = document.getElementById('btn-update-helpme');
+
+        if (!title.trim() || !content.trim()) {
+            alert('제목과 내용을 모두 입력해주세요.');
+            return;
+        }
+
+        try {
+            btn.disabled = true;
+            btn.innerText = '수정 중...';
+
+            const myUserId = getOrCreateUserId();
+            const { error } = await supabase
+                .from('posts')
+                .update({ title, category, content })
+                .eq('id', postId)
+                .eq('user_id', myUserId);
+
+            if (error) throw error;
+
+            alert('질문이 수정되었습니다!');
+            document.getElementById('close-modal').click();
+            initHelpMe();
+        } catch (err) {
+            console.error('Update error:', err);
+            alert('수정 중 오류가 발생했습니다.');
+        } finally {
+            btn.disabled = false;
+            btn.innerText = '💾 수정 완료';
+        }
+    };
+
 
     /* --- Community Board --- */
     window.initCommunity = function () {
