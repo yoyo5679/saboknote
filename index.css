@@ -1058,7 +1058,7 @@ select:focus {
 
 
 /* ============================================
-   MODAL (Bottom Sheet Style)
+   MODAL (Center Popup Style)
    ============================================ */
 .modal-overlay {
   position: fixed;
@@ -1071,7 +1071,9 @@ select:focus {
   z-index: 9999;
   display: flex;
   justify-content: center;
-  align-items: flex-end;
+  align-items: center;
+  padding: 24px;
+  /* 화면 테두리 여백 */
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.3s ease;
@@ -1086,19 +1088,19 @@ select:focus {
   background: #ffffff;
   width: 100%;
   max-width: 600px;
-  max-height: 88vh;
-  border-radius: 28px 28px 0 0;
+  max-height: 85vh;
+  border-radius: 28px;
   display: flex;
   flex-direction: column;
-  transform: translateY(100%);
-  transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.1);
-  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.1);
-  /* iOS 상단 노치/주소창 대응 */
-  padding-top: 0;
+  transform: scale(0.95) translateY(10px);
+  opacity: 0;
+  transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.1), opacity 0.35s ease;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
 }
 
 .modal-overlay.active .modal-container {
-  transform: translateY(0);
+  transform: scale(1) translateY(0);
+  opacity: 1;
 }
 
 .modal-header {

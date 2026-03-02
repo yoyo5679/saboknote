@@ -908,10 +908,11 @@ AI는 반드시 동일한 내용을 아래 **두 가지 버전**으로 각각 �
 
         const openAdminModal = () => {
             const content = `
-                <div class="admin-tabs" style="display:flex; gap:8px; margin-bottom:24px; padding:4px; background:#f1f5f9; border-radius:12px;">
-                    <button class="tab-btn active" id="tab-vat" onclick="switchAdminTab('vat')" style="flex:1; padding:10px 4px; border:none; border-radius:8px; background:white; font-weight:700; color:var(--primary); box-shadow:0 2px 4px rgba(0,0,0,0.05); font-size:0.85rem; transition:all 0.2s;">1. 부가세</button>
-                    <button class="tab-btn" id="tab-tax" onclick="switchAdminTab('tax')" style="flex:1; padding:10px 4px; border:none; border-radius:8px; background:transparent; font-weight:600; color:#64748b; font-size:0.85rem; transition:all 0.2s;">2. 강사료</button>
-                    <button class="tab-btn" id="tab-ltc" onclick="switchAdminTab('ltc')" style="flex:1; padding:10px 4px; border:none; border-radius:8px; background:transparent; font-weight:600; color:#64748b; font-size:0.85rem; transition:all 0.2s;">3. 장기요양</button>
+                <div class="admin-tabs" style="display:flex; gap:6px; margin-bottom:24px; padding:4px; background:#f1f5f9; border-radius:12px; overflow-x:auto;">
+                    <button class="tab-btn active" id="tab-vat" onclick="switchAdminTab('vat')" style="flex:1; min-width:80px; padding:10px 4px; border:none; border-radius:8px; background:white; font-weight:700; color:var(--primary); box-shadow:0 2px 4px rgba(0,0,0,0.05); font-size:0.8rem; transition:all 0.2s; white-space:nowrap;">1. 부가세</button>
+                    <button class="tab-btn" id="tab-tax" onclick="switchAdminTab('tax')" style="flex:1; min-width:80px; padding:10px 4px; border:none; border-radius:8px; background:transparent; font-weight:600; color:#64748b; font-size:0.8rem; transition:all 0.2s; white-space:nowrap;">2. 강사료</button>
+                    <button class="tab-btn" id="tab-ltc" onclick="switchAdminTab('ltc')" style="flex:1; min-width:80px; padding:10px 4px; border:none; border-radius:8px; background:transparent; font-weight:600; color:#64748b; font-size:0.8rem; transition:all 0.2s; white-space:nowrap;">3. 장기요양</button>
+                    <button class="tab-btn" id="tab-payroll" onclick="switchAdminTab('payroll')" style="flex:1; min-width:80px; padding:10px 4px; border:none; border-radius:8px; background:transparent; font-weight:600; color:#64748b; font-size:0.8rem; transition:all 0.2s; white-space:nowrap;">4. 급여정산</button>
                 </div>
 
                 <div id="admin-content-vat" class="tab-content" style="animation: fadeIn 0.3s ease;">
@@ -944,10 +945,10 @@ AI는 반드시 동일한 내용을 아래 **두 가지 버전**으로 각각 �
 
                 <div id="admin-content-tax" class="tab-content" style="display:none; animation: fadeIn 0.3s ease;">
                     
-                    <!-- 강사료 세금역산기 -->
+                    <!-- 강사료 세금 계산기 -->
                     <div class="step-card beautiful-card" style="margin-bottom:24px; padding:20px; border-color:#e0e7ff;">
-                        <h4 style="color:#4f46e5; font-weight:800; font-size:1.1rem; margin-bottom:8px;">🔬 강사료 세금 역산기</h4>
-                        <p style="font-size:0.8rem; color:#4338ca; margin-bottom:16px;">실수령액 기준 품의서 작성을 위한 세전(Gross) 금액 역산</p>
+                        <h4 style="color:#4f46e5; font-weight:800; font-size:1.1rem; margin-bottom:8px;">🔬 강사료 세금 계산기</h4>
+                        <p style="font-size:0.8rem; color:#4338ca; margin-bottom:16px;">강사에게 지급하기로 한 총액(Gross) 입력 시 세금 및 실수령액 자동 정산</p>
                         <div style="display:flex; gap:10px; margin-bottom:16px;">
                             <button id="btn-tax-business" onclick="setTaxType('business')" class="btn-primary" style="flex:1; background:var(--primary); padding:10px 0; font-size:0.9rem;">사업소득 (3.3%)</button>
                             <button id="btn-tax-other" onclick="setTaxType('other')" class="btn-primary btn-outline" style="flex:1; padding:10px 0; font-size:0.9rem;">기타소득 (8.8%)</button>
@@ -955,18 +956,18 @@ AI는 반드시 동일한 내용을 아래 **두 가지 버전**으로 각각 �
                         <p id="tax-desc" style="font-size:0.75rem; color:#64748b; margin-bottom:16px; background:#f1f5f9; padding:10px; border-radius:8px;">💡 <strong>사업소득(3.3%)</strong>: 직업적, 계속적, 반복적으로 강의를 하는 전문 강사 등</p>
 
                         <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:16px;">
-                            <label style="font-size:0.85rem; color:#475569; font-weight:600;">강사에게 지급할 '실수령액' (원)</label>
-                            <input type="number" id="instructor-input" class="calc-input" placeholder="예: 150000" oninput="calcInstructorTax()" style="font-size:1.1rem; padding:12px;">
+                            <label style="font-size:0.85rem; color:#475569; font-weight:600;">강사에게 지급할 '총액(Gross)' (원)</label>
+                            <input type="number" id="instructor-input" class="calc-input" placeholder="예: 240000" oninput="calcInstructorTax()" style="font-size:1.1rem; padding:12px;">
                         </div>
                         
                         <div style="background:#eef2ff; border:1px solid #c7d2fe; border-radius:12px; padding:16px;">
-                            <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
-                                <span style="font-weight:800; color:#3730a3; font-size:0.95rem;">품의해야 할 세전 총액</span>
-                                <span id="inst-gross" style="font-weight:900; color:#312e81; font-size:1.1rem;">0원</span>
+                            <div style="display:flex; justify-content:space-between; margin-bottom:12px; padding-bottom:8px; border-bottom:1px solid #c7d2fe;">
+                                <span style="font-weight:600; color:#4f46e5; font-size:0.9rem;">공제 세액 (원천징수 합계)</span>
+                                <span id="inst-tax-total" style="font-weight:700; color:#3730a3;">0원</span>
                             </div>
-                            <div style="font-size:0.85rem; color:#4f46e5; display:flex; justify-content:space-between;">
-                                <span>원천징수 세액</span>
-                                <span id="inst-tax" style="font-weight:700;">0원</span>
+                            <div style="display:flex; justify-content:space-between;">
+                                <span style="font-weight:800; color:#312e81; font-size:1rem;">💰 강사님 실수령액 (Net)</span>
+                                <span id="inst-net" style="font-weight:900; color:#e11d48; font-size:1.2rem;">0원</span>
                             </div>
                         </div>
                     </div>
@@ -1047,8 +1048,88 @@ AI는 반드시 동일한 내용을 아래 **두 가지 버전**으로 각각 �
                         </div>
                         <button class="btn-primary" id="run-ltc-calc" style="width:100%; margin-top:20px; padding:14px; font-size:1.05rem;">정밀 계산하기</button>
                         <div id="ltc-result" class="hidden" style="margin-top:20px;"></div>
-                    </div>
+                </div>
 
+                <div id="admin-content-payroll" class="tab-content" style="display:none; animation: fadeIn 0.3s ease;">
+                    <div class="step-card beautiful-card" style="padding:20px; border-color:#e0f2fe;">
+                        <h4 style="color:#0284c7; font-weight:800; font-size:1.1rem; margin-bottom:8px;">💼 4대보험 및 급여 정산기</h4>
+                        <p style="font-size:0.8rem; color:#0369a1; margin-bottom:16px;">세전 기본급을 입력하면 직원 공제액과 기관 부담금이 자동 계산됩니다.</p>
+                        
+                        <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:16px;">
+                            <label style="font-size:0.85rem; color:#475569; font-weight:600;">직원 월 기본급(세전) (원)</label>
+                            <input type="number" id="payroll-input" class="calc-input" placeholder="예: 2500000" oninput="calcPayrollTax()" style="font-size:1.1rem; padding:12px; border-color:#bae6fd;">
+                        </div>
+
+                        <!-- 1. 근로자 공제금액 및 실수령액 -->
+                        <div style="background:#f0f9ff; border:1px solid #bae6fd; border-radius:12px; padding:16px; margin-bottom:16px;">
+                            <h5 style="color:#0369a1; font-weight:800; font-size:0.95rem; margin-bottom:12px; display:flex; align-items:center; gap:6px;">
+                                👤 근로자 공제 (예수금)
+                            </h5>
+                            
+                            <div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:0.85rem; color:#334155;">
+                                <span>국민연금 (4.5%)</span><span id="pr-ee-pension">0원</span>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:0.85rem; color:#334155;">
+                                <span>건강보험 (3.545%)</span><span id="pr-ee-health">0원</span>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:0.85rem; color:#334155;">
+                                <span>장기요양 (건보료의 12.95%)</span><span id="pr-ee-care">0원</span>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:0.85rem; color:#334155;">
+                                <span>고용보험 (0.9%)</span><span id="pr-ee-emp">0원</span>
+                            </div>
+                            
+                            <div style="border-top:1px dashed #bae6fd; margin:10px 0;"></div>
+                            
+                            <div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:0.85rem; color:#334155;">
+                                <span>소득세 (간이세액 추정)</span><span id="pr-ee-incTax">0원</span>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; margin-bottom:12px; font-size:0.85rem; color:#334155;">
+                                <span>지방소득세 (소득세의 10%)</span><span id="pr-ee-locTax">0원</span>
+                            </div>
+                            
+                            <div style="display:flex; justify-content:space-between; background:#e0f2fe; padding:10px; border-radius:8px; margin-bottom:12px;">
+                                <span style="font-weight:700; color:#0c4a6e; font-size:0.95rem;">공제 총액</span>
+                                <span id="pr-ee-totalDeduct" style="font-weight:800; color:#0c4a6e;">0원</span>
+                            </div>
+
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <span style="font-weight:800; color:#e11d48; font-size:1.05rem;">💰 직원 실수령액</span>
+                                <span id="pr-ee-net" style="font-weight:900; color:#be123c; font-size:1.3rem;">0원</span>
+                            </div>
+                        </div>
+
+                        <!-- 2. 기관 부담금 -->
+                        <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:12px; padding:16px;">
+                            <h5 style="color:#475569; font-weight:800; font-size:0.95rem; margin-bottom:12px; display:flex; align-items:center; gap:6px;">
+                                🏢 기관 (사업주) 부담금
+                            </h5>
+                            
+                            <div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:0.85rem; color:#475569;">
+                                <span>국민연금 (4.5%)</span><span id="pr-er-pension">0원</span>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:0.85rem; color:#475569;">
+                                <span>건강보험 (3.545%)</span><span id="pr-er-health">0원</span>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:0.85rem; color:#475569;">
+                                <span>장기요양 (건보료의 12.95%)</span><span id="pr-er-care">0원</span>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:0.85rem; color:#475569;">
+                                <span>고용보험 (1.15% 가설정*)</span><span id="pr-er-emp">0원</span>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; margin-bottom:12px; font-size:0.85rem; color:#475569;">
+                                <span>산재보험 (1.0% 가설정*)</span><span id="pr-er-ind">0원</span>
+                            </div>
+                            
+                            <div style="display:flex; justify-content:space-between; background:#e2e8f0; padding:10px; border-radius:8px;">
+                                <span style="font-weight:700; color:#0f172a; font-size:0.95rem;">기관 부담금 총액</span>
+                                <span id="pr-er-total" style="font-weight:800; color:#0f172a;">0원</span>
+                            </div>
+                            <p style="font-size:0.7rem; color:#94a3b8; margin-top:8px; line-height:1.4;">
+                                * 고용/산재보험료율은 기관 성격(법인 등)과 규모에 따라 약간 다를 수 있습니다. 소득세는 국세청 간이세액표에 따른 '대략적인 금액(부양가족 1인 기준)'으로 실제 프로그램과 백원이하 오차가 있을 수 있습니다.
+                            </p>
+                        </div>
+                    </div>
                 </div>
             `;
             openModal('행정/회계 마스터 💸', content);
@@ -1301,54 +1382,44 @@ AI는 반드시 동일한 내용을 아래 **두 가지 버전**으로 각각 �
 
     window.calcInstructorTax = function () {
         const input = document.getElementById('instructor-input').value;
-        const rate = window.currentTaxRate;
+        const rate = window.currentTaxRate; // 0.033 or 0.088
         const isOther = rate === 0.088;
 
         if (!input || isNaN(input)) {
-            document.getElementById('inst-gross').innerText = '0원';
-            document.getElementById('inst-tax').innerText = '0원';
+            document.getElementById('inst-tax-national').innerText = '0원';
+            document.getElementById('inst-tax-local').innerText = '0원';
+            document.getElementById('inst-net').innerText = '0원';
             return;
         }
 
-        const net = parseInt(input);
-        let gross = 0;
-        let tax = 0;
+        const gross = parseInt(input);
+        let nationalTax = 0; // 국세 (소득세)
+        let localTax = 0;    // 지방세 (지방소득세)
+        let net = 0;         // 실수령액
 
-        if (isOther) {
-            // 기타소득 (8.8%)
-            if (net <= 114000) { // 125,000 * 0.912 => 114,000 won
-                gross = net;
-                tax = 0;
-            } else {
-                // Net = Gross - Gross * 0.088
-                // Gross = Net / 0.912
-                let approxGross = Math.round(net / 0.912);
-                gross = Math.floor(approxGross / 10) * 10;
-                tax = gross - net;
-
-                // Re-eval check without while loop (prevent freeze)
-                let actualTax = Math.floor(gross * 0.088 / 10) * 10;
-                if (gross - actualTax !== net) {
-                    // simple direct adjustment
-                    tax = actualTax;
-                    gross = net + tax;
-                }
-            }
+        if (isOther && gross <= 125000) {
+            // 기타소득 (8.8%) 중 과세최저한 (125,000원 이하 세금 0원)
+            nationalTax = 0;
+            localTax = 0;
+            net = gross;
         } else {
-            // 사업소득 (3.3%)
-            let approxGross = Math.round(net / 0.967);
-            gross = Math.floor(approxGross / 10) * 10;
-            tax = gross - net;
+            // 원단위 절사 로직 적용 (소득세, 지방소득세 각각)
+            const taxBaseRate = isOther ? 0.08 : 0.03; // 소득세율 (8% or 3%)
 
-            let actualTax = Math.floor(gross * 0.033 / 10) * 10;
-            if (gross - actualTax !== net) {
-                tax = actualTax;
-                gross = net + tax;
-            }
+            // 소득세: 10원 미만 절사
+            nationalTax = Math.floor((gross * taxBaseRate) / 10) * 10;
+
+            // 지방소득세: 소득세의 10%, 10원 미만 절사
+            localTax = Math.floor((nationalTax * 0.1) / 10) * 10;
+
+            // 실수령액 계산
+            net = gross - (nationalTax + localTax);
         }
 
-        document.getElementById('inst-gross').innerText = gross.toLocaleString() + '원';
-        document.getElementById('inst-tax').innerText = tax.toLocaleString() + '원';
+        // 화면 갱신
+        document.getElementById('inst-tax-national').innerText = nationalTax.toLocaleString() + '원';
+        document.getElementById('inst-tax-local').innerText = localTax.toLocaleString() + '원';
+        document.getElementById('inst-net').innerText = net.toLocaleString() + '원';
     };
 
     window.checkBudget = function () {
@@ -1869,8 +1940,15 @@ AI는 반드시 동일한 내용을 아래 **두 가지 버전**으로 각각 �
         }
     };
 
-    /* --- 유쾌한 익명 이름 생성기 --- */
+    /* --- 유쾌한 익명 이름 생성기 (로컬 스토리지 연동) --- */
     function getRandomAnonymousName() {
+        const STORAGE_KEY = 'saboks_anonymous_name';
+        let savedName = localStorage.getItem(STORAGE_KEY);
+
+        if (savedName) {
+            return savedName; // 이미 생성된 닉네임이 있으면 그대로 반환
+        }
+
         const adjs = ['칼퇴하고 싶은', '월급만 기다리는', '팀장님 몰래', '커피 수혈 중인', '점심시간만 기다리는', '연차 쓰고 싶은', '서류에 파묻힌', '퇴근 5분 전', '눈물 닦는', '비밀이 많은', '간식 숨겨둔', '결재 대기 중인'];
         const nouns = [
             { n: '여우', e: '🦊' }, { n: '강아지', e: '🐶' }, { n: '고양이', e: '🐱' },
@@ -1878,9 +1956,13 @@ AI는 반드시 동일한 내용을 아래 **두 가지 버전**으로 각각 �
             { n: '새싹', e: '🌱' }, { n: '나무', e: '🌳' }, { n: '꽃', e: '🌸' },
             { n: '나비', e: '🦋' }, { n: '다람쥐', e: '🐿️' }, { n: '쿼카', e: '🐨' }
         ];
+
         const adj = adjs[Math.floor(Math.random() * adjs.length)];
         const nounObj = nouns[Math.floor(Math.random() * nouns.length)];
-        return `${nounObj.e} ${adj} ${nounObj.n}`;
+        const newName = `${nounObj.e} ${adj} ${nounObj.n}`;
+
+        localStorage.setItem(STORAGE_KEY, newName); // 새로 생성 후 저장
+        return newName;
     }
 
     /* --- Help Me Edit / Delete --- */
