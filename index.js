@@ -61,15 +61,15 @@
                     
                     <div style="background:#f5f3ff; padding:20px; border-radius:16px; border:1px solid #ede9fe; text-align:left; margin-bottom:24px">
                         <div style="font-size:0.8rem; font-weight:800; color:#7c3aed; margin-bottom:12px">📮 이번 주 편지 미리보기</div>
-                        <div style="margin-bottom:12px; padding-bottom:12px; border-bottom:1px dashed #ddd6fe">
+                        <div style="margin-bottom:12px; padding-bottom:12px; border-bottom:1px dashed #ddd6fe; cursor:pointer;" onclick="showNewsletterDetail(1)">
                             <strong style="color:#0f172a; font-size:0.95rem; display:block; margin-bottom:4px">[Vol 1.] 요즘 핫한 '퍼네이션(Funation)' 동향! 재미있게 기부하는 법 공유함</strong>
                             <span style="font-size:0.8rem; color:#64748b">발행일: 오늘</span>
                         </div>
-                        <div style="margin-bottom:12px; padding-bottom:12px; border-bottom:1px dashed #ddd6fe">
+                        <div style="margin-bottom:12px; padding-bottom:12px; border-bottom:1px dashed #ddd6fe; cursor:pointer;" onclick="showNewsletterDetail(2)">
                             <strong style="color:#0f172a; font-size:0.95rem; display:block; margin-bottom:4px">[Vol 2.] 2026 사회복지 최신 트렌드! 이거 모르면 대화 안 됨</strong>
                             <span style="font-size:0.8rem; color:#64748b">발행일: 다음 주 예정</span>
                         </div>
-                        <div>
+                        <div style="cursor:pointer;" onclick="showNewsletterDetail(3)">
                             <strong style="color:#0f172a; font-size:0.95rem; display:block; margin-bottom:4px">[Vol 3.] 업무 퀄리티 떡상하는 무료 AI 툴 추천! 이거 쓰면 칼퇴 가능</strong>
                             <span style="font-size:0.8rem; color:#64748b">발행일: 다다음 주 예정</span>
                         </div>
@@ -92,7 +92,68 @@
             };
         }
     }
+    window.showNewsletterDetail = function (vol) {
+        let title = '';
+        let contentHtml = '';
 
+        if (vol === 1) {
+            title = "🎈 요즘 핫한 '퍼네이션' 동향!";
+            contentHtml = `
+                <div style="font-size:0.95rem; line-height:1.6; color:#334155;">
+                    <p style="margin-bottom:16px;">안녕! 팀장님 몰래 보는 <strong>사복천재 비밀편지 Vol. 1</strong>이야. 🤫</p>
+                    <p style="margin-bottom:16px;">요즘 기부, 옛날처럼 무겁지 않아! <strong>'퍼네이션(Fun + Donation)'</strong>이라고 들어봤어? 기부를 오락처럼 즐겁게 하는 게 요즘 대세야.</p>
+                    <ul style="margin-bottom:16px; padding-left:20px;">
+                        <li style="margin-bottom:8px;">🏃‍♂️ <strong>걷기만 해도 기부?</strong> 만보기 앱이랑 연동해서 걸음 수만큼 후원금이 쌓이는 캠페인이 2030한테 완전 인기 터짐!</li>
+                        <li style="margin-bottom:8px;">🎮 <strong>메타버스 바자회:</strong> 가상 공간에서 아바타로 바자회 참여하고 후원하는 기관들이 늘어나고 있어. 너무 신박하지?</li>
+                        <li style="margin-bottom:8px;">🐶 <strong>반려동물 마라톤:</strong> 멍멍이랑 같이 뛰고 참가비는 유기동물 보호소에 전액 기부! 이런 귀여운 펀딩은 무조건 성공함.</li>
+                    </ul>
+                    <p>우리 기관 후원 행사 기획할 때 이런 <strong>'재미 요소'</strong> 하나만 싹 끼워 넣어봐. 후원자들 반응이 확 달라질 걸? 😉</p>
+                </div>
+            `;
+        } else if (vol === 2) {
+            title = "🚀 2026 사회복지 최신 트렌드";
+            contentHtml = `
+                <div style="font-size:0.95rem; line-height:1.6; color:#334155;">
+                    <p style="margin-bottom:16px;">안녕! 팀장님 몰래 보는 <strong>사복천재 비밀편지 Vol. 2</strong>이야. 🤫</p>
+                    <p style="margin-bottom:16px;">이거 모르면 회의 시간에 멍 때려야 되는 <strong>2026 최신 트렌드 3가지</strong> 딱 짚어줄게.</p>
+                    <ul style="margin-bottom:16px; padding-left:20px;">
+                        <li style="margin-bottom:8px;">🤖 <strong>AI/디지털 복지 떡상:</strong> 돌봄 로봇, 스마트 안심 플러그 등 비대면 스마트 기기를 활용한 고독사 예방 사업이 엄청 커졌어. 예산도 이쪽으로 많이 풀림!</li>
+                        <li style="margin-bottom:8px;">🌍 <strong>기후 위기랑 복지가 무슨 상관?</strong> '기후 불평등'이라고 들어봤어? 폭염/혹한기 에너지 취약계층 지원 사업이 이제 선택이 아니라 필수 패러다임이 됐음.</li>
+                        <li style="margin-bottom:8px;">🧩 <strong>초개인화 맞춤형 혜택:</strong> 예전엔 "노인이면 다 신청하세요" 였다면, 이젠 데이터 분석해서 "김할머니 댁엔 이게 딱이네요" 하고 핀셋으로 집어주는 서비스로 가고 있어.</li>
+                    </ul>
+                    <p>트렌드 파악은 끝났지? 다음 프로포절 때는 <strong>'AI 기술 적용 돌봄'</strong>이나 <strong>'기후재난 대비'</strong> 키워드 꼭 넣어봐! 합격률 떡상 보장함. 👍</p>
+                </div>
+            `;
+        } else if (vol === 3) {
+            title = "🔥 야근 삭제하는 무료 AI 툴 3대장";
+            contentHtml = `
+                <div style="font-size:0.95rem; line-height:1.6; color:#334155;">
+                    <p style="margin-bottom:16px;">안녕! 팀장님 몰래 보는 <strong>사복천재 비밀편지 Vol. 3</strong>이야. 🤫</p>
+                    <p style="margin-bottom:16px;">매번 서류 쓰느라 토요일 출근하는 선생님들 있지? (눈물 좀 닦고...) <strong>업무 퀄리티 올리면서 야근 삭제해 주는 무료 AI 툴 3개</strong> 푼다!</p>
+                    <ol style="margin-bottom:16px; padding-left:20px;">
+                        <li style="margin-bottom:10px;">
+                            <strong>뤼튼(Wrtn) / 챗GPT</strong><br>
+                            👉 <em>사업계획서, 보도자료 초안 10초 컷</em><br>
+                            "발달장애인 바리스타 양성 사업 목적과 기대효과 3줄로 전문적으로 써줘" 하면 뚝딱 나옴. 팀장님 말투로 바꿔달라고 하면 바꿔줌. 폼 미쳤음.
+                        </li>
+                        <li style="margin-bottom:10px;">
+                            <strong>클로바노트 (Clova Note)</strong><br>
+                            👉 <em>사례회의, 간담회 회의록 자동 요약</em><br>
+                            녹음 파일 올리면 알아서 대화 내용 다 텍스트로 풀어주고, 심지어 누가 무슨 말 했는지 요약까지 해줘. 회의록 쓰느라 앓던 두통 싹 사라짐.
+                        </li>
+                        <li style="margin-bottom:10px;">
+                            <strong>미리캔버스 (AI 기능)</strong><br>
+                            👉 <em>홍보지, 현수막 디자인 자동 완성</em><br>
+                            디자인 감각 제로라도 상관없어. 글만 대충 쓰면 AI가 알아서 어울리는 폰트랑 이미지 조합해서 인스타 카드뉴스 뚝딱 만들어줌.
+                        </li>
+                    </ol>
+                    <p>이건 진짜 우리끼리만 아는 거다? 내일부터 이 툴 쓰고 칼퇴하자! 화이팅! 🏃‍♂️💨</p>
+                </div>
+            `;
+        }
+
+        openModal(title, contentHtml);
+    }
     /* --- 감정 파쇄기 로직 --- */
     const SHRED_MESSAGES = [
         { emoji: '😮‍💨', msg: '파쇄 완료!\n후— 한결 가벼워졌죠? 수고했어요.' },
