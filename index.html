@@ -66,7 +66,7 @@
                             <span class="hero-chip">2026 최신</span>
                         </div>
                     </div>
-                    <div class="hero-illustration">🧑‍💼</div>
+                    <div class="hero-illustration">🦊</div>
                 </div>
 
                 <!-- ② 검색 + 액션 버튼 바 -->
@@ -146,15 +146,6 @@
                             <div class="icon-label">비밀<br>편지</div>
                         </div>
 
-                        <!-- 9. 감정 파쇄기 -->
-                        <div class="icon-item" id="open-shredder">
-                            <div class="icon-bubble"
-                                style="background:linear-gradient(135deg,#ef4444,#b91c1c); box-shadow: 0 4px 12px rgba(239,68,68,0.35);">
-                                <span>🗑️</span>
-                            </div>
-                            <div class="icon-label">감정<br>파쇄기</div>
-                        </div>
-
                     </div>
                 </section>
 
@@ -212,7 +203,7 @@
                                 남겨주세요.
                             </div>
                         </div>
-                        <div style="font-size:2.5rem; animation: bounce 2s infinite">🧞‍♂️</div>
+                        <div style="font-size:2.5rem; animation: bounce 2s infinite">🪄</div>
                     </div>
                 </section>
 
@@ -324,21 +315,22 @@
                                 MY</div>
                             <h2
                                 style="font-size:1.5rem; font-weight:900; color:var(--text-900); letter-spacing:-0.02em; white-space:nowrap;">
-                                내 정보 👤</h2>
+                                내 정보 🦊</h2>
                         </div>
-                        <div
+                        <div id="mypage-header-emoji"
                             style="flex-shrink:0; width:52px; height:52px; background:linear-gradient(135deg,#6366f1,#8b5cf6); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.6rem; box-shadow:0 4px 12px rgba(99,102,241,0.3);">
-                            👩‍💼</div>
+                            🦊</div>
                     </div>
 
                     <!-- 프로필 카드 -->
                     <div
                         style="background:linear-gradient(135deg,#6366f1,#8b5cf6); border-radius:20px; padding:20px; color:#fff; margin-bottom:16px; display:flex; align-items:center; gap:16px;">
-                        <div
+                        <div id="mypage-profile-emoji"
                             style="width:56px; height:56px; background:rgba(255,255,255,0.2); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.8rem; flex-shrink:0;">
-                            👩‍💼</div>
+                            🦊</div>
                         <div>
-                            <div style="font-size:1.1rem; font-weight:800; margin-bottom:2px;">익명의 사복샘</div>
+                            <div id="mypage-profile-name" style="font-size:1.1rem; font-weight:800; margin-bottom:2px;">
+                                신비로운 여우가족</div>
                             <div style="font-size:0.82rem; opacity:0.8;">사회복지사 | 비밀노트 회원</div>
                         </div>
                     </div>
@@ -407,6 +399,34 @@
                     </div>
                 </div>
             </div>
+
+            <!-- ===== SHREDDER VIEW ===== -->
+            <div id="view-shredder" class="view-content hidden">
+                <div
+                    style="padding: 20px 16px; min-height: 80vh; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                    <div style="text-align:center; margin-bottom:24px;">
+                        <div style="font-size:3.5rem; margin-bottom:12px;">🗑️</div>
+                        <h2 style="font-size:1.4rem; font-weight:900; color:#1e293b; margin-bottom:8px;">감정 파쇄기</h2>
+                        <p style="font-size:0.95rem; color:#64748b; line-height:1.5;">
+                            오늘 겪은 힘든 일, 다 적어보세요.<br>
+                            <strong style="color:#ef4444;">파쇄</strong>하면 영원히 사라져요. (서버 저장 안 됨)
+                        </p>
+                    </div>
+                    <div id="shredder-write-area" style="width: 100%; max-width: 400px;">
+                        <textarea id="shredder-textarea"
+                            placeholder="예: 클라이언트한테 욕 먹었다...&#10;팀장이 또 일을 떠넘겼다...&#10;그냥 다 힘들다 진짜..."
+                            style="width: 100%; height: 180px; border: 2px dashed #fca5a5; border-radius: 16px; padding: 20px; font-size: 1rem; color: #334155; background: #fff5f5; resize: none; transition: all 0.3s; outline: none; line-height: 1.6;"></textarea>
+                        <div id="shredder-strips"
+                            style="display: none; gap: 4px; justify-content: center; margin: 16px 0;"></div>
+                        <button id="shredder-btn" onclick="doShred()"
+                            style="width: 100%; padding: 18px; background: linear-gradient(135deg, #ef4444, #b91c1c); color: white; border: none; border-radius: 16px; font-size: 1.15rem; font-weight: 800; cursor: pointer; margin-top: 16px; transition: transform 0.1s, box-shadow 0.2s; box-shadow: 0 4px 14px rgba(239,68,68,0.35);">🗑️
+                            시원하게 파쇄하기!</button>
+                    </div>
+                    <div id="shredder-success"
+                        style="display: none; text-align: center; padding: 20px 0; width: 100%; max-width: 400px;">
+                    </div>
+                </div>
+            </div>
         </main>
 
         <!-- ===== BOTTOM NAV ===== -->
@@ -423,8 +443,12 @@
                 <span class="nav-icon">💬</span>
                 <span class="nav-label">커뮤니티</span>
             </button>
+            <button class="nav-item" id="nav-shredder" onclick="switchView('shredder')">
+                <span class="nav-icon">🗑️</span>
+                <span class="nav-label">파쇄기</span>
+            </button>
             <button class="nav-item" id="nav-mypage" onclick="switchView('mypage')">
-                <span class="nav-icon">👤</span>
+                <span class="nav-icon">🦊</span>
                 <span class="nav-label">내정보</span>
             </button>
         </nav>

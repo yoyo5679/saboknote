@@ -62,12 +62,16 @@
                     <div style="background:#f5f3ff; padding:20px; border-radius:16px; border:1px solid #ede9fe; text-align:left; margin-bottom:24px">
                         <div style="font-size:0.8rem; font-weight:800; color:#7c3aed; margin-bottom:12px">📮 이번 주 편지 미리보기</div>
                         <div style="margin-bottom:12px; padding-bottom:12px; border-bottom:1px dashed #ddd6fe">
-                            <strong style="color:#0f172a; font-size:0.95rem; display:block; margin-bottom:4px">[Vol 1.] 2026 복지 패러다임 변화, 사회복지사를 위한 AI 활용법 101</strong>
+                            <strong style="color:#0f172a; font-size:0.95rem; display:block; margin-bottom:4px">[Vol 1.] 요즘 핫한 '퍼네이션(Funation)' 동향! 재미있게 기부하는 법 공유함</strong>
                             <span style="font-size:0.8rem; color:#64748b">발행일: 오늘</span>
                         </div>
-                        <div>
-                            <strong style="color:#0f172a; font-size:0.95rem; display:block; margin-bottom:4px">[Vol 2.] 최신 고독사 예방 가이드라인 & 선진국 대응 사례 총정리</strong>
+                        <div style="margin-bottom:12px; padding-bottom:12px; border-bottom:1px dashed #ddd6fe">
+                            <strong style="color:#0f172a; font-size:0.95rem; display:block; margin-bottom:4px">[Vol 2.] 2026 사회복지 최신 트렌드! 이거 모르면 대화 안 됨</strong>
                             <span style="font-size:0.8rem; color:#64748b">발행일: 다음 주 예정</span>
+                        </div>
+                        <div>
+                            <strong style="color:#0f172a; font-size:0.95rem; display:block; margin-bottom:4px">[Vol 3.] 업무 퀄리티 떡상하는 무료 AI 툴 추천! 이거 쓰면 칼퇴 가능</strong>
+                            <span style="font-size:0.8rem; color:#64748b">발행일: 다다음 주 예정</span>
                         </div>
                     </div>
 
@@ -89,109 +93,14 @@
         }
     }
 
-    /* --- 감정 파쇄기 --- */
-    function initShredder() {
-        const btn = document.getElementById('open-shredder');
-        if (!btn) return;
-        btn.onclick = () => {
-            const content = `
-            <style>
-                @keyframes shredSlide {
-                    0% { transform: translateY(0) scaleY(1); opacity: 1; }
-                    30% { transform: translateY(10px) scaleY(0.95); opacity: 0.8; }
-                    100% { transform: translateY(120px) scaleY(0); opacity: 0; }
-                }
-                @keyframes shredStrips {
-                    0% { opacity: 0; transform: translateY(-10px); }
-                    20% { opacity: 1; transform: translateY(0); }
-                    80% { opacity: 1; }
-                    100% { opacity: 0; transform: translateY(60px); }
-                }
-                @keyframes successPop {
-                    0% { transform: scale(0.5); opacity: 0; }
-                    60% { transform: scale(1.1); }
-                    100% { transform: scale(1); opacity: 1; }
-                }
-                #shredder-textarea {
-                    width: 100%;
-                    height: 160px;
-                    border: 2px dashed #fca5a5;
-                    border-radius: 14px;
-                    padding: 16px;
-                    font-size: 0.95rem;
-                    font-family: 'Pretendard', sans-serif;
-                    color: #334155;
-                    background: #fff5f5;
-                    resize: none;
-                    transition: all 0.3s;
-                    outline: none;
-                    line-height: 1.6;
-                }
-                #shredder-textarea:focus {
-                    border-color: #ef4444;
-                    background: #fff;
-                    box-shadow: 0 0 0 3px rgba(239,68,68,0.1);
-                }
-                #shredder-btn {
-                    width: 100%;
-                    padding: 16px;
-                    background: linear-gradient(135deg, #ef4444, #b91c1c);
-                    color: white;
-                    border: none;
-                    border-radius: 14px;
-                    font-size: 1.1rem;
-                    font-weight: 800;
-                    cursor: pointer;
-                    margin-top: 16px;
-                    transition: transform 0.1s, box-shadow 0.2s;
-                    box-shadow: 0 4px 14px rgba(239,68,68,0.35);
-                    font-family: 'Pretendard', sans-serif;
-                }
-                #shredder-btn:active { transform: scale(0.97); }
-                #shredder-strips {
-                    display: none;
-                    gap: 3px;
-                    justify-content: center;
-                    margin: 12px 0;
-                }
-                .shred-strip {
-                    width: 6px;
-                    height: 80px;
-                    border-radius: 2px;
-                    animation: shredStrips 0.8s ease-in forwards;
-                }
-                #shredder-success {
-                    display: none;
-                    text-align: center;
-                    padding: 20px 0;
-                    animation: successPop 0.5s cubic-bezier(0.175,0.885,0.32,1.1) forwards;
-                }
-            </style>
-            <div style="text-align:center; margin-bottom:16px;">
-                <div style="font-size:2.5rem; margin-bottom:6px;">🗑️</div>
-                <p style="font-size:0.88rem; color:#64748b; line-height:1.5;">
-                    오늘 겪은 힘든 일, 다 적어보세요.<br>
-                    <strong style="color:#ef4444;">파쇄</strong>하면 영원히 사라져요. (저장 안 됨)
-                </p>
-            </div>
-            <div id="shredder-write-area">
-                <textarea id="shredder-textarea" placeholder="예: 클라이언트한테 욕 먹었다...&#10;팀장이 또 일을 떠넘겼다...&#10;그냥 다 힘들다 진짜..."></textarea>
-                <div id="shredder-strips"></div>
-                <button id="shredder-btn" onclick="doShred()">🗑️ 파쇄하기!</button>
-            </div>
-            <div id="shredder-success"></div>`;
-
-            openModal('🗑️ 감정 파쇄기', content);
-        };
-    }
-
+    /* --- 감정 파쇄기 로직 --- */
     const SHRED_MESSAGES = [
         { emoji: '😮‍💨', msg: '파쇄 완료!\n후— 한결 가벼워졌죠? 수고했어요.' },
         { emoji: '🌊', msg: '흘려보냈어요!\n나쁜 감정은 쓰레기통에, 당신은 앞으로!' },
         { emoji: '🌿', msg: '전부 사라졌어요!\n오늘 하루도 충분히 잘 버텼어요.' },
         { emoji: '🔥', msg: '태워버렸어요!\n복지사도 감정이 있는 사람이에요. 당연해요.' },
         { emoji: '✨', msg: '파쇄 완료!\n힘든 걸 표현하는 것만으로도 치료예요.' },
-        { emoji: '🫂', msg: '다 날아갔어요!\n오늘도 최선을 다한 당신, 대단해요.' },
+        { emoji: '✨', msg: '다 날아갔어요!\n오늘도 최선을 다한 당신, 대단해요.' },
         { emoji: '🧹', msg: '깨끗이 치웠어요!\n내일은 조금 더 나을 거예요. 응원해요.' }
     ];
 
@@ -233,16 +142,21 @@
                 <h3 style="font-size:1.15rem; font-weight:900; color:#1e293b; margin-bottom:10px; white-space:pre-line;">${pick.msg}</h3>
                 <p style="font-size:0.85rem; color:#94a3b8; margin-top:16px;">3초 후 자동으로 닫힙니다</p>`;
 
-            // 3초 후 모달 닫기
+            // 3초 후 UI 복구
             let countdown = 3;
             const timer = setInterval(() => {
                 countdown--;
                 const p = successArea.querySelector('p');
-                if (p) p.textContent = `${countdown}초 후 자동으로 닫힙니다`;
+                if (p) p.textContent = `${countdown}초 후 파쇄기가 다시 준비됩니다...`;
                 if (countdown <= 0) {
                     clearInterval(timer);
-                    const overlay = document.getElementById('modal-overlay');
-                    if (overlay) overlay.classList.remove('active');
+                    // 폼 초기화
+                    ta.value = '';
+                    ta.style.animation = 'none';
+                    stripped.style.display = 'none';
+                    stripped.innerHTML = '';
+                    writeArea.style.display = 'block';
+                    successArea.style.display = 'none';
                 }
             }, 1000);
         }, 800);
@@ -255,7 +169,7 @@
             btn.onclick = () => {
                 const content = `
                 <div style="text-align:center; padding: 10px 0;">
-                    <div style="font-size:3rem; margin-bottom:12px; animation: float 3s ease-in-out infinite">🧞‍♂️</div>
+                    <div style="font-size:3rem; margin-bottom:12px; animation: float 3s ease-in-out infinite">🪄</div>
                     <h3 style="font-size:1.3rem; color:var(--text-dark); margin-bottom:8px; font-weight:900">무엇이든 물어보살</h3>
                     <p style="font-size:0.9rem; color:#64748b; margin-bottom:24px; line-height:1.5;">필요한 프롬프트나 헷갈리는 사회복지 용어가 있나요?<br>사복천재에게 남겨주시면 다음 업데이트 때 쓱- 추가해 드릴게요!</p>
                     
@@ -351,7 +265,7 @@
             if (modalBody) {
                 modalBody.innerHTML = `
                     <div style="text-align:center; padding:30px 0;">
-                        <div style="font-size:3.5rem; margin-bottom:16px;">🧞‍♂️</div>
+                        <div style="font-size:3.5rem; margin-bottom:16px;">🪄</div>
                         <h3 style="font-size:1.15rem; font-weight:900; color:#d97706; margin-bottom:10px;">소원 접수 완료! ✨</h3>
                         <p style="font-size:0.9rem; color:#64748b; line-height:1.6;">
                             사복천재가 확인하고<br>다음 업데이트 때 쓱- 추가해 드릴게요! 😊
@@ -576,7 +490,7 @@ ${body}</div>
 
                     incomeHtml += `
                     <div style="background:#f8fafc; padding:12px; border-radius:12px; border:1px solid #e2e8f0; margin-bottom:12px;">
-                        <p style="font-size:0.95rem; font-weight:800; color:var(--primary); margin-bottom:8px">👥 ${size}인 가구 기준 중위소득</p>
+                        <p style="font-size:0.95rem; font-weight:800; color:var(--primary); margin-bottom:8px">🌳 ${size}인 가구 기준 중위소득</p>
                         ${ratioBlocks}
                     </div>
                 `;
@@ -611,7 +525,7 @@ ${body}</div>
                 </div>
 
                 <div class="kpi-section" style="margin-top:24px">
-                    <p style="font-size:0.85rem; font-weight:800; color:var(--accent); margin-bottom:12px">👵 장기요양 재가한도액</p>
+                    <p style="font-size:0.85rem; font-weight:800; color:var(--accent); margin-bottom:12px">🌿 장기요양 재가한도액</p>
                     <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px">
                         ${Object.entries(KPI_DATA_2026.ltcLimits).map(([grade, val]) => `
                             <div style="background:#f0f9ff; padding:10px; border-radius:12px; border:1px solid #e0f2fe; text-align:center">
@@ -971,7 +885,7 @@ AI는 반드시 동일한 내용을 아래 **두 가지 버전**으로 각각 �
                     
                     <!-- 강사료 세금역산기 -->
                     <div class="step-card beautiful-card" style="margin-bottom:24px; padding:20px; border-color:#e0e7ff;">
-                        <h4 style="color:#4f46e5; font-weight:800; font-size:1.1rem; margin-bottom:8px;">👩‍🏫 강사료 세금 역산기</h4>
+                        <h4 style="color:#4f46e5; font-weight:800; font-size:1.1rem; margin-bottom:8px;">🔬 강사료 세금 역산기</h4>
                         <p style="font-size:0.8rem; color:#4338ca; margin-bottom:16px;">실수령액 기준 품의서 작성을 위한 세전(Gross) 금액 역산</p>
                         <div style="display:flex; gap:10px; margin-bottom:16px;">
                             <button id="btn-tax-business" onclick="setTaxType('business')" class="btn-primary" style="flex:1; background:var(--primary); padding:10px 0; font-size:0.9rem;">사업소득 (3.3%)</button>
@@ -1027,7 +941,7 @@ AI는 반드시 동일한 내용을 아래 **두 가지 버전**으로 각각 �
                 <div id="admin-content-ltc" class="tab-content" style="display:none; animation: fadeIn 0.3s ease;">
                     
                     <div class="step-card beautiful-card" style="padding:20px;">
-                        <h4 style="color:#0f172a; font-weight:800; font-size:1.1rem; margin-bottom:16px;">👵 방문요양 장기요양 계산기</h4>
+                        <h4 style="color:#0f172a; font-weight:800; font-size:1.1rem; margin-bottom:16px;">🌿 방문요양 장기요양 계산기</h4>
                         <div class="form-group">
                             <label style="font-size:0.85rem; color:#475569; font-weight:600;">장기요양 등급</label>
                             <select id="ltc-grade" class="calc-input">
@@ -1425,7 +1339,7 @@ AI는 반드시 동일한 내용을 아래 **두 가지 버전**으로 각각 �
         { category: "회계/행정", icon: "💰", word: "품의서", meaning: "이거 살 건데, 돈 좀 쓸게요!", desc: "물건 구매·용역 계약 전 결재권자에게 사전 허락받는 문서" },
         { category: "회계/행정", icon: "🧾", word: "지출결의서", meaning: "허락하신 돈, 이렇게 썼어요!", desc: "영수증 딱풀로 붙여서 회계에 제출하는 정산 문서" },
         { category: "회계/행정", icon: "📑", word: "결과보고서", meaning: "우리 이거 무사히 끝냈어요!", desc: "사진 첨부 + 집행내역 + 남은 돈 반납할 때 쓰는 마무리 문서" },
-        { category: "회계/행정", icon: "🙏", word: "프로포절 (Proposal)", meaning: "저희한테 돈 주시면 진짜 기깔나게 써볼게요!", desc: "외부 재단·관청에 보내는 사업 제안서" },
+        { category: "회계/행정", icon: "✨", word: "프로포절 (Proposal)", meaning: "저희한테 돈 주시면 진짜 기깔나게 써볼게요!", desc: "외부 재단·관청에 보내는 사업 제안서" },
         { category: "회계/행정", icon: "😭", word: "자부담", meaning: "지원금 말고, 우리 기관 쌩돈", desc: "매칭 비율 맞출 때 피눈물 나는 자체 부담금" },
         { category: "회계/행정", icon: "🔄", word: "예산 전용", meaning: "A 주머니 돈을 B 주머니로 옮기기", desc: "관할 관청 허가 없이 하면 지적사항, 반드시 승인 후 집행" },
         { category: "회계/행정", icon: "📥", word: "수입결의서", meaning: "우리 통장에 돈 들어왔어요!", desc: "후원금·보조금 등 입금 시 작성하는 회계 문서" },
@@ -1443,20 +1357,21 @@ AI는 반드시 동일한 내용을 아래 **두 가지 버전**으로 각각 �
         { category: "회계/행정", icon: "🔎", word: "지도·감독", meaning: "관할 행정기관이 우리 기관 들여다보러 오는 날", desc: "회계 서류, 사업 실적, 인력 기준 등 전반 점검" },
 
         /* ─── 🤝 사례관리 (20개) ─── */
-        { category: "사례관리", icon: "🕵️", word: "인테이크 (Intake)", meaning: "첫 만남. 기초 현황 조사하면서 우리 기관이랑 맞는지 간 보기", desc: "초기 면접 — 주호소 문제, 의뢰 경위, 서비스 욕구 파악" },
-        { category: "사례관리", icon: "🔍", word: "어세스먼트 (Assessment)", meaning: "이 분에게 진짜 뭐가 필요한지 샅샅이 파악하기", desc: "사정(査定) — 강점·문제·욕구를 다면적으로 분석" },
-        { category: "사례관리", icon: "🤝", word: "라포 (Rapport) 형성", meaning: "클라이언트랑 짱친 먹기. 이거 안 되면 아무것도 안 됨", desc: "신뢰 관계 형성 — 비밀 보장·공감·일관성이 핵심" },
-        { category: "사례관리", icon: "📞", word: "모니터링", meaning: "계획대로 잘 지내시나~ 하고 슬쩍 엿보거나 안부 전화하기", desc: "서비스 개입 후 정기적 점검 — 면담·전화·방문 병행" },
+        { category: "사례관리", icon: "🐾", word: "인테이크 (Intake)", meaning: "첫 만남. 기초 현황 조사하면서 우리 기관이랑 맞는지 간 보기", desc: "초기 면접 — 주호소 문제, 의뢰 경위, 서비스 욕구 파악" },
+        { category: "사례관리", icon: "💎", word: "사례관리 (Case Management)", meaning: "한 분 한 분의 삶을 반짝이게 맞춤형으로 돕는 종합 예술", desc: "복합적 욕구를 가진 클라이언트에게 지속적·포괄적 서비스 제공" },
+        { category: "사례관리", icon: "🧩", word: "라포 (Rapport) 형성", meaning: "클라이언트랑 짱친 먹기. 이거 안 되면 아무것도 안 됨", desc: "신뢰 관계 형성 — 비밀 보장·공감·일관성이 핵심" },
+        { category: "사례관리", icon: "📞", word: "모니터링", meaning: "잘 지내고 계신지, 계획대로 되고 있는지 틈틈이 확인하기", desc: "서비스 전달 과정 및 목표 달성 정도의 상시 점검" },
         { category: "사례관리", icon: "🔗", word: "자원 연계", meaning: "우리가 못 도와주니까, 이거 해줄 수 있는 옆 동네 단체 연결시켜 주기", desc: "지역사회 자원 동원 — 연계 후 사후 관리까지 책임" },
-        { category: "사례관리", icon: "👋", word: "종결", meaning: "이별의 시간. 다 나아서 자립했거나 이사 가셔서 그만 만나요", desc: "목표 달성·이관·사망·거부 등 사유로 사례 마무리" },
+        { category: "사례관리", icon: "🍃", word: "종결", meaning: "이별의 시간. 다 나아서 자립했거나 이사 가셔서 그만 만나요", desc: "목표 달성·이관·사망·거부 등 사유로 사례 마무리" },
         { category: "사례관리", icon: "🗺️", word: "욕구 (Need)", meaning: "이 분이 진짜 원하고 필요로 하는 것 (본인도 모를 때 있음)", desc: "표현 욕구·규범적 욕구·비교 욕구·잠재 욕구로 구분" },
+        { category: "사례관리", icon: "🍀", word: "강점 관점", meaning: "문제만 보지 말고, 이 분이 가진 강점을 먼저 보기", desc: "역량강화(Empowerment) 실천의 핵심 철학" },
         { category: "사례관리", icon: "💪", word: "강점 관점", meaning: "문제만 보지 말고, 이 분이 가진 강점을 먼저 보기", desc: "역량강화(Empowerment) 실천의 핵심 철학" },
         { category: "사례관리", icon: "🎯", word: "개입 목표", meaning: "우리가 이 사례를 통해 달성하려는 구체적인 목표", desc: "SMART 원칙(구체적·측정가능·달성가능·현실적·기한)으로 설정" },
         { category: "사례관리", icon: "📋", word: "서비스 계획서", meaning: "누가, 언제, 뭘, 어떻게 도와줄지 적어 두는 약속 문서", desc: "클라이언트 동의 서명 필수 — 주기적으로 재검토" },
         { category: "사례관리", icon: "⚠️", word: "위기 개입", meaning: "갑자기 상황이 심각해졌을 때 빠르게 투입!", desc: "자해·학대·화재 등 긴급 상황 — 72시간 내 집중 개입 원칙" },
         { category: "사례관리", icon: "🔁", word: "재사정 (Re-assessment)", meaning: "시간 지나서 상황 바뀌었으니까 처음부터 다시 파악해 보기", desc: "보통 6개월~1년마다 실시, 목표 달성 여부도 확인" },
-        { category: "사례관리", icon: "🧑‍🤝‍🧑", word: "사례 회의", meaning: "이 분 어떻게 도울지 팀원·관련 기관들이 모여서 머리 맞대기", desc: "다학제적 접근 — 의사·간호사·복지사·치료사 등 협력" },
-        { category: "사례관리", icon: "🏠", word: "아웃리치 (Outreach)", meaning: "기다리지 말고 직접 찾아가기! 복지사가 먼저 나가기", desc: "은둔형 취약계층 발굴 — 정기 방문으로 단절 예방" },
+        { category: "사례관리", icon: "🍄", word: "사례 회의", meaning: "이 분 어떻게 도울지 팀원·관련 기관들이 모여서 머리 맞대기", desc: "다학제적 접근 — 의사·간호사·복지사·치료사 등 협력" },
+        { category: "사례관리", icon: "🔭", word: "아웃리치 (Outreach)", meaning: "앉아서 기다리지 말고, 직접 현장으로 나가서 찾아가는 서비스", desc: "잠재적 클라이언트 발굴을 위한 현장 방문 실천" },
         { category: "사례관리", icon: "📊", word: "사례 분류", meaning: "이 분 얼마나 도움이 필요한지 등급 나누기", desc: "위기·고위험·일반 등으로 분류, 개입 강도 결정" },
         { category: "사례관리", icon: "💬", word: "슈퍼비전 (Supervision)", meaning: "경험 많은 선배가 내 사례를 코칭해 주는 시간", desc: "교육적·지지적·행정적 기능 — 번아웃 예방에도 필수" },
         { category: "사례관리", icon: "📜", word: "동의서", meaning: "이 분이 서비스 받겠다고 서명한 공식 허락 문서", desc: "정보 공유·사례관리 참여 동의 — 없으면 정보 제공 불가" },
@@ -1475,9 +1390,9 @@ AI는 반드시 동일한 내용을 아래 **두 가지 버전**으로 각각 �
         { category: "기관생활", icon: "📓", word: "사업 실적 보고서", meaning: "연말에 올 한 해 동안 뭉텅이로 정리하는 결산 성과물", desc: "관할 행정기관 제출 의무, 통계·만족도 조사 포함" },
         { category: "기관생활", icon: "🚨", word: "시설 감사", meaning: "행정기관이 우리 기관 제대로 운영하나 들여다보는 무서운 날", desc: "정기·수시감사 구분, 지적사항은 시정명령·과태료 대상" },
         { category: "기관생활", icon: "📜", word: "취업규칙", meaning: "이 기관에서 일할 때 지켜야 하는 내부 규정서", desc: "10인 이상 사업장 필수 비치·신고, 불이익 변경 시 직원 동의 필요" },
-        { category: "기관생활", icon: "🧑‍💼", word: "승인 결재", meaning: "상사 도장 또는 전자 서명 받기. 이게 없으면 아무것도 시작 못 함", desc: "전결 규정에 따라 결재 라인 상이 — 규정 미리 확인 필수" },
+        { category: "기관생활", icon: "🦉", word: "승인 결재", meaning: "상사 도장 또는 전자 서명 받기. 이게 없으면 아무것도 시작 못 함", desc: "전결 규정에 따라 결재 라인 상이 — 규정 미리 확인 필수" },
         { category: "기관생활", icon: "🎓", word: "직무 교육", meaning: "직무 향상을 위해 기관이 보내주거나 본인이 들어야 하는 교육", desc: "아동학대·인권·성희롱 예방 교육 등 별도 의무 존재" },
-        { category: "기관생활", icon: "🤝", word: "인수인계", meaning: "내가 맡던 일을 다음 담당자에게 빠짐없이 넘겨주기", desc: "미흡한 인수인계는 업무 공백·민원의 원인" },
+        { category: "기관생활", icon: "🧩", word: "인수인계", meaning: "내가 맡던 일을 다음 담당자에게 빠짐없이 넘겨주기", desc: "미흡한 인수인계는 업무 공백·민원의 원인" },
         { category: "기관생활", icon: "🏖️", word: "연차휴가", meaning: "1년에 정해진 만큼 당당히 쉴 권리 (안 쓰면 돈으로 받을 수도)", desc: "1년 만근 시 15일, 이후 2년마다 1일씩 추가(최대 25일)" },
         { category: "기관생활", icon: "📲", word: "온콜 (On-call)", meaning: "퇴근했어도 긴급 상황 생기면 전화 받고 달려가야 하는 상태", desc: "시설 종류에 따라 야간 당직·온콜 규정 상이" },
         { category: "기관생활", icon: "🧹", word: "환경 정비", meaning: "이용자 및 직원 근무 공간을 안전하고 쾌적하게 유지하기", desc: "소방·위생·안전 점검 — 행정감사 시 주요 체크 항목" },
@@ -1512,7 +1427,7 @@ AI는 반드시 동일한 내용을 아래 **두 가지 버전**으로 각각 �
                     </button>
                     <button onclick="switchVocaTab('사례관리')" id="tab-voca-case"
                         style="flex:1; padding:10px 4px; border:none; border-radius:8px; font-size:0.82rem; font-weight:600; cursor:pointer; background:transparent; color:#64748b; transition:all 0.2s;">
-                        🤝 사례관리
+                        🧩 사례관리
                     </button>
                     <button onclick="switchVocaTab('기관생활')" id="tab-voca-life"
                         style="flex:1; padding:10px 4px; border:none; border-radius:8px; font-size:0.82rem; font-weight:600; cursor:pointer; background:transparent; color:#64748b; transition:all 0.2s;">
@@ -1711,7 +1626,7 @@ AI는 반드시 동일한 내용을 아래 **두 가지 버전**으로 각각 �
             <div class="form-group">
                 <label>질문 카테고리</label>
                 <select id="ask-category" class="calc-input">
-                    <option value="사례관리">🤝 사례관리</option>
+                    <option value="사례관리">🧩 사례관리</option>
                     <option value="행정/회계">💰 행정/회계</option>
                     <option value="프로그램">🎯 프로그램</option>
                     <option value="기관생활">🏢 기관생활</option>
@@ -1761,7 +1676,7 @@ AI는 반드시 동일한 내용을 아래 **두 가지 버전**으로 각각 �
             const { error } = await supabase
                 .from('posts')
                 .insert([
-                    { title, category, content, author: '익명의 복지사', user_id: myUserId }
+                    { title, category, content, author: getRandomAnonymousName(), user_id: myUserId }
                 ]);
 
             if (error) throw error;
@@ -1877,7 +1792,7 @@ AI는 반드시 동일한 내용을 아래 **두 가지 버전**으로 각각 �
             const { error } = await supabase
                 .from('replies')
                 .insert([
-                    { post_id: postId, content: content, author: '익명의 사복샘' }
+                    { post_id: postId, content: content, author: getRandomAnonymousName() }
                 ]);
 
             if (error) throw error;
@@ -1892,6 +1807,20 @@ AI는 반드시 동일한 내용을 아래 **두 가지 버전**으로 각각 �
             btn.innerText = '답변 등록';
         }
     };
+
+    /* --- 유쾌한 익명 이름 생성기 --- */
+    function getRandomAnonymousName() {
+        const adjs = ['칼퇴하고 싶은', '월급만 기다리는', '팀장님 몰래', '커피 수혈 중인', '점심시간만 기다리는', '연차 쓰고 싶은', '서류에 파묻힌', '퇴근 5분 전', '눈물 닦는', '비밀이 많은', '간식 숨겨둔', '결재 대기 중인'];
+        const nouns = [
+            { n: '여우', e: '🦊' }, { n: '강아지', e: '🐶' }, { n: '고양이', e: '🐱' },
+            { n: '토끼', e: '🐰' }, { n: '햄스터', e: '🐹' }, { n: '팬더', e: '🐼' },
+            { n: '새싹', e: '🌱' }, { n: '나무', e: '🌳' }, { n: '꽃', e: '🌸' },
+            { n: '나비', e: '🦋' }, { n: '다람쥐', e: '🐿️' }, { n: '쿼카', e: '🐨' }
+        ];
+        const adj = adjs[Math.floor(Math.random() * adjs.length)];
+        const nounObj = nouns[Math.floor(Math.random() * nouns.length)];
+        return `${nounObj.e} ${adj} ${nounObj.n}`;
+    }
 
     /* --- Help Me Edit / Delete --- */
     window.deleteHelpMePost = async function (postId) {
@@ -1927,7 +1856,7 @@ AI는 반드시 동일한 내용을 아래 **두 가지 버전**으로 각각 �
                 <div class="form-group">
                     <label>질문 카테고리</label>
                     <select id="edit-ask-category" class="calc-input">
-                        <option value="사례관리" ${post.category === '사례관리' ? 'selected' : ''}>🤝 사례관리</option>
+                        <option value="사례관리" ${post.category === '사례관리' ? 'selected' : ''}>🧩 사례관리</option>
                         <option value="행정/회계" ${post.category === '행정/회계' ? 'selected' : ''}>💰 행정/회계</option>
                         <option value="프로그램" ${post.category === '프로그램' ? 'selected' : ''}>🎯 프로그램</option>
                         <option value="기관생활" ${post.category === '기관생활' ? 'selected' : ''}>🏢 기관생활</option>
@@ -2085,7 +2014,7 @@ AI는 반드시 동일한 내용을 아래 **두 가지 버전**으로 각각 �
                 <select id="comm-category" class="calc-input">
                     <option value="자유게시판">📢 자유게시판</option>
                     <option value="정보 공유방">🔥 정보 공유방</option>
-                    <option value="취업/이직">🤝 취업/이직</option>
+                    <option value="취업/이직">🧩 취업/이직</option>
                 </select>
             </div>
             <div class="form-group">
@@ -2134,7 +2063,7 @@ AI는 반드시 동일한 내용을 아래 **두 가지 버전**으로 각각 �
             const { error } = await supabase
                 .from('community_posts')
                 .insert([
-                    { title, category: cleanCategory, content, author: '익명의 복지사', user_id: myUserId }
+                    { title, category: cleanCategory, content, author: getRandomAnonymousName(), user_id: myUserId }
                 ]);
 
             if (error) throw error;
@@ -2263,7 +2192,7 @@ AI는 반드시 동일한 내용을 아래 **두 가지 버전**으로 각각 �
             const { error } = await supabase
                 .from('community_replies')
                 .insert([
-                    { post_id: postId, content: content, author: '익명의 복지사' }
+                    { post_id: postId, content: content, author: getRandomAnonymousName() }
                 ]);
 
             if (error) {
@@ -2320,7 +2249,7 @@ AI는 반드시 동일한 내용을 아래 **두 가지 버전**으로 각각 �
                     <select id="edit-comm-category" class="calc-input">
                         <option value="자유게시판" ${post.category === '자유게시판' ? 'selected' : ''}>📢 자유게시판</option>
                         <option value="정보 공유방" ${post.category === '정보 공유방' ? 'selected' : ''}>🔥 정보 공유방</option>
-                        <option value="취업/이직" ${post.category === '취업/이직' ? 'selected' : ''}>🤝 취업/이직</option>
+                        <option value="취업/이직" ${post.category === '취업/이직' ? 'selected' : ''}>🧩 취업/이직</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -2381,6 +2310,22 @@ AI는 반드시 동일한 내용을 아래 **두 가지 버전**으로 각각 �
         const listEl = document.getElementById('my-posts-list');
         if (!listEl) return;
 
+        // 프로필 동적 업데이트 (유쾌한 익명)
+        const profileNameEl = document.getElementById('mypage-profile-name');
+        const profileEmojiEl = document.getElementById('mypage-profile-emoji');
+        const headerEmojiEl = document.getElementById('mypage-header-emoji');
+
+        if (profileNameEl && !profileNameEl.dataset.initialized) {
+            const randomIdentity = getRandomAnonymousName();
+            const emoji = randomIdentity.split(' ')[0];
+            const name = randomIdentity.split(' ').slice(1).join(' ');
+
+            profileNameEl.innerText = name;
+            if (profileEmojiEl) profileEmojiEl.innerText = emoji;
+            if (headerEmojiEl) headerEmojiEl.innerText = emoji;
+            profileNameEl.dataset.initialized = "true";
+        }
+
         const myUserId = getOrCreateUserId();
 
         if (!supabase) {
@@ -2431,7 +2376,7 @@ AI는 반드시 동일한 내용을 아래 **두 가지 버전**으로 각각 �
         // 서비스 이용약관
         const tosContent = `
         <div style="font-size:0.88rem; color:#334155; line-height:1.8;">
-            <p style="font-size:0.75rem; color:#94a3b8; margin-bottom:16px;">시행일: 2025년 1월 1일 &nbsp;|&nbsp; 버전: v1.0</p>
+            <p style="font-size:0.75rem; color:#94a3b8; margin-bottom:16px;">시행일: 2026년 3월 2일 &nbsp;|&nbsp; 버전: v1.0</p>
 
             <h4 style="font-size:0.95rem; font-weight:800; color:#1e293b; margin-bottom:8px;">제1조 (목적)</h4>
             <p style="margin-bottom:16px;">본 약관은 사회복지사 비밀노트(이하 "서비스")의 이용 조건 및 절차, 이용자와 서비스 운영자 간의 권리·의무 및 책임사항을 규정함을 목적으로 합니다.</p>
@@ -2452,7 +2397,7 @@ AI는 반드시 동일한 내용을 아래 **두 가지 버전**으로 각각 �
         // 개인정보처리방침
         const ppContent = `
         <div style="font-size:0.88rem; color:#334155; line-height:1.8;">
-            <p style="font-size:0.75rem; color:#94a3b8; margin-bottom:16px;">시행일: 2025년 1월 1일 &nbsp;|&nbsp; 관련 법령: 개인정보 보호법</p>
+            <p style="font-size:0.75rem; color:#94a3b8; margin-bottom:16px;">시행일: 2026년 3월 2일 &nbsp;|&nbsp; 관련 법령: 개인정보 보호법</p>
 
             <h4 style="font-size:0.95rem; font-weight:800; color:#1e293b; margin-bottom:8px;">1. 수집하는 개인정보 항목</h4>
             <p style="margin-bottom:16px;">서비스는 회원가입 없이 이용 가능하며, 다음의 정보를 수집합니다.<br>
@@ -2531,7 +2476,7 @@ AI는 반드시 동일한 내용을 아래 **두 가지 버전**으로 각각 �
 
     /* --- View Switcher --- */
     window.switchView = function (view) {
-        const views = ['home', 'record', 'community', 'mypage'];
+        const views = ['home', 'record', 'community', 'mypage', 'shredder'];
         views.forEach(v => {
             const el = document.getElementById('view-' + v);
             if (el) el.className = (v === view) ? 'view-content active' : 'view-content hidden';
@@ -2562,7 +2507,7 @@ AI는 반드시 동일한 내용을 아래 **두 가지 버전**으로 각각 �
         initCommunity();
         initMyPageMenus();
         initHeaderButtons();
-        initShredder();
+        initNewsletterReader();
     };
 
 } catch (e) { console.error('Global JS Error:', e); }

@@ -1151,3 +1151,67 @@ select:focus {
   -webkit-overflow-scrolling: touch;
   padding-bottom: env(safe-area-inset-bottom, 40px);
 }
+
+/* ==========================================================================
+   감정 파쇄기 전용 애니메이션
+   ========================================================================== */
+@keyframes shredSlide {
+  0% {
+    transform: translateY(0) scaleY(1);
+    opacity: 1;
+  }
+
+  30% {
+    transform: translateY(10px) scaleY(0.95);
+    opacity: 0.8;
+  }
+
+  100% {
+    transform: translateY(120px) scaleY(0);
+    opacity: 0;
+  }
+}
+
+@keyframes shredStrips {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  20% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  80% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(60px);
+  }
+}
+
+@keyframes successPop {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+
+  60% {
+    transform: scale(1.1);
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.shred-strip {
+  width: 6px;
+  height: 80px;
+  border-radius: 2px;
+  animation: shredStrips 0.8s ease-in forwards;
+}
