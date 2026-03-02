@@ -365,18 +365,6 @@
         }
     };
 
-    document.addEventListener('DOMContentLoaded', () => {
-        initModal();
-        initEligibilityCalculator();
-        initDashboard();
-        initAIPrompter();
-        initAdminCalculator();
-        initVocaDictionary();
-        initNewsletterReader();
-        initRequestModal();
-        initRecordTemplates();
-    });
-
     // ... (preceding functions) ...
 
     /* --- AI Newsletter Generator --- */
