@@ -72,8 +72,15 @@
                     </div>
 
                     <div style="display:flex; flex-direction:column; gap:12px;">
-                        <input type="email" class="calc-input" placeholder="이메일 주소만 쓱 남겨봐" style="font-size:1rem; padding:14px; border:2px solid #e2e8f0; border-radius:12px;">
-                        <button class="btn-primary" style="background:linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%); padding:16px; font-size:1.1rem; border-radius:12px; box-shadow:0 4px 14px rgba(124,58,237,0.3)" onclick="alert('🎉 오케이 접수! 평생 무료로 비밀 편지 쏴줄게...💌')">나도 비밀 편지 받아볼래!</button>
+                        <input type="email" id="newsletter-email" class="calc-input" placeholder="이메일 주소만 쓱 남겨봐" style="font-size:1rem; padding:14px; border:2px solid #e2e8f0; border-radius:12px;">
+                        <label style="display:flex; align-items:flex-start; gap:10px; cursor:pointer; padding:12px; background:#f8f5ff; border-radius:12px; border:1px solid #ede9fe;">
+                            <input type="checkbox" id="newsletter-agree" style="width:18px; height:18px; accent-color:#7c3aed; flex-shrink:0; margin-top:2px;">
+                            <span style="font-size:0.8rem; color:#475569; line-height:1.5;">
+                                [필수] <strong style="color:#7c3aed;">개인정보 수집·이용</strong>에 동의합니다.<br>
+                                <span style="color:#94a3b8; font-size:0.75rem;">수집항목: 이메일 | 목적: 뉴스레터 발송 | 보유: 구독 취소 시까지</span>
+                            </span>
+                        </label>
+                        <button class="btn-primary" style="background:linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%); padding:16px; font-size:1.1rem; border-radius:12px; box-shadow:0 4px 14px rgba(124,58,237,0.3)" onclick="subscribeNewsletter()">나도 비밀 편지 받아볼래!</button>
                     </div>
                 </div>
             `;
@@ -81,6 +88,165 @@
             };
         }
     }
+
+    /* --- 감정 파쇄기 --- */
+    function initShredder() {
+        const btn = document.getElementById('open-shredder');
+        if (!btn) return;
+        btn.onclick = () => {
+            const content = `
+            <style>
+                @keyframes shredSlide {
+                    0% { transform: translateY(0) scaleY(1); opacity: 1; }
+                    30% { transform: translateY(10px) scaleY(0.95); opacity: 0.8; }
+                    100% { transform: translateY(120px) scaleY(0); opacity: 0; }
+                }
+                @keyframes shredStrips {
+                    0% { opacity: 0; transform: translateY(-10px); }
+                    20% { opacity: 1; transform: translateY(0); }
+                    80% { opacity: 1; }
+                    100% { opacity: 0; transform: translateY(60px); }
+                }
+                @keyframes successPop {
+                    0% { transform: scale(0.5); opacity: 0; }
+                    60% { transform: scale(1.1); }
+                    100% { transform: scale(1); opacity: 1; }
+                }
+                #shredder-textarea {
+                    width: 100%;
+                    height: 160px;
+                    border: 2px dashed #fca5a5;
+                    border-radius: 14px;
+                    padding: 16px;
+                    font-size: 0.95rem;
+                    font-family: 'Pretendard', sans-serif;
+                    color: #334155;
+                    background: #fff5f5;
+                    resize: none;
+                    transition: all 0.3s;
+                    outline: none;
+                    line-height: 1.6;
+                }
+                #shredder-textarea:focus {
+                    border-color: #ef4444;
+                    background: #fff;
+                    box-shadow: 0 0 0 3px rgba(239,68,68,0.1);
+                }
+                #shredder-btn {
+                    width: 100%;
+                    padding: 16px;
+                    background: linear-gradient(135deg, #ef4444, #b91c1c);
+                    color: white;
+                    border: none;
+                    border-radius: 14px;
+                    font-size: 1.1rem;
+                    font-weight: 800;
+                    cursor: pointer;
+                    margin-top: 16px;
+                    transition: transform 0.1s, box-shadow 0.2s;
+                    box-shadow: 0 4px 14px rgba(239,68,68,0.35);
+                    font-family: 'Pretendard', sans-serif;
+                }
+                #shredder-btn:active { transform: scale(0.97); }
+                #shredder-strips {
+                    display: none;
+                    gap: 3px;
+                    justify-content: center;
+                    margin: 12px 0;
+                }
+                .shred-strip {
+                    width: 6px;
+                    height: 80px;
+                    border-radius: 2px;
+                    animation: shredStrips 0.8s ease-in forwards;
+                }
+                #shredder-success {
+                    display: none;
+                    text-align: center;
+                    padding: 20px 0;
+                    animation: successPop 0.5s cubic-bezier(0.175,0.885,0.32,1.1) forwards;
+                }
+            </style>
+            <div style="text-align:center; margin-bottom:16px;">
+                <div style="font-size:2.5rem; margin-bottom:6px;">🗑️</div>
+                <p style="font-size:0.88rem; color:#64748b; line-height:1.5;">
+                    오늘 겪은 힘든 일, 다 적어보세요.<br>
+                    <strong style="color:#ef4444;">파쇄</strong>하면 영원히 사라져요. (저장 안 됨)
+                </p>
+            </div>
+            <div id="shredder-write-area">
+                <textarea id="shredder-textarea" placeholder="예: 클라이언트한테 욕 먹었다...&#10;팀장이 또 일을 떠넘겼다...&#10;그냥 다 힘들다 진짜..."></textarea>
+                <div id="shredder-strips"></div>
+                <button id="shredder-btn" onclick="doShred()">🗑️ 파쇄하기!</button>
+            </div>
+            <div id="shredder-success"></div>`;
+
+            openModal('🗑️ 감정 파쇄기', content);
+        };
+    }
+
+    const SHRED_MESSAGES = [
+        { emoji: '😮‍💨', msg: '파쇄 완료!\n후— 한결 가벼워졌죠? 수고했어요.' },
+        { emoji: '🌊', msg: '흘려보냈어요!\n나쁜 감정은 쓰레기통에, 당신은 앞으로!' },
+        { emoji: '🌿', msg: '전부 사라졌어요!\n오늘 하루도 충분히 잘 버텼어요.' },
+        { emoji: '🔥', msg: '태워버렸어요!\n복지사도 감정이 있는 사람이에요. 당연해요.' },
+        { emoji: '✨', msg: '파쇄 완료!\n힘든 걸 표현하는 것만으로도 치료예요.' },
+        { emoji: '🫂', msg: '다 날아갔어요!\n오늘도 최선을 다한 당신, 대단해요.' },
+        { emoji: '🧹', msg: '깨끗이 치웠어요!\n내일은 조금 더 나을 거예요. 응원해요.' }
+    ];
+
+    window.doShred = function () {
+        const ta = document.getElementById('shredder-textarea');
+        if (!ta || !ta.value.trim()) {
+            ta.style.borderColor = '#ef4444';
+            ta.placeholder = '먼저 힘든 일을 적어주세요!';
+            ta.focus();
+            setTimeout(() => { ta.style.borderColor = '#fca5a5'; }, 1500);
+            return;
+        }
+
+        // 파쇄 애니메이션
+        const stripped = document.getElementById('shredder-strips');
+        const writeArea = document.getElementById('shredder-write-area');
+        const successArea = document.getElementById('shredder-success');
+
+        // 텍스트 슬라이드 아웃
+        ta.style.animation = 'shredSlide 0.6s ease-in forwards';
+
+        // 파쇄 조각 생성
+        const colors = ['#ef4444', '#f97316', '#dc2626', '#fb923c', '#b91c1c', '#fca5a5', '#fed7aa'];
+        stripped.style.display = 'flex';
+        stripped.innerHTML = Array.from({ length: 22 }, (_, i) => {
+            const delay = (i * 0.03).toFixed(2);
+            const h = 60 + Math.random() * 50;
+            return `<div class="shred-strip" style="background:${colors[i % colors.length]}; height:${h}px; animation-delay:${delay}s;"></div>`;
+        }).join('');
+
+        setTimeout(() => {
+            writeArea.style.display = 'none';
+
+            // 위로 메시지 표시
+            const pick = SHRED_MESSAGES[Math.floor(Math.random() * SHRED_MESSAGES.length)];
+            successArea.style.display = 'block';
+            successArea.innerHTML = `
+                <div style="font-size:4rem; margin-bottom:16px;">${pick.emoji}</div>
+                <h3 style="font-size:1.15rem; font-weight:900; color:#1e293b; margin-bottom:10px; white-space:pre-line;">${pick.msg}</h3>
+                <p style="font-size:0.85rem; color:#94a3b8; margin-top:16px;">3초 후 자동으로 닫힙니다</p>`;
+
+            // 3초 후 모달 닫기
+            let countdown = 3;
+            const timer = setInterval(() => {
+                countdown--;
+                const p = successArea.querySelector('p');
+                if (p) p.textContent = `${countdown}초 후 자동으로 닫힙니다`;
+                if (countdown <= 0) {
+                    clearInterval(timer);
+                    const overlay = document.getElementById('modal-overlay');
+                    if (overlay) overlay.classList.remove('active');
+                }
+            }, 1000);
+        }, 800);
+    };
 
     /* --- User Request Modal (무엇이든 물어보살) --- */
     function initRequestModal() {
@@ -116,22 +282,87 @@
         }
     }
 
-    window.submitRequest = function () {
-        const content = document.getElementById('request-content').value;
-        if (!content.trim()) {
-            alert('요청 내용을 조금이라도 적어주셔야 사복천재가 알아들을 수 있어요! 😅');
+    window.subscribeNewsletter = function () {
+        const emailEl = document.getElementById('newsletter-email');
+        const agreeEl = document.getElementById('newsletter-agree');
+        const email = emailEl ? emailEl.value.trim() : '';
+
+        if (!email || !email.includes('@')) {
+            emailEl.style.borderColor = '#7c3aed';
+            emailEl.focus();
+            setTimeout(() => { emailEl.style.borderColor = '#e2e8f0'; }, 1500);
+            return;
+        }
+        if (!agreeEl || !agreeEl.checked) {
+            agreeEl.closest('label').style.borderColor = '#ef4444';
+            agreeEl.closest('label').style.background = '#fff5f5';
+            setTimeout(() => {
+                agreeEl.closest('label').style.borderColor = '#ede9fe';
+                agreeEl.closest('label').style.background = '#f8f5ff';
+            }, 1500);
+            return;
+        }
+        // 구독 완료 UI
+        const body = document.getElementById('modal-body');
+        if (body) {
+            body.innerHTML = `
+                <div style="text-align:center; padding:30px 0;">
+                    <div style="font-size:3.5rem; margin-bottom:16px; animation:float 3s ease-in-out infinite">💌</div>
+                    <h3 style="font-size:1.2rem; font-weight:900; color:#5b21b6; margin-bottom:10px;">오케이! 접수됐어 💜</h3>
+                    <p style="font-size:0.9rem; color:#64748b; line-height:1.6;">평생 무료로 비밀 편지 보내줄게!<br>팀장님 몰래 잘 읽어봐 😎</p>
+                </div>`;
+        }
+    };
+
+    window.submitRequest = async function () {
+        const content = document.getElementById('request-content')?.value?.trim();
+        const categoryEl = document.getElementById('request-category');
+        const category = categoryEl ? categoryEl.options[categoryEl.selectedIndex].text : '기타';
+
+        if (!content) {
+            const ta = document.getElementById('request-content');
+            ta.style.borderColor = '#f59e0b';
+            ta.focus();
+            setTimeout(() => { ta.style.borderColor = '#cbd5e1'; }, 1500);
             return;
         }
 
-        // In a real app, this would be an API call
-        const btn = document.querySelector('#modal-body .btn-primary');
-        btn.innerHTML = '전송 중... 🚀';
-        btn.style.opacity = '0.7';
+        if (!supabase) {
+            alert('서버 연결 오류. 잠시 후 다시 시도해주세요.');
+            return;
+        }
 
-        setTimeout(() => {
-            alert('🎉 소원이 접수되었습니다! 뚝딱뚝딱 만들어서 금방 돌아올게요!');
-            document.getElementById('close-modal').click();
-        }, 800);
+        // 버튼 로딩 상태
+        const btn = document.querySelector('#modal-body .btn-primary');
+        if (btn) { btn.innerHTML = '전송 중... 🚀'; btn.disabled = true; btn.style.opacity = '0.7'; }
+
+        try {
+            const { error } = await supabase.from('requests').insert([{
+                category,
+                content,
+                user_id: getOrCreateUserId(),
+                created_at: new Date().toISOString()
+            }]);
+
+            if (error) throw error;
+
+            // 성공 UI
+            const modalBody = document.getElementById('modal-body');
+            if (modalBody) {
+                modalBody.innerHTML = `
+                    <div style="text-align:center; padding:30px 0;">
+                        <div style="font-size:3.5rem; margin-bottom:16px;">🧞‍♂️</div>
+                        <h3 style="font-size:1.15rem; font-weight:900; color:#d97706; margin-bottom:10px;">소원 접수 완료! ✨</h3>
+                        <p style="font-size:0.9rem; color:#64748b; line-height:1.6;">
+                            사복천재가 확인하고<br>다음 업데이트 때 쓱- 추가해 드릴게요! 😊
+                        </p>
+                    </div>`;
+            }
+        } catch (err) {
+            console.error('Request submit error:', err);
+            if (btn) { btn.innerHTML = '램프 문지르기 (요청 전송)'; btn.disabled = false; btn.style.opacity = '1'; }
+            alert('전송 중 오류가 발생했어요. 잠시 후 다시 시도해주세요.');
+        }
     };
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -2236,10 +2467,13 @@ AI는 반드시 동일한 내용을 아래 **두 가지 버전**으로 각각 �
             <p style="font-size:0.75rem; color:#94a3b8; margin-bottom:16px;">시행일: 2025년 1월 1일 &nbsp;|&nbsp; 관련 법령: 개인정보 보호법</p>
 
             <h4 style="font-size:0.95rem; font-weight:800; color:#1e293b; margin-bottom:8px;">1. 수집하는 개인정보 항목</h4>
-            <p style="margin-bottom:16px;">서비스는 회원가입 없이 이용 가능하며, 다음의 정보만 자동 생성됩니다.<br>• <strong>익명 사용자 ID</strong>: 기기 브라우저 로컬스토리지에 저장되는 임의 식별자(예: user_abc123). 서버에 저장되지 않습니다.<br>• <strong>게시물 데이터</strong>: Q&A 및 커뮤니티 게시글·댓글 (익명 ID와 함께 Supabase에 저장)</p>
+            <p style="margin-bottom:16px;">서비스는 회원가입 없이 이용 가능하며, 다음의 정보를 수집합니다.<br>
+• <strong>익명 사용자 ID</strong>: 기기 브라우저 로컬스토리지에 저장되는 임의 식별자(예: user_abc123). 서버에 저장되지 않습니다.<br>
+• <strong>게시물 데이터</strong>: Q&A 및 커뮤니티 게시글·댓글 (익명 ID와 함께 Supabase에 저장)<br>
+• <strong>이메일 주소</strong>: 비밀 편지(뉴스레터) 구독 신청 시 이용자가 직접 입력하는 경우에만 수집. <span style="color:#ef4444; font-weight:700;">동의 없이 수집하지 않습니다.</span></p>
 
             <h4 style="font-size:0.95rem; font-weight:800; color:#1e293b; margin-bottom:8px;">2. 개인정보 수집 및 이용 목적</h4>
-            <p style="margin-bottom:16px;">① 게시물 작성자 본인 확인 (수정·삭제 권한 부여)<br>② 서비스 품질 개선을 위한 통계적 분석</p>
+            <p style="margin-bottom:16px;">① 게시물 작성자 본인 확인 (수정·삭제 권한 부여)<br>② 서비스 품질 개선을 위한 통계적 분석<br>③ 이메일: 뉴스레터(비밀 편지) 발송 목적으로만 사용. 광고·마케팅 목적으로 제3자에게 제공하지 않습니다.</p>
 
             <h4 style="font-size:0.95rem; font-weight:800; color:#1e293b; margin-bottom:8px;">3. 개인정보 보유 및 이용기간</h4>
             <p style="margin-bottom:16px;">게시물은 이용자가 삭제하거나 서비스 종료 시까지 보관됩니다. 익명 ID는 브라우저 데이터 삭제 시 자동 소멸됩니다.</p>
@@ -2340,6 +2574,7 @@ AI는 반드시 동일한 내용을 아래 **두 가지 버전**으로 각각 �
         initCommunity();
         initMyPageMenus();
         initHeaderButtons();
+        initShredder();
     };
 
 } catch (e) { console.error('Global JS Error:', e); }
