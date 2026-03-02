@@ -1032,27 +1032,52 @@ AI는 반드시 동일한 내용을 아래 **두 가지 버전**으로 각각 �
                             최저임금 10,320원 및 인상된 4대보험 요율이 적용되었습니다.
                         </div>
 
-                        <div style="display:flex; flex-direction:column; gap:16px; margin-bottom:20px;">
-                            <div>
-                                <label style="font-size:0.85rem; color:#475569; font-weight:700; display:block; margin-bottom:6px;">직원 월 기본급(세전) (원)</label>
-                                <input type="number" id="payroll-input" class="calc-input" placeholder="예: 2500000" oninput="calcPayrollTax()" style="font-size:1.1rem; padding:12px; border-color:#bae6fd; width:100%; box-sizing:border-box;">
-                            </div>
+                        <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:20px;">
                             
-                            <div style="background:#f8fafc; padding:16px; border-radius:12px; border:1px solid #e2e8f0;">
-                                <label style="font-size:0.85rem; color:#0369a1; font-weight:800; display:block; margin-bottom:10px;">🕒 시간외수당 연동 (OT)</label>
-                                <div style="display:flex; gap:12px; align-items:center;">
+                            <!-- 기본급 -->
+                            <div style="background:#f8fafc; padding:14px; border-radius:12px; border:1px solid #e2e8f0;">
+                                <label style="font-size:0.8rem; color:#475569; font-weight:700; display:block; margin-bottom:6px;">💼 기본급 (세전, 원)</label>
+                                <input type="number" id="payroll-input" class="calc-input" placeholder="예: 2,500,000" oninput="calcPayrollTax()" style="padding:10px; width:100%; box-sizing:border-box; border-color:#cbd5e1;">
+                            </div>
+
+                            <!-- 가족수당 -->
+                            <div style="background:#f8fafc; padding:14px; border-radius:12px; border:1px solid #e2e8f0;">
+                                <label style="font-size:0.8rem; color:#475569; font-weight:700; display:block; margin-bottom:6px;">👨‍👩‍👧 가족수당 (원)</label>
+                                <input type="number" id="payroll-family" value="0" class="calc-input" placeholder="예: 60,000" oninput="calcPayrollTax()" style="padding:10px; width:100%; box-sizing:border-box; border-color:#cbd5e1;">
+                                <p style="font-size:0.7rem; color:#94a3b8; margin-top:4px;">* 4대보험 과세 산정에 포함됩니다.</p>
+                            </div>
+
+                            <!-- 연장근무수당 -->
+                            <div style="background:#f0f9ff; padding:14px; border-radius:12px; border:1px solid #bae6fd;">
+                                <label style="font-size:0.8rem; color:#0369a1; font-weight:800; display:block; margin-bottom:8px;">🕒 연장근무수당 (OT 자동계산)</label>
+                                <div style="display:flex; gap:10px; align-items:center;">
                                     <div style="flex:1;">
-                                        <label style="font-size:0.75rem; color:#64748b; margin-bottom:4px; display:block;">연장/야간/휴일 근무 (시간)</label>
+                                        <label style="font-size:0.7rem; color:#64748b; display:block; margin-bottom:4px;">연장 근무 시간</label>
                                         <input type="number" id="payroll-ot-hours" value="0" min="0" class="calc-input" oninput="calcPayrollTax()" style="padding:8px; width:100%; box-sizing:border-box;">
                                     </div>
-                                    <div style="flex:1.5;">
-                                        <label style="font-size:0.75rem; color:#64748b; margin-bottom:4px; display:block;">계산된 시간외수당</label>
-                                        <div id="payroll-ot-amount" style="font-weight:700; color:#0369a1; font-size:1rem; padding:8px 0;">0원</div>
+                                    <div style="flex:1.4;">
+                                        <label style="font-size:0.7rem; color:#64748b; display:block; margin-bottom:4px;">계산된 연장수당</label>
+                                        <div id="payroll-ot-amount" style="font-weight:700; color:#0369a1; font-size:0.95rem; padding:8px 0;">0원</div>
                                     </div>
                                 </div>
-                                <p style="font-size:0.7rem; color:#94a3b8; margin-top:8px;">* 기본급 기준 통상임금의 150%로 자동 합산됩니다.</p>
+                                <p style="font-size:0.7rem; color:#94a3b8; margin-top:6px;">* 기본급 기준 통상임금(÷209)의 1.5배로 계산됩니다.</p>
                             </div>
+
+                            <!-- 정액급식비 -->
+                            <div style="background:#f0fdf4; padding:14px; border-radius:12px; border:1px solid #bbf7d0;">
+                                <label style="font-size:0.8rem; color:#166534; font-weight:700; display:block; margin-bottom:6px;">🍱 정액급식비 (원)</label>
+                                <input type="number" id="payroll-meal" value="0" class="calc-input" placeholder="예: 200,000" oninput="calcPayrollTax()" style="padding:10px; width:100%; box-sizing:border-box; border-color:#bbf7d0;">
+                                <p style="font-size:0.7rem; color:#94a3b8; margin-top:4px;">* 월 20만원 이하는 비과세 — 4대보험 및 소득세 제외됩니다.</p>
+                            </div>
+
+                            <!-- 총 지급 합계 -->
+                            <div style="background:#eff6ff; border:2px solid #bfdbfe; border-radius:12px; padding:14px; display:flex; justify-content:space-between; align-items:center;">
+                                <span style="font-size:0.9rem; font-weight:800; color:#1e40af;">📊 세전 총 지급액 (4대보험 과세 기준)</span>
+                                <span id="payroll-gross-display" style="font-weight:900; color:#1e40af; font-size:1.1rem;">0원</span>
+                            </div>
+
                         </div>
+
 
                         <!-- 1. 근로자 공제금액 및 실수령액 -->
                         <div style="background:#f0f9ff; border:1px solid #bae6fd; border-radius:12px; padding:16px; margin-bottom:16px;">
@@ -1495,27 +1520,44 @@ AI는 반드시 동일한 내용을 아래 **두 가지 버전**으로 각각 �
 
     window.calcPayrollTax = function () {
         const input = document.getElementById('payroll-input').value;
+        const familyInput = document.getElementById('payroll-family');
         const otHoursInput = document.getElementById('payroll-ot-hours').value;
+        const mealInput = document.getElementById('payroll-meal');
 
         if (!input || isNaN(input) || parseInt(input) <= 0) {
             document.querySelectorAll('#admin-content-payroll span[id^="pr-ee-"]').forEach(el => el.innerText = '0원');
             document.querySelectorAll('#admin-content-payroll span[id^="pr-er-"]').forEach(el => el.innerText = '0원');
             const otAmtEl = document.getElementById('payroll-ot-amount');
             if (otAmtEl) otAmtEl.innerText = '0원';
+            const grossDisp = document.getElementById('payroll-gross-display');
+            if (grossDisp) grossDisp.innerText = '0원';
             return;
         }
 
         const baseSalary = parseInt(input);
+        const familyAllowance = parseInt(familyInput ? familyInput.value : 0) || 0;
         const otHours = parseFloat(otHoursInput) || 0;
+        const mealAllowance = parseInt(mealInput ? mealInput.value : 0) || 0;
 
-        // 시간외수당 계산 (통상임금 209시간 기준 * 1.5배)
+        // 연장근무수당 계산 (통상임금 ÷209 × 1.5)
         const hourlyRate = baseSalary / 209;
         const otAmount = Math.floor(hourlyRate * 1.5 * otHours);
         const otAmtEl = document.getElementById('payroll-ot-amount');
         if (otAmtEl) otAmtEl.innerText = otAmount.toLocaleString() + '원';
 
-        // 총 급여 (과세대상)
-        const gross = baseSalary + otAmount;
+        // 정액급식비 비과세 처리: 월 20만원 이하는 4대보험·소득세 과세 제외
+        const mealTaxExempt = Math.min(mealAllowance, 200000);
+        const mealTaxable = Math.max(0, mealAllowance - 200000);
+
+        // 4대보험 과세 기준 (기본급 + 가족수당 + 연장수당 + 급식비 초과분)
+        const gross = baseSalary + familyAllowance + otAmount + mealTaxable;
+        // 세전 총 지급액 (전체 실 지급액)
+        const totalGross = baseSalary + familyAllowance + otAmount + mealAllowance;
+
+        const grossDisp = document.getElementById('payroll-gross-display');
+        if (grossDisp) grossDisp.innerText = totalGross.toLocaleString() + '원';
+
+
 
         // 1. 근로자 공제 (예수금) - 2026년 3월 기준
         // 국민연금: 4.75% (전체 9.5%)
