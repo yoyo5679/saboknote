@@ -29,23 +29,23 @@
     ];
 
     const LTC_THRESHOLDS_2026 = {
-        1: 2512900,
-        2: 2331200,
-        3: 1528200,
-        4: 1409700,
-        5: 1208900,
-        6: 676320 // 인지지원
+        1: 2712900,
+        2: 2531200,
+        3: 1628200,
+        4: 1539700,
+        5: 1408900,
+        6: 726320 // 인지지원
     };
 
     const LTC_HOURLY_RATES_2026 = {
-        30: 17450,
-        60: 25320,
-        90: 34120,
-        120: 43430,
-        150: 50640,
-        180: 57020,
-        210: 63530,
-        240: 70080
+        30: 18450,
+        60: 26320,
+        90: 35120,
+        120: 45430,
+        150: 52640,
+        180: 59020,
+        210: 65530,
+        240: 72080
     };
 
     /* --- Newsletter Reader (비밀 편지) --- */
@@ -909,10 +909,11 @@ AI는 반드시 동일한 내용을 아래 **두 가지 버전**으로 각각 �
         const openAdminModal = () => {
             const content = `
                 <div class="admin-tabs" style="display:flex; gap:6px; margin-bottom:24px; padding:4px; background:#f1f5f9; border-radius:12px; overflow-x:auto;">
-                    <button class="tab-btn active" id="tab-vat" onclick="switchAdminTab('vat')" style="flex:1; min-width:80px; padding:10px 4px; border:none; border-radius:8px; background:white; font-weight:700; color:var(--primary); box-shadow:0 2px 4px rgba(0,0,0,0.05); font-size:0.8rem; transition:all 0.2s; white-space:nowrap;">1. 부가세</button>
-                    <button class="tab-btn" id="tab-tax" onclick="switchAdminTab('tax')" style="flex:1; min-width:80px; padding:10px 4px; border:none; border-radius:8px; background:transparent; font-weight:600; color:#64748b; font-size:0.8rem; transition:all 0.2s; white-space:nowrap;">2. 강사료</button>
-                    <button class="tab-btn" id="tab-ltc" onclick="switchAdminTab('ltc')" style="flex:1; min-width:80px; padding:10px 4px; border:none; border-radius:8px; background:transparent; font-weight:600; color:#64748b; font-size:0.8rem; transition:all 0.2s; white-space:nowrap;">3. 장기요양</button>
-                    <button class="tab-btn" id="tab-payroll" onclick="switchAdminTab('payroll')" style="flex:1; min-width:80px; padding:10px 4px; border:none; border-radius:8px; background:transparent; font-weight:600; color:#64748b; font-size:0.8rem; transition:all 0.2s; white-space:nowrap;">4. 급여정산</button>
+                    <button class="tab-btn active" id="tab-vat" onclick="switchAdminTab('vat')" style="flex:1; min-width:60px; padding:10px 4px; border:none; border-radius:8px; background:white; font-weight:700; color:var(--primary); box-shadow:0 2px 4px rgba(0,0,0,0.05); font-size:0.75rem; transition:all 0.2s; white-space:nowrap;">1.부가세</button>
+                    <button class="tab-btn" id="tab-tax" onclick="switchAdminTab('tax')" style="flex:1; min-width:60px; padding:10px 4px; border:none; border-radius:8px; background:transparent; font-weight:600; color:#64748b; font-size:0.75rem; transition:all 0.2s; white-space:nowrap;">2.강사료</button>
+                    <button class="tab-btn" id="tab-payroll" onclick="switchAdminTab('payroll')" style="flex:1; min-width:60px; padding:10px 4px; border:none; border-radius:8px; background:transparent; font-weight:600; color:#64748b; font-size:0.75rem; transition:all 0.2s; white-space:nowrap;">3.급여정산</button>
+                    <button class="tab-btn" id="tab-ltc" onclick="switchAdminTab('ltc')" style="flex:1; min-width:60px; padding:10px 4px; border:none; border-radius:8px; background:transparent; font-weight:600; color:#64748b; font-size:0.75rem; transition:all 0.2s; white-space:nowrap;">4.장기요양</button>
+                    <button class="tab-btn" id="tab-budget" onclick="switchAdminTab('budget')" style="flex:1; min-width:60px; padding:10px 4px; border:none; border-radius:8px; background:transparent; font-weight:600; color:#64748b; font-size:0.75rem; transition:all 0.2s; white-space:nowrap;">5.단가계산</button>
                 </div>
 
                 <div id="admin-content-vat" class="tab-content" style="animation: fadeIn 0.3s ease;">
@@ -956,48 +957,21 @@ AI는 반드시 동일한 내용을 아래 **두 가지 버전**으로 각각 �
                         <p id="tax-desc" style="font-size:0.75rem; color:#64748b; margin-bottom:16px; background:#f1f5f9; padding:10px; border-radius:8px;">💡 <strong>사업소득(3.3%)</strong>: 직업적, 계속적, 반복적으로 강의를 하는 전문 강사 등</p>
 
                         <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:16px;">
-                            <label style="font-size:0.85rem; color:#475569; font-weight:600;">강사에게 지급할 '총액(Gross)' (원)</label>
+                            <label style="font-size:0.85rem; color:#475569; font-weight:600;">강사비 총액(Gross) (원)</label>
                             <input type="number" id="instructor-input" class="calc-input" placeholder="예: 240000" oninput="calcInstructorTax()" style="font-size:1.1rem; padding:12px;">
                         </div>
                         
                         <div style="background:#eef2ff; border:1px solid #c7d2fe; border-radius:12px; padding:16px;">
                             <div style="display:flex; justify-content:space-between; margin-bottom:12px; padding-bottom:8px; border-bottom:1px solid #c7d2fe;">
-                                <span style="font-weight:600; color:#4f46e5; font-size:0.9rem;">공제 세액 (원천징수 합계)</span>
+                                <span id="inst-tax-label" style="font-weight:600; color:#4f46e5; font-size:0.9rem;">사업소득세 (3.3%)</span>
                                 <span id="inst-tax-total" style="font-weight:700; color:#3730a3;">0원</span>
                             </div>
                             <div style="display:flex; justify-content:space-between;">
-                                <span style="font-weight:800; color:#312e81; font-size:1rem;">💰 강사님 실수령액 (Net)</span>
+                                <span style="font-weight:800; color:#312e81; font-size:1rem;">💰 강사 실수령액</span>
                                 <span id="inst-net" style="font-weight:900; color:#e11d48; font-size:1.2rem;">0원</span>
                             </div>
                         </div>
                     </div>
-
-                    <!-- 1인당 예산 검열기 -->
-                    <div class="step-card beautiful-card" id="budget-checker-card" style="padding:20px; transition:all 0.3s; border:2px solid transparent;">
-                        <h4 style="color:#0f172a; font-weight:800; font-size:1.1rem; margin-bottom:8px;">🍽️ 1인당 단가 검열기 (식대/다과)</h4>
-                        
-                        <div style="display:flex; gap:12px; margin-bottom:16px; margin-top:16px;">
-                            <div style="flex:1;">
-                                <label style="font-size:0.8rem; color:#64748b; font-weight:600;">총 영수증 금액</label>
-                                <input type="number" id="budget-total" class="calc-input" style="padding:10px;" oninput="checkBudget()">
-                            </div>
-                            <div style="flex:1;">
-                                <label style="font-size:0.8rem; color:#64748b; font-weight:600;">참석 인원 (명)</label>
-                                <input type="number" id="budget-people" class="calc-input" style="padding:10px;" oninput="checkBudget()">
-                            </div>
-                        </div>
-
-                        <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px; background:#f8fafc; padding:12px; border-radius:12px;">
-                            <label style="font-size:0.8rem; color:#475569; font-weight:800; flex:1;">W4C 지침 내부 한도액</label>
-                            <input type="number" id="budget-limit" value="8000" class="calc-input" style="width:100px; padding:8px; text-align:right" oninput="checkBudget()">
-                            <span style="font-size:0.8rem; color:#64748b;">원</span>
-                        </div>
-
-                        <div id="budget-feedback" style="padding:16px; border-radius:12px; text-align:center; background:#f1f5f9; font-weight:700; color:#64748b; transition:all 0.3s ease;">
-                            금액과 인원을 입력해주세요.
-                        </div>
-                    </div>
-
                 </div>
 
                 <div id="admin-content-ltc" class="tab-content" style="display:none; animation: fadeIn 0.3s ease;">
@@ -1048,16 +1022,36 @@ AI는 반드시 동일한 내용을 아래 **두 가지 버전**으로 각각 �
                         </div>
                         <button class="btn-primary" id="run-ltc-calc" style="width:100%; margin-top:20px; padding:14px; font-size:1.05rem;">정밀 계산하기</button>
                         <div id="ltc-result" class="hidden" style="margin-top:20px;"></div>
+                    </div>
                 </div>
 
                 <div id="admin-content-payroll" class="tab-content" style="display:none; animation: fadeIn 0.3s ease;">
                     <div class="step-card beautiful-card" style="padding:20px; border-color:#e0f2fe;">
-                        <h4 style="color:#0284c7; font-weight:800; font-size:1.1rem; margin-bottom:8px;">💼 4대보험 및 급여 정산기</h4>
-                        <p style="font-size:0.8rem; color:#0369a1; margin-bottom:16px;">세전 기본급을 입력하면 직원 공제액과 기관 부담금이 자동 계산됩니다.</p>
-                        
-                        <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:16px;">
-                            <label style="font-size:0.85rem; color:#475569; font-weight:600;">직원 월 기본급(세전) (원)</label>
-                            <input type="number" id="payroll-input" class="calc-input" placeholder="예: 2500000" oninput="calcPayrollTax()" style="font-size:1.1rem; padding:12px; border-color:#bae6fd;">
+                        <div style="background:#fffbeb; border:1px solid #fde68a; padding:12px; border-radius:10px; margin-bottom:16px; font-size:0.85rem; color:#92400e;">
+                            ⚠️ <strong>2026년 3월 개정 기준 적용됨</strong><br>
+                            최저임금 10,320원 및 인상된 4대보험 요율이 적용되었습니다.
+                        </div>
+
+                        <div style="display:flex; flex-direction:column; gap:16px; margin-bottom:20px;">
+                            <div>
+                                <label style="font-size:0.85rem; color:#475569; font-weight:700; display:block; margin-bottom:6px;">직원 월 기본급(세전) (원)</label>
+                                <input type="number" id="payroll-input" class="calc-input" placeholder="예: 2500000" oninput="calcPayrollTax()" style="font-size:1.1rem; padding:12px; border-color:#bae6fd; width:100%; box-sizing:border-box;">
+                            </div>
+                            
+                            <div style="background:#f8fafc; padding:16px; border-radius:12px; border:1px solid #e2e8f0;">
+                                <label style="font-size:0.85rem; color:#0369a1; font-weight:800; display:block; margin-bottom:10px;">🕒 시간외수당 연동 (OT)</label>
+                                <div style="display:flex; gap:12px; align-items:center;">
+                                    <div style="flex:1;">
+                                        <label style="font-size:0.75rem; color:#64748b; margin-bottom:4px; display:block;">연장/야간/휴일 근무 (시간)</label>
+                                        <input type="number" id="payroll-ot-hours" value="0" min="0" class="calc-input" oninput="calcPayrollTax()" style="padding:8px; width:100%; box-sizing:border-box;">
+                                    </div>
+                                    <div style="flex:1.5;">
+                                        <label style="font-size:0.75rem; color:#64748b; margin-bottom:4px; display:block;">계산된 시간외수당</label>
+                                        <div id="payroll-ot-amount" style="font-weight:700; color:#0369a1; font-size:1rem; padding:8px 0;">0원</div>
+                                    </div>
+                                </div>
+                                <p style="font-size:0.7rem; color:#94a3b8; margin-top:8px;">* 기본급 기준 통상임금의 150%로 자동 합산됩니다.</p>
+                            </div>
                         </div>
 
                         <!-- 1. 근로자 공제금액 및 실수령액 -->
@@ -1067,13 +1061,13 @@ AI는 반드시 동일한 내용을 아래 **두 가지 버전**으로 각각 �
                             </h5>
                             
                             <div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:0.85rem; color:#334155;">
-                                <span>국민연금 (4.5%)</span><span id="pr-ee-pension">0원</span>
+                                <span>국민연금 (4.75%)</span><span id="pr-ee-pension">0원</span>
                             </div>
                             <div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:0.85rem; color:#334155;">
-                                <span>건강보험 (3.545%)</span><span id="pr-ee-health">0원</span>
+                                <span>건강보험 (3.595%)</span><span id="pr-ee-health">0원</span>
                             </div>
                             <div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:0.85rem; color:#334155;">
-                                <span>장기요양 (건보료의 12.95%)</span><span id="pr-ee-care">0원</span>
+                                <span>장기요양 (건보료의 13.14%)</span><span id="pr-ee-care">0원</span>
                             </div>
                             <div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:0.85rem; color:#334155;">
                                 <span>고용보험 (0.9%)</span><span id="pr-ee-emp">0원</span>
@@ -1094,7 +1088,7 @@ AI는 반드시 동일한 내용을 아래 **두 가지 버전**으로 각각 �
                             </div>
 
                             <div style="display:flex; justify-content:space-between; align-items:center;">
-                                <span style="font-weight:800; color:#e11d48; font-size:1.05rem;">💰 직원 실수령액</span>
+                                <span style="font-weight:800; color:#e11d48; font-size:1.05rem;">💰 직원 실수령액 (합계)</span>
                                 <span id="pr-ee-net" style="font-weight:900; color:#be123c; font-size:1.3rem;">0원</span>
                             </div>
                         </div>
@@ -1106,13 +1100,13 @@ AI는 반드시 동일한 내용을 아래 **두 가지 버전**으로 각각 �
                             </h5>
                             
                             <div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:0.85rem; color:#475569;">
-                                <span>국민연금 (4.5%)</span><span id="pr-er-pension">0원</span>
+                                <span>국민연금 (4.75%)</span><span id="pr-er-pension">0원</span>
                             </div>
                             <div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:0.85rem; color:#475569;">
-                                <span>건강보험 (3.545%)</span><span id="pr-er-health">0원</span>
+                                <span>건강보험 (3.595%)</span><span id="pr-er-health">0원</span>
                             </div>
                             <div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:0.85rem; color:#475569;">
-                                <span>장기요양 (건보료의 12.95%)</span><span id="pr-er-care">0원</span>
+                                <span>장기요양 (건보료의 13.14%)</span><span id="pr-er-care">0원</span>
                             </div>
                             <div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:0.85rem; color:#475569;">
                                 <span>고용보험 (1.15% 가설정*)</span><span id="pr-er-emp">0원</span>
@@ -1128,6 +1122,33 @@ AI는 반드시 동일한 내용을 아래 **두 가지 버전**으로 각각 �
                             <p style="font-size:0.7rem; color:#94a3b8; margin-top:8px; line-height:1.4;">
                                 * 고용/산재보험료율은 기관 성격(법인 등)과 규모에 따라 약간 다를 수 있습니다. 소득세는 국세청 간이세액표에 따른 '대략적인 금액(부양가족 1인 기준)'으로 실제 프로그램과 백원이하 오차가 있을 수 있습니다.
                             </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="admin-content-budget" class="tab-content" style="display:none; animation: fadeIn 0.3s ease;">
+                    <div class="step-card beautiful-card" id="budget-checker-card" style="padding:20px; transition:all 0.3s; border:2px solid transparent;">
+                        <h4 style="color:#0f172a; font-weight:800; font-size:1.1rem; margin-bottom:8px;">🍽️ 단가 계산기 (식대 등 1인당 단가 검증)</h4>
+                        
+                        <div style="display:flex; gap:12px; margin-bottom:16px; margin-top:16px;">
+                            <div style="flex:1;">
+                                <label style="font-size:0.8rem; color:#64748b; font-weight:600;">총 영수증 금액</label>
+                                <input type="number" id="budget-total" class="calc-input" style="padding:10px;" oninput="checkBudget()">
+                            </div>
+                            <div style="flex:1;">
+                                <label style="font-size:0.8rem; color:#64748b; font-weight:600;">참석 인원 (명)</label>
+                                <input type="number" id="budget-people" class="calc-input" style="padding:10px;" oninput="checkBudget()">
+                            </div>
+                        </div>
+
+                        <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px; background:#f8fafc; padding:12px; border-radius:12px;">
+                            <label style="font-size:0.8rem; color:#475569; font-weight:800; flex:1;">기준 한도액</label>
+                            <input type="number" id="budget-limit" value="8000" class="calc-input" style="width:100px; padding:8px; text-align:right" oninput="checkBudget()">
+                            <span style="font-size:0.8rem; color:#64748b;">원</span>
+                        </div>
+
+                        <div id="budget-feedback" style="padding:16px; border-radius:12px; text-align:center; background:#f1f5f9; font-weight:700; color:#64748b; transition:all 0.3s ease;">
+                            금액과 인원을 입력해주세요.
                         </div>
                     </div>
                 </div>
@@ -1272,6 +1293,7 @@ AI는 반드시 동일한 내용을 아래 **두 가지 버전**으로 각각 �
         const input = document.getElementById('trash-input');
         const btn = document.getElementById('btn-trash');
         const anim = document.getElementById('trash-animation');
+        const card = input.closest('.step-card');
 
         if (!input.value.trim()) {
             alert('버릴 감정이 없으신가요? 다행이네요! 🥰');
@@ -1281,33 +1303,89 @@ AI는 반드시 동일한 내용을 아래 **두 가지 버전**으로 각각 �
         input.disabled = true;
         btn.disabled = true;
 
-        // Show shredding animation
+        const quotes = [
+            "당신의 다정함이 머문 자리마다 누군가의 삶은 조용히 숨통을 틔웁니다. 그 보이지 않는 기적의 주인이 바로 당신임을 잊지 마세요.",
+            "타인의 눈물을 닦아주느라 축축해진 당신의 소매를 봅니다. 오늘만큼은 그 젖은 마음을 햇살 좋은 곳에 널어두고 쉬어가시길 바랍니다.",
+            "누군가의 무너진 세계를 지탱하느라 당신의 어깨가 참 많이 휘었습니다. 무거운 소명은 잠시 내려놓고 당신이라는 계절을 만끽하세요.",
+            "당신이 쏟은 진심은 결코 사라지지 않습니다. 그것은 타인의 생을 지탱하는 단단한 뿌리가 되어 훗날 울창한 숲으로 돌아올 것입니다.",
+            "세상의 아픔을 정면으로 마주하는 당신의 용기는 숭고합니다. 하지만 기억하세요, 당신 또한 누군가에게는 지켜주고 싶은 소중한 사람입니다.",
+            "때로는 아무것도 해줄 수 없다는 무력감이 당신을 옥죄겠지만, 곁에 머물러주는 그 정적만으로도 충분히 위대한 위로였습니다.",
+            "흔들리며 피는 꽃이 아름다운 것은 그 안에 치열한 생의 의지가 담겼기 때문입니다. 지금의 흔들림 또한 당신을 더 깊은 향기로 빚어낼 것입니다.",
+            "타인의 삶에 이정표를 세워주느라 정작 자신의 길을 잃지는 않았나요? 오늘은 당신의 마음이 가리키는 곳으로만 걸음을 옮겨보길 바랍니다.",
+            "당신이 건넨 따뜻한 말 한마디는 누군가의 겨울을 끝내는 봄바람이었습니다. 그 다정함의 온도가 당신의 가슴 속에도 머길 소망합니다.",
+            "그늘진 곳에 햇살을 끌어다 쓰는 일은 참 고단한 일이지요. 당신이 밝힌 그 빛에 당신의 그림자가 너무 짙어지지 않도록 스스로를 안아주세요.",
+            "완벽한 해결보다 귀한 것은 끝까지 놓지 않는 손길입니다. 당신의 서툰 진심이 누군가에게는 생에 단 한 번뿐인 구원이었습니다.",
+            "마음의 소진은 당신이 게을러서가 아니라, 너무나 뜨겁게 타올랐기 때문입니다. 타버린 재를 털어내고 다시 온기를 채울 시간을 허락하세요.",
+            "누군가의 슬픔에 전염되는 것은 당신이 약해서가 아니라 공감이라는 고귀한 능력을 가졌기 때문입니다. 그 눈물은 결국 꽃이 될 것입니다.",
+            "책임감이라는 이름의 닻을 내리고 거친 바다를 항해하는 당신, 잠시 항구에 머물며 비바람에 깎인 마음을 수선해도 괜찮습니다.",
+            "당신이 읽어 내려간 클라이언트의 삶 속에는 우리 시대의 가장 아픈 문장들이 있었습니다. 그 문장 끝에 당신이 찍어준 쉼표 하나가 참 큽니다.",
+            "세상은 당신의 성과를 숫자로 측정하려 하겠지만, 당신이 지켜낸 한 사람의 존엄은 무엇으로도 환산할 수 없는 우주입니다.",
+            "차가운 제도와 뜨거운 현장 사이에서 당신은 늘 팽팽한 외줄을 탑니다. 그 아슬아슬한 균형을 유지하느라 겪는 통증을 깊이 공감합니다.",
+            "당신의 선의가 날카로운 거절에 상처 입었을 때, 그 상처 위로 새살을 돋게 할 약은 '오늘도 정말 잘 살았다'는 당신의 자기 고백입니다.",
+            "타인의 삶을 구하려다 정작 자신의 삶이 소홀해질 때가 있지요. 당신의 행복이 전제되지 않은 희생은 지속될 수 없습니다. 당신이 먼저 웃으세요.",
+            "어둠이 깊을수록 별은 더 밝게 빛납니다. 당신은 그 깊은 절망의 밤을 건너는 이들에게 유일하고도 찬란한 길잡이별이었습니다.",
+            "모든 짐을 혼자 짊어지려 하지 마세요. 당신 또한 불완전한 인간이기에, 도움을 청하고 약해질 권리가 있습니다. 그것이 진짜 강함입니다.",
+            "당신이 머문 자리마다 세상의 온도가 0.1도씩 올라갔습니다. 그 작은 변화가 모여 비로소 겨울을 이겨낼 힘이 된다는 것을 믿으세요.",
+            "진심은 소리 없이 전해집니다. 당장은 아무 변화가 없는 것 같아도, 당신이 심은 다정함은 클라이언트의 생 어딘가에서 반드시 발아할 것입니다.",
+            "지친 당신의 뒷모습에서 숭고한 침묵을 봅니다. 누구에게도 말하지 못한 고독한 투쟁을 우리는 압니다. 당신은 참으로 귀한 사람입니다.",
+            "비포장도로 같은 삶을 걷는 이들에게 당신은 기꺼이 신발이 되어주었습니다. 이제는 그 낡은 신발을 벗고 폭신한 구름 위를 걷듯 쉬십시오.",
+            "당신이 지닌 전문성은 단순한 지식이 아니라, 사람에 대한 예의와 연민을 잃지 않는 마음 그 자체입니다. 그 마음이 당신의 가장 큰 힘입니다.",
+            "한 사람의 인생이 통째로 몰려올 때, 당신은 기꺼이 그 파도를 온몸으로 받아냈습니다. 그 결연함이 있었기에 한 생명이 다시 숨 쉽니다.",
+            "쉼표 없이 달려온 당신의 캘린더에 오늘 하루 '나를 위한 안부'를 적어 넣어주세요. 당신은 다른 누구보다 먼저 위로받아야 할 사람입니다.",
+            "당신의 헌신은 타인의 상처를 덮어주는 비단결 같습니다. 그 결이 상하지 않도록 스스로를 귀하게 대하는 법을 잊지 마시길 바랍니다.",
+            "오늘 당신이 건넌 그 험난한 고개 너머에, 당신이 구한 이들의 평온한 일상이 있습니다. 당신은 이미 충분히, 아니 넘치도록 훌륭합니다."
+        ];
+        const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+
+        // Show shredding animation with shake effect
         anim.classList.remove('hidden');
+        anim.innerHTML = `
+            <div style="font-size:3rem; margin-bottom:12px; animation: pulse 0.5s infinite alternate;">📄🪚</div>
+            <h3 style="color:#0f172a; font-weight:800; font-size:1.1rem; margin-bottom:8px;">착착착 파쇄 중...</h3>
+            <p style="color:#64748b; font-size:0.9rem; padding: 0 10px; line-height: 1.6; word-break: keep-all;">${randomQuote}</p>
+        `;
         anim.style.animation = 'fadeIn 0.3s ease';
+
+        if (card) {
+            let shakeInterval = setInterval(() => {
+                const x = Math.random() * 6 - 3;
+                const y = Math.random() * 6 - 3;
+                card.style.transform = `translate(${x}px, ${y}px)`;
+            }, 50);
+            setTimeout(() => {
+                clearInterval(shakeInterval);
+                card.style.transform = 'translate(0, 0)';
+            }, 3000);
+        }
 
         setTimeout(() => {
             anim.classList.add('hidden');
             input.value = '';
             input.disabled = false;
             btn.disabled = false;
-            alert('🗑️ 감정 분리수거함이 비워졌습니다. 훌훌 털어버리세요!');
-        }, 2500);
+            alert('🗑️ 감정 분리수거함이 비워졌습니다. 마음이 훨씬 가벼워지셨길 바라요! ✨');
+        }, 3000);
     };
 
 
-    // Global functions for Admin calculator scoping
     window.switchAdminTab = function (tabName) {
         const contentVat = document.getElementById('admin-content-vat');
         const contentTax = document.getElementById('admin-content-tax');
         const contentLtc = document.getElementById('admin-content-ltc');
+        const contentPayroll = document.getElementById('admin-content-payroll');
+        const contentBudget = document.getElementById('admin-content-budget');
 
         if (contentVat) contentVat.style.display = tabName === 'vat' ? 'block' : 'none';
         if (contentTax) contentTax.style.display = tabName === 'tax' ? 'block' : 'none';
         if (contentLtc) contentLtc.style.display = tabName === 'ltc' ? 'block' : 'none';
+        if (contentPayroll) contentPayroll.style.display = tabName === 'payroll' ? 'block' : 'none';
+        if (contentBudget) contentBudget.style.display = tabName === 'budget' ? 'block' : 'none';
 
         const btnVat = document.getElementById('tab-vat');
         const btnTax = document.getElementById('tab-tax');
         const btnLtc = document.getElementById('tab-ltc');
+        const btnPayroll = document.getElementById('tab-payroll');
+        const btnBudget = document.getElementById('tab-budget');
 
         const setActive = (btn) => {
             if (!btn) return;
@@ -1325,11 +1403,13 @@ AI는 반드시 동일한 내용을 아래 **두 가지 버전**으로 각각 �
             btn.style.boxShadow = 'none';
         };
 
-        setInactive(btnVat); setInactive(btnTax); setInactive(btnLtc);
+        setInactive(btnVat); setInactive(btnTax); setInactive(btnLtc); setInactive(btnPayroll); setInactive(btnBudget);
 
         if (tabName === 'vat') setActive(btnVat);
         else if (tabName === 'tax') setActive(btnTax);
         else if (tabName === 'ltc') setActive(btnLtc);
+        else if (tabName === 'payroll') setActive(btnPayroll);
+        else if (tabName === 'budget') setActive(btnBudget);
     };
 
     window.calcVAT = function () {
@@ -1346,13 +1426,14 @@ AI는 반드시 동일한 내용을 아래 **두 가지 버전**으로 각각 �
 
         document.getElementById('vat-supply').innerText = supply.toLocaleString() + '원';
         document.getElementById('vat-tax').innerText = tax.toLocaleString() + '원';
-        document.getElementById('vat-copy-text').innerText = `공급가액 ${supply.toLocaleString()}원 / 부가세 ${tax.toLocaleString()}원`;
+        document.getElementById('vat-copy-text').innerText = `공급가액 ${supply.toLocaleString()} 원 / 부가세 ${tax.toLocaleString()} 원`;
     };
 
     window.setTaxType = function (type) {
         const btnBus = document.getElementById('btn-tax-business');
         const btnOth = document.getElementById('btn-tax-other');
         const desc = document.getElementById('tax-desc');
+        const taxLabel = document.getElementById('inst-tax-label');
 
         if (type === 'business') {
             window.currentTaxRate = 0.033;
@@ -1365,6 +1446,7 @@ AI는 반드시 동일한 내용을 아래 **두 가지 버전**으로 각각 �
             btnOth.style.color = '#475569';
 
             desc.innerHTML = `💡 <strong>사업소득(3.3%)</strong>: 직업적, 계속적, 반복적으로 강의를 하는 전문 강사 등`;
+            if (taxLabel) taxLabel.innerText = "사업소득세 (3.3%)";
         } else {
             window.currentTaxRate = 0.088;
             btnOth.classList.remove('btn-outline');
@@ -1375,7 +1457,8 @@ AI는 반드시 동일한 내용을 아래 **두 가지 버전**으로 각각 �
             btnBus.style.background = 'white';
             btnBus.style.color = '#475569';
 
-            desc.innerHTML = `💡 <strong>기타소득(8.8%)</strong>: 일시적, 우발적으로 특강 등을 진행하는 비전문 강사 등<br><span style="font-size:0.75rem; color:#ef4444">* 세전 125,000원(실수령액 114,000원) 이하는 과세최저한으로 세금 감면</span>`;
+            desc.innerHTML = `💡 <strong>기타소득(8.8%)</strong>: 일시적, 우발적으로 특강 등을 진행하는 비전문 강사 등 < br > <span style="font-size:0.75rem; color:#ef4444">* 세전 125,000원(실수령액 114,000원) 이하는 과세최저한으로 세금 감면</span>`;
+            if (taxLabel) taxLabel.innerText = "기타소득세 (8.8%)";
         }
         calcInstructorTax();
     };
@@ -1385,41 +1468,122 @@ AI는 반드시 동일한 내용을 아래 **두 가지 버전**으로 각각 �
         const rate = window.currentTaxRate; // 0.033 or 0.088
         const isOther = rate === 0.088;
 
-        if (!input || isNaN(input)) {
-            document.getElementById('inst-tax-national').innerText = '0원';
-            document.getElementById('inst-tax-local').innerText = '0원';
-            document.getElementById('inst-net').innerText = '0원';
+        const elTotal = document.getElementById('inst-tax-total');
+        const elNet = document.getElementById('inst-net');
+
+        if (!input || isNaN(input) || parseInt(input) <= 0) {
+            if (elTotal) elTotal.innerText = '0원';
+            if (elNet) elNet.innerText = '0원';
             return;
         }
 
         const gross = parseInt(input);
-        let nationalTax = 0; // 국세 (소득세)
-        let localTax = 0;    // 지방세 (지방소득세)
-        let net = 0;         // 실수령액
+        let tax = 0;
+        let net = 0;
 
         if (isOther && gross <= 125000) {
-            // 기타소득 (8.8%) 중 과세최저한 (125,000원 이하 세금 0원)
-            nationalTax = 0;
-            localTax = 0;
+            tax = 0;
             net = gross;
         } else {
-            // 원단위 절사 로직 적용 (소득세, 지방소득세 각각)
-            const taxBaseRate = isOther ? 0.08 : 0.03; // 소득세율 (8% or 3%)
-
-            // 소득세: 10원 미만 절사
-            nationalTax = Math.floor((gross * taxBaseRate) / 10) * 10;
-
-            // 지방소득세: 소득세의 10%, 10원 미만 절사
-            localTax = Math.floor((nationalTax * 0.1) / 10) * 10;
-
-            // 실수령액 계산
-            net = gross - (nationalTax + localTax);
+            tax = Math.floor((gross * rate) / 10) * 10;
+            net = gross - tax;
         }
 
-        // 화면 갱신
-        document.getElementById('inst-tax-national').innerText = nationalTax.toLocaleString() + '원';
-        document.getElementById('inst-tax-local').innerText = localTax.toLocaleString() + '원';
-        document.getElementById('inst-net').innerText = net.toLocaleString() + '원';
+        if (elTotal) elTotal.innerText = tax.toLocaleString() + '원';
+        if (elNet) elNet.innerText = net.toLocaleString() + '원';
+    };
+
+    window.calcPayrollTax = function () {
+        const input = document.getElementById('payroll-input').value;
+        const otHoursInput = document.getElementById('payroll-ot-hours').value;
+
+        if (!input || isNaN(input) || parseInt(input) <= 0) {
+            document.querySelectorAll('#admin-content-payroll span[id^="pr-ee-"]').forEach(el => el.innerText = '0원');
+            document.querySelectorAll('#admin-content-payroll span[id^="pr-er-"]').forEach(el => el.innerText = '0원');
+            const otAmtEl = document.getElementById('payroll-ot-amount');
+            if (otAmtEl) otAmtEl.innerText = '0원';
+            return;
+        }
+
+        const baseSalary = parseInt(input);
+        const otHours = parseFloat(otHoursInput) || 0;
+
+        // 시간외수당 계산 (통상임금 209시간 기준 * 1.5배)
+        const hourlyRate = baseSalary / 209;
+        const otAmount = Math.floor(hourlyRate * 1.5 * otHours);
+        const otAmtEl = document.getElementById('payroll-ot-amount');
+        if (otAmtEl) otAmtEl.innerText = otAmount.toLocaleString() + '원';
+
+        // 총 급여 (과세대상)
+        const gross = baseSalary + otAmount;
+
+        // 1. 근로자 공제 (예수금) - 2026년 3월 기준
+        // 국민연금: 4.75% (전체 9.5%)
+        const eePension = Math.floor((gross * 0.0475) / 10) * 10;
+        // 건강보험: 3.595% (전체 7.19%)
+        const eeHealth = Math.floor((gross * 0.03595) / 10) * 10;
+        // 장기요양: 건보료의 13.14% (0.9448% / 7.19%)
+        const eeCare = Math.floor((eeHealth * 0.1314) / 10) * 10;
+        // 고용보험: 0.9%
+        const eeEmp = Math.floor((gross * 0.009) / 10) * 10;
+
+        // 소득세 간이 계산 (대략적 3%)
+        const eeIncTax = Math.floor((gross * 0.03) / 10) * 10;
+        const eeLocTax = Math.floor((eeIncTax * 0.1) / 10) * 10;
+
+        const eeTotal = eePension + eeHealth + eeCare + eeEmp + eeIncTax + eeLocTax;
+        const eeNet = gross - eeTotal;
+
+        const elPension = document.getElementById('pr-ee-pension');
+        if (elPension) elPension.innerText = eePension.toLocaleString() + '원';
+
+        const elHealth = document.getElementById('pr-ee-health');
+        if (elHealth) elHealth.innerText = eeHealth.toLocaleString() + '원';
+
+        const elCare = document.getElementById('pr-ee-care');
+        if (elCare) elCare.innerText = eeCare.toLocaleString() + '원';
+
+        const elEmp = document.getElementById('pr-ee-emp');
+        if (elEmp) elEmp.innerText = eeEmp.toLocaleString() + '원';
+
+        const elIncTax = document.getElementById('pr-ee-incTax');
+        if (elIncTax) elIncTax.innerText = eeIncTax.toLocaleString() + '원';
+
+        const elLocTax = document.getElementById('pr-ee-locTax');
+        if (elLocTax) elLocTax.innerText = eeLocTax.toLocaleString() + '원';
+
+        const elTotalDeduct = document.getElementById('pr-ee-totalDeduct');
+        if (elTotalDeduct) elTotalDeduct.innerText = eeTotal.toLocaleString() + '원';
+
+        const elNetVal = document.getElementById('pr-ee-net');
+        if (elNetVal) elNetVal.innerText = eeNet.toLocaleString() + '원';
+
+        // 2. 기관 부담금 - 2026년 3월 기준
+        const erPension = eePension;
+        const erHealth = eeHealth;
+        const erCare = eeCare;
+        const erEmp = Math.floor((gross * 0.0115) / 10) * 10; // 가설정 유지
+        const erInd = Math.floor((gross * 0.01) / 10) * 10; // 가설정 유지
+
+        const erTotal = erPension + erHealth + erCare + erEmp + erInd;
+
+        const erElPension = document.getElementById('pr-er-pension');
+        if (erElPension) erElPension.innerText = erPension.toLocaleString() + '원';
+
+        const erElHealth = document.getElementById('pr-er-health');
+        if (erElHealth) erElHealth.innerText = erHealth.toLocaleString() + '원';
+
+        const erElCare = document.getElementById('pr-er-care');
+        if (erElCare) erElCare.innerText = erCare.toLocaleString() + '원';
+
+        const erElEmp = document.getElementById('pr-er-emp');
+        if (erElEmp) erElEmp.innerText = erEmp.toLocaleString() + '원';
+
+        const erElInd = document.getElementById('pr-er-ind');
+        if (erElInd) erElInd.innerText = erInd.toLocaleString() + '원';
+
+        const erElTotal = document.getElementById('pr-er-total');
+        if (erElTotal) erElTotal.innerText = erTotal.toLocaleString() + '원';
     };
 
     window.checkBudget = function () {

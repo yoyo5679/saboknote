@@ -38,9 +38,11 @@
 
         <!-- ===== HEADER ===== -->
         <header class="app-header">
-            <div class="header-inner">
-                <div class="header-logo">
-                    <span class="logo-icon">🌿</span>
+            <div class="header-inner" style="position:relative;">
+                <div class="header-logo"
+                    style="cursor:pointer; position:absolute; left:50%; transform:translateX(-50%); display:flex; align-items:center; gap:6px;"
+                    onclick="document.getElementById('nav-home').click()">
+                    <span class="logo-icon">📔</span>
                     <span class="logo-text">사회복지사 비밀노트</span>
                 </div>
                 <div class="header-icons">
@@ -66,7 +68,7 @@
                             <span class="hero-chip">2026 최신</span>
                         </div>
                     </div>
-                    <div class="hero-illustration">🦊</div>
+                    <div class="hero-illustration">📔</div>
                 </div>
 
                 <!-- ② 검색 + 액션 버튼 바 -->
@@ -315,7 +317,7 @@
                                 MY</div>
                             <h2
                                 style="font-size:1.5rem; font-weight:900; color:var(--text-900); letter-spacing:-0.02em; white-space:nowrap;">
-                                내 정보 🦊</h2>
+                                내 정보 👤</h2>
                         </div>
                         <div id="mypage-header-emoji"
                             style="flex-shrink:0; width:52px; height:52px; background:linear-gradient(135deg,#6366f1,#8b5cf6); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.6rem; box-shadow:0 4px 12px rgba(99,102,241,0.3);">
@@ -448,7 +450,7 @@
                 <span class="nav-label">파쇄기</span>
             </button>
             <button class="nav-item" id="nav-mypage" onclick="switchView('mypage')">
-                <span class="nav-icon">🦊</span>
+                <span class="nav-icon">👤</span>
                 <span class="nav-label">내정보</span>
             </button>
         </nav>
