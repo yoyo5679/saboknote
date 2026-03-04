@@ -185,7 +185,7 @@
                             <div class="svc-tag" style="background:#bbf7d0;color:#15803d;">계산</div>
                             <div class="svc-icon">💸</div>
                             <div class="svc-title">행정/회계<br>마스터</div>
-                            <div class="svc-desc">부가세·강사료·장기요양</div>
+                            <div class="svc-desc">복잡한 계산, 1초 컷! ⚡</div>
                         </div>
 
                     </div>
@@ -333,7 +333,11 @@
                         <div>
                             <div id="mypage-profile-name" style="font-size:1.1rem; font-weight:800; margin-bottom:2px;">
                                 신비로운 여우가족</div>
-                            <div style="font-size:0.82rem; opacity:0.8;">사회복지사 | 비밀노트 회원</div>
+                            <div style="font-size:0.82rem; opacity:0.8; margin-bottom:6px;">사회복지사 | 비밀노트 회원</div>
+                            <div id="mypage-level-badge"
+                                style="display:inline-block; background:rgba(255,255,255,0.25); border:1px solid rgba(255,255,255,0.4); padding:4px 10px; border-radius:12px; font-size:0.75rem; font-weight:800;">
+                                🌱 열정 가득 인턴요원 <!-- Dynamically updated -->
+                            </div>
                         </div>
                     </div>
 
@@ -346,16 +350,33 @@
                             </div>
                             <div style="display:flex; justify-content:space-around; text-align:center;">
                                 <div>
-                                    <div style="font-size:1.5rem; font-weight:900; color:#1e293b;">0</div>
+                                    <div id="mypage-stat-q" style="font-size:1.5rem; font-weight:900; color:#1e293b;">0
+                                    </div>
                                     <div style="font-size:0.75rem; color:#94a3b8; margin-top:2px;">등록한 질문</div>
                                 </div>
                                 <div>
-                                    <div style="font-size:1.5rem; font-weight:900; color:#1e293b;">0</div>
+                                    <div id="mypage-stat-a" style="font-size:1.5rem; font-weight:900; color:#1e293b;">0
+                                    </div>
                                     <div style="font-size:0.75rem; color:#94a3b8; margin-top:2px;">작성한 답변</div>
                                 </div>
                                 <div>
-                                    <div style="font-size:1.5rem; font-weight:900; color:#1e293b;">0</div>
+                                    <div id="mypage-stat-thanks"
+                                        style="font-size:1.5rem; font-weight:900; color:#d97706;">0</div>
                                     <div style="font-size:0.75rem; color:#94a3b8; margin-top:2px;">받은 감사</div>
+                                </div>
+                            </div>
+                            <!-- 경험치 프로그레스 바 -->
+                            <div style="margin-top:16px; padding-top:16px; border-top:1px dashed #e2e8f0;">
+                                <div
+                                    style="display:flex; justify-content:space-between; font-size:0.7rem; color:#64748b; margin-bottom:6px; font-weight:700;">
+                                    <span id="mypage-exp-text">다음 등급까지 50 XP</span>
+                                    <span id="mypage-exp-pct">0%</span>
+                                </div>
+                                <div
+                                    style="width:100%; height:8px; background:#f1f5f9; border-radius:4px; overflow:hidden;">
+                                    <div id="mypage-exp-bar"
+                                        style="height:100%; width:0%; background:linear-gradient(90deg, #6366f1, #8b5cf6); border-radius:4px; transition:width 0.5s ease;">
+                                    </div>
                                 </div>
                             </div>
                         </div>
