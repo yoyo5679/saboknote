@@ -9,6 +9,15 @@
     const supabase = window.supabase ? window.supabase.createClient(supabaseUrl, supabaseKey) : null;
 
     /* --- Anonymous User ID (localStorage) --- */
+    /* --- Utility: HTML Escape --- */
+    function escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    /* --- Anonymous User ID (localStorage) --- */
     function getOrCreateUserId() {
         let userId = localStorage.getItem('sabok_user_id');
         if (!userId) {
@@ -83,6 +92,10 @@
                 if (!supabase) return;
 
                 const mockListHtml = `
+                    <div style="margin-bottom:12px; padding-bottom:12px; border-bottom:1px dashed #ddd6fe; cursor:pointer;" onclick="showNewsletterDetail('vol4')">
+                        <strong style="color:#0f172a; font-size:0.95rem; display:block; margin-bottom:4px">[Vol 4.] 사복직 생존은 템빨! 업무 효율 떡상하는 사무용품 추천</strong>
+                        <span style="font-size:0.8rem; color:#64748b">발행일: 2026.03.05</span>
+                    </div>
                     <div style="margin-bottom:12px; padding-bottom:12px; border-bottom:1px dashed #ddd6fe; cursor:pointer;" onclick="showNewsletterDetail('vol1')">
                         <strong style="color:#0f172a; font-size:0.95rem; display:block; margin-bottom:4px">[Vol 3.] 요즘 핫한 '퍼네이션(Funation)' 동향! 재미있게 기부하는 법 공유함</strong>
                         <span style="font-size:0.8rem; color:#64748b">발행일: 2026.03.01</span>
@@ -137,7 +150,31 @@
         let title = '';
         let contentHtml = '';
 
-        if (id === 'vol1') {
+        if (id === 'vol4') {
+            title = "💻 사복직 생존은 템빨! 업무 효율 떡상하는 사무용품 추천";
+            contentHtml = `
+                <div style="font-size:0.95rem; line-height:1.6; color:#334155; white-space:pre-wrap;">
+안녕! 팀장님 몰래 보는 <strong>사복천재 비밀편지 Vol. 4</strong>야. 🤫
+
+다들 오늘도 모니터 앞에서 거북목 장착하고 무한 타이핑 중이지? 솔직히 우리 일이 서비스 대상자 만나는 시간만큼이나 '서류와의 전쟁' 시간이 길잖아. 현장 업무 뛰고 돌아와서 그 버거워진 몸으로 또 키보드를 두드려야 하는 그 고충, 내가 너무 잘 알아. 
+
+그래서 오늘은 우리가 책상 앞에서 조금이라도 덜 피곤하고, 더 빠르게 일을 끝낼 수 있게 도와주는 <strong>'사복직 맞춤형 생존 사무용품 3대장'</strong>을 가져왔어. 이건 단순한 지름신이 아니라 나를 위한 '건강 투자'라고 생각하고 읽어봐!
+
+🖱️ <strong>1. 버티컬 마우스 - 너의 소중한 손목을 구원해줄 방패</strong>
+사례관리 기록, 프로포절 작성, 일일지출결의서... 우리 손가락과 손목이 쉴 틈이 어딨어? 일반 마우스를 오래 쓰면 손목 뼈가 뒤틀리면서 터널 증후군 오기 딱 좋거든. 처음엔 좀 어색할 수 있는데, 세워서 잡는 '버티컬 마우스'로 바꿔봐. 손목이 자연스럽게 중립 자세를 유지하니까 확실히 피로도가 확 줄어들어. 2~3만 원대 가성비 템도 많으니까 이건 진짜 무조건 사야 해. 손목 나가서 병원비 내는 것보다 이게 백번 싸다!
+
+⌨️ <strong>2. 저소음 기계식 키보드 - 타격감은 살리고, 옆자리 눈치는 줄이고</strong>
+키보드 타건감이 좋으면 신기하게도 보고서 쓰는 속도가 빨라져. (이건 과학이야!) 근데 '찰칵찰칵' 소리 나는 건 사무실에서 쓰기엔 좀 민망하잖아? 이럴 땐 '저소음 적축'이나 '무접점' 키보드를 추천해. 구름 위를 걷는 것처럼 부드럽게 눌리면서도 소리는 조용해서 옆 선생님들 눈치 안 보고 미친 듯이 타자를 칠 수 있어. 손가락 끝에 가해지는 힘이 적어서 하루 종일 타이핑해도 피로가 훨씬 덜해. 퇴근할 때 손마디가 욱신거린다면 키보드부터 바꿔봐.
+
+⏰ <strong>3. 비주얼 타이머 (뽀모도로 타이머) - 집중력의 마법사</strong>
+"아, 5분만 쉬고 기획안 써야지" 하다가 30분 순삭된 경험 다들 있지? 빨간색으로 남은 시간이 줄어드는 게 눈에 보이는 '비주얼 타이머'를 책상에 둬봐. 딱 25분만 집중해서 서류 치고, 5분 쉬고! 이걸 반복하는 뽀모도로 기법을 쓰면 멍 때리는 시간이 사라져. 스마트폰 알람은 자꾸 폰을 보게 되니까 이런 물리적인 타이머가 훨씬 효과적이야. 진짜 집중 안 되는 날 이거 켜두면 야근할 거 칼퇴할 수 있다?
+
+🦵 <strong>(보너스) 발 받침대 & 기능성 방석</strong>
+책상 아래 발 받침대 하나만 둬도 허리에 가중되는 하중이 분산돼서 훨씬 편안해. 그리고 우리 의자... 솔직히 오래 앉아있기엔 좀 딱딱하잖아? 엉덩이 통증 줄여주는 젤 방석 같은 거 하나 깔아두면 "아이고 내 허리야" 소리가 절로 줄어들 거야.
+
+사무용품 하나 바꾼다고 인생이 바뀌지는 않지만, 우리가 매일 8시간 넘게 머무는 그 좁은 책상 공간이 조금은 더 다정해질 수 있어. 내가 나를 챙겨야 남도 더 잘 챙겨줄 수 있는 거 알지? 오늘 퇴근길엔 고생한 나를 위해 작은 선물 하나 골라보는 거 어때? 오늘도 현장에서 빛나는 너를 응원할게! 👋
+                </div>`;
+        } else if (id === 'vol1') {
             title = "🎈 요즘 핫한 '퍼네이션' 동향!";
             contentHtml = `
                 <div style="font-size:0.95rem; line-height:1.6; color:#334155; white-space:pre-wrap;">
@@ -2247,11 +2284,11 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
                 html += `
                 <div style="background:#fff; border-radius:16px; padding:18px; border:1px solid #e2e8f0; box-shadow:var(--shadow-card); cursor:pointer;" onclick="openQaDetail('${post.id}')">
                     <div style="display:flex; gap:8px; margin-bottom:10px;">
-                        <span style="background:#e0e7ff; color:#4338ca; font-size:0.7rem; font-weight:800; padding:4px 8px; border-radius:12px;">${post.category || '일반'}</span>
+                        <span style="background:#e0e7ff; color:#4338ca; font-size:0.7rem; font-weight:800; padding:4px 8px; border-radius:12px;">${escapeHtml(post.category) || '일반'}</span>
                     </div>
-                    <div style="font-size:1.05rem; font-weight:800; color:var(--text-900); line-height:1.4; margin-bottom:8px;">${post.title}</div>
+                    <div style="font-size:1.05rem; font-weight:800; color:var(--text-900); line-height:1.4; margin-bottom:8px;">${escapeHtml(post.title)}</div>
                     <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.8rem; color:#94a3b8;">
-                        <span>${post.author || '익명'}</span>
+                        <span>${escapeHtml(post.author || '익명')}</span>
                         <span>${formatDate(post.created_at)}</span>
                     </div>
                 </div>
@@ -2370,10 +2407,10 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
                 repliesHtml += `
                 <div style="background:#f8fafc; padding:16px; border-radius:14px; border:1px solid #f1f5f9; margin-bottom:12px;">
                     <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
-                        <span style="font-weight:800; font-size:0.85rem; color:var(--text-900);">${r.author}</span>
+                        <span style="font-weight:800; font-size:0.85rem; color:var(--text-900);">${escapeHtml(r.author)}</span>
                         <span style="font-size:0.75rem; color:#94a3b8;">${formatDate(r.created_at)}</span>
                     </div>
-                    <div style="font-size:0.9rem; color:#475569; line-height:1.5;">${r.content}</div>
+                    <div style="font-size:0.9rem; color:#475569; line-height:1.5;">${escapeHtml(r.content)}</div>
                 </div>
             `;
             });
@@ -2391,16 +2428,16 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
             const modalContent = `
             <div style="display:flex; flex-direction:column; gap:20px;">
                 <div style="padding-bottom:16px; border-bottom:1px solid #f1f5f9;">
-                    <span style="background:#e0e7ff; color:#4338ca; font-size:0.75rem; font-weight:800; padding:4px 10px; border-radius:12px; display:inline-block; margin-bottom:12px;">${post.category}</span>
-                    <h3 style="font-size:1.3rem; font-weight:900; color:var(--text-900); line-height:1.4; margin-bottom:12px;">${post.title}</h3>
+                    <span style="background:#e0e7ff; color:#4338ca; font-size:0.75rem; font-weight:800; padding:4px 10px; border-radius:12px; display:inline-block; margin-bottom:12px;">${escapeHtml(post.category)}</span>
+                    <h3 style="font-size:1.3rem; font-weight:900; color:var(--text-900); line-height:1.4; margin-bottom:12px;">${escapeHtml(post.title)}</h3>
                     <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.85rem; color:#64748b;">
-                        <span>${post.author}</span>
+                        <span>${escapeHtml(post.author)}</span>
                         <span>${formatDate(post.created_at)}</span>
                     </div>
                     ${myPostActions}
                 </div>
                 
-                <div style="font-size:1rem; color:#334155; line-height:1.7; white-space:pre-wrap;">${post.content}</div>
+                <div style="font-size:1rem; color:#334155; line-height:1.7; white-space:pre-wrap;">${escapeHtml(post.content)}</div>
                 
                 <div style="padding-top:24px;">
                     <h4 style="font-size:1rem; font-weight:800; color:var(--text-900); margin-bottom:16px; display:flex; align-items:center; gap:6px;">
@@ -2644,11 +2681,11 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
                 html += `
                 <div style="background:#fff; border-radius:16px; padding:18px; border:1px solid #e2e8f0; box-shadow:var(--shadow-card); cursor:pointer;" onclick="openCommunityDetailModal('${post.id}')">
                     <div style="display:flex; gap:8px; margin-bottom:10px;">
-                        <span style="background:${badgeColor}; color:${textColor}; font-size:0.7rem; font-weight:800; padding:4px 8px; border-radius:12px;">${post.category || '일반'}</span>
+                        <span style="background:${badgeColor}; color:${textColor}; font-size:0.7rem; font-weight:800; padding:4px 8px; border-radius:12px;">${escapeHtml(post.category) || '일반'}</span>
                     </div>
-                    <div style="font-size:1.05rem; font-weight:800; color:var(--text-900); line-height:1.4; margin-bottom:8px;">${post.title}</div>
+                    <div style="font-size:1.05rem; font-weight:800; color:var(--text-900); line-height:1.4; margin-bottom:8px;">${escapeHtml(post.title)}</div>
                     <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.8rem; color:#94a3b8;">
-                        <span>${post.author || '익명'}</span>
+                        <span>${escapeHtml(post.author || '익명')}</span>
                         <span>${formatDate(post.created_at)}</span>
                     </div>
                 </div>
@@ -2776,10 +2813,10 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
                 repliesHtml += `
                 <div style="background:#f8fafc; padding:16px; border-radius:14px; border:1px solid #f1f5f9; margin-bottom:12px;">
                     <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
-                        <span style="font-weight:800; font-size:0.85rem; color:var(--text-900);">${r.author}</span>
+                        <span style="font-weight:800; font-size:0.85rem; color:var(--text-900);">${escapeHtml(r.author)}</span>
                         <span style="font-size:0.75rem; color:#94a3b8;">${formatDate(r.created_at)}</span>
                     </div>
-                    <div style="font-size:0.9rem; color:#475569; line-height:1.5;">${r.content}</div>
+                    <div style="font-size:0.9rem; color:#475569; line-height:1.5;">${escapeHtml(r.content)}</div>
                 </div>
             `;
             });
@@ -2802,16 +2839,16 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
             const modalContent = `
             <div style="display:flex; flex-direction:column; gap:20px;">
                 <div style="padding-bottom:16px; border-bottom:1px solid #f1f5f9;">
-                    <span style="background:${badgeColor}; color:${textColor}; font-size:0.75rem; font-weight:800; padding:4px 10px; border-radius:12px; display:inline-block; margin-bottom:12px;">${post.category}</span>
-                    <h3 style="font-size:1.3rem; font-weight:900; color:var(--text-900); line-height:1.4; margin-bottom:12px;">${post.title}</h3>
+                    <span style="background:${badgeColor}; color:${textColor}; font-size:0.75rem; font-weight:800; padding:4px 10px; border-radius:12px; display:inline-block; margin-bottom:12px;">${escapeHtml(post.category)}</span>
+                    <h3 style="font-size:1.3rem; font-weight:900; color:var(--text-900); line-height:1.4; margin-bottom:12px;">${escapeHtml(post.title)}</h3>
                     <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.85rem; color:#64748b;">
-                        <span>${post.author}</span>
+                        <span>${escapeHtml(post.author)}</span>
                         <span>${formatDate(post.created_at)}</span>
                     </div>
                     ${myPostActions}
                 </div>
                 
-                <div style="font-size:1rem; color:#334155; line-height:1.7; white-space:pre-wrap;">${post.content}</div>
+                <div style="font-size:1rem; color:#334155; line-height:1.7; white-space:pre-wrap;">${escapeHtml(post.content)}</div>
                 
                 <div style="padding-top:24px;">
                     <h4 style="font-size:1rem; font-weight:800; color:var(--text-900); margin-bottom:16px; display:flex; align-items:center; gap:6px;">
@@ -3000,21 +3037,33 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
         let thanksCount = 0;
 
         try {
-            const { count: postCount } = await supabase
+            // 1. Help Me 질문 & 커뮤니티 게시글 합산
+            const { count: helpMeCount } = await supabase
                 .from('posts')
                 .select('*', { count: 'exact', head: true })
                 .eq('user_id', myUserId);
 
-            qCount = postCount || 0;
+            const { count: commPostCount } = await supabase
+                .from('community_posts')
+                .select('*', { count: 'exact', head: true })
+                .eq('user_id', myUserId);
 
-            const { count: replyCount } = await supabase
+            qCount = (helpMeCount || 0) + (commPostCount || 0);
+
+            // 2. Help Me 답변 & 커뮤니티 댓글 합산
+            const { count: helpMeReplyCount } = await supabase
                 .from('replies')
                 .select('*', { count: 'exact', head: true })
                 .eq('user_id', myUserId);
 
-            aCount = replyCount || 0;
+            const { count: commReplyCount } = await supabase
+                .from('community_replies')
+                .select('*', { count: 'exact', head: true })
+                .eq('user_id', myUserId);
 
-            // 받은 감사는 추후 구현 예정 (현재 테이블 구조에 없음)
+            aCount = (helpMeReplyCount || 0) + (commReplyCount || 0);
+
+            // 받은 감사는 추후 구현 예정
             thanksCount = 0;
         } catch (e) { console.error('Stats fetch error:', e); }
 
@@ -3101,10 +3150,10 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
                 html += `
                     <div style="padding:12px 0; border-bottom:1px solid #f1f5f9; cursor:pointer;" onclick="openCommunityDetailModal('${post.id}')">
                     <div style="display:flex; gap:6px; align-items:center; margin-bottom:6px;">
-                        <span style="background:${badgeColor}; color:${textColor}; font-size:0.68rem; font-weight:800; padding:3px 8px; border-radius:10px;">${post.category}</span>
+                        <span style="background:${badgeColor}; color:${textColor}; font-size:0.68rem; font-weight:800; padding:3px 8px; border-radius:10px;">${escapeHtml(post.category)}</span>
                         <span style="font-size:0.75rem; color:#94a3b8;">${formatDate(post.created_at)}</span>
                     </div>
-                    <div style="font-size:0.95rem; font-weight:700; color:var(--text-900); line-height:1.4;">${post.title}</div>
+                    <div style="font-size:0.95rem; font-weight:700; color:var(--text-900); line-height:1.4;">${escapeHtml(post.title)}</div>
                 </div > `;
             });
             listEl.innerHTML = html;
