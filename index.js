@@ -2403,20 +2403,27 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
 
             let repliesHtml = replies.length > 0 ? '' : '<p style="text-align:center; padding:30px 0; color:#94a3b8; font-size:0.9rem;">아직 등록된 답변이 없습니다.<br>첫 번째 답변의 주인공이 되어보세요! ✨</p>';
 
+            const myUserId = getOrCreateUserId();
             replies.forEach(r => {
+                const isMyReply = r.user_id && r.user_id === myUserId;
+                const replyActions = isMyReply ? `
+                    <div style="display:flex; gap:6px; margin-top:8px;">
+                        <button onclick="editReply('${r.id}', '${post.id}')" style="flex:1; padding:6px; border-radius:10px; border:1px solid #e2e8f0; background:#f8fafc; color:#475569; font-size:0.78rem; font-weight:700; cursor:pointer;">✏️ 수정</button>
+                        <button onclick="deleteReply('${r.id}', '${post.id}')" style="flex:1; padding:6px; border-radius:10px; border:1px solid #fee2e2; background:#fff5f5; color:#ef4444; font-size:0.78rem; font-weight:700; cursor:pointer;">🗑️ 삭제</button>
+                    </div>` : '';
                 repliesHtml += `
-                <div style="background:#f8fafc; padding:16px; border-radius:14px; border:1px solid #f1f5f9; margin-bottom:12px;">
+                <div id="reply-item-${r.id}" style="background:#f8fafc; padding:16px; border-radius:14px; border:1px solid #f1f5f9; margin-bottom:12px;">
                     <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
-                        <span style="font-weight:800; font-size:0.85rem; color:var(--text-900);">${escapeHtml(r.author)}</span>
+                        <span style="font-weight:800; font-size:0.85rem; color:var(--text-900);">${escapeHtml(r.author)}${isMyReply ? ' <span style="font-size:0.7rem; background:#e0e7ff; color:#4338ca; padding:2px 6px; border-radius:8px;">나</span>' : ''}</span>
                         <span style="font-size:0.75rem; color:#94a3b8;">${formatDate(r.created_at)}</span>
                     </div>
                     <div style="font-size:0.9rem; color:#475569; line-height:1.5;">${escapeHtml(r.content)}</div>
+                    ${replyActions}
                 </div>
             `;
             });
 
             // 본인 글 확인 후 수정/삭제 버튼 생성
-            const myUserId = getOrCreateUserId();
             const isMyPost = post.user_id && post.user_id === myUserId;
             const myPostActions = isMyPost ? `
                 <div style="display:flex; gap:8px; margin-top:12px;">
@@ -2477,7 +2484,7 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
             const { error } = await supabase
                 .from('replies')
                 .insert([
-                    { post_id: postId, content: content, author: getRandomAnonymousName() }
+                    { post_id: postId, content: content, author: getRandomAnonymousName(), user_id: getOrCreateUserId() }
                 ]);
 
             if (error) throw error;
@@ -2809,14 +2816,22 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
 
             let repliesHtml = safeReplies.length > 0 ? '' : '<p style="text-align:center; padding:30px 0; color:#94a3b8; font-size:0.9rem;">아직 댓글이 없습니다.<br>첫 번째 댓글을 남겨보세요! ✨</p>';
 
+            const myUserId = getOrCreateUserId();
             safeReplies.forEach(r => {
+                const isMyReply = r.user_id && r.user_id === myUserId;
+                const replyActions = isMyReply ? `
+                    <div style="display:flex; gap:6px; margin-top:8px;">
+                        <button onclick="editCommReply('${r.id}', '${post.id}')" style="flex:1; padding:6px; border-radius:10px; border:1px solid #e2e8f0; background:#f8fafc; color:#475569; font-size:0.78rem; font-weight:700; cursor:pointer;">✏️ 수정</button>
+                        <button onclick="deleteCommReply('${r.id}', '${post.id}')" style="flex:1; padding:6px; border-radius:10px; border:1px solid #fee2e2; background:#fff5f5; color:#ef4444; font-size:0.78rem; font-weight:700; cursor:pointer;">🗑️ 삭제</button>
+                    </div>` : '';
                 repliesHtml += `
-                <div style="background:#f8fafc; padding:16px; border-radius:14px; border:1px solid #f1f5f9; margin-bottom:12px;">
+                <div id="comm-reply-item-${r.id}" style="background:#f8fafc; padding:16px; border-radius:14px; border:1px solid #f1f5f9; margin-bottom:12px;">
                     <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
-                        <span style="font-weight:800; font-size:0.85rem; color:var(--text-900);">${escapeHtml(r.author)}</span>
+                        <span style="font-weight:800; font-size:0.85rem; color:var(--text-900);">${escapeHtml(r.author)}${isMyReply ? ' <span style="font-size:0.7rem; background:#e0e7ff; color:#4338ca; padding:2px 6px; border-radius:8px;">나</span>' : ''}</span>
                         <span style="font-size:0.75rem; color:#94a3b8;">${formatDate(r.created_at)}</span>
                     </div>
                     <div style="font-size:0.9rem; color:#475569; line-height:1.5;">${escapeHtml(r.content)}</div>
+                    ${replyActions}
                 </div>
             `;
             });
@@ -2827,7 +2842,6 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
             if (post.category === '취업/이직') { badgeColor = '#dcfce3'; textColor = '#15803d'; }
 
             // 내가 쓴 글인지 확인
-            const myUserId = getOrCreateUserId();
             const isMyPost = post.user_id && post.user_id === myUserId;
             const myPostActions = isMyPost ? `
                 <div style="display:flex; gap:8px; margin-top:12px;">
@@ -2888,7 +2902,7 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
             const { error } = await supabase
                 .from('community_replies')
                 .insert([
-                    { post_id: postId, content: content, author: getRandomAnonymousName() }
+                    { post_id: postId, content: content, author: getRandomAnonymousName(), user_id: getOrCreateUserId() }
                 ]);
 
             if (error) {
@@ -3001,6 +3015,135 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
             btn.innerText = '💾 수정 완료';
         }
     };
+
+    /* --- 도와줘요 답변(Reply) 수정/삭제 --- */
+    window.deleteReply = async function (replyId, postId) {
+        if (!confirm('이 답변을 삭제하시겠습니까?')) return;
+        try {
+            const myUserId = getOrCreateUserId();
+            const { error } = await supabase
+                .from('replies')
+                .delete()
+                .eq('id', replyId)
+                .eq('user_id', myUserId);
+            if (error) throw error;
+            openQaDetail(postId);
+        } catch (err) {
+            console.error('Reply delete error:', err);
+            alert('삭제 중 오류가 발생했습니다.');
+        }
+    };
+
+    window.editReply = async function (replyId, postId) {
+        try {
+            const { data: reply, error } = await supabase
+                .from('replies')
+                .select('*')
+                .eq('id', replyId)
+                .single();
+            if (error) throw error;
+
+            const content = `
+            <div style="display:flex; flex-direction:column; gap:16px;">
+                <div class="form-group">
+                    <label>답변 내용</label>
+                    <textarea id="edit-reply-content" class="calc-input" style="height:140px; resize:none; padding:12px;">${reply.content}</textarea>
+                </div>
+                <button class="btn-primary" id="btn-update-reply" onclick="updateReply('${replyId}', '${postId}')">💾 수정 완료</button>
+            </div>`;
+            openModal('답변 수정하기 ✏️', content);
+        } catch (err) {
+            console.error('Edit reply load error:', err);
+            alert('답변 정보를 불러오지 못했습니다.');
+        }
+    };
+
+    window.updateReply = async function (replyId, postId) {
+        const content = document.getElementById('edit-reply-content')?.value;
+        const btn = document.getElementById('btn-update-reply');
+        if (!content || !content.trim()) { alert('내용을 입력해주세요.'); return; }
+        try {
+            btn.disabled = true; btn.innerText = '수정 중...';
+            const myUserId = getOrCreateUserId();
+            const { error } = await supabase
+                .from('replies')
+                .update({ content })
+                .eq('id', replyId)
+                .eq('user_id', myUserId);
+            if (error) throw error;
+            openQaDetail(postId);
+        } catch (err) {
+            console.error('Update reply error:', err);
+            alert('수정 중 오류가 발생했습니다.');
+        } finally {
+            if (btn) { btn.disabled = false; btn.innerText = '💾 수정 완료'; }
+        }
+    };
+
+    /* --- 커뮤니티 댓글(CommReply) 수정/삭제 --- */
+    window.deleteCommReply = async function (replyId, postId) {
+        if (!confirm('이 댓글을 삭제하시겠습니까?')) return;
+        try {
+            const myUserId = getOrCreateUserId();
+            const { error } = await supabase
+                .from('community_replies')
+                .delete()
+                .eq('id', replyId)
+                .eq('user_id', myUserId);
+            if (error) throw error;
+            openCommunityDetailModal(postId);
+        } catch (err) {
+            console.error('CommReply delete error:', err);
+            alert('삭제 중 오류가 발생했습니다.');
+        }
+    };
+
+    window.editCommReply = async function (replyId, postId) {
+        try {
+            const { data: reply, error } = await supabase
+                .from('community_replies')
+                .select('*')
+                .eq('id', replyId)
+                .single();
+            if (error) throw error;
+
+            const content = `
+            <div style="display:flex; flex-direction:column; gap:16px;">
+                <div class="form-group">
+                    <label>댓글 내용</label>
+                    <textarea id="edit-comm-reply-content" class="calc-input" style="height:140px; resize:none; padding:12px;">${reply.content}</textarea>
+                </div>
+                <button class="btn-primary" id="btn-update-comm-reply" onclick="updateCommReply('${replyId}', '${postId}')">💾 수정 완료</button>
+            </div>`;
+            openModal('댓글 수정하기 ✏️', content);
+        } catch (err) {
+            console.error('Edit comm reply load error:', err);
+            alert('댓글 정보를 불러오지 못했습니다.');
+        }
+    };
+
+    window.updateCommReply = async function (replyId, postId) {
+        const content = document.getElementById('edit-comm-reply-content')?.value;
+        const btn = document.getElementById('btn-update-comm-reply');
+        if (!content || !content.trim()) { alert('내용을 입력해주세요.'); return; }
+        try {
+            btn.disabled = true; btn.innerText = '수정 중...';
+            const myUserId = getOrCreateUserId();
+            const { error } = await supabase
+                .from('community_replies')
+                .update({ content })
+                .eq('id', replyId)
+                .eq('user_id', myUserId);
+            if (error) throw error;
+            openCommunityDetailModal(postId);
+        } catch (err) {
+            console.error('Update comm reply error:', err);
+            alert('수정 중 오류가 발생했습니다.');
+        } finally {
+            if (btn) { btn.disabled = false; btn.innerText = '💾 수정 완료'; }
+        }
+    };
+
     /* --- My Page --- */
     window.initMypage = async function () {
         const listEl = document.getElementById('my-posts-list');
@@ -3218,6 +3361,84 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
             <p style="font-size:0.9rem; color:#64748b; line-height:1.6;">푸시 알림 기능은 현재 준비 중입니다.<br>빠른 시일 내에 업데이트될 예정이에요! 🚀</p>
         </div>`;
 
+        // XP/레벨 안내
+        const xpGuideContent = `
+        <div style="font-size:0.88rem; color:#334155; line-height:1.8;">
+            <div style="background:linear-gradient(135deg,#6366f1,#8b5cf6); color:#fff; border-radius:16px; padding:16px; margin-bottom:20px; text-align:center;">
+                <div style="font-size:2rem; margin-bottom:6px;">⚡</div>
+                <div style="font-size:1rem; font-weight:900; margin-bottom:4px;">XP(경험치) 시스템</div>
+                <div style="font-size:0.82rem; opacity:0.85;">활동하면 할수록 등급이 올라가요!</div>
+            </div>
+
+            <div style="margin-bottom:20px;">
+                <div style="font-size:0.78rem; font-weight:800; color:#6366f1; margin-bottom:10px; letter-spacing:0.5px;">💰 XP 획득 방법</div>
+                <div style="display:flex; flex-direction:column; gap:8px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; background:#f8fafc; padding:10px 14px; border-radius:10px; border:1px solid #e2e8f0;">
+                        <span style="font-weight:700;">✍️ 질문/게시글 작성</span>
+                        <span style="font-weight:900; color:#6366f1; font-size:1rem;">+5 XP</span>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; background:#f8fafc; padding:10px 14px; border-radius:10px; border:1px solid #e2e8f0;">
+                        <span style="font-weight:700;">💬 답변/댓글 작성</span>
+                        <span style="font-weight:900; color:#6366f1; font-size:1rem;">+15 XP</span>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; background:#f8fafc; padding:10px 14px; border-radius:10px; border:1px solid #e2e8f0;">
+                        <span style="font-weight:700;">🙏 채택/감사 받기</span>
+                        <span style="font-weight:900; color:#f59e0b; font-size:1rem;">+10 XP</span>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div style="font-size:0.78rem; font-weight:800; color:#6366f1; margin-bottom:10px; letter-spacing:0.5px;">🏆 등급 기준표</div>
+                <div style="display:flex; flex-direction:column; gap:6px;">
+                    <div style="display:flex; align-items:center; gap:10px; padding:10px 14px; background:#dcfce7; border-radius:10px; border:1px solid #bbf7d0;">
+                        <span style="font-size:1.1rem;">🌱</span>
+                        <div style="flex:1;">
+                            <div style="font-weight:800; color:#15803d; font-size:0.9rem;">열정 가득 인턴요원</div>
+                            <div style="font-size:0.75rem; color:#166534;">0 ~ 49 XP</div>
+                        </div>
+                        <span style="font-size:0.75rem; color:#16a34a; font-weight:700; background:#bbf7d0; padding:2px 8px; border-radius:8px;">Lv.1</span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:10px; padding:10px 14px; background:#e0f2fe; border-radius:10px; border:1px solid #bae6fd;">
+                        <span style="font-size:1.1rem;">🌿</span>
+                        <div style="flex:1;">
+                            <div style="font-weight:800; color:#0369a1; font-size:0.9rem;">믿음직한 주임요원</div>
+                            <div style="font-size:0.75rem; color:#0c4a6e;">50 ~ 149 XP</div>
+                        </div>
+                        <span style="font-size:0.75rem; color:#0284c7; font-weight:700; background:#bae6fd; padding:2px 8px; border-radius:8px;">Lv.2</span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:10px; padding:10px 14px; background:#ede9fe; border-radius:10px; border:1px solid #ddd6fe;">
+                        <span style="font-size:1.1rem;">🌳</span>
+                        <div style="flex:1;">
+                            <div style="font-weight:800; color:#6d28d9; font-size:0.9rem;">실력파 대리요원</div>
+                            <div style="font-size:0.75rem; color:#4c1d95;">150 ~ 399 XP</div>
+                        </div>
+                        <span style="font-size:0.75rem; color:#7c3aed; font-weight:700; background:#ddd6fe; padding:2px 8px; border-radius:8px;">Lv.3</span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:10px; padding:10px 14px; background:#ffedd5; border-radius:10px; border:1px solid #fed7aa;">
+                        <span style="font-size:1.1rem;">🔥</span>
+                        <div style="flex:1;">
+                            <div style="font-weight:800; color:#c2410c; font-size:0.9rem;">현장의 마스터 (과장)</div>
+                            <div style="font-size:0.75rem; color:#7c2d12;">400 ~ 999 XP</div>
+                        </div>
+                        <span style="font-size:0.75rem; color:#ea580c; font-weight:700; background:#fed7aa; padding:2px 8px; border-radius:8px;">Lv.4</span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:10px; padding:10px 14px; background:#fee2e2; border-radius:10px; border:1px solid #fecaca;">
+                        <span style="font-size:1.1rem;">👑</span>
+                        <div style="flex:1;">
+                            <div style="font-weight:800; color:#b91c1c; font-size:0.9rem;">살아있는 전설 (부장 이상)</div>
+                            <div style="font-size:0.75rem; color:#7f1d1d;">1000 XP 이상</div>
+                        </div>
+                        <span style="font-size:0.75rem; color:#b91c1c; font-weight:700; background:#fecaca; padding:2px 8px; border-radius:8px;">Lv.5</span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top:16px; padding:12px; background:#f1f5f9; border-radius:12px; font-size:0.8rem; color:#64748b; line-height:1.6;">
+                💡 <strong>팁:</strong> 질문보다 <strong style="color:#6366f1;">답변을 작성</strong>하면 3배 더 많은 XP를 획득할 수 있어요! 내가 쓴 답변은 수정·삭제도 가능합니다.
+            </div>
+        </div>`;
+
         // 메뉴 연결
         document.querySelectorAll('#view-mypage [style*="cursor:pointer"]').forEach(el => {
             const text = el.innerText || '';
@@ -3227,8 +3448,16 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
                 el.onclick = () => openModal('📋 서비스 이용약관', tosContent);
             } else if (text.includes('개인정보')) {
                 el.onclick = () => openModal('🔒 개인정보처리방침', ppContent);
+            } else if (text.includes('XP') || text.includes('레벨')) {
+                el.onclick = () => openModal('⚡ XP & 레벨 안내', xpGuideContent);
             }
         });
+
+        // XP 안내 버튼 직접 연결 (id 방식 대비)
+        const xpGuideBtn = document.getElementById('open-xp-guide');
+        if (xpGuideBtn) {
+            xpGuideBtn.onclick = () => openModal('⚡ XP & 레벨 안내', xpGuideContent);
+        }
     }
 
     /* ─── 헤더 버튼 핸들러 ─── */
