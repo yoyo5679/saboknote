@@ -712,23 +712,23 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
             let optionsHtml = '';
             for (const [key, data] of Object.entries(AI_PROMPTS)) {
                 optionsHtml += `
-            < div class="prompt-option-card" onclick = "renderPromptDetail('${key}')" >
+            <div class="prompt-option-card" onclick = "renderPromptDetail('${key}')" >
                     <div class="prompt-option-icon">${data.icon}</div>
                     <div class="prompt-option-info">
                         <div class="prompt-option-title">${data.title}</div>
                         <div class="prompt-option-desc">${data.description}</div>
                     </div>
                     <div class="prompt-option-arrow">→</div>
-                </div >
+                </div>
             `;
             }
 
             const content = `
-            < div class="prompter-intro" >
+            <div class="prompter-intro" >
                 <div class="prompter-badge">BEST</div>
                 <h3>사복천재의 비밀 프롬프트 🪄</h3>
                 <p>사회복지 전문가의 사고방식을 학습시킨 특수 프롬프트입니다. 아래 항목을 선택하여 복사한 뒤, AI(ChatGPT 등)에게 입력해 보세요!</p>
-            </div >
+            </div>
             <div class="prompt-options-list">
                 ${optionsHtml}
             </div>
@@ -747,7 +747,7 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
 
         modalTitle.innerText = data.title;
         modalBody.innerHTML = `
-            < div class="prompt-detail-view" style = "animation: slideInRight 0.3s ease;" >
+            <div class="prompt-detail-view" style = "animation: slideInRight 0.3s ease;" >
             <div style="margin-bottom:20px;">
                 <button class="btn-primary btn-outline" onclick="document.getElementById('open-ai-prompter').click()" style="padding:6px 12px; font-size:0.85rem; width:auto">← 목록으로</button>
             </div>
@@ -774,7 +774,7 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
                     <li>복사한 내용을 붙여넣고, 하단의 <b>'{{INPUT}}'</b> 부분에 실제 내용을 입력한 뒤 전송하세요!</li>
                 </ol>
             </div>
-        </div >
+        </div>
             `;
         modalBody.scrollTop = 0;
     };
@@ -872,12 +872,12 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
         if (calcBtn) {
             calcBtn.onclick = () => {
                 const content = `
-            < div style = "background:linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); padding:24px; border-radius:24px; border:1px solid #bae6fd; margin-bottom:24px" >
+            <div style = "background:linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); padding:24px; border-radius:24px; border:1px solid #bae6fd; margin-bottom:24px" >
                     <h3 style="color:#1e40af; font-size:1.2rem; font-weight:900">🛡️ 안전한 판정을 위한 공식 연결</h3>
                     <p style="font-size:0.9rem; color:#1e40af; line-height:1.6; margin-top:10px">
                         자체 계산기의 오차 리스크를 방지하고 정확한 상담을 위해 <strong>보건복지부 공식 시뮬레이터</strong>로 연결합니다.
                     </p>
-                </div >
+                </div>
 
                 <div class="kpi-section">
                     <p style="font-size:0.85rem; font-weight:800; color:#475569; margin-bottom:12px">✅ 상담 전 필수 체크리스트</p>
@@ -914,14 +914,14 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
 
         const openAdminModal = () => {
             const content = `
-            < div class="admin-tabs" style = "display:flex; gap:6px; margin-bottom:24px; padding:4px; background:#f1f5f9; border-radius:12px; overflow-x:auto;" >
+            <div class="admin-tabs" style = "display:flex; gap:6px; margin-bottom:24px; padding:4px; background:#f1f5f9; border-radius:12px; overflow-x:auto;" >
                     <button class="tab-btn active" id="tab-vat" onclick="switchAdminTab('vat')" style="flex:1; min-width:60px; padding:10px 4px; border:none; border-radius:8px; background:white; font-weight:700; color:var(--primary); box-shadow:0 2px 4px rgba(0,0,0,0.05); font-size:0.75rem; transition:all 0.2s; white-space:nowrap;">1.부가세</button>
                     <button class="tab-btn" id="tab-tax" onclick="switchAdminTab('tax')" style="flex:1; min-width:60px; padding:10px 4px; border:none; border-radius:8px; background:transparent; font-weight:600; color:#64748b; font-size:0.75rem; transition:all 0.2s; white-space:nowrap;">2.강사료</button>
                     <button class="tab-btn" id="tab-payroll" onclick="switchAdminTab('payroll')" style="flex:1; min-width:60px; padding:10px 4px; border:none; border-radius:8px; background:transparent; font-weight:600; color:#64748b; font-size:0.75rem; transition:all 0.2s; white-space:nowrap;">3.급여정산</button>
                     <button class="tab-btn" id="tab-ltc" onclick="switchAdminTab('ltc')" style="flex:1; min-width:60px; padding:10px 4px; border:none; border-radius:8px; background:transparent; font-weight:600; color:#64748b; font-size:0.75rem; transition:all 0.2s; white-space:nowrap;">4.장기요양</button>
                     <button class="tab-btn" id="tab-youth" onclick="switchAdminTab('youth')" style="flex:1; min-width:60px; padding:10px 4px; border:none; border-radius:8px; background:transparent; font-weight:600; color:#64748b; font-size:0.75rem; transition:all 0.2s; white-space:nowrap;">6.자립청년</button>
                     <button class="tab-btn" id="tab-target" onclick="switchAdminTab('target')" style="flex:1; min-width:60px; padding:10px 4px; border:none; border-radius:8px; background:transparent; font-weight:600; color:#64748b; font-size:0.75rem; transition:all 0.2s; white-space:nowrap;">7.목표달성</button>
-                </div >
+                </div>
 
                 <div id="admin-content-vat" class="tab-content" style="animation: fadeIn 0.3s ease;">
                     
@@ -1162,9 +1162,9 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
                 </div>
 
                         <!-- 🔍 계산 방법 근거(이미지 하단 부분 재현)-- >
-                        </div >
-                    </div >
-                </div >
+                        </div>
+                    </div>
+                </div>
 
                 <div id="admin-content-budget" class="tab-content" style="display:none; animation: fadeIn 0.3s ease;">
                     <div class="step-card beautiful-card" id="budget-checker-card" style="padding:20px; transition:all 0.3s; border:2px solid transparent;">
@@ -1320,7 +1320,7 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
         const resultDiv = document.getElementById('ltc-result');
         resultDiv.classList.remove('hidden');
         resultDiv.innerHTML = `
-            < div class="result-box" >
+            <div class="result-box" >
             <h3>방문요양 모의계산 결과</h3>
             <div class="result-item"><span class="result-label">1회 수가 (${price.toLocaleString()}원 × ${days}일)</span><span style="font-weight:700">${(price * days).toLocaleString()}원</span></div>
             <div class="result-item"><span class="result-label">2026년 월 한도액</span><span style="color:var(--primary); font-weight:800">${limit.toLocaleString()}원</span></div>
@@ -1390,13 +1390,13 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
         let html = '';
         RECORD_TEMPLATES.forEach((tpl, idx) => {
             html += `
-            < div style = "background:#fff; border-radius:12px; padding:16px; border:1px solid #e2e8f0; box-shadow:var(--shadow-card);" >
+            <div style = "background:#fff; border-radius:12px; padding:16px; border:1px solid #e2e8f0; box-shadow:var(--shadow-card);" >
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
                     <div style="font-weight:800; color:var(--text-900); font-size:0.95rem;">${tpl.title}</div>
                     <button class="btn-primary btn-outline" style="padding:4px 8px; font-size:0.75rem; width:auto; border-radius:6px;" onclick="copyTemplate(${idx})">복사하기</button>
                 </div>
                 <div id="tpl-content-${idx}" style="font-size:0.85rem; color:#64748b; background:#f8fafc; padding:12px; border-radius:8px; white-space:pre-wrap; border:1px solid #f1f5f9;">${tpl.content}</div>
-            </div >
+            </div>
             `;
         });
         list.innerHTML = html;
@@ -1488,7 +1488,7 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
         // Show shredding animation with shake effect
         anim.classList.remove('hidden');
         anim.innerHTML = `
-            < div style = "font-size:3rem; margin-bottom:12px; animation: pulse 0.5s infinite alternate;" >📄🪚</div >
+            <div style = "font-size:3rem; margin-bottom:12px; animation: pulse 0.5s infinite alternate;" >📄🪚</div>
             <h3 style="color:#0f172a; font-weight:800; font-size:1.1rem; margin-bottom:8px;">착착착 파쇄 중...</h3>
             <p style="color:#64748b; font-size:0.9rem; padding: 0 10px; line-height: 1.6; word-break: keep-all;">${randomQuote}</p>
         `;
@@ -1589,19 +1589,19 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
         // Are we within 5 years?
         const totalMonthsPassed = (diffYears * 12) + diffMonths;
         const isWithin5Years = totalMonthsPassed < 60; // Less than 60 months = within 5 years
-        const isFuture = baseDate < adjustedEndDate;
+        const isFuture = baseDate <adjustedEndDate;
 
         // Render Results
         resultCard.style.display = 'block';
 
         let html = '';
         html += `
-            < div style = "display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #e2e8f0; padding-bottom:12px; margin-bottom:16px;" >
+            <div style = "display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #e2e8f0; padding-bottom:12px; margin-bottom:16px;" >
                 <span style="font-size:0.9rem; color:#64748b;">기준일 기준 경과 기간</span>
                 <strong style="font-size:1.3rem; color:${isFuture ? '#3b82f6' : '#0f172a'};">
                     ${isFuture ? '보호종료 전' : `만 ${diffYears}년 ${diffMonths}개월`}
                 </strong>
-            </div >
+            </div>
             `;
 
         if (hasMilitary && milDays > 0) {
@@ -1609,7 +1609,7 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
             const formatDate = (d) => `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')} `;
 
             html += `
-            < div style = "background:#f0fdf4; border:1px solid #bbf7d0; border-radius:12px; padding:16px; margin-bottom:16px;" >
+            <div style = "background:#f0fdf4; border:1px solid #bbf7d0; border-radius:12px; padding:16px; margin-bottom:16px;" >
                     <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
                         <strong style="color:#15803d; font-size:0.9rem;">🎖️ 군 복무 특례 적용</strong>
                         <span style="color:#166534; font-size:0.85rem; font-weight:800;">+${milDays}일 연장</span>
@@ -1618,14 +1618,14 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
                         실제 보호종료일(${formatDate(endDate)})에 복무 일수를 환산하여,<br>
                         <strong>보정된 만료 기산일은 ${formatDate(adjustedEndDate)}</strong>로 계산되었습니다.
                     </div>
-                </div >
+                </div>
             `;
         }
 
         if (!isFuture) {
             if (isWithin5Years) {
                 html += `
-            < div style = "display:flex; align-items:center; gap:12px; padding:16px; background:#eff6ff; border-radius:12px; border:1px solid #bfdbfe;" >
+            <div style = "display:flex; align-items:center; gap:12px; padding:16px; background:#eff6ff; border-radius:12px; border:1px solid #bfdbfe;" >
                         <span style="font-size:1.8rem;">✅</span>
                         <div>
                             <div style="color:#1e40af; font-weight:800; font-size:1rem; margin-bottom:4px;">보호종료 5년 이내 해당</div>
@@ -1633,11 +1633,11 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
                                 자립수당 등 '5년 이내' 기준의 혜택을 받을 수 있는 대상자에 해당합니다. <br>(종료일: ${adjustedEndDate.getFullYear() + 5}년 ${adjustedEndDate.getMonth() + 1}월 ${adjustedEndDate.getDate()}일)
                             </div>
                         </div>
-                    </div >
+                    </div>
             `;
             } else {
                 html += `
-            < div style = "display:flex; align-items:center; gap:12px; padding:16px; background:#fef2f2; border-radius:12px; border:1px solid #fecaca;" >
+            <div style = "display:flex; align-items:center; gap:12px; padding:16px; background:#fef2f2; border-radius:12px; border:1px solid #fecaca;" >
                         <span style="font-size:1.8rem;">⚠️</span>
                         <div>
                             <div style="color:#991b1b; font-weight:800; font-size:1rem; margin-bottom:4px;">보호종료 5년 초과</div>
@@ -1645,7 +1645,7 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
                                 안타깝게도 보호종료 후 5년이 경과하여 일부 자립지원 혜택 대상에서 제외될 수 있습니다.
                             </div>
                         </div>
-                    </div >
+                    </div>
             `;
             }
         }
@@ -1793,7 +1793,7 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
             btnBus.style.background = 'white';
             btnBus.style.color = '#475569';
 
-            desc.innerHTML = `💡 <strong>기타소득(8.8%)</strong>: 일시적, 우발적으로 특강 등을 진행하는 비전문 강사 등 < br > <span style="font-size:0.75rem; color:#ef4444">* 세전 125,000원(실수령액 114,000원) 이하는 과세최저한으로 세금 감면</span>`;
+            desc.innerHTML = `💡 <strong>기타소득(8.8%)</strong>: 일시적, 우발적으로 특강 등을 진행하는 비전문 강사 등 <br > <span style="font-size:0.75rem; color:#ef4444">* 세전 125,000원(실수령액 114,000원) 이하는 과세최저한으로 세금 감면</span>`;
             if (taxLabel) taxLabel.innerText = "기타소득세 (8.8%)";
         }
         calcInstructorTax();
@@ -1932,7 +1932,7 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
         const payrollContentDiv = document.getElementById('admin-content-payroll');
         if (payrollContentDiv && !document.getElementById('payroll-disclaimer')) {
             const disclaimerHtml = `
-            < div id = "payroll-disclaimer" style = "margin-top:24px; padding:16px; background:#fff1f2; border-radius:12px; border:1px solid #ffe4e6; display:block; visibility:visible; opacity:1;" >
+            <div id = "payroll-disclaimer" style = "margin-top:24px; padding:16px; background:#fff1f2; border-radius:12px; border:1px solid #ffe4e6; display:block; visibility:visible; opacity:1;" >
                 <div style="display:flex; align-items:flex-start; gap:8px;">
                     <span style="font-size:1.2rem; flex-shrink:0;">⚠️</span>
                     <div>
@@ -1942,7 +1942,7 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
                         </div>
                     </div>
                 </div>
-            </div > `;
+            </div> `;
 
             // 기존 결과 Dashboard div 찾기
             const dashboards = payrollContentDiv.querySelectorAll('.step-card > div[style*="display:grid;"]');
@@ -3231,8 +3231,8 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
         let nextLevelMax = levels[0].max;
         let prevLevelMax = 0;
 
-        for (let i = 0; i < levels.length; i++) {
-            if (totalExp < levels[i].max) {
+        for (let i = 0; i <levels.length; i++) {
+            if (totalExp <levels[i].max) {
                 currentLevel = levels[i];
                 nextLevelMax = levels[i].max;
                 prevLevelMax = i > 0 ? levels[i - 1].max : 0;
@@ -3297,7 +3297,7 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
                         <span style="font-size:0.75rem; color:#94a3b8;">${formatDate(post.created_at)}</span>
                     </div>
                     <div style="font-size:0.95rem; font-weight:700; color:var(--text-900); line-height:1.4;">${escapeHtml(post.title)}</div>
-                </div > `;
+                </div> `;
             });
             listEl.innerHTML = html;
         } catch (err) {
