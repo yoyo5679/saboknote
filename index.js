@@ -1589,7 +1589,7 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
         // Are we within 5 years?
         const totalMonthsPassed = (diffYears * 12) + diffMonths;
         const isWithin5Years = totalMonthsPassed < 60; // Less than 60 months = within 5 years
-        const isFuture = baseDate <adjustedEndDate;
+        const isFuture = baseDate < adjustedEndDate;
 
         // Render Results
         resultCard.style.display = 'block';
@@ -3231,8 +3231,8 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
         let nextLevelMax = levels[0].max;
         let prevLevelMax = 0;
 
-        for (let i = 0; i <levels.length; i++) {
-            if (totalExp <levels[i].max) {
+        for (let i = 0; i < levels.length; i++) {
+            if (totalExp < levels[i].max) {
                 currentLevel = levels[i];
                 nextLevelMax = levels[i].max;
                 prevLevelMax = i > 0 ? levels[i - 1].max : 0;
@@ -3582,18 +3582,18 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
        ========================================================================== */
 
     const pgQuestions = [
-        { id: 1, situation: "월요일 아침, 책상에 앉자마자", q: "가장 먼저 하는 일은?", a: { text: "이번 주 행정·업무 일정부터 파악한다 🗂️", axis: "record" }, b: { text: "클라이언트한테 안부 전화부터 돌린다 📞", axis: "relation" } },
-        { id: 2, situation: "슈퍼바이저가 '이 케이스 어떻게 생각해?' 물었을 때", q: "나의 반응은?", a: { text: "관련 법령·지침 찾아서 근거 있게 답한다", axis: "data" }, b: { text: "그 분 상황이 느껴지는 대로 솔직하게 말한다", axis: "feel" } },
-        { id: 3, situation: "퇴근 30분 전, 긴급 민원이 들어왔다", q: "나는?", a: { text: "오늘 처리 가능한 부분까지 최대한 한다 🔥", axis: "passion" }, b: { text: "내일 가능한 시간 안내하고 정확히 퇴근한다 🧘", axis: "balance" } },
-        { id: 4, situation: "사업 보고서 마감이 내일이다", q: "나의 상태는?", a: { text: "이미 다 써놨음 (초안은 있음)", axis: "record" }, b: { text: "오늘 밤을 불태울 예정 🌙", axis: "feel" } },
-        { id: 5, situation: "동료가 많이 힘들다고 털어놨다", q: "나의 반응은?", a: { text: "해결책을 같이 찾아준다 💡", axis: "data" }, b: { text: "일단 다 들어준다, 밥이라도 같이 먹자 🍚", axis: "relation" } },
-        { id: 6, situation: "새 복지 제도가 생겼다는 소식을 들었다", q: "나의 첫 반응은?", a: { text: "지침 파일 저장하고 정리해둔다", axis: "record" }, b: { text: "당장 연결될 클라이언트 얼굴이 떠오른다", axis: "relation" } },
-        { id: 7, situation: "가장 보람 느끼는 순간", q: "어떤 순간인가요?", a: { text: "복잡한 서류·사례가 깔끔하게 마무리됐을 때", axis: "record" }, b: { text: "클라이언트 표정이 밝아졌을 때 ✨", axis: "passion" } },
-        { id: 8, situation: "회의 중", q: "나의 발언 스타일은?", a: { text: "데이터·근거 들고 논리적으로 말한다 📊", axis: "data" }, b: { text: "현장 경험 사례로 공감대 먼저 만든다", axis: "feel" } },
-        { id: 9, situation: "업무 중 가장 힘든 순간", q: "언제 가장 지치나요?", a: { text: "기록·행정이 산더미처럼 쌓였을 때", axis: "balance" }, b: { text: "클라이언트가 마음을 닫았을 때", axis: "passion" } },
-        { id: 10, situation: "나의 책상은", q: "어떤 모습인가요?", a: { text: "정리정돈 완료, 서류는 폴더별 분류 🗂️", axis: "record" }, b: { text: "겉보기엔 복잡하지만 나만 아는 질서가 있음", axis: "feel" } },
-        { id: 11, situation: "신입 복지사가 들어왔다", q: "나는 어떻게 하나요?", a: { text: "업무 매뉴얼·체크리스트 만들어서 건넨다", axis: "data" }, b: { text: "옆에서 같이 다니며 현장 감각 알려준다", axis: "passion" } },
-        { id: 12, situation: "오늘 하루를 한 단어로 표현하면", q: "어떤 단어가 떠오르나요?", a: { text: '"처리" — 할 일 다 처리했다 ✅', axis: "record" }, b: { text: '"연결" — 사람과 사람을 이었다 🤝', axis: "relation" } },
+        { id: 1, situation: "월요일 아침, 책상에 앉자마자", q: "가장 먼저 하는 일은?", a: { text: "이번 주 업무·행정 일정부터 파악한다 🗂️", axis: "record" }, b: { text: "주말 동안 무슨 일 없었는지 안부 확인부터 📞", axis: "relation" } },
+        { id: 2, situation: "슈퍼바이저가 '이 케이스 어떻게 생각해?' 물었을 때", q: "나의 반응은?", a: { text: "관련 법령·지침 찾아서 정확한 근거로 답한다", axis: "data" }, b: { text: "기존에 비슷한 성공 프로그램 사례를 떠올려 본다", axis: "creator" } },
+        { id: 3, situation: "퇴근 30분 전, 긴급 민원이 들어왔다", q: "나는?", a: { text: "일단 내가 할 수 있는 데까지 다 해본다 🔥", axis: "hero" }, b: { text: "내일 가능한 시간 안내하고 딱 맞게 퇴근한다 🧘", axis: "balance" } },
+        { id: 4, situation: "사업 보고서 마감이 내일이다", q: "나의 상태는?", a: { text: "이미 다 써놨음 (초안은 있음)", axis: "record" }, b: { text: "오늘 밤을 불태워 영혼을 갈아넣을 예정 🌙", axis: "feel" } },
+        { id: 5, situation: "동료가 많이 힘들다고 털어놨다", q: "나의 반응은?", a: { text: "같이 공감해주고 밥이나 술 한잔 사준다 🍚", axis: "empath" }, b: { text: "바로 관련 기관이나 자원을 연결해준다 🤝", axis: "networker" } },
+        { id: 6, situation: "새 복지 제도가 생겼다는 소식을 들었다", q: "나의 첫 반응은?", a: { text: "지침 파일 열어보고 꼼꼼히 분석해본다", axis: "data" }, b: { text: "우리 기관에서 이거로 새 사업 해볼까 기획한다", axis: "creator" } },
+        { id: 7, situation: "가장 보람 느끼는 순간", q: "어떤 순간인가요?", a: { text: "나로 인해 클라이언트의 표정이 밝아졌을 때 ✨", axis: "hero" }, b: { text: "내 워라밸 지키면서도 업무를 완벽히 쳐냈을 때", axis: "balance" } },
+        { id: 8, situation: "회의 중", q: "나의 발언 스타일은?", a: { text: "주변 기관과 엮어서 시너지 내는 걸 좋아한다", axis: "networker" }, b: { text: "현장 경험을 바탕으로 감성에 호소한다", axis: "feel" } },
+        { id: 9, situation: "업무 중 가장 스트레스 받는 순간", q: "언제인가요?", a: { text: "클라이언트나 동료가 마음을 닫았을 때", axis: "empath" }, b: { text: "복잡한 행정 서류가 산더미처럼 쌓였을 때", axis: "hero" } },
+        { id: 10, situation: "나의 책상은", q: "어떤 모습인가요?", a: { text: "정리정돈 완료, 서류는 폴더별 분류 🗂️", axis: "record" }, b: { text: "회의록, 아이디어 메모가 여기저기 흩어져 있음", axis: "creator" } },
+        { id: 11, situation: "신입 복지사가 들어왔다", q: "나는 어떻게 하나요?", a: { text: "업무 매뉴얼, 지침서 주며 통계 보는 법을 알려준다", axis: "data" }, b: { text: "다른 기관 선생님들부터 먼저 소개해준다", axis: "networker" } },
+        { id: 12, situation: "오늘 하루를 한 단어로 표현하면", q: "어떤 단어가 떠오르나요?", a: { text: '"공감" — 마음이 무거운 하루였다 🌧️', axis: "empath" }, b: { text: '"연결" — 사람과 사람을 엮어냈다 🤝', axis: "relation" } },
     ];
 
     const pgTypes = {
@@ -3724,18 +3724,28 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
     };
 
     function pgGetType(ansArr) {
-        const c = { record: 0, relation: 0, passion: 0, balance: 0, data: 0, feel: 0 };
+        const c = { record: 0, relation: 0, data: 0, creator: 0, hero: 0, balance: 0, feel: 0, empath: 0, networker: 0 };
         ansArr.forEach(a => { if (a) c[a]++; });
-        if (c.passion >= 3 && c.relation >= 2) return "hero";
-        if (c.record >= 4) return "recorder";
-        if (c.feel >= 3 && c.relation >= 2) return "empath";
-        if (c.data >= 3) return "analyst";
-        if (c.passion >= 2 && c.data >= 1) return "creator";
-        if (c.relation >= 3 && c.balance >= 1) return "networker";
 
-        const top = Object.entries(c).sort((a, b) => b[1] - a[1])[0][0];
-        const fallback = { record: "recorder", relation: "networker", passion: "hero", balance: "empath", data: "analyst", feel: "empath" }[top];
-        return fallback || "hero";
+        // Map points to the 6 types (max 3-4 points per type):
+        // 1. hero -> hero + relation
+        // 2. recorder -> record + balance
+        // 3. empath -> empath + feel
+        // 4. analyst -> data + record
+        // 5. creator -> creator + feel
+        // 6. networker -> networker + relation
+
+        const typeScores = {
+            hero: (c.hero || 0) + (c.relation || 0) * 0.5,
+            recorder: (c.record || 0) + (c.balance || 0) * 0.5,
+            empath: (c.empath || 0) + (c.feel || 0) * 0.5,
+            analyst: (c.data || 0) + (c.record || 0) * 0.5,
+            creator: (c.creator || 0) + (c.feel || 0) * 0.5,
+            networker: (c.networker || 0) + (c.relation || 0) * 0.5
+        };
+
+        const sortedTypes = Object.entries(typeScores).sort((a, b) => b[1] - a[1]);
+        return sortedTypes[0][0]; // Return the highest scoring type
     }
 
     async function pgProcessResult() {
