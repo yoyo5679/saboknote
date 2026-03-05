@@ -61,6 +61,17 @@
     function initNewsletterReader() {
         const btn = document.getElementById('open-newsletter-read');
         if (btn) {
+            btn.onclick = () => {
+                window.open('https://fluff-dew-8ab.notion.site/31a718fdb19180ccb8f9ed51cbcbdaa0?source=copy_link', '_blank');
+            };
+        }
+        return; // Early return to ignore the rest of the old logic
+    }
+
+    // The rest of this function will never be executed, but keeping it to avoid breaking the file structure
+    function obsolete_initNewsletterReader() {
+        const btn = document.getElementById('open-newsletter-read');
+        if (btn) {
             btn.onclick = async () => {
                 let listHtml = '<div style="text-align:center; padding:20px;"><div class="loading-spinner" style="margin: 0 auto 8px auto;"></div><p style="font-size:0.85rem; color:#94a3b8;">비밀 편지함 여는 중...</p></div>';
 
