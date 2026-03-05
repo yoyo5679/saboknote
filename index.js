@@ -61,17 +61,6 @@
     function initNewsletterReader() {
         const btn = document.getElementById('open-newsletter-read');
         if (btn) {
-            btn.onclick = () => {
-                window.open('https://fluff-dew-8ab.notion.site/31a718fdb19180ccb8f9ed51cbcbdaa0?source=copy_link', '_blank');
-            };
-        }
-        return; // Early return to ignore the rest of the old logic
-    }
-
-    // The rest of this function will never be executed, but keeping it to avoid breaking the file structure
-    function obsolete_initNewsletterReader() {
-        const btn = document.getElementById('open-newsletter-read');
-        if (btn) {
             btn.onclick = async () => {
                 let listHtml = '<div style="text-align:center; padding:20px;"><div class="loading-spinner" style="margin: 0 auto 8px auto;"></div><p style="font-size:0.85rem; color:#94a3b8;">비밀 편지함 여는 중...</p></div>';
 
@@ -141,14 +130,34 @@
                                 window.newsletterData[post.id] = post;
 
                                 itemsHtml += `
-                                <div style="margin-bottom:12px; padding-bottom:12px; border-bottom:1px dashed #ddd6fe; cursor:pointer;" onclick="showNewsletterDetail('${post.id}')">
+                                <div style="margin-bottom:12px; padding-bottom:12px; border-bottom:1px dashed #ddd6fe; cursor:pointer;" onclick="window.open('https://fluff-dew-8ab.notion.site/31a718fdb19180ccb8f9ed51cbcbdaa0?source=copy_link', '_blank')">
                                     <strong style="color:#0f172a; font-size:0.95rem; display:block; margin-bottom:4px">[Vol ${data.length + 3 - i}.] ${escapeHtml(post.title)}</strong>
                                     <span style="font-size:0.8rem; color:#64748b">발행일: ${dateStr}</span>
                                 </div>`;
                             });
                         }
 
-                        itemsHtml += mockListHtml;
+                        // update mock list to also redirect to Notion
+                        const updatedMockListHtml = `
+                            <div style="margin-bottom:12px; padding-bottom:12px; border-bottom:1px dashed #ddd6fe; cursor:pointer;" onclick="window.open('https://fluff-dew-8ab.notion.site/31a718fdb19180ccb8f9ed51cbcbdaa0?source=copy_link', '_blank')">
+                                <strong style="color:#0f172a; font-size:0.95rem; display:block; margin-bottom:4px">[Vol 4.] 사복직 생존은 템빨! 업무 효율 떡상하는 사무용품 추천</strong>
+                                <span style="font-size:0.8rem; color:#64748b">발행일: 2026.03.05</span>
+                            </div>
+                            <div style="margin-bottom:12px; padding-bottom:12px; border-bottom:1px dashed #ddd6fe; cursor:pointer;" onclick="window.open('https://fluff-dew-8ab.notion.site/31a718fdb19180ccb8f9ed51cbcbdaa0?source=copy_link', '_blank')">
+                                <strong style="color:#0f172a; font-size:0.95rem; display:block; margin-bottom:4px">[Vol 3.] 요즘 핫한 '퍼네이션(Funation)' 동향! 재미있게 기부하는 법 공유함</strong>
+                                <span style="font-size:0.8rem; color:#64748b">발행일: 2026.03.01</span>
+                            </div>
+                            <div style="margin-bottom:12px; padding-bottom:12px; border-bottom:1px dashed #ddd6fe; cursor:pointer;" onclick="window.open('https://fluff-dew-8ab.notion.site/31a718fdb19180ccb8f9ed51cbcbdaa0?source=copy_link', '_blank')">
+                                <strong style="color:#0f172a; font-size:0.95rem; display:block; margin-bottom:4px">[Vol 2.] 2026 사회복지 최신 트렌드! 이거 모르면 대화 안 됨</strong>
+                                <span style="font-size:0.8rem; color:#64748b">발행일: 2026.02.20</span>
+                            </div>
+                            <div style="cursor:pointer;" onclick="window.open('https://fluff-dew-8ab.notion.site/31a718fdb19180ccb8f9ed51cbcbdaa0?source=copy_link', '_blank')">
+                                <strong style="color:#0f172a; font-size:0.95rem; display:block; margin-bottom:4px">[Vol 1.] 업무 퀄리티 떡상하는 무료 AI 툴 추천! 이거 쓰면 칼퇴 가능</strong>
+                                <span style="font-size:0.8rem; color:#64748b">발행일: 2026.02.10</span>
+                            </div>
+                        `;
+
+                        itemsHtml += updatedMockListHtml;
                         container.innerHTML = itemsHtml;
                     }
                 } catch (e) {
