@@ -1088,7 +1088,8 @@ select:focus {
   background: #ffffff;
   width: 100%;
   max-width: 600px;
-  max-height: 85vh;
+  max-height: 90vh;
+  /* Increased slightly */
   border-radius: 28px;
   display: flex;
   flex-direction: column;
@@ -1096,6 +1097,8 @@ select:focus {
   opacity: 0;
   transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.1), opacity 0.35s ease;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  /* Ensure body contents don't leak */
 }
 
 .modal-overlay.active .modal-container {
@@ -1107,13 +1110,13 @@ select:focus {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 28px 24px 16px;
+  padding: 24px 24px 16px;
   border-bottom: 1px solid #f1f5f9;
   flex-shrink: 0;
 }
 
 .modal-title {
-  font-size: 1.2rem;
+  font-size: 1.15rem;
   font-weight: 800;
   color: #0f172a;
   margin: 0;
@@ -1151,7 +1154,8 @@ select:focus {
   padding: 24px;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  padding-bottom: env(safe-area-inset-bottom, 40px);
+  /* 모바일에서 하단 여백 충분히 확보 */
+  padding-bottom: calc(30px + env(safe-area-inset-bottom, 20px));
 }
 
 /* ==========================================================================
