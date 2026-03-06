@@ -1210,11 +1210,6 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
                     </div>
                 </div>
 
-                        <!-- 🔍 계산 방법 근거(이미지 하단 부분 재현)-- >
-                        </div>
-                    </div>
-                </div>
-
                 <div id="admin-content-budget" class="tab-content" style="display:none; animation: fadeIn 0.3s ease;">
                     <div class="step-card beautiful-card" id="budget-checker-card" style="padding:20px; transition:all 0.3s; border:2px solid transparent;">
                         <h4 style="color:#0f172a; font-weight:800; font-size:1.1rem; margin-bottom:8px;">🍽️ 단가 계산기 (식대 등 1인당 단가 검증)</h4>
@@ -1242,7 +1237,7 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
                     </div>
                 </div>
 
-                <!--자립준비청년 연수 계산기-- >
+                <!-- 자립준비청년 연수 계산기 -->
                 <div id="admin-content-youth" class="tab-content" style="display:none; animation: fadeIn 0.3s ease;">
                     <div class="step-card beautiful-card" style="margin-bottom:24px; padding:20px;">
                         <h4 style="color:#0f172a; font-weight:800; font-size:1.1rem; margin-bottom:8px;">🎒 자립준비청년 보호종료 연수 계산</h4>
@@ -1255,11 +1250,11 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
                             <div style="display:flex; flex-direction:column; gap:16px;">
                                 <div>
                                     <label style="display:block; font-size:0.85rem; color:#475569; font-weight:700; margin-bottom:6px;">보호종료일 (퇴소일) <span style="color:#ef4444">*</span></label>
-                                    <input type="date" id="youth-end-date" class="calc-input" onchange="calcYouthIndependence()" oninput="calcYouthIndependence()" style="font-size:1.1rem; padding:12px;">
+                                    <input type="date" id="youth-end-date" class="calc-input" onchange="calcYouthIndependence()" oninput="calcYouthIndependence()" style="font-size:1.1rem; padding:12px; width:100%; box-sizing:border-box;">
                                 </div>
                                 <div>
                                     <label style="display:block; font-size:0.85rem; color:#475569; font-weight:700; margin-bottom:6px;">기준일 (미입력 시 '오늘')</label>
-                                    <input type="date" id="youth-base-date" class="calc-input" onchange="calcYouthIndependence()" oninput="calcYouthIndependence()" style="font-size:1.1rem; padding:12px;">
+                                    <input type="date" id="youth-base-date" class="calc-input" onchange="calcYouthIndependence()" oninput="calcYouthIndependence()" style="font-size:1.1rem; padding:12px; width:100%; box-sizing:border-box;">
                                 </div>
                             </div>
                         </div>
@@ -1279,11 +1274,11 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
                                 <div style="display:flex; gap:12px;">
                                     <div style="flex:1;">
                                         <label style="display:block; font-size:0.8rem; color:#1e40af; font-weight:700; margin-bottom:4px;">입대일</label>
-                                        <input type="date" id="youth-mil-start" class="calc-input" onchange="calcYouthIndependence()" oninput="calcYouthIndependence()" style="font-size:1.1rem; padding:12px;">
+                                        <input type="date" id="youth-mil-start" class="calc-input" onchange="calcYouthIndependence()" oninput="calcYouthIndependence()" style="font-size:1.1rem; padding:12px; width:100%; box-sizing:border-box;">
                                     </div>
                                     <div style="flex:1;">
                                         <label style="display:block; font-size:0.8rem; color:#1e40af; font-weight:700; margin-bottom:4px;">전역(예정)일</label>
-                                        <input type="date" id="youth-mil-end" class="calc-input" onchange="calcYouthIndependence()" oninput="calcYouthIndependence()" style="font-size:1.1rem; padding:12px;">
+                                        <input type="date" id="youth-mil-end" class="calc-input" onchange="calcYouthIndependence()" oninput="calcYouthIndependence()" style="font-size:1.1rem; padding:12px; width:100%; box-sizing:border-box;">
                                     </div>
                                 </div>
                             </div>
@@ -1310,7 +1305,7 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
                     </div>
                 </div>
 
-                <!--사업 목표값 계산기-- >
+                <!-- 사업 목표값 계산기 -->
             <div id="admin-content-target" class="tab-content" style="display:none; animation: fadeIn 0.3s ease;">
                 <div class="step-card beautiful-card" style="margin-bottom:24px; padding:20px;">
                     <h4 style="color:#0f172a; font-weight:800; font-size:1.1rem; margin-bottom:16px;">🎯 사업 목표 달성률 계산</h4>
@@ -1323,13 +1318,20 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
                         <div>
                             <label style="font-size:0.85rem; color:#475569; font-weight:600; margin-bottom:6px; display:block;">실적값 (Actual)</label>
                             <input type="number" id="target-actual-input" class="calc-input" placeholder="예: 85" oninput="calcTargetRate()" style="font-size:1.1rem; padding:12px; width:100%;">
-                        </div>
                     </div>
 
+                    <button class="btn-primary" onclick="calcTargetRate()" style="width:100%; margin-bottom:20px; padding:14px; font-size:1rem;">📊 달성률 계산하기</button>
+
                     <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:20px; text-align:center;">
-                        <div style="font-size:0.85rem; color:#64748b; font-weight:700; margin-bottom:8px;">현재 달성률</div>
-                        <div id="target-rate-result" style="font-size:2rem; font-weight:900; color:#3b82f6;">0%</div>
-                        <div id="target-rate-msg" style="margin-top:12px; padding-top:12px; border-top:1px dashed #cbd5e1; font-size:0.9rem; color:#475569; font-weight:600;">목표값과 실적값을 입력해주세요.</div>
+                        <div style="font-size:0.85rem; color:#64748b; font-weight:700; margin-bottom:12px;">현재 달성률</div>
+                        <div id="target-rate-result" style="font-size:2.8rem; font-weight:900; color:#3b82f6; margin-bottom:16px;">0%</div>
+                        
+                        <!-- Progress Bar for Target -->
+                        <div style="height:12px; background:#e2e8f0; border-radius:10px; overflow:hidden; margin-bottom:16px;">
+                            <div id="target-rate-bar" style="height:100%; width:0%; background:linear-gradient(90deg, #3b82f6, #10b981); transition:width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);"></div>
+                        </div>
+
+                        <div id="target-rate-msg" style="margin-top:12px; padding-top:12px; border-top:1px dashed #cbd5e1; font-size:0.95rem; color:#475569; font-weight:600; line-height:1.4;">목표값과 실적값을 입력해주세요.</div>
                     </div>
                 </div>
             </div>
@@ -1674,28 +1676,28 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
         if (!isFuture) {
             if (isWithin5Years) {
                 html += `
-            <div style = "display:flex; align-items:center; gap:12px; padding:16px; background:#eff6ff; border-radius:12px; border:1px solid #bfdbfe;" >
-                        <span style="font-size:1.8rem;">✅</span>
-                        <div>
-                            <div style="color:#1e40af; font-weight:800; font-size:1rem; margin-bottom:4px;">보호종료 5년 이내 해당</div>
-                            <div style="color:#1d4ed8; font-size:0.8rem; line-height:1.4;">
-                                자립수당 등 '5년 이내' 기준의 혜택을 받을 수 있는 대상자에 해당합니다. <br>(종료일: ${adjustedEndDate.getFullYear() + 5}년 ${adjustedEndDate.getMonth() + 1}월 ${adjustedEndDate.getDate()}일)
+                    <div style="display:flex; align-items:center; gap:12px; padding:20px; background:#eff6ff; border-radius:16px; border:1px solid #bfdbfe; box-shadow: 0 4px 12px rgba(37,99,235,0.1);">
+                        <span style="font-size:2rem;">✅</span>
+                        <div style="flex:1;">
+                            <div style="color:#1e40af; font-weight:800; font-size:1.05rem; margin-bottom:6px;">보호종료 5년 이내 해당</div>
+                            <div style="color:#1d4ed8; font-size:0.85rem; line-height:1.5; word-break:keep-all;">
+                                자립수당 등 '5년 이내' 기준의 혜택을 받을 수 있는 대상자에 해당합니다. <br>(종료일: ${formatDate(new Date(adjustedEndDate.getFullYear() + 5, adjustedEndDate.getMonth(), adjustedEndDate.getDate()))})
                             </div>
                         </div>
                     </div>
-            `;
+                `;
             } else {
                 html += `
-            <div style = "display:flex; align-items:center; gap:12px; padding:16px; background:#fef2f2; border-radius:12px; border:1px solid #fecaca;" >
-                        <span style="font-size:1.8rem;">⚠️</span>
-                        <div>
-                            <div style="color:#991b1b; font-weight:800; font-size:1rem; margin-bottom:4px;">보호종료 5년 초과</div>
-                            <div style="color:#b91c1c; font-size:0.8rem; line-height:1.4;">
+                    <div style="display:flex; align-items:center; gap:12px; padding:20px; background:#fef2f2; border-radius:16px; border:1px solid #fecaca; box-shadow: 0 4px 12px rgba(239,68,68,0.1);">
+                        <span style="font-size:2rem;">⚠️</span>
+                        <div style="flex:1;">
+                            <div style="color:#991b1b; font-weight:800; font-size:1.05rem; margin-bottom:6px;">보호종료 5년 초과</div>
+                            <div style="color:#b91c1c; font-size:0.85rem; line-height:1.5; word-break:keep-all;">
                                 안타깝게도 보호종료 후 5년이 경과하여 일부 자립지원 혜택 대상에서 제외될 수 있습니다.
                             </div>
                         </div>
                     </div>
-            `;
+                `;
             }
         }
 
@@ -1781,6 +1783,12 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
         const roundedRate = rate.toFixed(1);
 
         resultEl.innerText = roundedRate + '%';
+
+        // Update bar width (capped at 100% for visual)
+        const barEl = document.getElementById('target-rate-bar');
+        if (barEl) {
+            barEl.style.width = Math.min(rate, 100) + '%';
+        }
 
         if (rate >= 100) {
             resultEl.style.color = '#10b981'; // green
