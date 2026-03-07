@@ -295,35 +295,118 @@
                 }
             };
 
+            // 미니게임 시작 시간 (쿨타임용)
+            const [lastMinigameTime, setLastMinigameTime] = useState(0);
+            const [cooldownRemaining, setCooldownRemaining] = useState(0);
+
+            // 쿨타임 타이머
+            useEffect(() => {
+                const timer = setInterval(() => {
+                    if (lastMinigameTime > 0) {
+                        const now = Date.now();
+                        const diff = Math.floor((now - lastMinigameTime) / 1000);
+                        const remaining = Math.max(0, 60 - diff);
+                        setCooldownRemaining(remaining);
+                    }
+                }, 1000);
+                return () => clearInterval(timer);
+            }, [lastMinigameTime]);
+
             const startMinigame = (gameType) => {
+                if (cooldownRemaining > 0) {
+                    alert(`${cooldownRemaining}초 후에 다시 시도할 수 있습니다.`);
+                    return;
+                }
+
                 if (gameType === 'counseling') {
                     const scenarios = [
-                        { question: '클라이언트가 "아무도 날 이해 못해요"라고 말합니다.', options: [{ text: '"제가 이해합니다"', correct: false, feedback: '공감보다는 경청이 중요합니다.' }, { text: '"그런 기분이 드시는군요. 더 말씀해주시겠어요?"', correct: true, feedback: '훌륭한 경청과 공감입니다!' }, { text: '"다른 사람들도 다 그렇게 생각해요"', correct: false, feedback: '클라이언트의 감정을 축소시킬 수 있습니다.' }] },
-                        { question: '클라이언트가 위기 상황에 있다고 판단됩니다.', options: [{ text: '즉시 상급자에게 보고', correct: true, feedback: '올바른 위기 대응입니다!' }, { text: '혼자 해결하려 시도', correct: false, feedback: '위기 상황은 팀으로 대응해야 합니다.' }, { text: '다음 상담 때 다시 보기', correct: false, feedback: '위기는 즉각 대응이 필요합니다.' }] },
-                        { question: '클라이언트가 계속 침묵하고 있습니다.', options: [{ text: '"왜 말을 안 하세요?"', correct: false, feedback: '압박적으로 느껴질 수 있습니다.' }, { text: '함께 침묵하며 기다리기', correct: true, feedback: '침묵도 의미있는 소통입니다!' }, { text: '다른 주제로 전환', correct: false, feedback: '클라이언트의 페이스를 존중해야 합니다.' }] }
+                        { question: '독거어르신이 "사는 게 의미가 없네"라며 우울해하십니다.', options: [{ text: '"힘내세요, 좋은 일 있을 거예요"', correct: false, feedback: '막연한 격려는 오히려 소외감을 줄 수 있습니다.' }, { text: '"그런 마음이 드시는군요. 구체적으로 어떤 점이 힘드신지 들어볼 수 있을까요?"', correct: true, feedback: '경청과 감정 수용은 상담의 기본입니다!' }, { text: '"운동을 해보시는 건 어때요?"', correct: false, feedback: '해결책 제시보다는 공감이 우선입니다.' }] },
+                        { question: '아동의 몸에서 멍 자국을 발견했습니다. 학대가 의심됩니다.', options: [{ text: '즉시 아동보호전문기관이나 경찰에 신고', correct: true, feedback: '사회복지사는 아동학대 신고 의무자입니다!' }, { text: '부모님께 전화를 걸어 확인', correct: false, feedback: '증거 인멸이나 아동에게 추가 위험이 생길 수 있습니다.' }, { text: '일단 며칠 더 지켜보기로 함', correct: false, feedback: '의심되는 즉시 신고해야 합니다.' }] },
+                        { question: '장애인 등록 절차를 물어보는 민원인이 오셨습니다.', options: [{ text: '근무지 근처 병원 안내', correct: false, feedback: '지정된 진단 기관이 필요합니다.' }, { text: '주민센터 방문하여 신청서 접수 및 진단서 제출 안내', correct: true, feedback: '정확한 행정 절차 안내입니다!' }, { text: '전화번호만 주고 나중에 연락하라고 함', correct: false, feedback: '적극적인 정보 제공이 필요합니다.' }] },
+                        { question: '알코올 의존 증세가 있는 클라이언트가 상담을 거부합니다.', options: [{ text: '강제로 병원에 입원시킴', correct: false, feedback: '법적 절차와 동의 없는 강제 입원은 위험합니다.' }, { text: '라포 형성을 위해 단기 목표부터 차근차근 접근', correct: true, feedback: '신뢰 관계 형성이 가장 우선입니다!' }, { text: '의지가 없으니 상담 종결', correct: false, feedback: '필요한 서비스를 지속적으로 제안해야 합니다.' }] },
+                        { question: '다문화 가정 아이가 한국어 부족으로 학교 적응에 힘들어합니다.', options: [{ text: '다문화가족지원센터의 한국어 교육 프로그램 연계', correct: true, feedback: '적절한 자원 연계입니다!' }, { text: '아이에게 공부를 더 열심히 하라고 함', correct: false, feedback: '심리적 압박을 줄 수 있습니다.' }, { text: '외국인 학교로 전학 권유', correct: false, feedback: '분리보다는 통합이 우선입니다.' }] },
+                        { question: '노숙인이 추운 겨울에 거리에서 잠을 자려 합니다.', options: [{ text: '돈을 주고 알아서 자라고 함', correct: false, feedback: '근본적인 해결이 되지 않습니다.' }, { text: '인근 일시보호소나 쉼터로 긴급 입소 연계', correct: true, feedback: '동절기 긴급 보호가 최우선입니다!' }, { text: '추우니까 집에 가라고 함', correct: false, feedback: '주거가 없는 상황을 고려해야 합니다.' }] },
+                        { question: '청소년이 가출을 고민하며 상담을 요청했습니다.', options: [{ text: '무조건 참으라고 훈계함', correct: false, feedback: '갈등 원인을 파악해야 합니다.' }, { text: '가출 경험이 있는지 묻고 위험성 및 쉼터 안내', correct: true, feedback: '안전 확보와 현실적인 대안 공유가 중요합니다!' }, { text: '부모님께 바로 일러바침', correct: false, feedback: '비밀 보장 원칙과 신뢰가 깨지기 쉽습니다.' }] },
+                        { question: '만성질환으로 병원비 부담이 큰 클라이언트가 있습니다.', options: [{ text: '긴급복지지원제도 및 의료비 지원 사업 안내', correct: true, feedback: '경제적 부담 완화를 위한 제도 안내입니다!' }, { text: '아르바이트를 구해보라고 함', correct: false, feedback: '건강 상태를 먼저 고려해야 합니다.' }, { text: '병원을 옮기라고 함', correct: false, feedback: '근본적인 문제 해결이 아닙니다.' }] },
+                        { question: '치매 어르신을 돌보는 보호자가 심각한 스트레스를 호소합니다.', options: [{ text: '시설 입소만 강력하게 권유', correct: false, feedback: '보호자의 다양한 욕구를 확인해야 합니다.' }, { text: '재가 노인복지 서비스 및 보호자 자조 모임 안내', correct: true, feedback: '보호자의 부양 부담 경감이 필요합니다!' }, { text: '"누구나 다 겪는 일"이라며 위로', correct: false, feedback: '고통을 축소시키는 표현입니다.' }] },
+                        { question: '한부모 가정이 갑작스러운 실직으로 생계가 막막해졌습니다.', options: [{ text: '기초생활수급 신청 및 긴급 지원 연계', correct: true, feedback: '생존권 보장이 최우선입니다!' }, { text: '나중에 일 구하면 오라고 함', correct: false, feedback: '긴급한 위기 상황을 방치하는 것입니다.' }, { text: '아이를 보육 시설에 맡기라고 함', correct: false, feedback: '가족 해체를 우선 권해서는 안 됩니다.' }] },
+                        { question: '난민 신청자가 한국 사회 적응에 도움을 요청합니다.', options: [{ text: '모국으로 돌아가라고 함', correct: false, feedback: '인권 존중 원칙에 어긋납니다.' }, { text: 'NGO 및 외국인 지원 기관 연계 정보 제공', correct: true, feedback: '현실적인 정보 지원입니다!' }, { text: '법률 상담만 받으라고 함', correct: false, feedback: '생활 전반의 지원이 필요합니다.' }] },
+                        { question: '학교 폭력 목격자가 보복이 두려워 상담을 망설입니다.', options: [{ text: '비밀 보장을 약속하고 안전한 제보 방법 안내', correct: true, feedback: '상담자의 안전과 익명성 확보가 중요합니다!' }, { text: '방관은 죄라고 압박함', correct: false, feedback: '방어 기제를 강화할 수 있습니다.' }, { text: '직접 가서 사과하게 함', correct: false, feedback: '보복 위험을 키울 수 있습니다.' }] },
+                        { question: '자살 예방 전화에서 "죽고 싶다"는 긴박한 연락이 왔습니다.', options: [{ text: '위치 파악을 시도하고 긴급 출동 요청', correct: true, feedback: '생명 보호를 위한 응급 대응입니다!' }, { text: '"내일 다시 얘기하자"고 함', correct: false, feedback: '절대 해서는 안 되는 방치입니다.' }, { text: '좋은 생각만 하라고 격려', correct: false, feedback: '위기 상황에서는 구체적 개입이 필요합니다.' }] },
+                        { question: '저소득 취업 준비생이 면접 복장이 없어 고민입니다.', options: [{ text: '열정만 있으면 된다고 함', correct: false, feedback: '현실적인 지원이 필요합니다.' }, { text: '의류 대여 서비스나 지역 사회 후원 연계', correct: true, feedback: '생활 밀착형 자원 연계입니다!' }, { text: '돈 모아서 사라고 함', correct: false, feedback: '현재의 어려움을 외면하는 것입니다.' }] },
+                        { question: '휠체어 사용자가 집안 문턱 때문에 통행이 힘듭니다.', options: [{ text: '집수리 지원 사업(문턱 제거) 신청 안내', correct: true, feedback: '주거 환경 개선은 삶의 질을 높입니다!' }, { text: '문을 쓰지 말라고 함', correct: false, feedback: '권리를 침해하는 발언입니다.' }, { text: '가족들이 도와주라고 함', correct: false, feedback: '환경을 개선하는 것이 먼저입니다.' }] },
+                        { question: '지역 사회 보장 협의체 회의에서 의견 충돌이 발생했습니다.', options: [{ text: '다수결로 밀어붙임', correct: false, feedback: '민주적인 의견 수렴 과정이 필요합니다.' }, { text: '각 주체의 입장을 경청하고 공통의 목표 강조', correct: true, feedback: '조정자로서의 역할이 중요합니다!' }, { text: '회의를 바로 종료함', correct: false, feedback: '문제 해결을 회피하는 것입니다.' }] },
+                        { question: '이웃집과의 소음 문제로 감정 싸움이 번진 주민이 왔습니다.', options: [{ text: '경찰서에 신고하라고 함', correct: false, feedback: '사회복지적 중재 노력이 필요합니다.' }, { text: '양측 이야기를 듣고 커뮤니티 공간 매너 가이드 제안', correct: true, feedback: '주민 소통 강화 approach입니다!' }, { text: '무조건 참으라고 함', correct: false, feedback: '갈등을 심화시킬 수 있습니다.' }] },
+                        { question: '가정 폭력 피해자가 갈 곳이 없어 떨고 있습니다.', options: [{ text: '가정 폭력 보호 시설(쉼터)로 즉시 안내', correct: true, feedback: '긴급 격리와 안전 확보가 필수입니다!' }, { text: '남편이랑 화해하라고 함', correct: false, feedback: '피해자에게 2차 가해를 하는 것입니다.' }, { text: '내무반 같은 시설은 안 된다며 거절', correct: false, feedback: '지원할 수 있는 모든 곳을 찾아야 합니다.' }] },
+                        { question: '정신질환자가 약 복용을 거절하며 공격적인 성향을 보입니다.', options: [{ text: '정신건강복지센터 전문가와 동행하여 상담 시도', correct: true, feedback: '전문화된 대처가 안전합니다!' }, { text: '억지로 약을 먹임', correct: false, feedback: '물리적 충돌 위험과 법적 문제가 발생할 수 있습니다.' }, { text: '그냥 무시하고 도망침', correct: false, feedback: '방임은 문제를 악화시킵니다.' }] },
+                        { question: '푸드뱅크 신청 방법을 모르는 이웃이 계십니다.', options: [{ text: '지원 대상 확인 후 신청 및 이용 방법 자세히 안내', correct: true, feedback: '복지 사각지대 발굴과 서비스 연결입니다!' }, { text: '인터넷 찾아보라고 함', correct: false, feedback: '정보 취약 계층을 배려해야 합니다.' }, { text: '나중에 오라고 함', correct: false, feedback: '눈앞의 욕구를 빠르게 처리해야 합니다.' }] }
                     ];
                     const randomScenario = scenarios[Math.floor(Math.random() * scenarios.length)];
                     setMinigameData(randomScenario);
                     setActiveMinigame('counseling');
                 } else if (gameType === 'typing') {
-                    const documents = ['사회복지서비스 신청서', '사례관리 계획서', '복지급여 신청 접수', '상담 기록지 작성', '가정방문 보고서', '욕구사정 보고서'];
-                    setMinigameData({ document: documents[Math.floor(Math.random() * documents.length)], timeLeft: 10, completed: false, maxTime: 10 });
+                    const socialWorkPhrases = [
+                        '사회복지사 윤리강령 준수',
+                        '사례관리 초기 상담 기록',
+                        '국가기초생활보장제도 안내',
+                        '노인장기요양보험 등급 판정',
+                        '장애인복지법 시행령 확인',
+                        '아동보호전문기관 업무 협조',
+                        '지역사회 보장 협의체 운영',
+                        '사회복지 서비스 욕구 사정',
+                        '긴급복지지원법 위기 상황',
+                        '다문화가족 지원 센터 상담',
+                        '정신건강복지센터 사례 연계',
+                        '푸드뱅크 물품 배분 계획',
+                        '자원봉사자 모집 및 교육',
+                        '사회복지 시설 정보 시스템',
+                        '공공부조 및 사회보험 체계'
+                    ];
+                    setMinigameData({
+                        document: socialWorkPhrases[Math.floor(Math.random() * socialWorkPhrases.length)],
+                        timeLeft: 15,
+                        completed: false,
+                        maxTime: 15,
+                        userInput: ''
+                    });
                     setActiveMinigame('typing');
                 } else if (gameType === 'quiz') {
-                    const baseAmount = Math.floor(Math.random() * 500000) + 1500000;
-                    setMinigameData({ question: '기초생활수급자 4인 가구의 생계급여 기준은?', answer: baseAmount, tolerance: 200000 });
+                    const quizzes = [
+                        { question: '기초연금 수급 자격 연령은 만 몇 세 이상인가요?', answer: 65, tolerance: 0 },
+                        { question: '장애인 등록제에서 기존 등급제는 ( ) 정도로 바뀌었습니다.', answer: '장애정도가 심한 장애인', type: 'text' }, // We'll adapt quiz for numbers/text
+                        { question: '사회복지 시설 평가는 몇 년마다 실시되나요?', answer: 3, tolerance: 0 },
+                        { question: '아동수당은 만 몇 세 미만 아동에게 지급되나요?', answer: 8, tolerance: 0 },
+                        { question: '최저임금제도는 ( )에게 최소한의 임금을 보장하는 제도입니다.', answer: '근로자', type: 'text' },
+                        { question: '노인장기요양보험의 보험자는 누구인가요?', answer: '국민건강보험공단', type: 'text' },
+                        { question: '사회복지사의 보수교육은 연간 최소 몇 시간인가요?', answer: 8, tolerance: 0 },
+                        { question: '아동학대를 알게 된 경우, 법적 신고 의무가 있는 사람은?', answer: '신고의무자', type: 'text' },
+                        { question: '국민취업지원제도 1유형 구직촉진수당은 월 몇 만 원인가요?', answer: 50, tolerance: 0 },
+                        { question: '생계급여 선정 기준은 중위소득의 몇 % 이하인가요? (2024년 기준)', answer: 32, tolerance: 0 },
+                        { question: '주거급여 선정 기준은 중위소득의 몇 % 이하인가요? (2024년 기준)', answer: 48, tolerance: 0 },
+                        { question: '문화누리카드 1인당 연간 지원 금액은 몇 만 원인가요?', answer: 13, tolerance: 0 },
+                        { question: '긴급복지지원법에 따른 생계지원의 기본 기간은 몇 개월인가요?', answer: 1, tolerance: 0 },
+                        { question: '사회복지공동모금회의 상징 아이콘은 무엇인가요?', answer: '사랑의 열매', type: 'text' },
+                        { question: '우리나라 최초의 사회복지법은 1961년 제정된 ( )법입니다.', answer: '산업재해보상보험', type: 'text' },
+                        { question: '장애인 주차 구역 위반 과태료는 기본 얼마인가요?', answer: 10, tolerance: 0 },
+                        { question: '고용보험 실업급여 수급을 위해 최소 며칠 이상 근무해야 하나요?', answer: 180, tolerance: 0 },
+                        { question: '아이돌봄 서비스 이용 비용은 소득 수준에 따라 차등 지원되나요?', answer: '예', type: 'text' },
+                        { question: '사회복지관의 3대 주요 기능 중 "지역사회 보호"가 포함되나요?', answer: '예', type: 'text' },
+                        { question: '자원봉사 실적 관리 시스템의 약칭은?', answer: 'VMS', type: 'text' },
+                        { question: '치매 국가책임제에서 운영하는 치매 안심 센터는 어디에 있나요?', answer: '보건소', type: 'text' },
+                        { question: '청년수당은 ( )세부터 34세까지가 주요 대상입니다.', answer: 19, tolerance: 0 },
+                        { question: '출산 전후 휴가 기간은 총 며칠인가요?', answer: 90, tolerance: 0 },
+                        { question: '성년후견제도는 법원의 결정으로 대리인을 선임하나요?', answer: '예', type: 'text' },
+                        { question: '사회복지 법인 설립 허가권자는 누구인가요?', answer: '시도지사', type: 'text' },
+                        { question: '국민연금의 가입 의무 연령은 만 몇 세 미만까지인가요?', answer: 60, tolerance: 0 },
+                        { question: '의료급여 1종 수급권자의 입원 본인부담금은 얼마인가요?', answer: 0, tolerance: 0 },
+                        { question: '학대 피해 아동을 원가정에서 보호할 수 없을 때 입소하는 곳은?', answer: '그룹홈', type: 'text' },
+                        { question: '사회복지시설 관리 시스템의 이름은?', answer: 'W4C', type: 'text' },
+                        { question: '우리나라 최초의 사회복지법은 1961년 제정된 ( )법입니다.', answer: '생활보호', type: 'text' }
+                    ];
+                    setMinigameData(quizzes[Math.floor(Math.random() * quizzes.length)]);
                     setActiveMinigame('quiz');
                 }
             };
-
-            useEffect(() => {
-                if (activeMinigame === 'typing' && minigameData && minigameData.timeLeft > 0 && !minigameData.completed) {
-                    const timer = setTimeout(() => {
-                        setMinigameData(prev => ({ ...prev, timeLeft: prev.timeLeft - 1 }));
-                    }, 1000);
-                    return () => clearTimeout(timer);
-                }
-            }, [activeMinigame, minigameData]);
 
             const answerMinigame = (answer) => {
                 if (activeMinigame === 'counseling') {
@@ -332,30 +415,51 @@
                         setMoney(prev => prev + reward);
                         setExperience(prev => prev + reward);
                         setMinigameData({ ...minigameData, result: { success: true, message: answer.feedback, reward } });
+                        setLastMinigameTime(Date.now());
                     } else {
                         setMinigameData({ ...minigameData, result: { success: false, message: answer.feedback, reward: 0 } });
+                        setLastMinigameTime(Date.now());
                     }
                 } else if (activeMinigame === 'typing') {
-                    if (minigameData.timeLeft > 0) {
-                        const reward = 300 * minigameData.timeLeft;
+                    if (answer === minigameData.document) {
+                        const reward = 300 * Math.max(1, minigameData.timeLeft);
                         setMoney(prev => prev + reward);
                         setExperience(prev => prev + reward);
-                        setMinigameData({ ...minigameData, completed: true, result: { success: true, message: `완료! 남은 시간: ${minigameData.timeLeft}초`, reward } });
+                        setMinigameData({ ...minigameData, completed: true, result: { success: true, message: `정확히 입력했습니다! 남은 시간: ${minigameData.timeLeft}초`, reward } });
+                        setLastMinigameTime(Date.now());
                     } else {
-                        setMinigameData({ ...minigameData, completed: true, result: { success: false, message: '시간 초과!', reward: 0 } });
+                        setMinigameData({ ...minigameData, completed: true, result: { success: false, message: '오타가 있거나 시간이 초과되었습니다.', reward: 0 } });
+                        setLastMinigameTime(Date.now());
                     }
                 } else if (activeMinigame === 'quiz') {
-                    const diff = Math.abs(answer - minigameData.answer);
-                    if (diff <= (minigameData.tolerance || 0)) {
+                    const isCorrect = typeof answer === 'string'
+                        ? answer.trim() === String(minigameData.answer)
+                        : Math.abs(answer - minigameData.answer) <= (minigameData.tolerance || 0);
+
+                    if (isCorrect) {
                         const reward = 1000;
                         setMoney(prev => prev + reward);
                         setExperience(prev => prev + reward);
-                        setMinigameData({ ...minigameData, result: { success: true, message: '정답!', reward } });
+                        setMinigameData({ ...minigameData, result: { success: true, message: '훌륭합니다! 정답입니다.', reward } });
+                        setLastMinigameTime(Date.now());
                     } else {
-                        setMinigameData({ ...minigameData, result: { success: false, message: `오답! 정답은 약 ${minigameData.answer.toLocaleString()}원입니다.`, reward: 0 } });
+                        setMinigameData({ ...minigameData, result: { success: false, message: `아쉽네요. 정답은 [${minigameData.answer}]입니다.`, reward: 0 } });
+                        setLastMinigameTime(Date.now());
                     }
                 }
             };
+
+            // 타이핑 게임 타이머 전용
+            useEffect(() => {
+                if (activeMinigame === 'typing' && minigameData && minigameData.timeLeft > 0 && !minigameData.completed) {
+                    const timer = setTimeout(() => {
+                        setMinigameData(prev => ({ ...prev, timeLeft: prev.timeLeft - 1 }));
+                    }, 1000);
+                    return () => clearTimeout(timer);
+                } else if (activeMinigame === 'typing' && minigameData && minigameData.timeLeft === 0 && !minigameData.completed) {
+                    answerMinigame(''); // Time out
+                }
+            }, [activeMinigame, minigameData]);
 
             const closeMinigame = () => { setActiveMinigame(null); setMinigameData(null); };
 
@@ -420,137 +524,177 @@
             }
 
             return (
-                <div className="h-screen bg-gradient-to-b from-sky-400 to-sky-300 flex flex-col overflow-hidden">
-                    <style>{`.gold-frame { background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%); border: 4px solid #B8860B; border-radius: 12px; box-shadow: inset 0 2px 4px rgba(255,255,255,0.5), 0 4px 12px rgba(0,0,0,0.3); } .work-button { background: linear-gradient(135deg, #FFD700 0%, #FF8C00 100%); border: 6px solid #8B4513; border-radius: 16px; box-shadow: inset 0 4px 8px rgba(255,255,255,0.3), 0 8px 16px rgba(0,0,0,0.4); transition: all 0.2s ease; } .work-button:active { transform: translateY(4px); box-shadow: inset 0 4px 8px rgba(255,255,255,0.3), 0 4px 8px rgba(0,0,0,0.4); } .nav-button { background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%); border: 3px solid #654321; transition: all 0.2s ease; } .nav-button.active { background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%); border-color: #B8860B; } .floating-number { animation: float-up 1s ease-out forwards; pointer-events: none; } @keyframes float-up { 0% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(-60px) scale(1.2); } }`}</style>
+                <div className="text-right"><div className="text-2xl font-black text-green-700">💰 {money.toLocaleString()}원</div><button onClick={saveGameData} className="text-xs font-bold text-blue-700 hover:text-blue-900">수동 저장</button></div>
+                    </div >
+                <div className="mt-3">
+                    <div className="flex justify-between text-xs font-bold text-gray-700 mb-1"><span>LVL {level}</span><span>{Math.floor(expProgress)}% 다음 레벨까지</span></div>
+                    <div className="h-6 bg-gradient-to-r from-blue-800 to-blue-900 rounded-full overflow-hidden border-4 border-blue-950"><div className="h-full bg-gradient-to-r from-green-400 to-emerald-500 transition-all duration-300" style={{ width: `${expProgress}%` }} /></div>
+                </div>
+                </div >
 
-                    {activeMinigame && (
-                        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
-                            <div className="bg-white rounded-2xl p-6 max-w-md w-full relative">
-                                <button onClick={closeMinigame} className="absolute top-4 right-4 p-2 hover:bg-gray-200 rounded-full"><X /></button>
-                                {activeMinigame === 'counseling' && minigameData && (
-                                    <>
-                                        <h2 className="text-2xl font-black text-gray-800 mb-4">상담 시나리오</h2>
-                                        <p className="text-lg mb-6 text-gray-700">{minigameData.question}</p>
-                                        {!minigameData.result ? (
-                                            <div className="space-y-3">{minigameData.options.map((option, index) => <button key={index} onClick={() => answerMinigame(option)} className="w-full p-4 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg font-bold hover:scale-105 transition-transform text-left">{option.text}</button>)}</div>
-                                        ) : (
-                                            <div className={`p-6 rounded-lg ${minigameData.result.success ? 'bg-green-100' : 'bg-red-100'}`}><div className={`text-2xl font-black mb-2 ${minigameData.result.success ? 'text-green-700' : 'text-red-700'}`}>{minigameData.result.success ? '✓ 정답!' : '✗ 오답'}</div><p className="text-gray-700 mb-4">{minigameData.result.message}</p>{minigameData.result.reward > 0 && <div className="text-xl font-bold text-green-600">+{Math.floor(minigameData.result.reward)}원</div>}<button onClick={closeMinigame} className="mt-4 w-full p-3 bg-gray-800 text-white rounded-lg font-bold">닫기</button></div>
-                                        )}
-                                    </>
-                                )}
-                                {activeMinigame === 'typing' && minigameData && (
-                                    <>
-                                        <h2 className="text-2xl font-black text-gray-800 mb-4">문서 작성</h2>
-                                        <p className="text-lg mb-4 text-gray-700">{minigameData.document}</p>
-                                        {!minigameData.result ? (
-                                            <><div className="text-6xl font-black text-center mb-6 text-blue-600">{minigameData.timeLeft}</div><div className="h-4 bg-gray-200 rounded-full mb-6"><div className="h-full bg-gradient-to-r from-blue-500 to-green-500 rounded-full transition-all" style={{ width: `${(minigameData.timeLeft / minigameData.maxTime) * 100}%` }} /></div>{minigameData.timeLeft > 0 ? <button onClick={() => answerMinigame(true)} className="w-full p-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg font-bold text-xl hover:scale-105 transition-transform">작성 완료!</button> : <div className="text-center text-red-600 font-bold text-xl">시간 초과!</div>}</>
-                                        ) : (
-                                            <div className={`p-6 rounded-lg ${minigameData.result.success ? 'bg-green-100' : 'bg-red-100'}`}><div className={`text-2xl font-black mb-2 ${minigameData.result.success ? 'text-green-700' : 'text-red-700'}`}>{minigameData.result.success ? '✓ 완료!' : '✗ 실패'}</div><p className="text-gray-700 mb-4">{minigameData.result.message}</p>{minigameData.result.reward > 0 && <div className="text-xl font-bold text-green-600">+{Math.floor(minigameData.result.reward)}원</div>}<button onClick={closeMinigame} className="mt-4 w-full p-3 bg-gray-800 text-white rounded-lg font-bold">닫기</button></div>
-                                        )}
-                                    </>
-                                )}
-                                {activeMinigame === 'quiz' && minigameData && (
-                                    <>
-                                        <h2 className="text-2xl font-black text-gray-800 mb-4">복지급여 계산</h2>
-                                        <p className="text-lg mb-6 text-gray-700">{minigameData.question}</p>
-                                        {!minigameData.result ? (
-                                            <><input type="number" id="quizInput" className="w-full p-4 border-4 border-gray-300 rounded-lg text-xl mb-4" placeholder="금액 입력 (원)" onKeyPress={(e) => { if (e.key === 'Enter') answerMinigame(parseInt(e.target.value) || 0); }} /><button onClick={() => { const input = document.getElementById('quizInput'); answerMinigame(parseInt(input.value) || 0); }} className="w-full p-4 bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-lg font-bold hover:scale-105 transition-transform">제출</button></>
-                                        ) : (
-                                            <div className={`p-6 rounded-lg ${minigameData.result.success ? 'bg-green-100' : 'bg-red-100'}`}><div className={`text-2xl font-black mb-2 ${minigameData.result.success ? 'text-green-700' : 'text-red-700'}`}>{minigameData.result.success ? '✓ 정답!' : '✗ 오답'}</div><p className="text-gray-700 mb-4">{minigameData.result.message}</p>{minigameData.result.reward > 0 && <div className="text-xl font-bold text-green-600">+{minigameData.result.reward}원</div>}<button onClick={closeMinigame} className="mt-4 w-full p-3 bg-gray-800 text-white rounded-lg font-bold">닫기</button></div>
-                                        )}
-                                    </>
-                                )}
+                <div className="flex-1 overflow-y-auto px-4 pb-20">
+                    {currentScreen === 'game' && (
+                        <div className="space-y-4">
+                            {currentCase && (
+                                <div className={`gold-frame p-4 bg-gradient-to-r ${currentCase.color} animate-pulse`}>
+                                    <div className="flex items-center justify-between"><div className="flex items-center gap-3"><div className="text-4xl">{currentCase.icon}</div><div><div className="font-black text-white text-lg">긴급 케이스!</div><div className="text-sm text-white">{currentCase.name} - 보너스 {((currentCase.bonus - 1) * 100).toFixed(0)}%</div></div></div><div className="text-2xl font-black text-white">×{currentCase.bonus.toFixed(1)}</div></div>
+                                </div>
+                            )}
+                            <div className="gold-frame p-6 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #F5E6D3 0%, #D7CCC8 100%)' }}>
+                                <div className="relative min-h-[300px]">
+                                    {floatingNumbers.map(num => <div key={num.id} className="absolute text-3xl font-black text-green-500 floating-number" style={{ left: '50%', top: '30%', marginLeft: num.x, textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}>{num.value}</div>)}
+                                    {renderOffice()}
+                                    <div className="text-center mt-4">
+                                        <div className="w-32 h-32 mx-auto mb-4">
+                                            <svg viewBox="0 0 80 80" className="w-full h-full">
+                                                {gender === 'male' ? (
+                                                    <><rect x="24" y="8" width="32" height="8" fill="#8B4513" /><rect x="24" y="16" width="32" height="8" fill="#A0522D" /><rect x="24" y="24" width="32" height="16" fill="#F5CBA7" /><rect x="32" y="28" width="4" height="4" fill="#000" /><rect x="44" y="28" width="4" height="4" fill="#000" /><rect x="36" y="36" width="8" height="2" fill="#C0392B" /><rect x="24" y="40" width="32" height="16" fill={level >= 20 ? "#2C3E50" : "#3498DB"} /><rect x="24" y="56" width="14" height="16" fill={level >= 30 ? "#34495E" : "#2C3E50"} /><rect x="42" y="56" width="14" height="16" fill={level >= 30 ? "#34495E" : "#2C3E50"} /><rect x="24" y="72" width="14" height="4" fill="#000" /><rect x="42" y="72" width="14" height="4" fill="#000" /></>
+                                                ) : (
+                                                    <><rect x="20" y="8" width="40" height="8" fill="#654321" /><rect x="20" y="16" width="40" height="8" fill="#8B4513" /><rect x="24" y="24" width="32" height="16" fill="#FFDAB9" /><rect x="32" y="28" width="4" height="4" fill="#000" /><rect x="44" y="28" width="4" height="4" fill="#000" /><rect x="36" y="36" width="8" height="2" fill="#E74C3C" /><rect x="24" y="40" width="32" height="16" fill={level >= 20 ? "#5D4037" : "#E91E63"} /><rect x="24" y="56" width="32" height="12" fill={level >= 30 ? "#424242" : "#9C27B0"} /><rect x="28" y="68" width="8" height="4" fill="#FFDAB9" /><rect x="44" y="68" width="8" height="4" fill="#FFDAB9" /><rect x="28" y="72" width="8" height="4" fill="#C0392B" /><rect x="44" y="72" width="8" height="4" fill="#C0392B" /></>
+                                                )}
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="text-center mt-6"><button onClick={handleWork} className={`work-button px-16 py-6 ${clickAnimation ? 'scale-95' : ''}`}><div className="text-4xl font-black text-amber-900" style={{ textShadow: '2px 2px 0 rgba(255,255,255,0.5)' }}>업무</div></button></div>
+                                <div className="text-center mt-4 space-y-1"><div className="text-sm font-bold text-gray-700">클릭당 +{clickPower} 경험치</div>{autoIncome > 0 && <div className="text-sm font-bold text-green-700">초당 +{autoIncome} 자동 수입</div>}<div className="text-xs text-gray-600">총 {totalClicks}번 클릭</div></div>
                             </div>
+
+                            <div className="gold-frame p-4">
+                                <h3 className="text-xl font-black text-amber-900 mb-3">미니게임</h3>
+                                <div className="grid grid-cols-3 gap-2">
+                                    <button onClick={() => startMinigame('counseling')} className="p-3 bg-gradient-to-r from-purple-500 to-pink-600 rounded-lg text-white font-bold hover:scale-105 transition-transform"><div className="text-2xl mb-1">💬</div><div className="text-xs">상담</div></button>
+                                    <button onClick={() => startMinigame('typing')} className="p-3 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg text-white font-bold hover:scale-105 transition-transform"><div className="text-2xl mb-1">⌨️</div><div className="text-xs">문서작성</div></button>
+                                    <button onClick={() => startMinigame('quiz')} className="p-3 bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg text-white font-bold hover:scale-105 transition-transform"><div className="text-2xl mb-1">🧮</div><div className="text-xs">계산</div></button>
+                                </div>
+                            </div>
+
+                            <div className="gold-frame p-4">
+                                <h3 className="text-xl font-black text-amber-900 mb-3">완료한 케이스</h3>
+                                <div className="grid grid-cols-2 gap-3">
+                                    {caseTypes.map(caseType => <div key={caseType.id} className={`p-3 bg-gradient-to-r ${caseType.color} rounded-lg`}><div className="flex items-center justify-between"><div className="flex items-center gap-2"><span className="text-2xl">{caseType.icon}</span><span className="text-white font-bold text-sm">{caseType.name}</span></div><span className="text-white font-black text-lg">{casesCompleted[caseType.id]}</span></div></div>)}
+                                </div>
+                            </div>
+
+                            <div className="gold-frame p-4"><h2 className="text-2xl font-black text-amber-900 mb-4 flex items-center gap-2"><Award />스킬</h2><div className="space-y-3">{skillsData.map(skill => { const currentLvl = skills[skill.id]; const cost = skill.cost(currentLvl); const canAfford = money >= cost; return <button key={skill.id} onClick={() => upgradeSkill(skill.id)} disabled={!canAfford} className={`w-full p-4 rounded-lg border-4 transition-all ${canAfford ? 'bg-gradient-to-r from-green-500 to-emerald-600 border-green-700 hover:scale-102' : 'bg-gray-400 border-gray-600 opacity-50'}`}><div className="flex items-center justify-between"><div className="flex items-center gap-3"><div className="text-3xl">{skill.icon}</div><div className="text-left"><div className="font-bold text-white text-lg">{skill.name}</div><div className="text-sm text-gray-100">{skill.description}</div></div></div><div className="text-right"><div className="text-2xl font-black text-yellow-300">Lv.{currentLvl}</div><div className="text-sm font-bold text-yellow-200">💰 {cost}</div></div></div></button>; })}</div></div>
+
+                            <div className="gold-frame p-4"><h2 className="text-2xl font-black text-amber-900 mb-4 flex items-center gap-2"><Briefcase />사무실 장비</h2><div className="space-y-3">{equipmentData.map(equip => { const currentLvl = equipment[equip.id]; const cost = equip.cost(currentLvl); const canAfford = money >= cost; return <button key={equip.id} onClick={() => upgradeEquipment(equip.id)} disabled={!canAfford} className={`w-full p-4 rounded-lg border-4 transition-all ${canAfford ? 'bg-gradient-to-r from-blue-500 to-indigo-600 border-blue-700 hover:scale-102' : 'bg-gray-400 border-gray-600 opacity-50'}`}><div className="flex items-center justify-between"><div className="flex items-center gap-3"><div className="text-3xl">{equip.icon}</div><div className="text-left"><div className="font-bold text-white text-lg">{equip.name}</div><div className="text-sm text-gray-100">{equip.description}</div></div></div><div className="text-right"><div className="text-2xl font-black text-yellow-300">Lv.{currentLvl}</div><div className="text-sm font-bold text-yellow-200">💰 {cost}</div></div></div></button>; })}</div></div>
                         </div>
                     )}
 
-                    {showSaveIndicator && <div className="fixed top-20 right-4 bg-green-500 text-white px-4 py-2 rounded-lg font-bold z-50 shadow-lg">✓ 자동 저장됨</div>}
-
-                    <div className="gold-frame m-4 p-4">
-                        <div className="flex justify-between items-center">
-                            <div><div className="text-2xl font-black text-amber-900 mb-1">사회복지사 키우기</div><div className="text-sm font-bold text-blue-900">직급: {currentRank.name}</div></div>
-                            <div className="text-right"><div className="text-2xl font-black text-green-700">💰 {money.toLocaleString()}원</div><button onClick={saveGameData} className="text-xs font-bold text-blue-700 hover:text-blue-900">수동 저장</button></div>
-                        </div>
-                        <div className="mt-3">
-                            <div className="flex justify-between text-xs font-bold text-gray-700 mb-1"><span>LVL {level}</span><span>{Math.floor(expProgress)}% 다음 레벨까지</span></div>
-                            <div className="h-6 bg-gradient-to-r from-blue-800 to-blue-900 rounded-full overflow-hidden border-4 border-blue-950"><div className="h-full bg-gradient-to-r from-green-400 to-emerald-500 transition-all duration-300" style={{ width: `${expProgress}%` }} /></div>
-                        </div>
-                    </div>
-
-                    <div className="flex-1 overflow-y-auto px-4 pb-20">
-                        {currentScreen === 'game' && (
+                    {currentScreen === 'stats' && (
+                        <div className="gold-frame p-6">
+                            <h2 className="text-2xl font-black text-amber-900 mb-6 flex items-center gap-2"><TrendingUp />통계</h2>
                             <div className="space-y-4">
-                                {currentCase && (
-                                    <div className={`gold-frame p-4 bg-gradient-to-r ${currentCase.color} animate-pulse`}>
-                                        <div className="flex items-center justify-between"><div className="flex items-center gap-3"><div className="text-4xl">{currentCase.icon}</div><div><div className="font-black text-white text-lg">긴급 케이스!</div><div className="text-sm text-white">{currentCase.name} - 보너스 {((currentCase.bonus - 1) * 100).toFixed(0)}%</div></div></div><div className="text-2xl font-black text-white">×{currentCase.bonus.toFixed(1)}</div></div>
-                                    </div>
-                                )}
-                                <div className="gold-frame p-6 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #F5E6D3 0%, #D7CCC8 100%)' }}>
-                                    <div className="relative min-h-[300px]">
-                                        {floatingNumbers.map(num => <div key={num.id} className="absolute text-3xl font-black text-green-500 floating-number" style={{ left: '50%', top: '30%', marginLeft: num.x, textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}>{num.value}</div>)}
-                                        {renderOffice()}
-                                        <div className="text-center mt-4">
-                                            <div className="w-32 h-32 mx-auto mb-4">
-                                                <svg viewBox="0 0 80 80" className="w-full h-full">
-                                                    {gender === 'male' ? (
-                                                        <><rect x="24" y="8" width="32" height="8" fill="#8B4513" /><rect x="24" y="16" width="32" height="8" fill="#A0522D" /><rect x="24" y="24" width="32" height="16" fill="#F5CBA7" /><rect x="32" y="28" width="4" height="4" fill="#000" /><rect x="44" y="28" width="4" height="4" fill="#000" /><rect x="36" y="36" width="8" height="2" fill="#C0392B" /><rect x="24" y="40" width="32" height="16" fill={level >= 20 ? "#2C3E50" : "#3498DB"} /><rect x="24" y="56" width="14" height="16" fill={level >= 30 ? "#34495E" : "#2C3E50"} /><rect x="42" y="56" width="14" height="16" fill={level >= 30 ? "#34495E" : "#2C3E50"} /><rect x="24" y="72" width="14" height="4" fill="#000" /><rect x="42" y="72" width="14" height="4" fill="#000" /></>
-                                                    ) : (
-                                                        <><rect x="20" y="8" width="40" height="8" fill="#654321" /><rect x="20" y="16" width="40" height="8" fill="#8B4513" /><rect x="24" y="24" width="32" height="16" fill="#FFDAB9" /><rect x="32" y="28" width="4" height="4" fill="#000" /><rect x="44" y="28" width="4" height="4" fill="#000" /><rect x="36" y="36" width="8" height="2" fill="#E74C3C" /><rect x="24" y="40" width="32" height="16" fill={level >= 20 ? "#5D4037" : "#E91E63"} /><rect x="24" y="56" width="32" height="12" fill={level >= 30 ? "#424242" : "#9C27B0"} /><rect x="28" y="68" width="8" height="4" fill="#FFDAB9" /><rect x="44" y="68" width="8" height="4" fill="#FFDAB9" /><rect x="28" y="72" width="8" height="4" fill="#C0392B" /><rect x="44" y="72" width="8" height="4" fill="#C0392B" /></>
-                                                    )}
-                                                </svg>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="text-center mt-6"><button onClick={handleWork} className={`work-button px-16 py-6 ${clickAnimation ? 'scale-95' : ''}`}><div className="text-4xl font-black text-amber-900" style={{ textShadow: '2px 2px 0 rgba(255,255,255,0.5)' }}>업무</div></button></div>
-                                    <div className="text-center mt-4 space-y-1"><div className="text-sm font-bold text-gray-700">클릭당 +{clickPower} 경험치</div>{autoIncome > 0 && <div className="text-sm font-bold text-green-700">초당 +{autoIncome} 자동 수입</div>}<div className="text-xs text-gray-600">총 {totalClicks}번 클릭</div></div>
-                                </div>
-
-                                <div className="gold-frame p-4">
-                                    <h3 className="text-xl font-black text-amber-900 mb-3">미니게임</h3>
-                                    <div className="grid grid-cols-3 gap-2">
-                                        <button onClick={() => startMinigame('counseling')} className="p-3 bg-gradient-to-r from-purple-500 to-pink-600 rounded-lg text-white font-bold hover:scale-105 transition-transform"><div className="text-2xl mb-1">💬</div><div className="text-xs">상담</div></button>
-                                        <button onClick={() => startMinigame('typing')} className="p-3 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg text-white font-bold hover:scale-105 transition-transform"><div className="text-2xl mb-1">⌨️</div><div className="text-xs">문서작성</div></button>
-                                        <button onClick={() => startMinigame('quiz')} className="p-3 bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg text-white font-bold hover:scale-105 transition-transform"><div className="text-2xl mb-1">🧮</div><div className="text-xs">계산</div></button>
-                                    </div>
-                                </div>
-
-                                <div className="gold-frame p-4">
-                                    <h3 className="text-xl font-black text-amber-900 mb-3">완료한 케이스</h3>
-                                    <div className="grid grid-cols-2 gap-3">
-                                        {caseTypes.map(caseType => <div key={caseType.id} className={`p-3 bg-gradient-to-r ${caseType.color} rounded-lg`}><div className="flex items-center justify-between"><div className="flex items-center gap-2"><span className="text-2xl">{caseType.icon}</span><span className="text-white font-bold text-sm">{caseType.name}</span></div><span className="text-white font-black text-lg">{casesCompleted[caseType.id]}</span></div></div>)}
-                                    </div>
-                                </div>
-
-                                <div className="gold-frame p-4"><h2 className="text-2xl font-black text-amber-900 mb-4 flex items-center gap-2"><Award />스킬</h2><div className="space-y-3">{skillsData.map(skill => { const currentLvl = skills[skill.id]; const cost = skill.cost(currentLvl); const canAfford = money >= cost; return <button key={skill.id} onClick={() => upgradeSkill(skill.id)} disabled={!canAfford} className={`w-full p-4 rounded-lg border-4 transition-all ${canAfford ? 'bg-gradient-to-r from-green-500 to-emerald-600 border-green-700 hover:scale-102' : 'bg-gray-400 border-gray-600 opacity-50'}`}><div className="flex items-center justify-between"><div className="flex items-center gap-3"><div className="text-3xl">{skill.icon}</div><div className="text-left"><div className="font-bold text-white text-lg">{skill.name}</div><div className="text-sm text-gray-100">{skill.description}</div></div></div><div className="text-right"><div className="text-2xl font-black text-yellow-300">Lv.{currentLvl}</div><div className="text-sm font-bold text-yellow-200">💰 {cost}</div></div></div></button>; })}</div></div>
-
-                                <div className="gold-frame p-4"><h2 className="text-2xl font-black text-amber-900 mb-4 flex items-center gap-2"><Briefcase />사무실 장비</h2><div className="space-y-3">{equipmentData.map(equip => { const currentLvl = equipment[equip.id]; const cost = equip.cost(currentLvl); const canAfford = money >= cost; return <button key={equip.id} onClick={() => upgradeEquipment(equip.id)} disabled={!canAfford} className={`w-full p-4 rounded-lg border-4 transition-all ${canAfford ? 'bg-gradient-to-r from-blue-500 to-indigo-600 border-blue-700 hover:scale-102' : 'bg-gray-400 border-gray-600 opacity-50'}`}><div className="flex items-center justify-between"><div className="flex items-center gap-3"><div className="text-3xl">{equip.icon}</div><div className="text-left"><div className="font-bold text-white text-lg">{equip.name}</div><div className="text-sm text-gray-100">{equip.description}</div></div></div><div className="text-right"><div className="text-2xl font-black text-yellow-300">Lv.{currentLvl}</div><div className="text-sm font-bold text-yellow-200">💰 {cost}</div></div></div></button>; })}</div></div>
+                                <div className="bg-gradient-to-r from-purple-100 to-pink-100 p-4 rounded-lg border-4 border-purple-300"><div className="flex justify-between items-center"><span className="font-bold text-purple-900">현재 레벨</span><span className="text-2xl font-black text-purple-700">{level}</span></div></div>
+                                <div className="bg-gradient-to-r from-blue-100 to-cyan-100 p-4 rounded-lg border-4 border-blue-300"><div className="flex justify-between items-center"><span className="font-bold text-blue-900">직급</span><span className="text-xl font-black text-blue-700">{currentRank.name}</span></div></div>
+                                <div className="bg-gradient-to-r from-green-100 to-emerald-100 p-4 rounded-lg border-4 border-green-300"><div className="flex justify-between items-center"><span className="font-bold text-green-900">클릭 파워</span><span className="text-2xl font-black text-green-700">+{clickPower}</span></div></div>
+                                <div className="bg-gradient-to-r from-yellow-100 to-orange-100 p-4 rounded-lg border-4 border-yellow-300"><div className="flex justify-between items-center"><span className="font-bold text-orange-900">자동 수입</span><span className="text-2xl font-black text-orange-700">+{autoIncome}/초</span></div></div>
+                                <div className="bg-gradient-to-r from-indigo-100 to-purple-100 p-4 rounded-lg border-4 border-indigo-300"><div className="flex justify-between items-center"><span className="font-bold text-indigo-900">총 클릭</span><span className="text-2xl font-black text-indigo-700">{totalClicks.toLocaleString()}</span></div></div>
+                                <div className="bg-gradient-to-r from-pink-100 to-rose-100 p-4 rounded-lg border-4 border-pink-300"><div className="flex justify-between items-center"><span className="font-bold text-pink-900">완료한 케이스</span><span className="text-2xl font-black text-pink-700">{Object.values(casesCompleted).reduce((a, b) => a + b, 0)}</span></div></div>
                             </div>
-                        )}
-
-                        {currentScreen === 'stats' && (
-                            <div className="gold-frame p-6">
-                                <h2 className="text-2xl font-black text-amber-900 mb-6 flex items-center gap-2"><TrendingUp />통계</h2>
-                                <div className="space-y-4">
-                                    <div className="bg-gradient-to-r from-purple-100 to-pink-100 p-4 rounded-lg border-4 border-purple-300"><div className="flex justify-between items-center"><span className="font-bold text-purple-900">현재 레벨</span><span className="text-2xl font-black text-purple-700">{level}</span></div></div>
-                                    <div className="bg-gradient-to-r from-blue-100 to-cyan-100 p-4 rounded-lg border-4 border-blue-300"><div className="flex justify-between items-center"><span className="font-bold text-blue-900">직급</span><span className="text-xl font-black text-blue-700">{currentRank.name}</span></div></div>
-                                    <div className="bg-gradient-to-r from-green-100 to-emerald-100 p-4 rounded-lg border-4 border-green-300"><div className="flex justify-between items-center"><span className="font-bold text-green-900">클릭 파워</span><span className="text-2xl font-black text-green-700">+{clickPower}</span></div></div>
-                                    <div className="bg-gradient-to-r from-yellow-100 to-orange-100 p-4 rounded-lg border-4 border-yellow-300"><div className="flex justify-between items-center"><span className="font-bold text-orange-900">자동 수입</span><span className="text-2xl font-black text-orange-700">+{autoIncome}/초</span></div></div>
-                                    <div className="bg-gradient-to-r from-indigo-100 to-purple-100 p-4 rounded-lg border-4 border-indigo-300"><div className="flex justify-between items-center"><span className="font-bold text-indigo-900">총 클릭</span><span className="text-2xl font-black text-indigo-700">{totalClicks.toLocaleString()}</span></div></div>
-                                    <div className="bg-gradient-to-r from-pink-100 to-rose-100 p-4 rounded-lg border-4 border-pink-300"><div className="flex justify-between items-center"><span className="font-bold text-pink-900">완료한 케이스</span><span className="text-2xl font-black text-pink-700">{Object.values(casesCompleted).reduce((a, b) => a + b, 0)}</span></div></div>
-                                </div>
-                            </div>
-                        )}
-                    </div>
-
-                    <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-t from-amber-900 to-amber-800 border-t-4 border-amber-950 p-2">
-                        <div className="max-w-2xl mx-auto grid grid-cols-3 gap-2">
-                            <button onClick={() => setCurrentScreen('game')} className={`nav-button rounded-lg p-3 ${currentScreen === 'game' ? 'active' : ''}`}><Home /><div className={`text-xs font-bold ${currentScreen === 'game' ? 'text-amber-900' : 'text-amber-100'}`}>홈</div></button>
-                            <button onClick={() => setCurrentScreen('stats')} className={`nav-button rounded-lg p-3 ${currentScreen === 'stats' ? 'active' : ''}`}><Award /><div className={`text-xs font-bold ${currentScreen === 'stats' ? 'text-amber-900' : 'text-amber-100'}`}>통계</div></button>
-                            <button onClick={() => { if (confirm('정말 초기화하시겠습니까?')) { localStorage.removeItem(`gameData_${userId}`); window.location.reload(); } }} className="nav-button rounded-lg p-3"><TrendingUp /><div className="text-xs font-bold text-amber-100">초기화</div></button>
                         </div>
+                    )}
+                </div>
+
+                <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-t from-amber-900 to-amber-800 border-t-4 border-amber-950 p-2">
+                    <div className="max-w-2xl mx-auto grid grid-cols-3 gap-2">
+                        <button onClick={() => setCurrentScreen('game')} className={`nav-button rounded-lg p-3 ${currentScreen === 'game' ? 'active' : ''}`}><Home /><div className={`text-xs font-bold ${currentScreen === 'game' ? 'text-amber-900' : 'text-amber-100'}`}>홈</div></button>
+                        <button onClick={() => setCurrentScreen('stats')} className={`nav-button rounded-lg p-3 ${currentScreen === 'stats' ? 'active' : ''}`}><Award /><div className={`text-xs font-bold ${currentScreen === 'stats' ? 'text-amber-900' : 'text-amber-100'}`}>통계</div></button>
+                        <button onClick={() => { if (confirm('정말 초기화하시겠습니까?')) { localStorage.removeItem(`gameData_${userId}`); window.location.reload(); } }} className="nav-button rounded-lg p-3"><TrendingUp /><div className="text-xs font-bold text-amber-100">초기화</div></button>
                     </div>
                 </div>
-            );
+            </div >
+        );
+        }
+
+        { showSaveIndicator && <div className="fixed top-20 right-4 bg-green-500 text-white px-4 py-2 rounded-lg font-bold z-50 shadow-lg">✓ 자동 저장됨</div> }
+
+                <div className="gold-frame m-4 p-4">
+                    <div className="flex justify-between items-center">
+                        <div><div className="text-2xl font-black text-amber-900 mb-1">사회복지사 키우기</div><div className="text-sm font-bold text-blue-900">직급: {currentRank.name}</div></div>
+                        <div className="text-right"><div className="text-2xl font-black text-green-700">💰 {money.toLocaleString()}원</div><button onClick={saveGameData} className="text-xs font-bold text-blue-700 hover:text-blue-900">수동 저장</button></div>
+                    </div>
+                    <div className="mt-3">
+                        <div className="flex justify-between text-xs font-bold text-gray-700 mb-1"><span>LVL {level}</span><span>{Math.floor(expProgress)}% 다음 레벨까지</span></div>
+                        <div className="h-6 bg-gradient-to-r from-blue-800 to-blue-900 rounded-full overflow-hidden border-4 border-blue-950"><div className="h-full bg-gradient-to-r from-green-400 to-emerald-500 transition-all duration-300" style={{ width: `${expProgress}%` }} /></div>
+                    </div>
+                </div>
+
+                <div className="flex-1 overflow-y-auto px-4 pb-20">
+                    {currentScreen === 'game' && (
+                        <div className="space-y-4">
+                            {currentCase && (
+                                <div className={`gold-frame p-4 bg-gradient-to-r ${currentCase.color} animate-pulse`}>
+                                    <div className="flex items-center justify-between"><div className="flex items-center gap-3"><div className="text-4xl">{currentCase.icon}</div><div><div className="font-black text-white text-lg">긴급 케이스!</div><div className="text-sm text-white">{currentCase.name} - 보너스 {((currentCase.bonus - 1) * 100).toFixed(0)}%</div></div></div><div className="text-2xl font-black text-white">×{currentCase.bonus.toFixed(1)}</div></div>
+                                </div>
+                            )}
+                            <div className="gold-frame p-6 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #F5E6D3 0%, #D7CCC8 100%)' }}>
+                                <div className="relative min-h-[300px]">
+                                    {floatingNumbers.map(num => <div key={num.id} className="absolute text-3xl font-black text-green-500 floating-number" style={{ left: '50%', top: '30%', marginLeft: num.x, textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}>{num.value}</div>)}
+                                    {renderOffice()}
+                                    <div className="text-center mt-4">
+                                        <div className="w-32 h-32 mx-auto mb-4">
+                                            <svg viewBox="0 0 80 80" className="w-full h-full">
+                                                {gender === 'male' ? (
+                                                    <><rect x="24" y="8" width="32" height="8" fill="#8B4513" /><rect x="24" y="16" width="32" height="8" fill="#A0522D" /><rect x="24" y="24" width="32" height="16" fill="#F5CBA7" /><rect x="32" y="28" width="4" height="4" fill="#000" /><rect x="44" y="28" width="4" height="4" fill="#000" /><rect x="36" y="36" width="8" height="2" fill="#C0392B" /><rect x="24" y="40" width="32" height="16" fill={level >= 20 ? "#2C3E50" : "#3498DB"} /><rect x="24" y="56" width="14" height="16" fill={level >= 30 ? "#34495E" : "#2C3E50"} /><rect x="42" y="56" width="14" height="16" fill={level >= 30 ? "#34495E" : "#2C3E50"} /><rect x="24" y="72" width="14" height="4" fill="#000" /><rect x="42" y="72" width="14" height="4" fill="#000" /></>
+                                                ) : (
+                                                    <><rect x="20" y="8" width="40" height="8" fill="#654321" /><rect x="20" y="16" width="40" height="8" fill="#8B4513" /><rect x="24" y="24" width="32" height="16" fill="#FFDAB9" /><rect x="32" y="28" width="4" height="4" fill="#000" /><rect x="44" y="28" width="4" height="4" fill="#000" /><rect x="36" y="36" width="8" height="2" fill="#E74C3C" /><rect x="24" y="40" width="32" height="16" fill={level >= 20 ? "#5D4037" : "#E91E63"} /><rect x="24" y="56" width="32" height="12" fill={level >= 30 ? "#424242" : "#9C27B0"} /><rect x="28" y="68" width="8" height="4" fill="#FFDAB9" /><rect x="44" y="68" width="8" height="4" fill="#FFDAB9" /><rect x="28" y="72" width="8" height="4" fill="#C0392B" /><rect x="44" y="72" width="8" height="4" fill="#C0392B" /></>
+                                                )}
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="text-center mt-6"><button onClick={handleWork} className={`work-button px-16 py-6 ${clickAnimation ? 'scale-95' : ''}`}><div className="text-4xl font-black text-amber-900" style={{ textShadow: '2px 2px 0 rgba(255,255,255,0.5)' }}>업무</div></button></div>
+                                <div className="text-center mt-4 space-y-1"><div className="text-sm font-bold text-gray-700">클릭당 +{clickPower} 경험치</div>{autoIncome > 0 && <div className="text-sm font-bold text-green-700">초당 +{autoIncome} 자동 수입</div>}<div className="text-xs text-gray-600">총 {totalClicks}번 클릭</div></div>
+                            </div>
+
+                            <div className="gold-frame p-4">
+                                <h3 className="text-xl font-black text-amber-900 mb-3">미니게임</h3>
+                                <div className="grid grid-cols-3 gap-2">
+                                    <button onClick={() => startMinigame('counseling')} className="p-3 bg-gradient-to-r from-purple-500 to-pink-600 rounded-lg text-white font-bold hover:scale-105 transition-transform"><div className="text-2xl mb-1">💬</div><div className="text-xs">상담</div></button>
+                                    <button onClick={() => startMinigame('typing')} className="p-3 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg text-white font-bold hover:scale-105 transition-transform"><div className="text-2xl mb-1">⌨️</div><div className="text-xs">문서작성</div></button>
+                                    <button onClick={() => startMinigame('quiz')} className="p-3 bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg text-white font-bold hover:scale-105 transition-transform"><div className="text-2xl mb-1">🧮</div><div className="text-xs">계산</div></button>
+                                </div>
+                            </div>
+
+                            <div className="gold-frame p-4">
+                                <h3 className="text-xl font-black text-amber-900 mb-3">완료한 케이스</h3>
+                                <div className="grid grid-cols-2 gap-3">
+                                    {caseTypes.map(caseType => <div key={caseType.id} className={`p-3 bg-gradient-to-r ${caseType.color} rounded-lg`}><div className="flex items-center justify-between"><div className="flex items-center gap-2"><span className="text-2xl">{caseType.icon}</span><span className="text-white font-bold text-sm">{caseType.name}</span></div><span className="text-white font-black text-lg">{casesCompleted[caseType.id]}</span></div></div>)}
+                                </div>
+                            </div>
+
+                            <div className="gold-frame p-4"><h2 className="text-2xl font-black text-amber-900 mb-4 flex items-center gap-2"><Award />스킬</h2><div className="space-y-3">{skillsData.map(skill => { const currentLvl = skills[skill.id]; const cost = skill.cost(currentLvl); const canAfford = money >= cost; return <button key={skill.id} onClick={() => upgradeSkill(skill.id)} disabled={!canAfford} className={`w-full p-4 rounded-lg border-4 transition-all ${canAfford ? 'bg-gradient-to-r from-green-500 to-emerald-600 border-green-700 hover:scale-102' : 'bg-gray-400 border-gray-600 opacity-50'}`}><div className="flex items-center justify-between"><div className="flex items-center gap-3"><div className="text-3xl">{skill.icon}</div><div className="text-left"><div className="font-bold text-white text-lg">{skill.name}</div><div className="text-sm text-gray-100">{skill.description}</div></div></div><div className="text-right"><div className="text-2xl font-black text-yellow-300">Lv.{currentLvl}</div><div className="text-sm font-bold text-yellow-200">💰 {cost}</div></div></div></button>; })}</div></div>
+
+                            <div className="gold-frame p-4"><h2 className="text-2xl font-black text-amber-900 mb-4 flex items-center gap-2"><Briefcase />사무실 장비</h2><div className="space-y-3">{equipmentData.map(equip => { const currentLvl = equipment[equip.id]; const cost = equip.cost(currentLvl); const canAfford = money >= cost; return <button key={equip.id} onClick={() => upgradeEquipment(equip.id)} disabled={!canAfford} className={`w-full p-4 rounded-lg border-4 transition-all ${canAfford ? 'bg-gradient-to-r from-blue-500 to-indigo-600 border-blue-700 hover:scale-102' : 'bg-gray-400 border-gray-600 opacity-50'}`}><div className="flex items-center justify-between"><div className="flex items-center gap-3"><div className="text-3xl">{equip.icon}</div><div className="text-left"><div className="font-bold text-white text-lg">{equip.name}</div><div className="text-sm text-gray-100">{equip.description}</div></div></div><div className="text-right"><div className="text-2xl font-black text-yellow-300">Lv.{currentLvl}</div><div className="text-sm font-bold text-yellow-200">💰 {cost}</div></div></div></button>; })}</div></div>
+                        </div>
+                    )}
+
+                    {currentScreen === 'stats' && (
+                        <div className="gold-frame p-6">
+                            <h2 className="text-2xl font-black text-amber-900 mb-6 flex items-center gap-2"><TrendingUp />통계</h2>
+                            <div className="space-y-4">
+                                <div className="bg-gradient-to-r from-purple-100 to-pink-100 p-4 rounded-lg border-4 border-purple-300"><div className="flex justify-between items-center"><span className="font-bold text-purple-900">현재 레벨</span><span className="text-2xl font-black text-purple-700">{level}</span></div></div>
+                                <div className="bg-gradient-to-r from-blue-100 to-cyan-100 p-4 rounded-lg border-4 border-blue-300"><div className="flex justify-between items-center"><span className="font-bold text-blue-900">직급</span><span className="text-xl font-black text-blue-700">{currentRank.name}</span></div></div>
+                                <div className="bg-gradient-to-r from-green-100 to-emerald-100 p-4 rounded-lg border-4 border-green-300"><div className="flex justify-between items-center"><span className="font-bold text-green-900">클릭 파워</span><span className="text-2xl font-black text-green-700">+{clickPower}</span></div></div>
+                                <div className="bg-gradient-to-r from-yellow-100 to-orange-100 p-4 rounded-lg border-4 border-yellow-300"><div className="flex justify-between items-center"><span className="font-bold text-orange-900">자동 수입</span><span className="text-2xl font-black text-orange-700">+{autoIncome}/초</span></div></div>
+                                <div className="bg-gradient-to-r from-indigo-100 to-purple-100 p-4 rounded-lg border-4 border-indigo-300"><div className="flex justify-between items-center"><span className="font-bold text-indigo-900">총 클릭</span><span className="text-2xl font-black text-indigo-700">{totalClicks.toLocaleString()}</span></div></div>
+                                <div className="bg-gradient-to-r from-pink-100 to-rose-100 p-4 rounded-lg border-4 border-pink-300"><div className="flex justify-between items-center"><span className="font-bold text-pink-900">완료한 케이스</span><span className="text-2xl font-black text-pink-700">{Object.values(casesCompleted).reduce((a, b) => a + b, 0)}</span></div></div>
+                            </div>
+                        </div>
+                    )}
+                </div>
+
+                <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-t from-amber-900 to-amber-800 border-t-4 border-amber-950 p-2">
+                    <div className="max-w-2xl mx-auto grid grid-cols-3 gap-2">
+                        <button onClick={() => setCurrentScreen('game')} className={`nav-button rounded-lg p-3 ${currentScreen === 'game' ? 'active' : ''}`}><Home /><div className={`text-xs font-bold ${currentScreen === 'game' ? 'text-amber-900' : 'text-amber-100'}`}>홈</div></button>
+                        <button onClick={() => setCurrentScreen('stats')} className={`nav-button rounded-lg p-3 ${currentScreen === 'stats' ? 'active' : ''}`}><Award /><div className={`text-xs font-bold ${currentScreen === 'stats' ? 'text-amber-900' : 'text-amber-100'}`}>통계</div></button>
+                        <button onClick={() => { if (confirm('정말 초기화하시겠습니까?')) { localStorage.removeItem(`gameData_${userId}`); window.location.reload(); } }} className="nav-button rounded-lg p-3"><TrendingUp /><div className="text-xs font-bold text-amber-100">초기화</div></button>
+                    </div>
+                </div>
+            </div >
+        );
         }
 
         const root = ReactDOM.createRoot(document.getElementById('root'));
