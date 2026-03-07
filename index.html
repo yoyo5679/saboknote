@@ -38,16 +38,16 @@
 
         <!-- ===== HEADER ===== -->
         <header class="app-header">
-            <div class="header-inner" style="position:relative;">
-                <div class="header-logo"
-                    style="cursor:pointer; position:absolute; left:50%; transform:translateX(-50%); display:flex; align-items:center; gap:6px;"
+            <div class="header-inner">
+                <div class="header-logo" id="header-logo"
+                    style="cursor:pointer; display:flex; align-items:center; gap:6px; flex: 1; justify-content: center;"
                     onclick="document.getElementById('nav-home').click()">
                     <span class="logo-icon">📔</span>
                     <span class="logo-text">사회복지사 비밀노트</span>
                 </div>
-                <div class="header-icons">
+                <div class="header-icons" style="position: absolute; right: 18px;">
                     <button class="icon-btn" aria-label="알림">🔔</button>
-                    <button class="icon-btn">⚙️</button>
+                    <button class="icon-btn" onclick="openModal('⚙️ 설정', '...') ">⚙️</button>
                 </div>
             </div>
         </header>
