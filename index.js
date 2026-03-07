@@ -3617,16 +3617,17 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
     /* --- View Switcher --- */
     window.switchView = function (view) {
         const views = ['home', 'record', 'community', 'mypage', 'shredder', 'playground'];
+        // 스크롤 잠금 해제 (탭 이동 시 모달 버그 보완)
+        document.body.style.overflow = '';
+        document.body.style.touchAction = '';
+        document.documentElement.style.overflow = '';
+
         views.forEach(v => {
             const el = document.getElementById('view-' + v);
             if (el) el.className = (v === view) ? 'view-content active' : 'view-content hidden';
             const navBtn = document.getElementById('nav-' + v);
             if (navBtn) navBtn.classList.toggle('active', v === view);
         });
-
-        // 스크롤 잠금 해제 (탭 이동 시 모달 버그 보완)
-        document.body.style.overflow = '';
-        document.body.style.touchAction = '';
 
         // 놀이터 메뉴 초기화 (놀이터 탭 진입 시 메뉴화면 먼저 보여주기)
         if (view === 'playground') {
@@ -3671,6 +3672,11 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
 
         // 놀이터 선택 로직 추가
         window.showPlaygroundContent = function (type) {
+            if (type === 'game') {
+                window.open('./sabok-game/index.html', '_blank');
+                return;
+            }
+
             const menu = document.getElementById('pg-step-menu');
             const intro = document.getElementById('pg-step-intro');
             const game = document.getElementById('pg-step-game');
