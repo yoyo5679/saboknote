@@ -859,19 +859,13 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
         const closeBtn = document.getElementById('close-modal');
 
         if (closeBtn) {
-            closeBtn.onclick = () => {
-                const overlay = document.getElementById('modal-overlay');
-                if (overlay) { overlay.classList.add('hidden'); overlay.classList.remove('active'); }
-                if (modalContainer) { modalContainer.classList.add('hidden'); modalContainer.classList.remove('active'); }
-            };
+            closeBtn.onclick = () => closeModal();
         }
 
         window.addEventListener('click', (event) => {
             const overlay = document.getElementById('modal-overlay');
             if (overlay && event.target === overlay) {
-                overlay.classList.add('hidden');
-                overlay.classList.remove('active');
-                if (modalContainer) { modalContainer.classList.add('hidden'); modalContainer.classList.remove('active'); }
+                closeModal();
             }
         });
     }
@@ -1878,7 +1872,8 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
             tax = 0;
             net = gross;
         } else {
-            tax = Math.floor((gross * rate) / 10) * 10;
+            // Use Math.round to handle floating point precision (e.g. 360000 * 0.088 = 31679.999...)
+            tax = Math.floor(Math.round(gross * rate) / 10) * 10;
             net = gross - tax;
         }
 
@@ -2579,8 +2574,67 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
         const newName = `${nounObj.e} ${adj} ${nounObj.n}`;
 
         localStorage.setItem(STORAGE_KEY, newName); // 새로 생성 후 저장
+
+        // Supabase에 프로필 동기화 (백그라운드)
+        saveProfileToSupabase(getOrCreateUserId(), newName);
+
         return newName;
     }
+
+    async function saveProfileToSupabase(userId, nickname) {
+        if (!supabase) return;
+        try {
+            await supabase
+                .from('profiles')
+                .upsert({ user_id: userId, nickname: nickname, updated_at: new Date().toISOString() });
+        } catch (err) {
+            console.error('Error saving profile to Supabase:', err);
+        }
+    }
+
+    window.restoreProfile = async function () {
+        const syncCode = document.getElementById('sync-code-input').value.trim();
+        const btn = document.getElementById('sync-restore-btn');
+
+        if (!syncCode) {
+            alert('동기화 코드를 입력해주세요.');
+            return;
+        }
+
+        if (!supabase) {
+            alert('Supabase 연결이 필요합니다.');
+            return;
+        }
+
+        try {
+            btn.disabled = true;
+            btn.innerText = '복구 중...';
+
+            const { data, error } = await supabase
+                .from('profiles')
+                .select('*')
+                .eq('user_id', syncCode)
+                .single();
+
+            if (error || !data) {
+                alert('유효하지 않은 동기화 코드입니다.');
+                return;
+            }
+
+            if (confirm(`'${data.nickname}' 계정으로 기기 정보를 변경할까요?\n현재 기기의 정보는 사라집니다.`)) {
+                localStorage.setItem('sabok_user_id', data.user_id);
+                localStorage.setItem('saboks_anonymous_name', data.nickname);
+                alert('계정 동기화가 완료되었습니다. 앱을 다시 시작합니다.');
+                location.reload();
+            }
+        } catch (err) {
+            console.error('Restore profile error:', err);
+            alert('동기화 중 오류가 발생했습니다.');
+        } finally {
+            btn.disabled = false;
+            btn.innerText = '가져오기';
+        }
+    };
 
     /* --- Help Me Edit / Delete --- */
     window.deleteHelpMePost = async function (postId) {
@@ -3223,6 +3277,14 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
         }
 
         const myUserId = getOrCreateUserId();
+
+        // 동기화 코드 표시
+        const syncCodeEl = document.getElementById('my-sync-code');
+        if (syncCodeEl) syncCodeEl.innerText = myUserId;
+
+        // 이름이 있으면 Supabase에 백그라운드 동기화 (최초 1회 보장용)
+        const myName = localStorage.getItem('saboks_anonymous_name');
+        if (myName) saveProfileToSupabase(myUserId, myName);
 
         if (!supabase) {
             listEl.innerHTML = '<p style="text-align:center; color:#94a3b8; font-size:0.85rem; padding:16px;">Supabase 설정이 필요합니다.</p>';

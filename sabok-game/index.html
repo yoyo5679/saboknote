@@ -3,1174 +3,558 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>복지의 야망: 사회복지사 키우기 🌱</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>김복지의 야망: 사회복지사 키우기</title>
+    <!-- React, ReactDOM, and Babel Standalone -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        :root {
-            --primary: #10b981;
-            --primary-dark: #059669;
-            --accent: #f59e0b;
-            --danger: #ef4444;
-            --bg: #f8fafc;
-            --panel-bg: #ffffff;
-            --text-main: #334155;
-            --border-color: #cbd5e1;
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap');
 
         * {
-            box-sizing: border-box;
-            user-select: none;
-            -webkit-tap-highlight-color: transparent;
+            font-family: 'Noto Sans KR', sans-serif;
         }
 
         body {
             margin: 0;
             padding: 0;
-            background-color: #e2e8f0;
-            font-family: 'Jua', sans-serif;
-            color: var(--text-main);
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            overflow: hidden;
+            background: #87CEEB;
+        }
+
+        #root {
             height: 100vh;
-            overflow: hidden;
-            font-size: 16px;
-        }
-
-        #game-container {
             width: 100%;
-            height: 100%;
-            background: var(--bg);
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
         }
 
-        /* Header (Status Bar) */
-        header {
-            padding: 24px 20px;
-            background: linear-gradient(135deg, #10b981, #059669);
-            color: white;
-            z-index: 100;
-            transition: background 0.5s;
-            border-bottom-left-radius: 24px;
-            border-bottom-right-radius: 24px;
-            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);
-            position: relative;
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 6px;
         }
 
-        header.foundation-mode {
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.2);
-        }
-
-        .status-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-
-        .badge-cute {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 8px 14px;
-            border-radius: 20px;
-            color: white;
-            font-size: 14px;
-            font-weight: 500;
-            backdrop-filter: blur(4px);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .wp-display-cute {
-            font-size: 32px;
-            font-weight: 800;
-            color: #fff;
-            text-align: right;
-            margin-top: 10px;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            letter-spacing: 1px;
-        }
-
-        /* Main Game Area */
-        main {
-            flex: 1;
-            position: relative;
-            background: #f1f5f9;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            align-items: center;
-            overflow: hidden;
-        }
-
-        #office-view {
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at center, #ffffff 0%, #f1f5f9 100%);
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 1;
-            transition: transform 0.1s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        #office-view::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 30%;
-            background: linear-gradient(0deg, #e2e8f0 0%, transparent 100%);
-            z-index: 2;
-        }
-
-        #click-trigger {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 20;
-            cursor: pointer;
-        }
-
-        /* Dynamic Staff */
-        .staff-sprite {
-            position: absolute;
-            width: 40px;
-            height: 40px;
-            z-index: 15;
-            transition: left 2s ease-in-out, bottom 2s ease-in-out;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 32px;
-            pointer-events: none;
-            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
-        }
-
-        .player-sprite {
-            font-size: 48px;
-            z-index: 16;
-            filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.15));
-        }
-
-        .staff-sprite.moving {
-            animation: float 0.8s infinite alternate ease-in-out;
-        }
-
-        @keyframes float {
-            0% {
-                transform: translateY(0) rotate(-2deg);
-            }
-
-            100% {
-                transform: translateY(-8px) rotate(2deg);
-            }
-        }
-
-        @keyframes scaleBump {
-            0% {
-                transform: scale(1);
-            }
-
-            50% {
-                transform: scale(1.4) translateY(-15px);
-            }
-
-            100% {
-                transform: scale(1);
-            }
-        }
-
-        /* Particles */
-        .wp-particle-cute {
-            position: absolute;
-            pointer-events: none;
-            color: var(--primary);
-            font-size: 20px;
-            font-family: 'Jua', sans-serif;
-            z-index: 50;
-            text-shadow: 0 2px 4px #ffffff, 0 0 8px rgba(255, 255, 255, 0.8);
-            animation: cuteFloat 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-        }
-
-        @keyframes cuteFloat {
-            0% {
-                transform: translateY(0) scale(0.8);
-                opacity: 1;
-            }
-
-            50% {
-                transform: translateY(-40px) scale(1.2);
-                opacity: 1;
-            }
-
-            100% {
-                transform: translateY(-80px) scale(1);
-                opacity: 0;
-            }
-        }
-
-        /* Menu UI */
-        .menu-cute {
-            height: 45%;
-            background: var(--bg);
-            display: flex;
-            flex-direction: column;
-            z-index: 100;
-            border-top-left-radius: 24px;
-            border-top-right-radius: 24px;
-            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.05);
-            padding-top: 10px;
-        }
-
-        .tabs-cute {
-            display: flex;
+        ::-webkit-scrollbar-track {
             background: transparent;
-            padding: 0 16px;
-            gap: 8px;
-            margin-bottom: 12px;
         }
 
-        .tab-btn-cute {
-            flex: 1;
-            padding: 16px 0;
-            border: none;
-            border-radius: 16px;
-            background: #e2e8f0;
-            font-family: 'Jua', sans-serif;
-            font-size: 18px;
-            cursor: pointer;
-            color: #64748b;
-            transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 56px;
-        }
-
-        .tab-btn-cute.active {
-            background: var(--primary);
-            color: white;
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-            transform: translateY(-2px);
-        }
-
-        .list-cute {
-            flex: 1;
-            overflow-y: scroll;
-            padding: 0 16px 16px 16px;
-            scrollbar-width: none;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .list-cute::-webkit-scrollbar {
-            display: none;
-        }
-
-        .card-cute {
-            background: white;
-            border-radius: 20px;
-            padding: 16px;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
-            border: 1px solid #f1f5f9;
-            transition: transform 0.2s;
-        }
-
-        .card-cute:active {
-            transform: scale(0.98);
-        }
-
-        .card-icon {
-            width: 56px;
-            height: 56px;
-            background: #f8fafc;
-            border-radius: 16px;
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
-            border: 1px solid #e2e8f0;
-        }
-
-        .card-info {
-            flex: 1;
-        }
-
-        .card-title {
-            font-size: 16px;
-            margin: 0 0 4px 0;
-            color: #1e293b;
-            line-height: 1.4;
-        }
-
-        .card-desc {
-            font-size: 12px;
-            color: #64748b;
-            line-height: 1.4;
-            margin: 0;
-            word-break: keep-all;
-            font-family: sans-serif;
-            opacity: 0.9;
-        }
-
-        .buy-btn-cute {
-            background: var(--primary);
-            border: none;
-            border-radius: 14px;
-            padding: 12px 16px;
-            font-family: 'Jua', sans-serif;
-            font-size: 14px;
-            color: white;
-            cursor: pointer;
-            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.2);
-            min-width: 85px;
-            transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        .buy-btn-cute:active:not(:disabled) {
-            transform: scale(0.95);
-            box-shadow: 0 2px 5px rgba(16, 185, 129, 0.2);
-        }
-
-        .buy-btn-cute:disabled {
-            background: #e2e8f0;
-            color: #94a3b8;
-            box-shadow: none;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        /* Modals */
-        .modal-cute {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(4px);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            padding: 24px;
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
-        }
-
-        .modal-content-cute {
-            background: #fff;
-            border-radius: 28px;
-            padding: 32px 24px;
-            text-align: center;
-            max-width: 340px;
-            width: 100%;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
-            position: relative;
-            animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        @keyframes slideUp {
-            from {
-                transform: translateY(40px);
-                opacity: 0;
-            }
-
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        .dilemma-btn {
-            width: 100%;
-            margin-top: 12px;
-            padding: 16px;
-            font-size: 16px;
-            border-radius: 16px;
-            line-height: 1.4;
-        }
-
-        #event-area {
-            position: relative;
-            width: 100%;
-            height: 160px;
-            background: #f8fafc;
-            border-radius: 20px;
-            border: 2px dashed #cbd5e1;
-            margin-top: 20px;
-            overflow: hidden;
-            display: none;
-        }
-
-        #event-target {
-            position: absolute;
-            width: 60px;
-            height: 60px;
-            background: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 40px;
-            border-radius: 50%;
-            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
-            cursor: pointer;
-            user-select: none;
-            animation: pulse 1s infinite alternate;
-        }
-
-        @keyframes pulse {
-            0% {
-                transform: scale(1);
-            }
-
-            100% {
-                transform: scale(1.15);
-            }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
         }
     </style>
 </head>
 
 <body>
+    <div id="root"></div>
 
-    <div id="game-container">
-        <div id="stage-name"
-            style="position:absolute; top:2px; left:0; width:100%; text-align:center; font-size: 11px; color: rgba(255,255,255,0.6); z-index:101; pointer-events:none;">
-            🏢 행정복지센터 안내데스크</div>
-        <header id="main-header">
-            <div class="status-row">
-                <div class="badge-cute" id="stage-badge"
-                    style="padding: 10px 16px; font-size: 16px; background: rgba(255,255,255,0.3); border: 1.5px solid rgba(255,255,255,0.5);">
-                    <span>레벨:</span> <span id="stage-num" style="font-weight:900; font-size:1.1em;">1</span>
-                </div>
-                <div class="badge-cute" style="background:rgba(239, 68, 68, 0.9); padding: 10px 16px; font-size: 16px;">
-                    ☕ <span id="coffee-count">0</span>
-                </div>
-            </div>
-            <div style="margin-top: 16px;">
-                <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:6px;">
-                    <div id="rank-name" style="font-size: 20px; color: white; font-weight: 800;">열정페이 인턴</div>
-                    <div style="font-size: 13px; color: rgba(255,255,255,0.8);" id="next-rank-info">다음 진급: 누적 1,500 WP
-                        필요</div>
-                </div>
-                <!-- Progress Bar -->
-                <div
-                    style="height:10px; background:rgba(255,255,255,0.2); border-radius:10px; overflow:hidden; border:1px solid rgba(255,255,255,0.3);">
-                    <div id="level-progress-bar"
-                        style="height:100%; width:0%; background:linear-gradient(90deg, #fbbf24, #f59e0b); box-shadow:0 0 10px rgba(245,158,11,0.5); transition:width 0.5s ease-out;">
-                    </div>
-                </div>
-            </div>
+    <script type="text/babel">
+        const { useState, useEffect, useCallback } = React;
 
-            <div class="wp-display-cute" style="margin-top:16px;"><span id="wp-amount">0</span> <span
-                    style="font-size: 20px; opacity: 0.8;">WP</span></div>
+        // Mock Lucide components since we can't easily use them as React components via CDN without extra setup
+        const Home = () => <span>🏠</span>;
+        const TrendingUp = () => <span>📈</span>;
+        const Award = () => <span>🏆</span>;
+        const Briefcase = () => <span>💼</span>;
+        const X = () => <span>✕</span>;
 
-            <div
-                style="font-size: 13px; color: rgba(255,255,255,0.9); margin-top: 8px; text-align: right; background: rgba(0,0,0,0.1); padding: 4px 12px; border-radius: 8px; float: right;">
-                AUTO: <span id="tps-amount">0</span>/SEC</div>
-        </header>
+        /* --- Game Logic Starts Here --- */
+        function RaiseSocialWorker() {
+            const [currentScreen, setCurrentScreen] = useState('character-select');
+            const [gender, setGender] = useState(null);
+            const [userId, setUserId] = useState(null);
 
-        <main id="click-area">
-            <div id="office-view"></div>
-            <div id="staff-container"></div>
-            <div id="click-trigger"></div>
-        </main>
+            // 게임 상태
+            const [experience, setExperience] = useState(0);
+            const [level, setLevel] = useState(1);
+            const [money, setMoney] = useState(450);
+            const [clickPower, setClickPower] = useState(1);
+            const [autoIncome, setAutoIncome] = useState(0);
+            const [totalClicks, setTotalClicks] = useState(0);
 
-        <div class="menu-cute">
-            <div class="tabs-cute">
-                <button id="tab-upgrades" class="tab-btn-cute active" onclick="game.switchTab('upgrades')">기자재</button>
-                <button id="tab-companions" class="tab-btn-cute" onclick="game.switchTab('companions')">인사팀</button>
-                <button id="tab-settings" class="tab-btn-cute" onclick="game.switchTab('settings')">기록실</button>
-                <button id="tab-ranking" class="tab-btn-cute" onclick="game.switchTab('ranking')"
-                    style="background: linear-gradient(135deg, #f59e0b, #d97706); color: white; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);">랭킹명예</button>
-            </div>
-            <div class="list-cute" id="panel-content"></div>
-        </div>
+            // 케이스 시스템
+            const [currentCase, setCurrentCase] = useState(null);
+            const [casesCompleted, setCasesCompleted] = useState({
+                child: 0,
+                elderly: 0,
+                disability: 0,
+                mental: 0,
+                family: 0
+            });
 
-        <!-- Modals -->
-        <div id="offline-modal" class="modal-cute">
-            <div class="modal-content-cute">
-                <h2 style="font-size: 24px; margin-bottom: 16px; color: var(--primary-dark);">🌙 야근 정산</h2>
-                <p
-                    style="font-family:sans-serif; font-size: 14px; line-height: 1.6; margin-bottom: 24px; color:#475569;">
-                    자리를 비운 사이 동료들이<br>서류를 처리했습니다!</p>
-                <div id="offline-wp" style="font-size: 32px; font-weight: 800; color: var(--primary);">+0 WP</div>
-                <button class="buy-btn-cute" style="width: 100%; margin-top: 32px; font-size: 18px; padding: 16px;"
-                    onclick="game.closeModal('offline-modal')">결재 완료</button>
-            </div>
-        </div>
+            // 미니게임
+            const [activeMinigame, setActiveMinigame] = useState(null);
+            const [minigameData, setMinigameData] = useState(null);
 
-        <div id="event-modal" class="modal-cute">
-            <div class="modal-content-cute">
-                <div style="font-size:48px; margin-bottom:8px;">🚨</div>
-                <h2 style="font-size: 22px; margin-bottom: 8px; color: var(--danger);">비상! 악성 민원!</h2>
-                <p style="font-family:sans-serif; font-size: 13px; line-height: 1.6; color:#64748b;">제한시간 내에 민원인을
-                    진정시키세요!</p>
-                <div style="font-size: 18px; margin-top: 16px;">남은 시간: <span id="event-timer"
-                        style="color:var(--danger)">10</span>초</div>
-                <div style="font-size: 16px; margin-top: 8px; color:#475569;">진정 수치: <span id="event-clicks">0</span>/10
-                </div>
-                <div id="event-area">
-                    <div id="event-target" onclick="game.clickEventTarget()">😡</div>
-                </div>
-            </div>
-        </div>
+            // 업그레이드
+            const [skills, setSkills] = useState({
+                empathy: 0,
+                documentation: 0,
+                networking: 0,
+                counseling: 0,
+                crisis: 0
+            });
 
-        <div id="dilemma-modal" class="modal-cute">
-            <div class="modal-content-cute">
-                <div style="font-size:48px; margin-bottom:8px;">📝</div>
-                <h2 style="font-size: 22px; margin-bottom: 16px; color: #6366f1;">결재를 바랍니다</h2>
-                <p id="dilemma-desc"
-                    style="font-family:sans-serif; font-size: 14px; line-height: 1.6; margin-bottom: 24px; color:#334155; word-break:keep-all;">
-                    [상황 설명]</p>
-                <button id="dilemma-btn-a" class="buy-btn-cute dilemma-btn"
-                    style="background:#f59e0b; color:white; box-shadow:0 4px 12px rgba(245,158,11,0.2);"
-                    onclick="game.resolveDilemma('A')">선택 A</button>
-                <button id="dilemma-btn-b" class="buy-btn-cute dilemma-btn"
-                    style="background:#ef4444; color:white; box-shadow:0 4px 12px rgba(239,68,68,0.2);"
-                    onclick="game.resolveDilemma('B')">선택 B</button>
-            </div>
-        </div>
+            const [equipment, setEquipment] = useState({
+                chair: 0,
+                computer: 0,
+                coffee: 0,
+                bookshelf: 0,
+                plant: 0,
+                sofa: 0
+            });
 
-        <div id="foundation-modal" class="modal-cute">
-            <div class="modal-content-cute" style="background:linear-gradient(135deg,#fef3c7,#fde68a);">
-                <div style="font-size:56px; margin-bottom:12px; animation:bounce 2s infinite">🎉</div>
-                <h2 style="font-size: 26px; margin-bottom: 16px; color: #d97706;">축하합니다!</h2>
-                <p
-                    style="font-family:sans-serif; font-size: 14px; line-height: 1.6; margin-bottom: 24px; color:#92400e; font-weight:600;">
-                    마침내 공직을 은퇴하고<br><b>'사단법인 복지재단'</b>을<br>설립하셨습니다!<br><br>이제 직접 재단의 이사장으로 취임하여 더 거대한 복지 사업을 이끌어갑니다.</p>
-                <div
-                    style="background:white; padding:16px; border-radius:16px; font-family:sans-serif; font-size: 14px; color: #059669; font-weight:800; margin-bottom:24px; box-shadow:0 4px 12px rgba(0,0,0,0.05);">
-                    [ 재단 이사장 특권 ]<br>기본 클릭 수익 100배 증가!
-                </div>
-                <button class="buy-btn-cute" style="width: 100%; font-size: 18px; padding:16px; background:#d97706;"
-                    onclick="game.closeFoundationModal()">이사장실로 출근하기</button>
-            </div>
-        </div>
-    </div>
+            const [clickAnimation, setClickAnimation] = useState(false);
+            const [floatingNumbers, setFloatingNumbers] = useState([]);
+            const [showSaveIndicator, setShowSaveIndicator] = useState(false);
 
-    <script>
-        // --- Data ---
-        const STAGES = [
-            "구청 안내데스크", "동사무소 복지상담소", "일자리지원센터", "독거노인 도시락배달팀", "다문화가족지원센터",
-            "아동보호전문기관", "노인주간보호센터", "부랑인일시보호소", "긴급구호물품창고", "종합사회복지관"
-        ];
+            // 직급 정보
+            const ranks = [
+                { name: '인턴', minLevel: 1, salary: 50, office: 'starter' },
+                { name: '사회복지사', minLevel: 10, salary: 100, office: 'basic' },
+                { name: '선임 사회복지사', minLevel: 20, salary: 200, office: 'intermediate' },
+                { name: '팀장', minLevel: 30, salary: 400, office: 'advanced' },
+                { name: '과장', minLevel: 40, salary: 800, office: 'manager' },
+                { name: '부장', minLevel: 50, salary: 1600, office: 'senior' },
+                { name: '센터장', minLevel: 60, salary: 3200, office: 'director' }
+            ];
 
-        const RANKS = [
-            "열정페이 인턴", "9급 서기보 시보", "9급 서기보", "8급 서기", "7급 주사보",
-            "6급 주사", "5급 사무관", "4급 서기관", "3급 부이사관", "보건복지부 장관"
-        ];
+            const getCurrentRank = () => {
+                return [...ranks].reverse().find(r => level >= r.minLevel) || ranks[0];
+            };
 
-        const UPGRADES = [
-            { id: 'u1', name: '광클릭 훈련', cost: 15, effect: 1, desc: '결재 속도가 소폭 상승합니다.', icon: '🖱️' },
-            { id: 'u2', name: '보급형 마우스', cost: 100, effect: 3, desc: '드물게 더블 클릭이 됩니다.', icon: '🐭' },
-            { id: 'u3', name: '쌍권총 도장', cost: 450, effect: 12, desc: '양손으로 서류를 처리합니다!', icon: '🖍️' },
-            { id: 'u4', name: '믹스커피 수혈', cost: 1800, effect: 45, desc: '일시적인 각성 상태에 빠집니다.', icon: '☕' },
-            { id: 'u5', name: '기계식 키보드', cost: 6500, effect: 150, desc: '청축의 경쾌함이 효율을 높입니다.', icon: '⌨️' },
-            { id: 'u6', name: '듀얼 모니터', cost: 22000, effect: 500, desc: '창을 내릴 필요가 없습니다.', icon: '🖥️' },
-            { id: 'u7', name: '인체공학 의자', cost: 85000, effect: 2200, desc: '허리 통증이 사라졌습니다!', icon: '💺' },
-            { id: 'u8', name: '자동결재 AI', cost: 350000, effect: 8500, desc: '로봇이 내 일을 대신합니다.', icon: '🤖' }
-        ];
+            // 케이스 타입
+            const caseTypes = [
+                { id: 'child', name: '아동복지', icon: '👶', color: 'from-pink-400 to-rose-500', bonus: 1.2, description: '아동 보호 및 지원' },
+                { id: 'elderly', name: '노인복지', icon: '👴', color: 'from-amber-400 to-orange-500', bonus: 1.3, description: '노인 돌봄 서비스' },
+                { id: 'disability', name: '장애인복지', icon: '♿', color: 'from-blue-400 to-indigo-500', bonus: 1.4, description: '장애인 지원 서비스' },
+                { id: 'mental', name: '정신건강', icon: '🧠', color: 'from-purple-400 to-violet-500', bonus: 1.5, description: '정신건강 상담' },
+                { id: 'family', name: '가족복지', icon: '👨‍👩‍👧‍👦', color: 'from-green-400 to-emerald-500', bonus: 1.3, description: '가족 지원 서비스' }
+            ];
 
-        const COMPANIONS = [
-            { id: 'c1', name: '실습생', cost: 100, effect: 2, desc: '어설프게 문서를 분쇄합니다.', icon: '🧑‍🎓', sprite: '🐥' },
-            { id: 'c2', name: '계약직 사원', cost: 1200, effect: 25, desc: '묵묵히 서류를 정리합니다.', icon: '🧑‍💼', sprite: '💼' },
-            { id: 'c3', name: '숙련된 주무관', cost: 15000, effect: 250, desc: '노련하게 민원을 응대합니다.', icon: '👩‍💻', sprite: '💻' },
-            { id: 'c4', name: '열혈 팀장', cost: 180000, effect: 3500, desc: '팀의 사기를 크게 증진시킵니다.', icon: '🗣️', sprite: '💪' }
-        ];
+            // 스킬 정보
+            const skillsData = [
+                { id: 'empathy', name: '공감능력', icon: '❤️', description: '클릭 파워 +5', cost: (lvl) => Math.floor(150 * Math.pow(1.5, lvl)) },
+                { id: 'documentation', name: '문서작성', icon: '📄', description: '자동 수입 +10', cost: (lvl) => Math.floor(200 * Math.pow(1.6, lvl)) },
+                { id: 'networking', name: '네트워킹', icon: '🤝', description: '경험치 +15%', cost: (lvl) => Math.floor(300 * Math.pow(1.7, lvl)) },
+                { id: 'counseling', name: '상담기술', icon: '💬', description: '케이스 보너스 +10%', cost: (lvl) => Math.floor(250 * Math.pow(1.6, lvl)) },
+                { id: 'crisis', name: '위기개입', icon: '🚨', description: '특수 케이스 보너스 +20%', cost: (lvl) => Math.floor(400 * Math.pow(1.8, lvl)) }
+            ];
 
-        const DILEMMAS = [
-            {
-                desc: "지역 유지 박회장이 거액의 후원금을 익명으로 내겠다며, 자기 아들의 자원봉사 시간 허위 입력을 은근슬쩍 요구합니다.",
-                btnA: "원칙대로 단호히 거절한다",
-                btnB: "재단 발전을 위해 눈감아준다",
-                resA: { msg: "정직함이 소문나 소액 기부가 쇄도합니다!", wpMod: 1.5, coffee: 1 },
-                resB: { msg: "거액의 후원금을 받았지만 찝찝합니다...", wpMod: 5, coffee: 5, risk: 0.3, riskMsg: "감사에 적발되어 엄청난 벌금을 물었습니다!", riskWpMod: -10 }
-            },
-            {
-                desc: "갑자기 떨어진 엄청난 양의 연말 정산 서류 파도! 직원들의 사기가 바닥입니다.",
-                btnA: "법인 카드로 야식 파티를 연다",
-                btnB: "\"우리의 보람은 돈이 아닙니다!\" 연설",
-                resA: { msg: "직원들이 기뻐하며 엄청난 속도로 일합니다!", wpMod: 2, coffee: -3 }, // requires coffee
-                resB: { msg: "몇몇 직원이 퇴사 의사를 밝혀 업무가 마비되었습니다...", wpMod: -0.5, coffee: 0 }
-            }
-        ];
+            // 장비 정보
+            const equipmentData = [
+                { id: 'chair', name: '좋은 의자', icon: '💺', description: '편안함 +20%', cost: (lvl) => Math.floor(100 * Math.pow(1.4, lvl)) },
+                { id: 'computer', name: '빠른 컴퓨터', icon: '💻', description: '자동 수입 +15', cost: (lvl) => Math.floor(250 * Math.pow(1.5, lvl)) },
+                { id: 'coffee', name: '커피머신', icon: '☕', description: '클릭 파워 +10', cost: (lvl) => Math.floor(500 * Math.pow(1.6, lvl)) },
+                { id: 'bookshelf', name: '전문서적', icon: '📚', description: '경험치 +10%', cost: (lvl) => Math.floor(800 * Math.pow(1.7, lvl)) },
+                { id: 'plant', name: '관엽식물', icon: '🪴', description: '행복도 +5%', cost: (lvl) => Math.floor(300 * Math.pow(1.4, lvl)) },
+                { id: 'sofa', name: '상담 소파', icon: '🛋️', description: '상담 효율 +25%', cost: (lvl) => Math.floor(1000 * Math.pow(1.8, lvl)) }
+            ];
 
-        // --- Engine ---
-        class GameEngine {
-            constructor() {
-                this.SAVE_KEY = 'SocialWorkerRetro_v6_Cute';
-                this.state = {
-                    wp: 0, totalWp: 0, coffee: 5,
-                    clickPower: 1, tps: 0, stage: 1, foundationFound: false,
-                    lastSaveTime: Date.now(),
-                    upgrades: { u1: 0, u2: 0, u3: 0, u4: 0, u5: 0, u6: 0, u7: 0, u8: 0 },
-                    companions: { c1: 0, c2: 0, c3: 0, c4: 0 },
-                    currentTab: 'upgrades',
-                    nickname: null,
-                    uuid: this.generateUUID()
+            // 초기화
+            useEffect(() => {
+                let storedUserId = localStorage.getItem('socialWorkerUserId');
+                if (!storedUserId) {
+                    storedUserId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                    localStorage.setItem('socialWorkerUserId', storedUserId);
+                }
+                setUserId(storedUserId);
+
+                // 저장된 게임 데이터 로드
+                const savedData = localStorage.getItem(`gameData_${storedUserId}`);
+                if (savedData) {
+                    const data = JSON.parse(savedData);
+                    setGender(data.gender);
+                    setExperience(data.experience || 0);
+                    setLevel(data.level || 1);
+                    setMoney(data.money || 450);
+                    setClickPower(data.clickPower || 1);
+                    setAutoIncome(data.autoIncome || 0);
+                    setTotalClicks(data.totalClicks || 0);
+                    setSkills(data.skills || { empathy: 0, documentation: 0, networking: 0, counseling: 0, crisis: 0 });
+                    setEquipment(data.equipment || { chair: 0, computer: 0, coffee: 0, bookshelf: 0, plant: 0, sofa: 0 });
+                    setCasesCompleted(data.casesCompleted || { child: 0, elderly: 0, disability: 0, mental: 0, family: 0 });
+
+                    if (data.gender) {
+                        setCurrentScreen('game');
+                    }
+                }
+            }, []);
+
+            // 게임 데이터 저장
+            const saveGameData = useCallback(() => {
+                if (!userId) return;
+
+                const gameData = {
+                    gender, experience, level, money, clickPower, autoIncome, totalClicks, skills, equipment, casesCompleted,
+                    lastSaved: Date.now()
                 };
 
-                // Modules
-                this.eventActive = false;
-                this.eventClicks = 0;
-                this.eventTimeLmt = 0;
-                this.currentDilemma = null;
+                localStorage.setItem(`gameData_${userId}`, JSON.stringify(gameData));
 
-                // Staff DOM tracking
-                this.staffDOM = [];
+                setShowSaveIndicator(true);
+                setTimeout(() => setShowSaveIndicator(false), 2000);
+            }, [userId, gender, experience, level, money, clickPower, autoIncome, totalClicks, skills, equipment, casesCompleted]);
 
-                // Supabase logic (using known keys from index.js)
-                const supabaseUrl = 'https://seldrnpohdkggennjieo.supabase.co';
-                const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNlbGRybnBvaGRrZ2dlbm5qaWVvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIyMzI3MjksImV4cCI6MjA4NzgwODcyOX0.PyzWPa-kwYgh-HmuDELD642TCVn7Ajri54FsR7Ik2Gs';
-                this.supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+            // 자동 저장 (30초마다)
+            useEffect(() => {
+                if (userId && gender) {
+                    const interval = setInterval(() => {
+                        saveGameData();
+                    }, 30000);
+                    return () => clearInterval(interval);
+                }
+            }, [userId, gender, saveGameData]);
 
-                this.init();
-            }
+            // 자동 수입
+            useEffect(() => {
+                if (autoIncome > 0) {
+                    const interval = setInterval(() => {
+                        setExperience(prev => prev + autoIncome);
+                        setMoney(prev => prev + autoIncome * 0.5);
+                    }, 1000);
+                    return () => clearInterval(interval);
+                }
+            }, [autoIncome]);
 
-            generateUUID() {
-                return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-                    var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-                    return v.toString(16);
-                });
-            }
+            // 레벨업 체크
+            useEffect(() => {
+                const expNeeded = level * 1000;
+                if (experience >= expNeeded) {
+                    setExperience(prev => prev - expNeeded);
+                    setLevel(prev => {
+                        const newLevel = prev + 1;
+                        // 레벨업 시 보상
+                        setMoney(m => m + newLevel * 100);
+                        return newLevel;
+                    });
+                }
+            }, [experience, level]);
 
-            async promptNickname() {
-                if (!this.state.nickname) {
-                    let nick = prompt("명예의 전당에 등록할 닉네임을 입력해 주세요! (1~10자, 중복 불가)", "열정신입");
-                    if (nick) {
-                        nick = nick.trim().substring(0, 10);
-                        if (!nick) return;
-
-                        // Check uniqueness
-                        try {
-                            const { data, error } = await this.supabase
-                                .from('sabok_game_leaderboard')
-                                .select('uuid')
-                                .eq('nickname', nick)
-                                .maybeSingle();
-
-                            if (data && data.uuid !== this.state.uuid) {
-                                alert("이미 사용 중인 닉네임입니다. 다른 닉네임을 입력해 주세요!");
-                                return this.promptNickname();
-                            }
-                        } catch (e) {
-                            console.error("Nickname check error:", e);
+            // 랜덤 케이스 생성
+            useEffect(() => {
+                const scheduleNextCase = () => {
+                    const randomDelay = Math.random() * 12000 + 3000;
+                    setTimeout(() => {
+                        if (!currentCase && Math.random() > 0.2) {
+                            const randomCase = caseTypes[Math.floor(Math.random() * caseTypes.length)];
+                            setCurrentCase(randomCase);
                         }
-
-                        this.state.nickname = nick;
-                        this.save();
-                        this.syncToSupabase();
-                    }
-                }
-            }
-
-            init() {
-                this.load();
-                this.cache();
-                this.bind();
-                this.render();
-                this.checkFoundationVisuals();
-                this.syncStaffSprites();
-
-                setInterval(() => this.tick(), 1000);
-                setInterval(() => this.save(), 5000);
-                setInterval(() => this.moveStaff(), 2500); // Staff movement tick
-            }
-
-            cache() {
-                this.dom = {
-                    wp: document.getElementById('wp-amount'), tps: document.getElementById('tps-amount'),
-                    stage: document.getElementById('stage-num'), name: document.getElementById('stage-name'),
-                    rank: document.getElementById('rank-name'), coffee: document.getElementById('coffee-count'),
-                    area: document.getElementById('click-area'), trigger: document.getElementById('click-trigger'),
-                    panel: document.getElementById('panel-content'), bg: document.getElementById('office-view'),
-                    header: document.getElementById('main-header'), staffContainer: document.getElementById('staff-container'),
-                    progressBar: document.getElementById('level-progress-bar')
+                        scheduleNextCase();
+                    }, randomDelay);
                 };
-            }
+                scheduleNextCase();
+            }, []);
 
-            bind() {
-                this.dom.trigger.addEventListener('pointerdown', (e) => this.click(e));
-            }
+            // 클릭 핸들러
+            const handleWork = (e) => {
+                const baseEarnings = clickPower * (1 + skills.networking * 0.15);
+                const caseBonus = currentCase ? currentCase.bonus : 1;
+                const counselingBonus = 1 + skills.counseling * 0.1;
+                const earnings = baseEarnings * caseBonus * counselingBonus;
 
-            checkFoundationVisuals() {
-                if (this.state.foundationFound) {
-                    this.dom.header.classList.add('foundation-mode');
-                    this.dom.bg.style.background = 'radial-gradient(circle at center, #fef3c7 0%, #fde68a 100%)';
+                setExperience(prev => prev + earnings);
+                setMoney(prev => prev + earnings * 0.5);
+                setTotalClicks(prev => prev + 1);
+
+                if (currentCase) {
+                    setCasesCompleted(prev => ({ ...prev, [currentCase.id]: prev[currentCase.id] + 1 }));
+                    setCurrentCase(null);
                 }
-            }
 
-            // --- Staff Logic ---
-            syncStaffSprites() {
-                this.dom.staffContainer.innerHTML = '';
-                this.staffDOM = [];
+                setClickAnimation(true);
+                setTimeout(() => setClickAnimation(false), 200);
 
-                // Player (Protagonist) Setup
-                const me = document.createElement('div');
-                me.className = 'staff-sprite player-sprite';
+                const id = Date.now();
+                setFloatingNumbers(prev => [...prev, { id, value: `+${Math.floor(earnings)}`, x: Math.random() * 200 - 100, y: -50 }]);
+                setTimeout(() => setFloatingNumbers(prev => prev.filter(n => n.id !== id)), 1000);
+            };
 
-                let myIcon = '🌱';
-                if (this.state.foundationFound) myIcon = '👑';
-                else if (this.state.stage >= 7) myIcon = '😎';
-                else if (this.state.stage >= 4) myIcon = '💼';
+            const upgradeSkill = (skillId) => {
+                const skill = skillsData.find(s => s.id === skillId);
+                const cost = skill.cost(skills[skillId]);
+                if (money >= cost) {
+                    setMoney(prev => prev - cost);
+                    setSkills(prev => ({ ...prev, [skillId]: prev[skillId] + 1 }));
+                    if (skillId === 'empathy') setClickPower(prev => prev + 5);
+                    if (skillId === 'documentation') setAutoIncome(prev => prev + 10);
+                }
+            };
 
-                // Add a "ME" tag above the player character showing current rank
-                const rankName = this.state.foundationFound ? "재단 이사장" : RANKS[Math.min(this.state.stage - 1, RANKS.length - 1)];
-                me.innerHTML = `<div style="font-size:12px; color:white; background:var(--primary-dark); padding:4px 10px; border-radius:12px; position:absolute; top:-24px; white-space:nowrap; box-shadow:0 2px 4px rgba(0,0,0,0.1); font-family:sans-serif; font-weight:700; z-index:20;">${rankName} 나</div>${myIcon}`;
+            const upgradeEquipment = (equipId) => {
+                const equip = equipmentData.find(e => e.id === equipId);
+                const cost = equip.cost(equipment[equipId]);
+                if (money >= cost) {
+                    setMoney(prev => prev - cost);
+                    setEquipment(prev => ({ ...prev, [equipId]: prev[equipId] + 1 }));
+                    if (equipId === 'computer') setAutoIncome(prev => prev + 15);
+                    if (equipId === 'coffee') setClickPower(prev => prev + 10);
+                }
+            };
 
-                // Position player slightly off-center
-                me.style.left = '45%';
-                me.style.bottom = '15%';
+            const startMinigame = (gameType) => {
+                if (gameType === 'counseling') {
+                    const scenarios = [
+                        { question: '클라이언트가 "아무도 날 이해 못해요"라고 말합니다.', options: [{ text: '"제가 이해합니다"', correct: false, feedback: '공감보다는 경청이 중요합니다.' }, { text: '"그런 기분이 드시는군요. 더 말씀해주시겠어요?"', correct: true, feedback: '훌륭한 경청과 공감입니다!' }, { text: '"다른 사람들도 다 그렇게 생각해요"', correct: false, feedback: '클라이언트의 감정을 축소시킬 수 있습니다.' }] },
+                        { question: '클라이언트가 위기 상황에 있다고 판단됩니다.', options: [{ text: '즉시 상급자에게 보고', correct: true, feedback: '올바른 위기 대응입니다!' }, { text: '혼자 해결하려 시도', correct: false, feedback: '위기 상황은 팀으로 대응해야 합니다.' }, { text: '다음 상담 때 다시 보기', correct: false, feedback: '위기는 즉각 대응이 필요합니다.' }] },
+                        { question: '클라이언트가 계속 침묵하고 있습니다.', options: [{ text: '"왜 말을 안 하세요?"', correct: false, feedback: '압박적으로 느껴질 수 있습니다.' }, { text: '함께 침묵하며 기다리기', correct: true, feedback: '침묵도 의미있는 소통입니다!' }, { text: '다른 주제로 전환', correct: false, feedback: '클라이언트의 페이스를 존중해야 합니다.' }] }
+                    ];
+                    const randomScenario = scenarios[Math.floor(Math.random() * scenarios.length)];
+                    setMinigameData(randomScenario);
+                    setActiveMinigame('counseling');
+                } else if (gameType === 'typing') {
+                    const documents = ['사회복지서비스 신청서', '사례관리 계획서', '복지급여 신청 접수', '상담 기록지 작성', '가정방문 보고서', '욕구사정 보고서'];
+                    setMinigameData({ document: documents[Math.floor(Math.random() * documents.length)], timeLeft: 10, completed: false, maxTime: 10 });
+                    setActiveMinigame('typing');
+                } else if (gameType === 'quiz') {
+                    const baseAmount = Math.floor(Math.random() * 500000) + 1500000;
+                    setMinigameData({ question: '기초생활수급자 4인 가구의 생계급여 기준은?', answer: baseAmount, tolerance: 200000 });
+                    setActiveMinigame('quiz');
+                }
+            };
 
-                this.dom.staffContainer.appendChild(me);
-                this.staffDOM.push(me);
-                this.playerSprite = me; // Save reference for click handling
+            useEffect(() => {
+                if (activeMinigame === 'typing' && minigameData && minigameData.timeLeft > 0 && !minigameData.completed) {
+                    const timer = setTimeout(() => {
+                        setMinigameData(prev => ({ ...prev, timeLeft: prev.timeLeft - 1 }));
+                    }, 1000);
+                    return () => clearTimeout(timer);
+                }
+            }, [activeMinigame, minigameData]);
 
-                // Max 10 sprites per type to avoid DOM lag
-                COMPANIONS.forEach(c => {
-                    const count = Math.min(this.state.companions[c.id], 10);
-                    for (let i = 0; i < count; i++) {
-                        const el = document.createElement('div');
-                        el.className = 'staff-sprite';
-                        el.innerText = c.sprite;
-                        el.style.left = `${Math.random() * 80 + 5}%`;
-                        el.style.bottom = `${5 + Math.random() * 20}%`; // Confine to floor area
-                        this.dom.staffContainer.appendChild(el);
-                        this.staffDOM.push(el);
+            const answerMinigame = (answer) => {
+                if (activeMinigame === 'counseling') {
+                    if (answer.correct) {
+                        const reward = 500 * (1 + (skills.counseling || 0) * 0.5);
+                        setMoney(prev => prev + reward);
+                        setExperience(prev => prev + reward);
+                        setMinigameData({ ...minigameData, result: { success: true, message: answer.feedback, reward } });
+                    } else {
+                        setMinigameData({ ...minigameData, result: { success: false, message: answer.feedback, reward: 0 } });
                     }
-                });
-            }
-
-            moveStaff() {
-                this.staffDOM.forEach(el => {
-                    if (Math.random() > 0.4) {
-                        el.classList.add('moving');
-                        // Move gently
-                        const curLeft = parseFloat(el.style.left);
-                        const curBot = parseFloat(el.style.bottom);
-                        const destLeft = Math.max(5, Math.min(85, curLeft + (Math.random() - 0.5) * 20));
-                        const destBot = Math.max(5, Math.min(30, curBot + (Math.random() - 0.5) * 10));
-
-                        el.style.left = `${destLeft}%`;
-                        el.style.bottom = `${destBot}%`;
-
-                        setTimeout(() => el.classList.remove('moving'), 2000);
+                } else if (activeMinigame === 'typing') {
+                    if (minigameData.timeLeft > 0) {
+                        const reward = 300 * minigameData.timeLeft;
+                        setMoney(prev => prev + reward);
+                        setExperience(prev => prev + reward);
+                        setMinigameData({ ...minigameData, completed: true, result: { success: true, message: `완료! 남은 시간: ${minigameData.timeLeft}초`, reward } });
+                    } else {
+                        setMinigameData({ ...minigameData, completed: true, result: { success: false, message: '시간 초과!', reward: 0 } });
                     }
-                });
-            }
-
-            // --- Core Gameplay ---
-            click(e) {
-                let earn = this.state.clickPower;
-                if (this.state.foundationFound) earn *= 100; // Foundataion Multiplier
-
-                this.state.wp += earn;
-                this.state.totalWp += earn;
-
-                // Add jitter to particle position
-                const px = e.clientX + (Math.random() - 0.5) * 20;
-                const py = e.clientY - 20 + (Math.random() - 0.5) * 10;
-                this.particle(px, py, `+${this.fmt(earn)}`);
-
-                this.renderHeader();
-
-                if (this.playerSprite) {
-                    this.playerSprite.style.animation = 'none';
-                    void this.playerSprite.offsetWidth; // trigger reflow
-                    this.playerSprite.style.animation = 'scaleBump 0.2s cubic-bezier(0.34, 1.56, 0.64, 1)';
-                }
-
-                if (navigator.vibrate) navigator.vibrate(20);
-
-                if (Math.random() < 0.008) {
-                    this.state.coffee++;
-                    this.particle(px, py - 40, "☕ 라떼 득템!", "#f59e0b");
-                }
-            }
-
-            tick() {
-                if (this.state.tps > 0) {
-                    let autoEarn = this.state.tps;
-                    if (this.state.foundationFound) autoEarn *= 10;
-                    this.state.wp += autoEarn;
-                    this.state.totalWp += autoEarn;
-                    this.renderHeader();
-                }
-                this.checkStage();
-                this.renderPanel();
-
-                // Event Triggers
-                if (!this.eventActive) {
-                    const r = Math.random();
-                    if (this.state.stage > 1 && r < 0.002) this.triggerEvent(); // Malicious Complainant
-                    else if (this.state.stage > 3 && r < 0.003) this.triggerDilemma(); // Dilemma Event
-                }
-            }
-
-            checkStage() {
-                if (this.state.stage >= 10 && !this.state.foundationFound) return; // Wait for foundation unlock mentally
-
-                const next = Math.pow(10, this.state.stage + 2) * 1.5;
-                if (this.state.totalWp >= next) {
-                    this.state.stage++;
-                    this.particle(window.innerWidth / 2, window.innerHeight / 2, "레벨 업! 🎉", "#10b981");
-
-                    // Check for Foundation Milestone
-                    if (this.state.stage === 10 && !this.state.foundationFound) {
-                        this.state.foundationFound = true;
-                        document.getElementById('foundation-modal').style.display = 'flex';
-                        this.checkFoundationVisuals();
-                    }
-                    this.renderHeader();
-                    this.syncStaffSprites();
-                }
-            }
-
-            particle(x, y, text, color = "var(--primary)") {
-                const p = document.createElement('div');
-                p.className = 'wp-particle-cute'; p.innerText = text; p.style.color = color;
-                p.style.left = `${x}px`; p.style.top = `${y}px`;
-                document.body.appendChild(p);
-                setTimeout(() => p.remove(), 800);
-            }
-
-            renderHeader() {
-                this.dom.wp.innerText = this.fmt(this.state.wp);
-                this.dom.tps.innerText = this.fmt(this.state.tps * (this.state.foundationFound ? 10 : 1));
-
-                if (this.state.foundationFound) {
-                    this.dom.stage.innerText = "MAX";
-                    this.dom.name.innerText = "사단법인 격무 복지재단 본부 🕍";
-                    this.dom.rank.innerText = "⭐ 대표 이사장 ⭐";
-                    document.getElementById('next-rank-info').innerText = "최고 직급 도달 🏆";
-                    if (this.dom.progressBar) this.dom.progressBar.style.width = "100%";
-                } else {
-                    this.dom.stage.innerText = this.state.stage;
-                    const stageNameIdx = Math.min(this.state.stage - 1, STAGES.length - 1);
-                    this.dom.name.innerText = "🏢 " + STAGES[stageNameIdx] + (this.state.stage > STAGES.length ? ` (+${this.state.stage - STAGES.length})` : '');
-                    const rankIdx = Math.min(this.state.stage - 1, RANKS.length - 1);
-                    this.dom.rank.innerText = RANKS[rankIdx];
-
-                    const nextReq = Math.pow(10, this.state.stage + 2) * 1.5;
-                    const prevReq = this.state.stage === 1 ? 0 : Math.pow(10, this.state.stage + 1) * 1.5;
-                    const remaining = nextReq - this.state.totalWp;
-                    document.getElementById('next-rank-info').innerText = `다음 진급: ${this.fmt(remaining > 0 ? remaining : 0)} WP 필요`;
-
-                    // Update progress bar
-                    if (this.dom.progressBar) {
-                        const progress = ((this.state.totalWp - prevReq) / (nextReq - prevReq)) * 100;
-                        this.dom.progressBar.style.width = Math.min(100, Math.max(0, progress)) + "%";
+                } else if (activeMinigame === 'quiz') {
+                    const diff = Math.abs(answer - minigameData.answer);
+                    if (diff <= (minigameData.tolerance || 0)) {
+                        const reward = 1000;
+                        setMoney(prev => prev + reward);
+                        setExperience(prev => prev + reward);
+                        setMinigameData({ ...minigameData, result: { success: true, message: '정답!', reward } });
+                    } else {
+                        setMinigameData({ ...minigameData, result: { success: false, message: `오답! 정답은 약 ${minigameData.answer.toLocaleString()}원입니다.`, reward: 0 } });
                     }
                 }
+            };
 
-                this.dom.coffee.innerText = this.state.coffee;
-            }
+            const closeMinigame = () => { setActiveMinigame(null); setMinigameData(null); };
 
-            fmt(n) {
-                if (n < 10000) return Math.floor(n).toLocaleString();
-                const units = ['', '만', '억', '조', '경', '해', '자', '양', '구', '간', '정', '재', '극'];
-                const i = Math.floor(Math.log10(n) / 4);
-                if (i >= units.length) return "측정불가";
-                const v = (n / Math.pow(10, i * 4)).toFixed(1);
-                return `${v}${units[i]}`;
-            }
+            const currentRank = getCurrentRank();
+            const expNeeded = level * 1000;
+            const expProgress = (experience / expNeeded) * 100;
 
-            switchTab(t) {
-                this.state.currentTab = t;
-                document.querySelectorAll('.tab-btn-cute').forEach(b => b.classList.toggle('active', b.id.includes(t)));
-                this.renderPanel();
-                if (t === 'ranking') {
-                    this.promptNickname();
-                    this.loadLeaderboard();
-                }
-            }
+            const renderOffice = () => (
+                <svg width="300" height="250" viewBox="0 0 300 250" className="mx-auto">
+                    <polygon points="50,150 250,150 280,200 20,200" fill="#D7CCC8" />
+                    <polygon points="50,150 80,100 280,100 250,150" fill="#BCAAA4" />
+                    <polygon points="250,150 280,100 280,200 250,200" fill="#A1887F" />
+                    {level >= 10 && <><rect x="200" y="120" width="4" height="60" fill="#8D6E63" /><rect x="200" y="120" width="60" height="4" fill="#8D6E63" /></>}
+                    <polygon points="80,130 180,130 190,145 70,145" fill="#8B4513" />
+                    <polygon points="80,130 100,110 200,110 180,130" fill="#A0522D" />
+                    <polygon points="180,130 200,110 200,145 180,145" fill="#654321" />
+                    <rect x="110" y="100" width="60" height="40" fill="#2C3E50" />
+                    <rect x="115" y="105" width="50" height="30" fill={equipment.computer > 0 ? "#3498DB" : "#34495E"} />
+                    <ellipse cx="150" cy="170" rx="20" ry="8" fill={equipment.chair > 0 ? "#E74C3C" : "#95A5A6"} />
+                    <rect x="147" y="155" width="6" height="15" fill="#7F8C8D" />
+                    {level >= 20 && equipment.plant > 0 && <><ellipse cx="230" cy="140" rx="10" ry="5" fill="#8B4513" /><polygon points="230,125 225,135 235,135" fill="#27AE60" /><polygon points="230,120 222,132 238,132" fill="#2ECC71" /></>}
+                    {level >= 30 && equipment.bookshelf > 0 && <><rect x="40" y="100" width="30" height="50" fill="#8B4513" /><rect x="42" y="105" width="26" height="10" fill="#C0392B" /><rect x="42" y="118" width="26" height="10" fill="#2980B9" /><rect x="42" y="131" width="26" height="10" fill="#27AE60" /></>}
+                    <rect x="10" y="60" width="40" height="50" fill="#85C1E9" /><line x1="10" y1="85" x2="50" y2="85" stroke="#34495E" strokeWidth="2" /><line x1="30" y1="60" x2="30" y2="110" stroke="#34495E" strokeWidth="2" />
+                    {level >= 40 && equipment.sofa > 0 && <><rect x="220" y="160" width="50" height="20" fill="#8E44AD" /><rect x="215" y="155" width="10" height="25" fill="#9B59B6" /><rect x="265" y="155" width="10" height="25" fill="#9B59B6" /></>}
+                    {level >= 50 && <><rect x="15" y="40" width="30" height="20" fill="#F39C12" /><rect x="17" y="42" width="26" height="16" fill="#E67E22" /></>}
+                    {level >= 50 && equipment.coffee > 0 && <><rect x="260" y="125" width="15" height="20" fill="#34495E" /><rect x="262" y="127" width="11" height="8" fill="#E74C3C" /></>}
+                </svg>
+            );
 
-            async loadLeaderboard() {
-                this.dom.panel.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">랭킹을 불러오는 중입니다... ⏳</div>';
-                try {
-                    const { data, error } = await this.supabase
-                        .from('sabok_game_leaderboard')
-                        .select('*')
-                        .order('total_wp', { ascending: false })
-                        .limit(50);
-
-                    if (error) throw error;
-                    this.renderLeaderboard(data);
-                } catch (e) {
-                    console.error("Leaderboard error:", e);
-                    this.dom.panel.innerHTML = '<div style="text-align:center; padding:20px; color:#ef4444;">랭킹을 불러오는데 실패했습니다. 😢</div>';
-                }
-            }
-
-            renderLeaderboard(data) {
-                if (!data || data.length === 0) {
-                    this.dom.panel.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">아직 등록된 랭커가 없습니다! 지금 시작해서 1위를 차지하세요!</div>';
-                    return;
-                }
-
-                let h = `<div style="font-family:'Jua',sans-serif; margin-bottom:12px; font-size:18px; color:#d97706; text-align:center;">🏆 명예의 전당 (Top 50) 🏆<br><span style="font-size:12px; color:#64748b;">내 현재 점수: ${this.fmt(this.state.totalWp)} WP</span></div>`;
-                h += data.map((player, index) => {
-                    let medal = '';
-                    if (index === 0) medal = '🥇';
-                    else if (index === 1) medal = '🥈';
-                    else if (index === 2) medal = '🥉';
-                    else medal = `<span style="font-size:14px; opacity:0.6; width:20px; display:inline-block; text-align:center;">${index + 1}</span>`;
-
-                    const isMe = player.uuid === this.state.uuid;
-                    const bgStr = isMe ? 'background:#fef3c7; border:2px solid #fbbf24;' : 'background:white; border:1px solid #f1f5f9;';
-
-                    return `
-                    <div style="${bgStr} border-radius:16px; padding:12px 16px; display:flex; align-items:center; gap:12px; box-shadow:0 2px 8px rgba(0,0,0,0.03); margin-bottom:8px;">
-                        <div style="font-size:24px; min-width:30px;">${medal}</div>
-                        <div style="flex:1;">
-                            <div style="font-size:16px; color:#1e293b; margin-bottom:4px;">${this.sanitizeHTML(player.nickname)} ${isMe ? '<span style="font-size:12px; color:#d97706;">(나)</span>' : ''}</div>
-                            <div style="font-size:12px; color:#64748b; font-family:sans-serif;">LV.${player.stage} | ${this.fmt(player.total_wp)} WP</div>
+            if (currentScreen === 'character-select' && !gender) {
+                return (
+                    <div className="h-screen bg-gradient-to-b from-amber-100 to-orange-200 flex items-center justify-center p-4 overflow-hidden">
+                        <style>{`.wood-panel { background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%); border: 8px solid #654321; border-radius: 12px; box-shadow: inset 0 2px 4px rgba(255,255,255,0.3), inset 0 -2px 4px rgba(0,0,0,0.3), 0 8px 16px rgba(0,0,0,0.3); } .gold-border { border: 6px solid #DAA520; border-radius: 12px; box-shadow: inset 0 2px 4px rgba(255,215,0,0.5), 0 4px 8px rgba(0,0,0,0.2); } .character-card { background: linear-gradient(135deg, #FFF8DC 0%, #F5DEB3 100%); transition: all 0.3s ease; } .character-card:hover { transform: translateY(-8px); box-shadow: 0 12px 24px rgba(0,0,0,0.3); }`}</style>
+                        <div className="wood-panel p-8 max-w-2xl w-full relative z-10">
+                            <div className="text-center mb-8">
+                                <div className="inline-block px-8 py-4" style={{ background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)', border: '4px solid #8B4513', borderRadius: '8px', boxShadow: '0 4px 8px rgba(0,0,0,0.3)' }}>
+                                    <h1 className="text-4xl font-black text-amber-900" style={{ textShadow: '2px 2px 0 rgba(255,255,255,0.5)' }}>캐릭터를 선택하세요</h1>
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-6">
+                                <button onClick={() => { setGender('male'); setCurrentScreen('game'); }} className="character-card gold-border p-6 group">
+                                    <div className="w-40 h-40 mx-auto mb-4 relative">
+                                        <svg viewBox="0 0 80 80" className="w-full h-full">
+                                            <rect x="24" y="8" width="32" height="8" fill="#8B4513" /><rect x="24" y="16" width="32" height="8" fill="#A0522D" /><rect x="24" y="24" width="32" height="16" fill="#F5CBA7" /><rect x="32" y="28" width="4" height="4" fill="#000" /><rect x="44" y="28" width="4" height="4" fill="#000" /><rect x="36" y="36" width="8" height="2" fill="#C0392B" /><rect x="24" y="40" width="32" height="16" fill="#3498DB" /><rect x="24" y="56" width="14" height="16" fill="#2C3E50" /><rect x="42" y="56" width="14" height="16" fill="#2C3E50" /><rect x="24" y="72" width="14" height="4" fill="#000" /><rect x="42" y="72" width="14" height="4" fill="#000" />
+                                        </svg>
+                                    </div>
+                                    <div className="text-center"><div className="inline-block px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg"><span className="text-2xl font-bold text-white">선택</span></div></div>
+                                </button>
+                                <button onClick={() => { setGender('female'); setCurrentScreen('game'); }} className="character-card gold-border p-6 group">
+                                    <div className="w-40 h-40 mx-auto mb-4 relative">
+                                        <svg viewBox="0 0 80 80" className="w-full h-full">
+                                            <rect x="20" y="8" width="40" height="8" fill="#654321" /><rect x="20" y="16" width="40" height="8" fill="#8B4513" /><rect x="24" y="24" width="32" height="16" fill="#FFDAB9" /><rect x="32" y="28" width="4" height="4" fill="#000" /><rect x="44" y="28" width="4" height="4" fill="#000" /><rect x="36" y="36" width="8" height="2" fill="#E74C3C" /><rect x="24" y="40" width="32" height="16" fill="#E91E63" /><rect x="24" y="56" width="32" height="12" fill="#9C27B0" /><rect x="28" y="68" width="8" height="4" fill="#FFDAB9" /><rect x="44" y="68" width="8" height="4" fill="#FFDAB9" /><rect x="28" y="72" width="8" height="4" fill="#C0392B" /><rect x="44" y="72" width="8" height="4" fill="#C0392B" />
+                                        </svg>
+                                    </div>
+                                    <div className="text-center"><div className="inline-block px-6 py-3 bg-gradient-to-r from-pink-500 to-pink-600 rounded-lg"><span className="text-2xl font-bold text-white">선택</span></div></div>
+                                </button>
+                            </div>
+                            <div className="mt-8 text-center"><p className="text-lg text-amber-100 font-bold">사회복지사 키우기</p></div>
                         </div>
-                    </div>`;
-                }).join('');
-                this.dom.panel.innerHTML = h;
-            }
-
-            sanitizeHTML(str) {
-                var temp = document.createElement('div');
-                temp.textContent = str;
-                return temp.innerHTML;
-            }
-
-            renderPanel() {
-                let h = '';
-                if (this.state.currentTab === 'upgrades') {
-                    h = UPGRADES.map(i => {
-                        const lv = this.state.upgrades[i.id] || 0;
-                        const cost = Math.floor(i.cost * Math.pow(1.6, lv));
-                        return `
-                <div class="card-cute">
-                    <div class="card-icon" style="background:#d1fae5; color:#059669">${i.icon}</div>
-                    <div class="card-info">
-                        <div class="card-title">${i.name} [Lv.${lv}]</div>
-                        <p class="card-desc">${i.desc}</p>
                     </div>
-                    <button class="buy-btn-cute" ${this.state.wp < cost ? 'disabled' : ''} onclick="game.buy('up','${i.id}')">${this.fmt(cost)}</button>
-                </div>`;
-                    }).join('');
-                } else if (this.state.currentTab === 'companions') {
-                    h = COMPANIONS.map(i => {
-                        const lv = this.state.companions[i.id] || 0;
-                        const cost = Math.floor(i.cost * Math.pow(1.3, lv));
-                        return `
-                <div class="card-cute">
-                    <div class="card-icon" style="background:#fef3c7; color:#d97706">${i.icon}</div>
-                    <div class="card-info">
-                        <div class="card-title">${i.name} [Lv.${lv}]</div>
-                        <p class="card-desc">${i.desc}</p>
+                );
+            }
+
+            return (
+                <div className="h-screen bg-gradient-to-b from-sky-400 to-sky-300 flex flex-col overflow-hidden">
+                    <style>{`.gold-frame { background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%); border: 4px solid #B8860B; border-radius: 12px; box-shadow: inset 0 2px 4px rgba(255,255,255,0.5), 0 4px 12px rgba(0,0,0,0.3); } .work-button { background: linear-gradient(135deg, #FFD700 0%, #FF8C00 100%); border: 6px solid #8B4513; border-radius: 16px; box-shadow: inset 0 4px 8px rgba(255,255,255,0.3), 0 8px 16px rgba(0,0,0,0.4); transition: all 0.2s ease; } .work-button:active { transform: translateY(4px); box-shadow: inset 0 4px 8px rgba(255,255,255,0.3), 0 4px 8px rgba(0,0,0,0.4); } .nav-button { background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%); border: 3px solid #654321; transition: all 0.2s ease; } .nav-button.active { background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%); border-color: #B8860B; } .floating-number { animation: float-up 1s ease-out forwards; pointer-events: none; } @keyframes float-up { 0% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(-60px) scale(1.2); } }`}</style>
+
+                    {activeMinigame && (
+                        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
+                            <div className="bg-white rounded-2xl p-6 max-w-md w-full relative">
+                                <button onClick={closeMinigame} className="absolute top-4 right-4 p-2 hover:bg-gray-200 rounded-full"><X /></button>
+                                {activeMinigame === 'counseling' && minigameData && (
+                                    <>
+                                        <h2 className="text-2xl font-black text-gray-800 mb-4">상담 시나리오</h2>
+                                        <p className="text-lg mb-6 text-gray-700">{minigameData.question}</p>
+                                        {!minigameData.result ? (
+                                            <div className="space-y-3">{minigameData.options.map((option, index) => <button key={index} onClick={() => answerMinigame(option)} className="w-full p-4 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg font-bold hover:scale-105 transition-transform text-left">{option.text}</button>)}</div>
+                                        ) : (
+                                            <div className={`p-6 rounded-lg ${minigameData.result.success ? 'bg-green-100' : 'bg-red-100'}`}><div className={`text-2xl font-black mb-2 ${minigameData.result.success ? 'text-green-700' : 'text-red-700'}`}>{minigameData.result.success ? '✓ 정답!' : '✗ 오답'}</div><p className="text-gray-700 mb-4">{minigameData.result.message}</p>{minigameData.result.reward > 0 && <div className="text-xl font-bold text-green-600">+{Math.floor(minigameData.result.reward)}원</div>}<button onClick={closeMinigame} className="mt-4 w-full p-3 bg-gray-800 text-white rounded-lg font-bold">닫기</button></div>
+                                        )}
+                                    </>
+                                )}
+                                {activeMinigame === 'typing' && minigameData && (
+                                    <>
+                                        <h2 className="text-2xl font-black text-gray-800 mb-4">문서 작성</h2>
+                                        <p className="text-lg mb-4 text-gray-700">{minigameData.document}</p>
+                                        {!minigameData.result ? (
+                                            <><div className="text-6xl font-black text-center mb-6 text-blue-600">{minigameData.timeLeft}</div><div className="h-4 bg-gray-200 rounded-full mb-6"><div className="h-full bg-gradient-to-r from-blue-500 to-green-500 rounded-full transition-all" style={{ width: `${(minigameData.timeLeft / minigameData.maxTime) * 100}%` }} /></div>{minigameData.timeLeft > 0 ? <button onClick={() => answerMinigame(true)} className="w-full p-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg font-bold text-xl hover:scale-105 transition-transform">작성 완료!</button> : <div className="text-center text-red-600 font-bold text-xl">시간 초과!</div>}</>
+                                        ) : (
+                                            <div className={`p-6 rounded-lg ${minigameData.result.success ? 'bg-green-100' : 'bg-red-100'}`}><div className={`text-2xl font-black mb-2 ${minigameData.result.success ? 'text-green-700' : 'text-red-700'}`}>{minigameData.result.success ? '✓ 완료!' : '✗ 실패'}</div><p className="text-gray-700 mb-4">{minigameData.result.message}</p>{minigameData.result.reward > 0 && <div className="text-xl font-bold text-green-600">+{Math.floor(minigameData.result.reward)}원</div>}<button onClick={closeMinigame} className="mt-4 w-full p-3 bg-gray-800 text-white rounded-lg font-bold">닫기</button></div>
+                                        )}
+                                    </>
+                                )}
+                                {activeMinigame === 'quiz' && minigameData && (
+                                    <>
+                                        <h2 className="text-2xl font-black text-gray-800 mb-4">복지급여 계산</h2>
+                                        <p className="text-lg mb-6 text-gray-700">{minigameData.question}</p>
+                                        {!minigameData.result ? (
+                                            <><input type="number" id="quizInput" className="w-full p-4 border-4 border-gray-300 rounded-lg text-xl mb-4" placeholder="금액 입력 (원)" onKeyPress={(e) => { if (e.key === 'Enter') answerMinigame(parseInt(e.target.value) || 0); }} /><button onClick={() => { const input = document.getElementById('quizInput'); answerMinigame(parseInt(input.value) || 0); }} className="w-full p-4 bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-lg font-bold hover:scale-105 transition-transform">제출</button></>
+                                        ) : (
+                                            <div className={`p-6 rounded-lg ${minigameData.result.success ? 'bg-green-100' : 'bg-red-100'}`}><div className={`text-2xl font-black mb-2 ${minigameData.result.success ? 'text-green-700' : 'text-red-700'}`}>{minigameData.result.success ? '✓ 정답!' : '✗ 오답'}</div><p className="text-gray-700 mb-4">{minigameData.result.message}</p>{minigameData.result.reward > 0 && <div className="text-xl font-bold text-green-600">+{minigameData.result.reward}원</div>}<button onClick={closeMinigame} className="mt-4 w-full p-3 bg-gray-800 text-white rounded-lg font-bold">닫기</button></div>
+                                        )}
+                                    </>
+                                )}
+                            </div>
+                        </div>
+                    )}
+
+                    {showSaveIndicator && <div className="fixed top-20 right-4 bg-green-500 text-white px-4 py-2 rounded-lg font-bold z-50 shadow-lg">✓ 자동 저장됨</div>}
+
+                    <div className="gold-frame m-4 p-4">
+                        <div className="flex justify-between items-center">
+                            <div><div className="text-2xl font-black text-amber-900 mb-1">사회복지사 키우기</div><div className="text-sm font-bold text-blue-900">직급: {currentRank.name}</div></div>
+                            <div className="text-right"><div className="text-2xl font-black text-green-700">💰 {money.toLocaleString()}원</div><button onClick={saveGameData} className="text-xs font-bold text-blue-700 hover:text-blue-900">수동 저장</button></div>
+                        </div>
+                        <div className="mt-3">
+                            <div className="flex justify-between text-xs font-bold text-gray-700 mb-1"><span>LVL {level}</span><span>{Math.floor(expProgress)}% 다음 레벨까지</span></div>
+                            <div className="h-6 bg-gradient-to-r from-blue-800 to-blue-900 rounded-full overflow-hidden border-4 border-blue-950"><div className="h-full bg-gradient-to-r from-green-400 to-emerald-500 transition-all duration-300" style={{ width: `${expProgress}%` }} /></div>
+                        </div>
                     </div>
-                    <button class="buy-btn-cute" style="background:var(--accent);" ${this.state.wp < cost ? 'disabled' : ''} onclick="game.buy('cp','${i.id}')">${this.fmt(cost)}</button>
-                </div>`;
-                    }).join('');
-                } else if (this.state.currentTab === 'settings') {
-                    h = `<div style="padding:20px; font-family:sans-serif; font-size:15px; line-height:2.2; color:#475569; text-align:center;">
-                <h3 style="font-family:'Jua',sans-serif; color:#1e293b; font-size:24px; margin-bottom:16px;">[ 이력 카드 ]</h3>
-                <div style="margin-bottom:12px;">닉네임: <b style="color:var(--primary);">${this.state.nickname || '미등록'}</b> <button onclick="game.promptNickname()" style="border:none; background:#e2e8f0; border-radius:8px; padding:4px 8px; font-family:'Jua',sans-serif; cursor:pointer;">변경</button></div>
-                총 결재액: <b>${this.fmt(this.state.totalWp)} WP</b><br>
-                최종 직위: <b>${this.state.foundationFound ? "재단 이사장 👑" : RANKS[Math.min(this.state.stage - 1, RANKS.length - 1)]}</b><br>
-                비상용 라떼: <b>${this.state.coffee}잔 ☕</b><br>
-                <div style="margin:24px 0; height:1px; background:#e2e8f0;"></div>
-                <button class="buy-btn-cute" style="width:100%; padding:16px; background:#ef4444; font-size:16px; box-shadow:0 4px 12px rgba(239,68,68,0.2);" onclick="game.reset()">은퇴 (데이터 초기화)</button>
-            </div>`;
-                } else if (this.state.currentTab === 'ranking') {
-                    // Logic handled in loadLeaderboard
-                    return;
-                }
-                this.dom.panel.innerHTML = h;
-            }
 
-            buy(type, id) {
-                const i = (type === 'up' ? UPGRADES : COMPANIONS).find(x => x.id === id);
-                this.state[type === 'up' ? 'upgrades' : 'companions'][id] = this.state[type === 'up' ? 'upgrades' : 'companions'][id] || 0;
-                const lv = this.state[type === 'up' ? 'upgrades' : 'companions'][id];
-                const cost = Math.floor(i.cost * Math.pow(type === 'up' ? 1.6 : 1.3, lv));
+                    <div className="flex-1 overflow-y-auto px-4 pb-20">
+                        {currentScreen === 'game' && (
+                            <div className="space-y-4">
+                                {currentCase && (
+                                    <div className={`gold-frame p-4 bg-gradient-to-r ${currentCase.color} animate-pulse`}>
+                                        <div className="flex items-center justify-between"><div className="flex items-center gap-3"><div className="text-4xl">{currentCase.icon}</div><div><div className="font-black text-white text-lg">긴급 케이스!</div><div className="text-sm text-white">{currentCase.name} - 보너스 {((currentCase.bonus - 1) * 100).toFixed(0)}%</div></div></div><div className="text-2xl font-black text-white">×{currentCase.bonus.toFixed(1)}</div></div>
+                                    </div>
+                                )}
+                                <div className="gold-frame p-6 relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #F5E6D3 0%, #D7CCC8 100%)' }}>
+                                    <div className="relative min-h-[300px]">
+                                        {floatingNumbers.map(num => <div key={num.id} className="absolute text-3xl font-black text-green-500 floating-number" style={{ left: '50%', top: '30%', marginLeft: num.x, textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}>{num.value}</div>)}
+                                        {renderOffice()}
+                                        <div className="text-center mt-4">
+                                            <div className="w-32 h-32 mx-auto mb-4">
+                                                <svg viewBox="0 0 80 80" className="w-full h-full">
+                                                    {gender === 'male' ? (
+                                                        <><rect x="24" y="8" width="32" height="8" fill="#8B4513" /><rect x="24" y="16" width="32" height="8" fill="#A0522D" /><rect x="24" y="24" width="32" height="16" fill="#F5CBA7" /><rect x="32" y="28" width="4" height="4" fill="#000" /><rect x="44" y="28" width="4" height="4" fill="#000" /><rect x="36" y="36" width="8" height="2" fill="#C0392B" /><rect x="24" y="40" width="32" height="16" fill={level >= 20 ? "#2C3E50" : "#3498DB"} /><rect x="24" y="56" width="14" height="16" fill={level >= 30 ? "#34495E" : "#2C3E50"} /><rect x="42" y="56" width="14" height="16" fill={level >= 30 ? "#34495E" : "#2C3E50"} /><rect x="24" y="72" width="14" height="4" fill="#000" /><rect x="42" y="72" width="14" height="4" fill="#000" /></>
+                                                    ) : (
+                                                        <><rect x="20" y="8" width="40" height="8" fill="#654321" /><rect x="20" y="16" width="40" height="8" fill="#8B4513" /><rect x="24" y="24" width="32" height="16" fill="#FFDAB9" /><rect x="32" y="28" width="4" height="4" fill="#000" /><rect x="44" y="28" width="4" height="4" fill="#000" /><rect x="36" y="36" width="8" height="2" fill="#E74C3C" /><rect x="24" y="40" width="32" height="16" fill={level >= 20 ? "#5D4037" : "#E91E63"} /><rect x="24" y="56" width="32" height="12" fill={level >= 30 ? "#424242" : "#9C27B0"} /><rect x="28" y="68" width="8" height="4" fill="#FFDAB9" /><rect x="44" y="68" width="8" height="4" fill="#FFDAB9" /><rect x="28" y="72" width="8" height="4" fill="#C0392B" /><rect x="44" y="72" width="8" height="4" fill="#C0392B" /></>
+                                                    )}
+                                                </svg>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="text-center mt-6"><button onClick={handleWork} className={`work-button px-16 py-6 ${clickAnimation ? 'scale-95' : ''}`}><div className="text-4xl font-black text-amber-900" style={{ textShadow: '2px 2px 0 rgba(255,255,255,0.5)' }}>업무</div></button></div>
+                                    <div className="text-center mt-4 space-y-1"><div className="text-sm font-bold text-gray-700">클릭당 +{clickPower} 경험치</div>{autoIncome > 0 && <div className="text-sm font-bold text-green-700">초당 +{autoIncome} 자동 수입</div>}<div className="text-xs text-gray-600">총 {totalClicks}번 클릭</div></div>
+                                </div>
 
-                if (this.state.wp >= cost) {
-                    this.state.wp -= cost;
-                    if (type === 'up') { this.state.upgrades[id]++; this.state.clickPower += i.effect; }
-                    else { this.state.companions[id]++; this.state.tps += i.effect; this.syncStaffSprites(); }
-                    this.render();
-                }
-            }
+                                <div className="gold-frame p-4">
+                                    <h3 className="text-xl font-black text-amber-900 mb-3">미니게임</h3>
+                                    <div className="grid grid-cols-3 gap-2">
+                                        <button onClick={() => startMinigame('counseling')} className="p-3 bg-gradient-to-r from-purple-500 to-pink-600 rounded-lg text-white font-bold hover:scale-105 transition-transform"><div className="text-2xl mb-1">💬</div><div className="text-xs">상담</div></button>
+                                        <button onClick={() => startMinigame('typing')} className="p-3 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg text-white font-bold hover:scale-105 transition-transform"><div className="text-2xl mb-1">⌨️</div><div className="text-xs">문서작성</div></button>
+                                        <button onClick={() => startMinigame('quiz')} className="p-3 bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg text-white font-bold hover:scale-105 transition-transform"><div className="text-2xl mb-1">🧮</div><div className="text-xs">계산</div></button>
+                                    </div>
+                                </div>
 
-            // --- Events & Scenarios ---
-            triggerEvent() {
-                this.eventActive = true; this.eventClicks = 0; this.eventTimeLmt = 10;
+                                <div className="gold-frame p-4">
+                                    <h3 className="text-xl font-black text-amber-900 mb-3">완료한 케이스</h3>
+                                    <div className="grid grid-cols-2 gap-3">
+                                        {caseTypes.map(caseType => <div key={caseType.id} className={`p-3 bg-gradient-to-r ${caseType.color} rounded-lg`}><div className="flex items-center justify-between"><div className="flex items-center gap-2"><span className="text-2xl">{caseType.icon}</span><span className="text-white font-bold text-sm">{caseType.name}</span></div><span className="text-white font-black text-lg">{casesCompleted[caseType.id]}</span></div></div>)}
+                                    </div>
+                                </div>
 
-                const modal = document.getElementById('event-modal');
-                const area = document.getElementById('event-area');
-                const target = document.getElementById('event-target');
+                                <div className="gold-frame p-4"><h2 className="text-2xl font-black text-amber-900 mb-4 flex items-center gap-2"><Award />스킬</h2><div className="space-y-3">{skillsData.map(skill => { const currentLvl = skills[skill.id]; const cost = skill.cost(currentLvl); const canAfford = money >= cost; return <button key={skill.id} onClick={() => upgradeSkill(skill.id)} disabled={!canAfford} className={`w-full p-4 rounded-lg border-4 transition-all ${canAfford ? 'bg-gradient-to-r from-green-500 to-emerald-600 border-green-700 hover:scale-102' : 'bg-gray-400 border-gray-600 opacity-50'}`}><div className="flex items-center justify-between"><div className="flex items-center gap-3"><div className="text-3xl">{skill.icon}</div><div className="text-left"><div className="font-bold text-white text-lg">{skill.name}</div><div className="text-sm text-gray-100">{skill.description}</div></div></div><div className="text-right"><div className="text-2xl font-black text-yellow-300">Lv.{currentLvl}</div><div className="text-sm font-bold text-yellow-200">💰 {cost}</div></div></div></button>; })}</div></div>
 
-                document.getElementById('event-clicks').innerText = this.eventClicks;
-                document.getElementById('event-timer').innerText = this.eventTimeLmt;
+                                <div className="gold-frame p-4"><h2 className="text-2xl font-black text-amber-900 mb-4 flex items-center gap-2"><Briefcase />사무실 장비</h2><div className="space-y-3">{equipmentData.map(equip => { const currentLvl = equipment[equip.id]; const cost = equip.cost(currentLvl); const canAfford = money >= cost; return <button key={equip.id} onClick={() => upgradeEquipment(equip.id)} disabled={!canAfford} className={`w-full p-4 rounded-lg border-4 transition-all ${canAfford ? 'bg-gradient-to-r from-blue-500 to-indigo-600 border-blue-700 hover:scale-102' : 'bg-gray-400 border-gray-600 opacity-50'}`}><div className="flex items-center justify-between"><div className="flex items-center gap-3"><div className="text-3xl">{equip.icon}</div><div className="text-left"><div className="font-bold text-white text-lg">{equip.name}</div><div className="text-sm text-gray-100">{equip.description}</div></div></div><div className="text-right"><div className="text-2xl font-black text-yellow-300">Lv.{currentLvl}</div><div className="text-sm font-bold text-yellow-200">💰 {cost}</div></div></div></button>; })}</div></div>
+                            </div>
+                        )}
 
-                modal.style.display = 'flex'; area.style.display = 'block';
-                this.moveEventTarget(target, area);
+                        {currentScreen === 'stats' && (
+                            <div className="gold-frame p-6">
+                                <h2 className="text-2xl font-black text-amber-900 mb-6 flex items-center gap-2"><TrendingUp />통계</h2>
+                                <div className="space-y-4">
+                                    <div className="bg-gradient-to-r from-purple-100 to-pink-100 p-4 rounded-lg border-4 border-purple-300"><div className="flex justify-between items-center"><span className="font-bold text-purple-900">현재 레벨</span><span className="text-2xl font-black text-purple-700">{level}</span></div></div>
+                                    <div className="bg-gradient-to-r from-blue-100 to-cyan-100 p-4 rounded-lg border-4 border-blue-300"><div className="flex justify-between items-center"><span className="font-bold text-blue-900">직급</span><span className="text-xl font-black text-blue-700">{currentRank.name}</span></div></div>
+                                    <div className="bg-gradient-to-r from-green-100 to-emerald-100 p-4 rounded-lg border-4 border-green-300"><div className="flex justify-between items-center"><span className="font-bold text-green-900">클릭 파워</span><span className="text-2xl font-black text-green-700">+{clickPower}</span></div></div>
+                                    <div className="bg-gradient-to-r from-yellow-100 to-orange-100 p-4 rounded-lg border-4 border-yellow-300"><div className="flex justify-between items-center"><span className="font-bold text-orange-900">자동 수입</span><span className="text-2xl font-black text-orange-700">+{autoIncome}/초</span></div></div>
+                                    <div className="bg-gradient-to-r from-indigo-100 to-purple-100 p-4 rounded-lg border-4 border-indigo-300"><div className="flex justify-between items-center"><span className="font-bold text-indigo-900">총 클릭</span><span className="text-2xl font-black text-indigo-700">{totalClicks.toLocaleString()}</span></div></div>
+                                    <div className="bg-gradient-to-r from-pink-100 to-rose-100 p-4 rounded-lg border-4 border-pink-300"><div className="flex justify-between items-center"><span className="font-bold text-pink-900">완료한 케이스</span><span className="text-2xl font-black text-pink-700">{Object.values(casesCompleted).reduce((a, b) => a + b, 0)}</span></div></div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
 
-                this.eventInterval = setInterval(() => {
-                    this.eventTimeLmt--;
-                    document.getElementById('event-timer').innerText = this.eventTimeLmt;
-                    if (this.eventTimeLmt % 2 === 0) this.moveEventTarget(target, area);
-
-                    if (this.eventTimeLmt <= 0) this.endEvent(false);
-                }, 1000);
-            }
-
-            moveEventTarget(target, area) {
-                const maxX = area.clientWidth - target.clientWidth; const maxY = area.clientHeight - target.clientHeight;
-                const x = Math.floor(Math.random() * maxX); const y = Math.floor(Math.random() * maxY);
-                target.style.left = `${x}px`; target.style.top = `${y}px`;
-            }
-
-            clickEventTarget() {
-                if (!this.eventActive) return;
-                this.eventClicks++; document.getElementById('event-clicks').innerText = this.eventClicks;
-                if (navigator.vibrate) navigator.vibrate(30);
-                this.moveEventTarget(document.getElementById('event-target'), document.getElementById('event-area'));
-
-                if (this.eventClicks >= 10) this.endEvent(true);
-            }
-
-            endEvent(success) {
-                clearInterval(this.eventInterval); this.eventActive = false;
-                document.getElementById('event-modal').style.display = 'none';
-
-                if (success) {
-                    const wpReward = (this.state.tps * 180) + (this.state.clickPower * 100);
-                    this.state.wp += wpReward; this.state.totalWp += wpReward;
-                    let msg = `휴... 무사히 진정시켰어요!\n보너스: +${this.fmt(wpReward)} WP`;
-                    if (Math.random() > 0.5) { this.state.coffee += 5; msg += `\n믹스커피 5개도 주웠어요!`; }
-                    this.renderHeader(); alert(msg);
-                } else {
-                    alert("타임오버! 멘탈이 바사삭 부서졌습니다...");
-                }
-            }
-
-            triggerDilemma() {
-                this.eventActive = true;
-                this.currentDilemma = DILEMMAS[Math.floor(Math.random() * DILEMMAS.length)];
-
-                document.getElementById('dilemma-desc').innerText = this.currentDilemma.desc;
-                document.getElementById('dilemma-btn-a').innerText = this.currentDilemma.btnA;
-                document.getElementById('dilemma-btn-b').innerText = this.currentDilemma.btnB;
-
-                document.getElementById('dilemma-modal').style.display = 'flex';
-            }
-
-            resolveDilemma(choice) {
-                document.getElementById('dilemma-modal').style.display = 'none';
-                this.eventActive = false;
-
-                const res = choice === 'A' ? this.currentDilemma.resA : this.currentDilemma.resB;
-
-                // Ensure coffee requirements
-                if (res.coffee < 0 && this.state.coffee < Math.abs(res.coffee)) {
-                    alert("라떼가 부족해서 이 선택을 할 수 없어요! 부족한 체력을 라떼로 채워보세요.");
-                    return;
-                }
-
-                let finalMsg = res.msg;
-                let wpChange = this.state.tps * 60 * res.wpMod; // Base change on 1 min of TPS
-
-                // Risk calculation
-                if (res.risk && Math.random() < res.risk) {
-                    finalMsg += `\n\n🚨 ${res.riskMsg}`;
-                    wpChange = this.state.totalWp * res.riskWpMod / 100; // Lose % of total
-                }
-
-                this.state.wp += wpChange;
-                if (this.state.wp < 0) this.state.wp = 0; // Don't go below 0
-                this.state.coffee += res.coffee || 0;
-
-                this.renderHeader();
-                alert(`${finalMsg}\n\n[결과] ${wpChange > 0 ? '+' : ''}${this.fmt(wpChange)} WP`);
-            }
-
-            // --- Core Systems ---
-            render() { this.renderHeader(); this.renderPanel(); }
-
-            save() {
-                this.state.lastSaveTime = Date.now();
-                localStorage.setItem(this.SAVE_KEY, JSON.stringify(this.state));
-                if (Math.random() < 0.2) this.syncToSupabase(); // Sync ~1/5 of the time to save bandwidth, or trigger manually
-            }
-
-            async syncToSupabase() {
-                if (!this.state.nickname) return; // Don't sync if no nickname
-                if (!this.supabase) return;
-
-                // Sync the user's progress using upsert on UUID
-                try {
-                    await this.supabase
-                        .from('sabok_game_leaderboard')
-                        .upsert({
-                            uuid: this.state.uuid,
-                            nickname: this.state.nickname,
-                            stage: this.state.stage,
-                            total_wp: this.state.totalWp,
-                            updated_at: new Date().toISOString()
-                        }, { onConflict: 'uuid' });
-                } catch (e) {
-                    console.error("Failed to sync to Supabase", e);
-                }
-            }
-
-            load() {
-                const s = localStorage.getItem(this.SAVE_KEY);
-                if (s) {
-                    try {
-                        const p = JSON.parse(s);
-                        this.state = { ...this.state, ...p, upgrades: { ...this.state.upgrades, ...p.upgrades }, companions: { ...this.state.companions, ...p.companions } };
-
-                        const off = Math.floor((Date.now() - this.state.lastSaveTime) / 1000);
-                        if (off > 60 && this.state.tps > 0) {
-                            const r = off * this.state.tps * (this.state.foundationFound ? 10 : 1);
-                            this.state.wp += r; this.state.totalWp += r;
-                            document.getElementById('offline-wp').innerText = `+${this.fmt(r)} WP`;
-                            document.getElementById('offline-modal').style.display = 'flex';
-                        }
-                    } catch (e) { console.error("Load Error", e) }
-                }
-            }
-
-            closeModal(id) { document.getElementById(id).style.display = 'none'; }
-            closeFoundationModal() { this.closeModal('foundation-modal'); }
-            reset() { if (confirm("정말 은퇴하시겠습니까? (이력 카드가 완전히 초기화됩니다.)")) { localStorage.clear(); location.reload(); } }
+                    <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-t from-amber-900 to-amber-800 border-t-4 border-amber-950 p-2">
+                        <div className="max-w-2xl mx-auto grid grid-cols-3 gap-2">
+                            <button onClick={() => setCurrentScreen('game')} className={`nav-button rounded-lg p-3 ${currentScreen === 'game' ? 'active' : ''}`}><Home /><div className={`text-xs font-bold ${currentScreen === 'game' ? 'text-amber-900' : 'text-amber-100'}`}>홈</div></button>
+                            <button onClick={() => setCurrentScreen('stats')} className={`nav-button rounded-lg p-3 ${currentScreen === 'stats' ? 'active' : ''}`}><Award /><div className={`text-xs font-bold ${currentScreen === 'stats' ? 'text-amber-900' : 'text-amber-100'}`}>통계</div></button>
+                            <button onClick={() => { if (confirm('정말 초기화하시겠습니까?')) { localStorage.removeItem(`gameData_${userId}`); window.location.reload(); } }} className="nav-button rounded-lg p-3"><TrendingUp /><div className="text-xs font-bold text-amber-100">초기화</div></button>
+                        </div>
+                    </div>
+                </div>
+            );
         }
-        const game = new GameEngine();
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<RaiseSocialWorker />);
     </script>
 </body>
 

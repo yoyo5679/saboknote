@@ -226,7 +226,7 @@
                     </div>
                 </section>
 
-                <div style="height:24px;"></div>
+                <div style="height:100px;"></div>
             </div> <!-- end view-home -->
 
             <!-- ===== RECORD/HELP VIEW ===== -->
@@ -260,6 +260,7 @@
                     </div>
 
 
+                    <div style="height:100px;"></div>
                 </div>
             </div> <!-- end view-record -->
 
@@ -309,7 +310,7 @@
                             <p style="font-size:0.9rem;">게시글을 불러오는 중...</p>
                         </div>
                     </div>
-                    <div style="height:80px;"></div>
+                    <div style="height:100px;"></div>
                 </div>
             </div>
 
@@ -404,6 +405,31 @@
                             </div>
                         </div>
 
+                        <!-- 계정 동기화 (기기 변경) -->
+                        <div
+                            style="background:#fff; border-radius:16px; padding:18px; border:1px solid #e2e8f0; box-shadow:var(--shadow-card);">
+                            <div style="font-size:0.75rem; font-weight:800; color:var(--primary); margin-bottom:12px;">
+                                🔄 계정 동기화 (기기 변경)</div>
+
+                            <div
+                                style="background:#f8fafc; padding:12px; border-radius:10px; margin-bottom:16px; border:1px solid #edf2f7;">
+                                <div style="font-size:0.7rem; color:#64748b; margin-bottom:4px;">내 동기화 코드</div>
+                                <div id="my-sync-code"
+                                    style="font-size:1.1rem; font-weight:900; color:#1e293b; letter-spacing:0.5px;">-
+                                </div>
+                            </div>
+
+                            <div>
+                                <div style="font-size:0.7rem; color:#64748b; margin-bottom:8px;">다른 기기에서 가져오기</div>
+                                <div style="display:flex; gap:8px;">
+                                    <input type="text" id="sync-code-input" placeholder="코드 입력"
+                                        style="flex:1; padding:10px; border-radius:10px; border:1px solid #e2e8f0; font-size:14px; outline:none;">
+                                    <button id="sync-restore-btn" onclick="restoreProfile()"
+                                        style="background:var(--primary); color:white; border:none; border-radius:10px; padding:0 16px; font-weight:700; font-size:13px;">가져오기</button>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- 설정 메뉴 -->
                         <div
                             style="background:#fff; border-radius:16px; overflow:hidden; border:1px solid #e2e8f0; box-shadow:var(--shadow-card);">
@@ -432,7 +458,7 @@
                         <div style="text-align:center; padding-top:8px;">
                             <span style="font-size:0.75rem; color:#cbd5e1;">ver 1.0.0 · 사회복지사 비밀노트</span>
                         </div>
-                        <div style="height:60px;"></div>
+                        <div style="height:100px;"></div>
                     </div>
                 </div>
             </div>
@@ -462,6 +488,7 @@
                     <div id="shredder-success"
                         style="display: none; text-align: center; padding: 20px 0; width: 100%; max-width: 400px;">
                     </div>
+                    <div style="height:100px;"></div>
                 </div>
             </div>
 
@@ -622,6 +649,7 @@
                     <div id="pg-step-result" style="display:none; animation:fadeUp 0.6s ease; padding-bottom: 80px;">
                         <!-- Injected by JS -->
                     </div>
+                    <div style="height:100px;"></div>
                 </div>
             </div>
         </main>
