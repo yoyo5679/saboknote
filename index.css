@@ -736,6 +736,7 @@ select:focus {
   align-items: center;
   padding: 11px 0;
   border-bottom: 1px solid rgba(229, 231, 235, 0.7);
+  gap: 12px;
 }
 
 .result-item:last-child {
@@ -746,6 +747,15 @@ select:focus {
   font-size: 0.88rem;
   font-weight: 600;
   color: #475569;
+  word-break: keep-all;
+  flex: 1;
+}
+
+.result-value {
+  font-weight: 700;
+  color: var(--text-900);
+  text-align: right;
+  white-space: nowrap;
 }
 
 .status-badge {

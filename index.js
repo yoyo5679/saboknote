@@ -581,9 +581,9 @@
                 [1, 2, 3, 4].forEach(size => {
                     let ratioBlocks = ratios.map(r => {
                         let val = Math.round(MED_INCOME_BASE[size] * r);
-                        return `<div style="display:flex; justify-content:space-between; padding:4px 0; border-bottom:1px solid #f1f5f9; font-size:0.8rem">
-                                <span style="color:#64748b">${Math.round(r * 100)}%</span>
-                                <span style="font-weight:700; color:#1e293b">${val.toLocaleString()}원</span>
+                        return `<div class="result-item" style="padding:6px 0; border-bottom:1px solid #f1f5f9;">
+                                <span class="result-label" style="color:#64748b">${Math.round(r * 100)}%</span>
+                                <span class="result-value" style="font-weight:700; color:#1e293b">${val.toLocaleString()}원</span>
                             </div>`;
                     }).join('');
 
@@ -611,25 +611,25 @@
                 </div>
 
 
-                <div class="kpi-section" style="margin-top:24px">
-                    <p style="font-size:0.85rem; font-weight:800; color:#ef4444; margin-bottom:12px">🏠 생계급여 선정기준 (32%)</p>
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px">
+                <div class="kpi-section" style="margin-top:20px">
+                    <p style="font-size:0.85rem; font-weight:800; color:#ef4444; margin-bottom:10px">🏠 생계급여 선정기준 (32%)</p>
+                    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:10px">
                         ${Object.entries(KPI_DATA_2026.basicLiving).map(([size, val]) => `
                             <div style="background:#fff1f2; padding:12px; border-radius:12px; border:1px solid #ffe4e6">
-                                <p style="font-size:0.7rem; color:#fb7185">${size}인 가구</p>
-                                <p style="font-size:0.95rem; font-weight:800; color:#e11d48">${val}</p>
+                                <p style="font-size:0.75rem; color:#fb7185; margin-bottom:2px;">${size}인 가구</p>
+                                <p style="font-size:1.0rem; font-weight:800; color:#e11d48">${val}</p>
                             </div>
                         `).join('')}
                     </div>
                 </div>
 
-                <div class="kpi-section" style="margin-top:24px">
-                    <p style="font-size:0.85rem; font-weight:800; color:var(--accent); margin-bottom:12px">🌿 장기요양 재가한도액</p>
-                    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px">
+                <div class="kpi-section" style="margin-top:20px">
+                    <p style="font-size:0.85rem; font-weight:800; color:var(--accent); margin-bottom:10px">🌿 장기요양 재가한도액</p>
+                    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(100px, 1fr)); gap:8px">
                         ${Object.entries(KPI_DATA_2026.ltcLimits).map(([grade, val]) => `
                             <div style="background:#f0f9ff; padding:10px; border-radius:12px; border:1px solid #e0f2fe; text-align:center">
-                                <p style="font-size:0.7rem; color:#0ea5e9">${grade}등급</p>
-                                <p style="font-size:0.85rem; font-weight:800; color:#0369a1">${val.replace('원', '')}</p>
+                                <p style="font-size:0.7rem; color:#0ea5e9; margin-bottom:2px;">${grade}등급</p>
+                                <p style="font-size:0.9rem; font-weight:800; color:#0369a1">${val.replace('원', '')}</p>
                             </div>
                         `).join('')}
                     </div>
@@ -733,7 +733,7 @@
         [임무: 전달된 팩트(소식)를 바탕으로, 읽는 이의 마음을 울리고 기관에 대한 절대적 신뢰를 구축하며, 지속적인 후원과 지지를 이끌어내는 마스터피스 뉴스레터 / 서신을 작성하라.]
 
         [카피라이팅 및 심리 기법 지침]
-        1. 단순한 실적 보고 금지('~를 했습니다' 지양): 기관이 무엇을 했는지가 아니라, "후원자님(보호자님)의 사랑과 참여 덕분에 대상자의 삶이 어떻게 기적처럼 변했는지"로 초점을 전환할 것. (Donor - Centric Approach)
+        1. 단순한 실적 보고 금지('~를 했습니다' 지양): 기관이 무엇을 했는지가 아니라, "후원자님(보호자님)의 사랑과 참여 덕분에 대상자의 삶이 어떻게 기적처럼 변했인지"로 초점을 전환할 것. (Donor - Centric Approach)
         2. 감각적 스토리텔링(Sensory Storytelling) 적용: 현장의 온도, 대상자의 표정 변화, 들려온 작은 목소리 등 오감을 자극하는 구체적이고 디테일한 묘사를 포함하여 독자가 현장에 함께 있는 것처럼 느끼게 할 것.
 3. 밴드왜건 및 사회적 증거(Social Proof) 활용: '우리 모두가 함께 만들어가는 변화'라는 공동체 의식을 부여하고 소속감을 강화할 것.
 4. 명확한 가독성과 리듬감: 문장은 호흡을 짧게 가져가고, 시각적 피로를 줄이기 위해 단락을 여유롭게 나누며 핵심 감동 포인트는 강조(볼드체 대체 등 문장 부호 제어)할 것.
@@ -750,6 +750,125 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
 
 전달하고자 하는 핵심 소식 / 팩트:
         { { INPUT } } `
+        },
+        soap: {
+            title: "AI SOAP 기록 변환기 (Master)",
+            icon: "⚖️",
+            description: "[강점 관점 실천 모델 적용] 상담 메모를 전문적인 SOAP(Subjective, Objective, Assessment, Plan) 보고서로 정교하게 변환합니다.",
+            prompt: `[역할: 20년 경력의 사회복지 사례관리 전문가 및 '강점 관점 실천 모델' 권위자]
+                [임무: 비정형 상담 메모를 바탕으로 전문 SOAP 기록지를 작성하라.]
+                
+                1. S (Subjective): 클라이언트의 주관적 호소와 욕구를 직접 인용구와 함께 기술하되, 자기결정권의 의지가 드러나는 부분을 포착하십시오.
+                2. O (Objective): 사회복지사의 관찰, 주거 환경, 비언어적 표현, 클라이언트의 현재 자원(공적/사적 지원 현황)을 객관적 사실 위주로 기록하십시오.
+                3. A (Assessment): PEST 분석을 활용하여 문제의 근본 원인을 파악하고, 클라이언트가 가진 '잔존 능력'과 '회복 탄력성'을 전문 용어로 진단하십시오.
+                4. P (Plan): SMART 원칙에 따라 단기/중기 목표를 설정하고, 통합사례회의 안건으로 상정할 핵심 쟁점을 도출하십시오.
+                
+                상담 메모 데이터:
+                { { INPUT } } `
+        },
+        logic_model: {
+            title: "AI 로직 모델 기획서 (Master)",
+            icon: "🧬",
+            description: "[공모사업 심사기준 적용] 제안서를 Logic Model 프레임워크에 맞춰 수평적/수직적 논리가 완벽한 사업 계획서로 확장합니다.",
+            prompt: `[역할: 사회복지 공동모금회 및 정부 평가 지표 설계 전문가]
+                [임무: 아이디어를 'Logic Model' 프레임워크에 따라 논리 구조가 완벽한 사업 계획서로 확장하십시오.]
+                
+                - 추진 배경: 최신 통계 데이터 및 실태조사 결과 인용 (예: 고독사 예방 및 관리에 관한 법률 등 법적 근거 마련).
+                - 투입(Input): 인적/물적 자원을 넘어 네트워크 자원까지 구조화.
+                - 산출(Output): 회기별 달성률이 아닌 '질적 변화'를 측정할 수 있는 단위 설정.
+                - 성과(Outcome): 초기/중기/장기 성과를 실현 가능한 심리/사회적 지표와 연결.
+                
+                사업 핵심 아이디어:
+                { { INPUT } } `
+        },
+        ethics: {
+            title: "AI 윤리적 의사결정 (Master)",
+            icon: "🛡️",
+            description: "[Levy & Loewenberg 모델 적용] 복지 현장의 딜레마를 윤리적 원칙 심사표(EPS) 7단계에 따라 정밀 분석합니다.",
+            prompt: `[역할: 사회복지 윤리위원회 의장]
+                [임무: 다음 상황에 대해 Loewenberg와 Dolgoff의 '윤리적 원칙 심사표(EPS)' 7단계를 적용하여 분석 보고서를 작성하십시오.]
+                
+                1. 윤리 원칙 1순위(생명보호)부터 7순위(진실성)를 대조하여 우선순위를 평정하십시오.
+                2. 이해관계자 분석: 클라이언트, 가족, 소속 기관, 지역사회의 피해 매트릭스를 정리하십시오.
+                3. 대안 검토: 공리주의적 관점과 의무론적 관점의 손익을 비교하십시오.
+                4. 최종 권고: 사회복지사 윤리강령에 근거하여 사회복지사가 취해야 할 실질적인 조치를 제안하십시오.
+                
+                딜레마 상황 설명:
+                { { INPUT } } `
+        },
+        compliance: {
+            title: "AI 법률 컴플라이언스 (Master)",
+            icon: "📜",
+            description: "[복지 사업 안내 지표 분석] 최신 지침과 판례를 바탕으로 행정 리스크를 진단하고 권익 구제 방안을 제시합니다.",
+            prompt: `[역할: 복지 행정 전문 법무 보좌관]
+                [임무: 제공된 최신 지침서 텍스트 또는 클라이언트 사례를 분석하여 다음 보고서를 생성하십시오.]
+                
+                1. 지침 준수 여부: 수급 자격 또는 부양의무자 기준 중 어느 부분에서 임계점에 있는지 정밀 분석하십시오.
+                2. 행정 리스크 방어: 감사 시 지적될 가능성이 있는 서류 미비점 또는 절차상 결함을 도출하십시오.
+                3. 권익 구제 방안: 판정이 불리할 경우, 이의신청에서 승소할 수 있는 논리적 근거(유사 판례 또는 특례 규정)를 제시하십시오.
+                
+                분석 타겟 내용:
+                { { INPUT } } `
+        },
+        bm_canvas: {
+            title: "AI BM 캔버스 설계 (Master)",
+            icon: "🚀",
+            description: "[수익형 비즈니스 전략] 사회적 기업 모델을 구축하여 보조금 의존을 낮추고 자립 가능한 BM을 설계합니다.",
+            prompt: `[역할: 사회적 기업 비즈니스 아키텍트 및 임팩트 투자 컨설턴트]
+                [임무: 사회복지 서비스를 '지속 가능한 수익형 비즈니스 모델'로 전환하십시오.]
+                
+                1. 가치 제안: 수혜자와 구매자를 분리하여, 구매자가 비용을 지불할 만한 'Problem-Solution Fit'을 정의하십시오.
+                2. 수익원: B2G, B2B, B2C 채널별 다각화된 수익 구조(구독형, 성과 연동형 등)를 설계하십시오.
+                3. 핵심 자원: 유휴 공간, 인력, 데이터 자원을 활용한 경쟁 우위를 도출하십시오.
+                4. 사회적 임팩트 측정: 창출할 '사회적 투자 수익률(SROI)'을 정량화할 수 있는 핵심 지표(KPI)를 설정하십시오.
+                
+                사업 아이디어 원안:
+                { { INPUT } } `
+        },
+        csr: {
+            title: "AI CSR 제안서 마스터 (Master)",
+            icon: "💎",
+            description: "[ESG 연계 제안 전략] 기업의 ESG 지표(SASB, GRI)와 우리 사업을 결합하여 거절할 수 없는 제안서를 작성합니다.",
+            prompt: `[역할: 대기업 CSR 및 ESG 전략 컨설턴트]
+                [임무: 우리 기관의 사업을 기업의 핵심 가치와 연결하여 '거절할 수 없는 파트너십 제안서'를 작성하십시오.]
+                
+                - ESG 정렬: 산업군별 특화된 ESG 지표 중 기여할 수 있는 Environmental/Social 영역을 특정하십시오.
+                - 브랜딩 시너지: 파트너십을 통해 기업이 얻게 될 사회적 평판과 이미지 개선 효과를 논리적으로 서술하십시오.
+                - 리스크 관리: 소셜워싱 논란을 방지하는 투명한 성과 관리 체계를 제시하십시오.
+                - 홍보 보도자료: 파트너십 체결 시 배포될 헤드라인과 핵심 메시지 3개를 포함하십시오.
+                
+                타겟 기업군/사업내용:
+                { { INPUT } } `
+        },
+        policy: {
+            title: "AI 정책/조례 제안서 (Master)",
+            icon: "🏛️",
+            description: "[빅데이터 Advocacy] 통계와 법적 근거를 바탕으로 지자체 예산 확보 및 조례 제정을 이끄는 제안서를 만듭니다.",
+            prompt: `[역할: 공공 정책 분석가 및 입법 보좌관]
+                [임무: 지역 복지 욕구를 분석하여 실질적인 '조례 제정 제안서' 또는 '신규 예산 편성 근거'를 작성하십시오.]
+                
+                1. 문제의 심각성: 최신 통계 및 실태 조사 데이터를 논거로 사용하여 '골든타임'임을 피력하십시오.
+                2. 법적 근거: 상위법 정합성을 검토하고 지자체가 즉시 제정 가능한 '표준 조례안' 핵심 본문을 작성하십시오.
+                3. 경제적 편익: 정책 시행 시 장기적으로 절감될 사회적 비용(범죄 예방, 의료비 등)을 가치로 추산하십시오.
+                4. 반대 이해관계자 설득: 반대 집단의 논리를 예측하고 상쇄할 수 있는 윈-윈 전략을 마련하십시오.
+                
+                분석 타겟 지역/문제:
+                { { INPUT } } `
+        },
+        nudge: {
+            title: "AI 넛지 마케팅 (Master)",
+            icon: "🎯",
+            description: "[행동경제학 기법 적용] 클라이언트의 자발적 행동 변화와 프로그램 참여율을 극대화하는 심리 전략을 설계합니다.",
+            prompt: `[역할: 행동경제학 커뮤니케이션 전문가]
+                [임무: 기관 서비스 참여율을 높이기 위해 '넛지(Nudge) 디자인' 전문가로서 인간 행동 심리를 설계하십시오.]
+                
+                1. 디폴트 옵션 설계: 사용자가 고민 없이 시작할 수 있도록 초기 접점 구조를 재설계하십시오.
+                2. 사회적 입증 활용: '다른 사람들도 참여하고 있다'는 소속감을 느끼게 할 심리적 장치를 제안하십시오.
+                3. 프레이밍 효과: 수혜가 아닌 '권리'나 '강점 강화'로 느껴지도록 카드뉴스 및 안내 문구를 교체하십시오.
+                4. 손실 회피: 참여하지 않았을 때 잃게 될 기회비용을 정교하게 터치하여 실질적 행동 전환을 유도하십시오.
+                
+                타겟 프로그램/대상/문제:
+                { { INPUT } } `
         }
     };
 
@@ -1265,7 +1384,7 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
                                 <p style="font-size:0.8rem; color:#1d4ed8; margin-bottom:12px; line-height:1.4;">
                                     관련 법령에 따라 <strong>군 복무 기간은 보호종료 기간 산정에서 제외(연장)</strong> 처리됩니다. 입대일과 전역(예정)일을 입력해주세요.
                                 </p>
-                                <div style="display:flex; gap:12px;">
+                                <div style="display:flex; flex-direction:column; gap:12px;">
                                     <div style="flex:1;">
                                         <label style="display:block; font-size:0.8rem; color:#1e40af; font-weight:700; margin-bottom:4px;">입대일</label>
                                         <input type="date" id="youth-mil-start" class="calc-input" onchange="calcYouthIndependence()" oninput="calcYouthIndependence()" style="font-size:1.1rem; padding:12px; width:100%; box-sizing:border-box;">
@@ -1671,24 +1790,24 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
         if (!isFuture) {
             if (isWithin5Years) {
                 html += `
-                    <div style="display:flex; align-items:center; gap:12px; padding:20px; background:#eff6ff; border-radius:16px; border:1px solid #bfdbfe; box-shadow: 0 4px 12px rgba(37,99,235,0.1);">
-                        <span style="font-size:2rem;">✅</span>
+                    <div style="display:flex; align-items:center; gap:12px; padding:16px; background:#eff6ff; border-radius:16px; border:1px solid #bfdbfe; box-shadow: 0 4px 12px rgba(37,99,235,0.06);">
+                        <span style="font-size:1.8rem;">✅</span>
                         <div style="flex:1;">
-                            <div style="color:#1e40af; font-weight:800; font-size:1.05rem; margin-bottom:6px;">보호종료 5년 이내 해당</div>
-                            <div style="color:#1d4ed8; font-size:0.85rem; line-height:1.5; word-break:keep-all;">
-                                자립수당 등 '5년 이내' 기준의 혜택을 받을 수 있는 대상자에 해당합니다. <br>(종료일: ${formatDate(new Date(adjustedEndDate.getFullYear() + 5, adjustedEndDate.getMonth(), adjustedEndDate.getDate()))})
+                            <div style="color:#1e40af; font-weight:800; font-size:1.0rem; margin-bottom:4px;">보호종료 5년 이내 해당</div>
+                            <div style="color:#1d4ed8; font-size:0.8rem; line-height:1.4; word-break:keep-all;">
+                                자립수당 등 '5년 이내' 기준의 혜택 대상입니다. <br>(기한: ${formatDate(new Date(adjustedEndDate.getFullYear() + 5, adjustedEndDate.getMonth(), adjustedEndDate.getDate()))})
                             </div>
                         </div>
                     </div>
                 `;
             } else {
                 html += `
-                    <div style="display:flex; align-items:center; gap:12px; padding:20px; background:#fef2f2; border-radius:16px; border:1px solid #fecaca; box-shadow: 0 4px 12px rgba(239,68,68,0.1);">
-                        <span style="font-size:2rem;">⚠️</span>
+                    <div style="display:flex; align-items:center; gap:12px; padding:16px; background:#fef2f2; border-radius:16px; border:1px solid #fecaca; box-shadow: 0 4px 12px rgba(239,68,68,0.06);">
+                        <span style="font-size:1.8rem;">⚠️</span>
                         <div style="flex:1;">
-                            <div style="color:#991b1b; font-weight:800; font-size:1.05rem; margin-bottom:6px;">보호종료 5년 초과</div>
-                            <div style="color:#b91c1c; font-size:0.85rem; line-height:1.5; word-break:keep-all;">
-                                안타깝게도 보호종료 후 5년이 경과하여 일부 자립지원 혜택 대상에서 제외될 수 있습니다.
+                            <div style="color:#991b1b; font-weight:800; font-size:1.0rem; margin-bottom:4px;">보호종료 5년 초과</div>
+                            <div style="color:#b91c1c; font-size:0.8rem; line-height:1.4; word-break:keep-all;">
+                                안타깝게도 보호종료 후 5년이 경과하여 일부 혜택 대상에서 제외될 수 있습니다.
                             </div>
                         </div>
                     </div>
@@ -2743,7 +2862,7 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
         if (!listContainer) return;
 
         // 탭 활성화 UI 업데이트
-        ['all', 'free', 'info', 'job'].forEach(c => {
+        ['all', 'free', 'info', 'job', 'diary'].forEach(c => {
             const btn = document.getElementById('cat-' + c);
             if (btn) {
                 btn.style.background = '#fff';
@@ -2756,12 +2875,27 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
         if (category === '자유게시판') activeBtnId = 'cat-free';
         if (category === '정보 공유방') activeBtnId = 'cat-info';
         if (category === '취업/이직') activeBtnId = 'cat-job';
+        if (category === '하루일기') activeBtnId = 'cat-diary';
 
         const activeBtn = document.getElementById(activeBtnId);
         if (activeBtn) {
             activeBtn.style.background = 'var(--primary)';
             activeBtn.style.color = '#fff';
             activeBtn.style.border = 'none';
+        }
+
+        // 카테고리 설명 업데이트 (MZ 스타일)
+        const descEl = document.getElementById('community-desc');
+        if (descEl) {
+            let descText = '';
+            if (category === 'all') descText = '비밀노트의 모든 떡밥을 한 눈에! 📔 실시간 사복인들의 바이브를 느껴봐 (없는 거 빼고 다 있음 ㅇㅇ)';
+            else if (category === '자유게시판') descText = '일하다 킹받을 때, 점심 뭐 먹지 고민될 때 냅다 들어와! 📢 아무말 대잔치 대환영, 여기가 바로 사복 대나무숲임';
+            else if (category === '정보 공유방') descText = '나만 알기 아까운 꿀팁, 공문 해석, 꿀 사이트 공유해줌. 🔥 서로 돕고 사는 사복 에코시스템 가보자고!';
+            else if (category === '취업/이직') descText = '이직 고민 중인 경력직부터 갓생 살고 싶은 신입까지 다 모여! 🤝 앞서간 선배들의 찐조언으로 레벨업 할 사람?';
+            else if (category === '하루일기') descText = '오늘 하루도 사복 현장에서 살아남은 당신, 진짜 고생했음! ☀️ 소소한 행복부터 눈물 핑 도는 일상까지 서로 토닥토닥해줄게';
+
+            descEl.innerText = descText;
+            descEl.style.display = descText ? 'block' : 'none';
         }
 
         if (!supabase) {
@@ -2796,6 +2930,7 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
                 let textColor = '#4338ca';
                 if (post.category === '정보 공유방') { badgeColor = '#fee2e2'; textColor = '#b91c1c'; }
                 if (post.category === '취업/이직') { badgeColor = '#dcfce3'; textColor = '#15803d'; }
+                if (post.category === '하루일기') { badgeColor = '#fef3c7'; textColor = '#b45309'; }
 
                 html += `
                 <div style="background:#fff; border-radius:16px; padding:18px; border:1px solid #e2e8f0; box-shadow:var(--shadow-card); cursor:pointer;" onclick="openCommunityDetailModal('${post.id}')">
@@ -2830,6 +2965,7 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
                     <option value="자유게시판">📢 자유게시판</option>
                     <option value="정보 공유방">🔥 정보 공유방</option>
                     <option value="취업/이직">🧩 취업/이직</option>
+                    <option value="하루일기">☀️ 하루일기</option>
                 </select>
             </div>
             <div class="form-group">
@@ -2855,6 +2991,7 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
         let cleanCategory = "자유게시판";
         if (category.includes('정보')) cleanCategory = "정보 공유방";
         if (category.includes('취업') || category.includes('이직')) cleanCategory = "취업/이직";
+        if (category.includes('일기')) cleanCategory = "하루일기";
 
         const content = document.getElementById('comm-content').value;
         const btn = document.getElementById('btn-submit-comm');
@@ -2890,6 +3027,7 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
             if (cleanCategory === '자유게시판') loadCommunityPosts('자유게시판');
             else if (cleanCategory === '정보 공유방') loadCommunityPosts('정보 공유방');
             else if (cleanCategory === '취업/이직') loadCommunityPosts('취업/이직');
+            else if (cleanCategory === '하루일기') loadCommunityPosts('하루일기');
             else loadCommunityPosts('all');
 
         } catch (err) {
@@ -2952,6 +3090,7 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
             let textColor = '#4338ca';
             if (post.category === '정보 공유방') { badgeColor = '#fee2e2'; textColor = '#b91c1c'; }
             if (post.category === '취업/이직') { badgeColor = '#dcfce3'; textColor = '#15803d'; }
+            if (post.category === '하루일기') { badgeColor = '#fef3c7'; textColor = '#b45309'; }
 
             // 내가 쓴 글인지 확인
             const isMyPost = post.user_id && post.user_id === myUserId;
@@ -3072,6 +3211,7 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
                         <option value="자유게시판" ${post.category === '자유게시판' ? 'selected' : ''}>📢 자유게시판</option>
                         <option value="정보 공유방" ${post.category === '정보 공유방' ? 'selected' : ''}>🔥 정보 공유방</option>
                         <option value="취업/이직" ${post.category === '취업/이직' ? 'selected' : ''}>🧩 취업/이직</option>
+                        <option value="하루일기" ${post.category === '하루일기' ? 'selected' : ''}>☀️ 하루일기</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -3742,27 +3882,31 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
        ========================================================================== */
 
     const pgQuestions = [
-        { id: 1, situation: "월요일 아침, 책상에 앉자마자", q: "가장 먼저 하는 일은?", a: { text: "이번 주 업무·행정 일정부터 파악한다 🗂️", axis: "record" }, b: { text: "주말 동안 무슨 일 없었는지 안부 확인부터 📞", axis: "relation" } },
-        { id: 2, situation: "슈퍼바이저가 '이 케이스 어떻게 생각해?' 물었을 때", q: "나의 반응은?", a: { text: "관련 법령·지침 찾아서 정확한 근거로 답한다", axis: "data" }, b: { text: "기존에 비슷한 성공 프로그램 사례를 떠올려 본다", axis: "creator" } },
-        { id: 3, situation: "퇴근 30분 전, 긴급 민원이 들어왔다", q: "나는?", a: { text: "일단 내가 할 수 있는 데까지 다 해본다 🔥", axis: "hero" }, b: { text: "내일 가능한 시간 안내하고 딱 맞게 퇴근한다 🧘", axis: "balance" } },
-        { id: 4, situation: "사업 보고서 마감이 내일이다", q: "나의 상태는?", a: { text: "이미 다 써놨음 (초안은 있음)", axis: "record" }, b: { text: "오늘 밤을 불태워 영혼을 갈아넣을 예정 🌙", axis: "feel" } },
-        { id: 5, situation: "동료가 많이 힘들다고 털어놨다", q: "나의 반응은?", a: { text: "같이 공감해주고 밥이나 술 한잔 사준다 🍚", axis: "empath" }, b: { text: "바로 관련 기관이나 자원을 연결해준다 🤝", axis: "networker" } },
-        { id: 6, situation: "새 복지 제도가 생겼다는 소식을 들었다", q: "나의 첫 반응은?", a: { text: "지침 파일 열어보고 꼼꼼히 분석해본다", axis: "data" }, b: { text: "우리 기관에서 이거로 새 사업 해볼까 기획한다", axis: "creator" } },
-        { id: 7, situation: "가장 보람 느끼는 순간", q: "어떤 순간인가요?", a: { text: "나로 인해 클라이언트의 표정이 밝아졌을 때 ✨", axis: "hero" }, b: { text: "내 워라밸 지키면서도 업무를 완벽히 쳐냈을 때", axis: "balance" } },
-        { id: 8, situation: "회의 중", q: "나의 발언 스타일은?", a: { text: "주변 기관과 엮어서 시너지 내는 걸 좋아한다", axis: "networker" }, b: { text: "현장 경험을 바탕으로 감성에 호소한다", axis: "feel" } },
-        { id: 9, situation: "업무 중 가장 스트레스 받는 순간", q: "언제인가요?", a: { text: "클라이언트나 동료가 마음을 닫았을 때", axis: "empath" }, b: { text: "복잡한 행정 서류가 산더미처럼 쌓였을 때", axis: "hero" } },
-        { id: 10, situation: "나의 책상은", q: "어떤 모습인가요?", a: { text: "정리정돈 완료, 서류는 폴더별 분류 🗂️", axis: "record" }, b: { text: "회의록, 아이디어 메모가 여기저기 흩어져 있음", axis: "creator" } },
-        { id: 11, situation: "신입 복지사가 들어왔다", q: "나는 어떻게 하나요?", a: { text: "업무 매뉴얼, 지침서 주며 통계 보는 법을 알려준다", axis: "data" }, b: { text: "다른 기관 선생님들부터 먼저 소개해준다", axis: "networker" } },
-        { id: 12, situation: "오늘 하루를 한 단어로 표현하면", q: "어떤 단어가 떠오르나요?", a: { text: '"공감" — 마음이 무거운 하루였다 🌧️', axis: "empath" }, b: { text: '"연결" — 사람과 사람을 엮어냈다 🤝', axis: "relation" } },
+        { id: 1, situation: "월요일 아침, 책상에 앉자마자", q: "가장 먼저 하는 일은?", a: { text: "이번 주 업무·행정 일정부터 파악한다 🗂️", axis: "record" }, b: { text: "주말 동안 무슨 일 없었는지 안부 확인부터 📞", axis: "relation" }, c: { text: "커피 한 잔 마시며 오늘 하루 마음의 준비를 한다 ☕", axis: "feel" } },
+        { id: 2, situation: "슈퍼바이저가 '이 케이스 어떻게 생각해?' 물었을 때", q: "나의 반응은?", a: { text: "관련 법령·지침 찾아서 정확한 근거로 답한다", axis: "data" }, b: { text: "기존에 비슷한 성공 프로그램 사례를 떠올려 본다", axis: "creator" }, c: { text: "팀 동료들과 대화하며 다양한 의견을 모아본다 🗣️", axis: "relation" } },
+        { id: 3, situation: "퇴근 30분 전, 긴급 민원이 들어왔다", q: "나는?", a: { text: "일단 내가 할 수 있는 데까지 다 해본다 🔥", axis: "hero" }, b: { text: "내일 가능한 시간 안내하고 딱 맞게 퇴근한다 🧘", axis: "balance" }, c: { text: "주변 유관기관에 즉시 도움을 청할 수 있는지 알아본다 🤝", axis: "networker" } },
+        { id: 4, situation: "사업 보고서 마감이 내일이다", q: "나의 상태는?", a: { text: "이미 다 써놨음 (초안은 있음)", axis: "record" }, b: { text: "오늘 밤을 불태워 영혼을 갈아넣을 예정 🌙", axis: "feel" }, c: { text: "현장에서 직접 발로 뛰며 부족한 내용을 채워넣는다 🏃", axis: "hero" } },
+        { id: 5, situation: "동료가 많이 힘들다고 털어놨다", q: "나의 반응은?", a: { text: "같이 공감해주고 밥이나 술 한잔 사준다 🍚", axis: "empath" }, b: { text: "바로 관련 기관이나 자원을 연결해준다 🤝", axis: "networker" }, c: { text: "나중에 행정적으로 문제되지 않게 기록을 잘 남기라고 조언한다 📖", axis: "record" } },
+        { id: 6, situation: "새 복지 제도가 생겼다는 소식을 들었다", q: "나의 첫 반응은?", a: { text: "지침 파일 열어보고 꼼꼼히 분석해본다", axis: "data" }, b: { text: "우리 기관에서 이거로 새 사업 해볼까 기획한다", axis: "creator" }, c: { text: "이 제도가 클라이언트의 마음에 상처가 되진 않을지 걱정한다 💛", axis: "empath" } },
+        { id: 7, situation: "가장 보람 느끼는 순간", q: "어떤 순간인가요?", a: { text: "나로 인해 클라이언트의 표정이 밝아졌을 때 ✨", axis: "hero" }, b: { text: "내 워라밸 지키면서도 업무를 완벽히 쳐냈을 때", axis: "balance" }, c: { text: "내가 낸 참신한 아이디어가 사업으로 선정되었을 때 💡", axis: "creator" } },
+        { id: 8, situation: "회의 중", q: "나의 발언 스타일은?", a: { text: "주변 기관과 엮어서 시너지 내는 걸 좋아한다", axis: "networker" }, b: { text: "현장 경험을 바탕으로 감성에 호소한다", axis: "feel" }, c: { text: "팩트와 수치를 근거로 논리적으로 설득한다 📊", axis: "data" } },
+        { id: 9, situation: "업무 중 가장 스트레스 받는 순간", q: "언제인가요?", a: { text: "클라이언트나 동료가 마음을 닫았을 때", axis: "empath" }, b: { text: "복잡한 행정 서류가 산더미처럼 쌓였을 때", axis: "hero" }, c: { text: "충분히 쉬지 못해 나만의 평정심을 잃었을 때 🧘", axis: "balance" } },
+        { id: 10, situation: "나의 책상은", q: "어떤 모습인가요?", a: { text: "정리정돈 완료, 서류는 폴더별 분류 🗂️", axis: "record" }, b: { text: "회의록, 아이디어 메모가 여기저기 흩어져 있음", axis: "creator" }, c: { text: "클라이언트가 준 작은 선물과 감사 편지들이 놓여 있음 🎁", axis: "empath" } },
+        { id: 11, situation: "신입 복지사가 들어왔다", q: "나는 어떻게 하나요?", a: { text: "업무 매뉴얼, 지침서 주며 통계 보는 법을 알려준다", axis: "data" }, b: { text: "다른 기관 선생님들부터 먼저 소개해준다", axis: "networker" }, c: { text: "복지사로서 가져야 할 철학과 마음가짐부터 이야기해준다", axis: "feel" } },
+        { id: 12, situation: "오늘 하루를 한 단어로 표현하면", q: "어떤 단어가 떠오르나요?", a: { text: '"공감" — 마음이 무거운 하루였다 🌧️', axis: "empath" }, b: { text: '"연결" — 사람과 사람을 엮어냈다 🤝', axis: "relation" }, c: { text: '"정리" — 밀린 서류를 완벽히 털어낸 후련한 하루였다 🗂️', axis: "record" } },
     ];
 
     const pgTypes = {
         hero: { emoji: "🦸", name: "현장의 영웅형", sub: "발이 닳도록 뛰는 사람", color: "#FF6B6B", color2: "#FF3F3F", bg: "linear-gradient(135deg,#FF6B6B,#FF8E8E)", card: "#FFF5F5", desc: "책상보다 현장이 편하고 클라이언트 얼굴을 직접 봐야 직성이 풀리는 타입. 포기하지 않는 끈기가 무기예요.", strengths: ["클라이언트 신뢰 No.1", "위기 대처 탁월", "발로 뛰는 자원발굴"], cautions: ["번아웃 위험 1위", "기록 미루는 경향", "경계 설정 어려움"], peer: "저 선생님한테 맡기면 진짜 다 해결돼", message: "오늘도 누군가의 세상을 바꿨을 거예요 🌟" },
         recorder: { emoji: "📋", name: "기록의 신형", sub: "이 세상 모든 서류는 내가 지킨다", color: "#4ECDC4", color2: "#2BADA4", bg: "linear-gradient(135deg,#4ECDC4,#6EE7E2)", card: "#F0FFFE", desc: "기록 하나도 허투루 안 쓰고 지침은 줄줄이 외우는 타입. 팀의 든든한 버팀목이에요.", strengths: ["꼼꼼한 업무 처리", "팀 내 표준 제시", "감사·점검 무결"], cautions: ["완벽주의 번아웃", "유연성 부족", "높은 기준으로 마찰"], peer: "저 선생님 기록은 진짜 교과서야", message: "완벽하지 않아도 괜찮아요, 오늘도 충분했어요 💚" },
-        empath: { emoji: "💛", name: "공감 마스터형", sub: "모두의 감정 쓰레기통 (칭찬임)", color: "#F5A623", color2: "#D88900", bg: "linear-gradient(135deg,#F5A623,#F7C15E)", card: "#FFFDF0", desc: "클라이언트든 동료든 일단 다 들어주는 타입. 사무실의 정서적 안전망 역할을 자연스럽게 맡고 있어요.", strengths: ["팀 분위기 메이커", "라포 형성 최강", "감정 민감도 강점"], cautions: ["감정 소진 위험", "내 감정 돌봄 부족", "거절이 어려움"], peer: "저 선생님한테 얘기하면 왜인지 마음이 편해져", message: "남의 마음을 챙기는 당신, 오늘은 내 마음도 챙겨요 🌼" },
+        empath: { emoji: "💛", name: "공감 마스터형", sub: "모두의 감정 쓰레기통", color: "#F5A623", color2: "#D88900", bg: "linear-gradient(135deg,#F5A623,#F7C15E)", card: "#FFFDF0", desc: "클라이언트든 동료든 일단 다 들어주는 타입. 사무실의 정서적 안전망 역할을 자연스럽게 맡고 있어요.", strengths: ["팀 분위기 메이커", "라포 형성 최강", "감정 민감도 강점"], cautions: ["감정 소진 위험", "내 감정 돌봄 부족", "거절이 어려움"], peer: "저 선생님한테 얘기하면 왜인지 마음이 편해져", message: "남의 마음을 챙기는 당신, 오늘은 내 마음도 챙겨요 🌼" },
         analyst: { emoji: "📊", name: "데이터 전도사형", sub: "근거 없으면 말도 않는다", color: "#6C63FF", color2: "#4940D4", bg: "linear-gradient(135deg,#6C63FF,#9B94FF)", card: "#F5F4FF", desc: "통계와 지침으로 무장한 근거기반 실천의 달인. 회의에서 데이터 꺼내드는 순간 팀 분위기가 바뀌는 타입.", strengths: ["보고서 완성도 최상", "정책 변화 빠른 대응", "팀 전문성 향상"], cautions: ["숫자에 치우쳐 사람 잊음", "타이밍 놓치는 경향", "융통성 부족"], peer: "저 선생님이 있으면 발표 준비 걱정 없어", message: "데이터 뒤에 있는 한 사람의 이야기도 기억해요 💙" },
         creator: { emoji: "🎨", name: "프로그램 크리에이터형", sub: "사업계획서 쓸 때 눈이 빛난다", color: "#FF9A3C", color2: "#E07010", bg: "linear-gradient(135deg,#FF9A3C,#FFB76B)", card: "#FFF8F0", desc: "없는 사업도 만들어내고 아이디어가 넘쳐 주체를 못 하는 타입. 기획서만 보면 손이 근질근질해요.", strengths: ["신규 사업 기획 탁월", "공모사업 강점", "팀 활력 담당"], cautions: ["마무리가 약한 경향", "행정 업무 지루함", "너무 많이 벌여놓음"], peer: "저 선생님 아이디어는 진짜 어디서 나오는 거야", message: "오늘의 아이디어가 내일의 누군가를 구할 거예요 🧡" },
         networker: { emoji: "🤝", name: "네트워크 달인형", sub: "모르는 사람이 없다", color: "#26C6DA", color2: "#0097A7", bg: "linear-gradient(135deg,#26C6DA,#4DD0E1)", card: "#F0FEFF", desc: "지역사회 자원 연결의 달인. 명함 한 장으로 모든 걸 해결하고 어디서든 이미 아는 사람이 있는 타입.", strengths: ["자원 연계 최강", "다기관 협력 능숙", "정보 수집 1위"], cautions: ["관계 유지 에너지 소모", "연계에만 치우침", "경계가 모호해짐"], peer: "저 선생님한테 물어보면 어디든 연결해줘", message: "당신이 이은 연결고리가 누군가의 생명줄이에요 🌊" },
+        navigator: { emoji: "🧭", name: "시스템 내비게이터형", sub: "복지 자원의 살아있는 지도", color: "#8E44AD", color2: "#7D3C98", bg: "linear-gradient(135deg,#8E44AD,#BB8FCE)", card: "#F8F0FC", desc: "어떤 어려운 상황이라도 적절한 제도와 자원을 찾아내 길을 안내하는 타입. 복잡한 복지 체계의 해결사에요.", strengths: ["정보 검색 속도 No.1", "유관기관 협력 구축", "전문적 정보 가공"], cautions: ["지침 업데이트 강박", "실행보다 정보 과잉", "설명이 너무 길어짐"], peer: "선생님은 모르는 정보가 없는 것 같아", message: "당신의 안내가 누군가의 어두운 길에 등불이 됩니다 💜" },
+        balancer: { emoji: "⚖️", name: "워크라이프 밸런서형", sub: "효율과 휴식의 마스터", color: "#27AE60", color2: "#1E8449", bg: "linear-gradient(135deg,#27AE60,#58D68D)", card: "#F1FBF4", desc: "업무 효율을 극대화하여 나만의 시간도 지켜내는 타입. 여유로우면서도 성과를 내는 팀의 부러움의 대상이죠.", strengths: ["시간 관리 최상", "업무 우선순위 탁월", "번아웃 자가 관리"], cautions: ["동료의 속도에 가끔 답답함", "너무 쿨해서 정없어 보임", "예외 상황에 스트레스"], peer: "어떻게 그렇게 여유롭게 일을 다 끝내셔?", message: "당신의 여유가 팀 전체의 숨통이 되어줍니다 🌿" },
+        leader: { emoji: "🏢", name: "비전 디렉터형", sub: "팀의 성장을 설계하는 전략가", color: "#2C3E50", color2: "#1A252F", bg: "linear-gradient(135deg,#2C3E50,#566573)", card: "#F4F6F7", desc: "팀 전체의 그림을 보고 방향을 제시하는 사람. 실무를 넘어 미래의 비전을 제시하는 리더십의 소유자에요.", strengths: ["갈등 중재 및 조정", "팀원 강점 발굴", "중장기 전략 수립"], cautions: ["세부 실무 소홀함", "결과에 대한 책임감 부담", "소신 발언의 고립"], peer: "저 선생님 말대로 하면 진짜 잘될 것 같아", message: "당신의 리더십이 더 나은 세상을 만드는 설계도입니다 🏛️" },
+        advocate: { emoji: "📢", name: "인권 가디언형", sub: "목소리 없는 이들의 확성기", color: "#E74C3C", color2: "#C0392B", bg: "linear-gradient(135deg,#E74C3C,#F1948A)", card: "#FDEDEC", desc: "불합리한 제도나 상황에 맞서 클라이언트의 권리를 당당히 주장하는 타입. 현장의 변화를 이끄는 핵심 동력입니다.", strengths: ["강력한 추진력", "변화 지향적 마인드", "클라이언트 옹호 강점"], cautions: ["타 직종과 잦은 충돌", "심리적 에너지 소모", "냉철한 이성 부족"], peer: "선생님이 있어서 억울한 분들이 줄어들어요", message: "당신의 목소리가 누군가에게는 유일한 희망입니다 📣" }
     };
 
     let pgState = {
@@ -3840,16 +3984,16 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
         document.getElementById('pg-q-situation').innerText = q.situation;
         document.getElementById('pg-q-text').innerText = q.q;
 
-        const optionsHtml = [q.a, q.b].map((opt, i) => {
-            const label = i === 0 ? "A" : "B";
+        const optionsHtml = [q.a, q.b, q.c].map((opt, i) => {
+            const labels = ["A", "B", "C"];
             return `
             <button onclick="pgHandleAnswer('${opt.axis}', this)" style="
                 width:100%; display:block; text-align:left; background:#fff;
-                border:2px solid #f0f0f0; border-radius:16px; padding:16px 20px; margin-bottom:10px;
+                border:2px solid #f0f0f0; border-radius:16px; padding:14px 20px; margin-bottom:8px;
                 font-size:14px; font-weight:600; color:#333; cursor:pointer;
-                transition:all 0.18s; line-height:1.5; font-family:inherit;
+                transition:all 0.18s; line-height:1.4; font-family:inherit;
             " onmouseenter="if(!window.pgState.animating) this.style.border='2px solid #6C63FF55'" onmouseleave="if(!this.dataset.selected) this.style.border='2px solid #f0f0f0'">
-                <span style="font-weight:800; margin-right:10px; color:#6C63FF; font-size:15px;">${label}</span>
+                <span style="font-weight:800; margin-right:10px; color:#6C63FF; font-size:15px;">${labels[i]}</span>
                 ${opt.text}
             </button>`;
         }).join('');
@@ -3887,25 +4031,22 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
         const c = { record: 0, relation: 0, data: 0, creator: 0, hero: 0, balance: 0, feel: 0, empath: 0, networker: 0 };
         ansArr.forEach(a => { if (a) c[a]++; });
 
-        // Map points to the 6 types (max 3-4 points per type):
-        // 1. hero -> hero + relation
-        // 2. recorder -> record + balance
-        // 3. empath -> empath + feel
-        // 4. analyst -> data + record
-        // 5. creator -> creator + feel
-        // 6. networker -> networker + relation
-
+        // Upgraded Scoring Matrix (10 types, 9 axes)
         const typeScores = {
-            hero: (c.hero || 0) + (c.relation || 0) * 0.5,
-            recorder: (c.record || 0) + (c.balance || 0) * 0.5,
-            empath: (c.empath || 0) + (c.feel || 0) * 0.5,
-            analyst: (c.data || 0) + (c.record || 0) * 0.5,
-            creator: (c.creator || 0) + (c.feel || 0) * 0.5,
-            networker: (c.networker || 0) + (c.relation || 0) * 0.5
+            hero: (c.hero * 1.5) + (c.feel * 0.5),
+            recorder: (c.record * 1.5) + (c.data * 0.5),
+            empath: (c.empath * 1.5) + (c.feel * 0.5),
+            analyst: (c.data * 1.5) + (c.record * 0.5),
+            creator: (c.creator * 1.5) + (c.relation * 0.5),
+            networker: (c.networker * 1.5) + (c.relation * 0.5),
+            navigator: (c.data * 1.0) + (c.networker * 1.0) + (c.record * 0.5),
+            balancer: (c.balance * 1.5) + (c.record * 0.5) + (c.feel * 0.5),
+            leader: (c.creator * 1.0) + (c.relation * 1.0) + (c.data * 0.5),
+            advocate: (c.hero * 1.0) + (c.empath * 1.0) + (c.relation * 0.5)
         };
 
         const sortedTypes = Object.entries(typeScores).sort((a, b) => b[1] - a[1]);
-        return sortedTypes[0][0]; // Return the highest scoring type
+        return sortedTypes[0][0];
     }
 
     async function pgProcessResult() {
