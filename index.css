@@ -63,16 +63,19 @@ body {
    HEADER  ← 카카오 홈과 동일: 흰 배경, 하단 border 없음
    ============================================ */
 .app-header {
-  position: sticky;
-  top: 0;
+  position: relative;
+  /* Changed from sticky to relative for flex stability */
   z-index: 500;
-  /* Increased z-index */
   background: var(--bg-white);
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-  min-height: 56px;
-  /* Ensure fixed height */
+  min-height: calc(56px + env(safe-area-inset-top));
+  /* Added safe-area support */
+  padding-top: env(safe-area-inset-top);
+  /* Added safe-area padding */
   display: flex;
   align-items: center;
+  flex-shrink: 0;
+  /* Prevent squashing */
 }
 
 .header-inner {

@@ -1408,7 +1408,8 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
         if (targetView) {
             targetView.classList.remove('hidden');
             targetView.classList.add('active');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            const mainCont = document.querySelector('.app-main');
+            if (mainCont) mainCont.scrollTop = 0;
         }
     };
 
