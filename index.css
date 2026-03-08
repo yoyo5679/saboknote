@@ -34,28 +34,38 @@
   -webkit-tap-highlight-color: transparent;
 }
 
+html,
+body {
+  width: 100%;
+  height: 100%;
+  /* or 100dvh, but 100% is safer when html is 100% */
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  /* **CRITICAL**: Prevent body scroll! Only .app-main should scroll */
+  overscroll-behavior: none;
+  /* Prevent bounce at the viewport level */
+}
+
 body {
   font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   background: var(--bg-page);
   color: var(--text-900);
   display: flex;
   justify-content: center;
-  min-height: 100vh;
   -webkit-font-smoothing: antialiased;
 }
 
 #app {
   width: 100%;
   max-width: 480px;
-  height: 100dvh;
-  /* Use dynamic viewport height for mobile browsers */
+  height: 100%;
+  /* Match the body's locked height */
   display: flex;
   flex-direction: column;
   background: var(--bg-page);
   position: relative;
   overflow: hidden;
-  /* 자식 요소가 앱 바깥으로 절대 못 나가게 */
-  /* 모바일 앱처럼 좌우 그림자 */
   box-shadow: 0 0 60px rgba(0, 0, 0, 0.10);
 }
 
@@ -63,19 +73,16 @@ body {
    HEADER  ← 카카오 홈과 동일: 흰 배경, 하단 border 없음
    ============================================ */
 .app-header {
-  position: relative;
-  /* Changed from sticky to relative for flex stability */
+  position: sticky;
+  top: 0;
   z-index: 500;
   background: var(--bg-white);
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
   min-height: calc(56px + env(safe-area-inset-top));
-  /* Added safe-area support */
   padding-top: env(safe-area-inset-top);
-  /* Added safe-area padding */
   display: flex;
   align-items: center;
   flex-shrink: 0;
-  /* Prevent squashing */
 }
 
 .header-inner {
@@ -1071,6 +1078,7 @@ select:focus {
   max-height: 200px;
   overflow-y: auto;
   font-family: 'Pretendard', sans-serif;
+  text-align: left;
 }
 
 .prompt-guide-box {
