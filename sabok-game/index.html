@@ -1211,13 +1211,16 @@
 
       // ── 초기화 ──
       useEffect(() => {
-        // 비밀노트 앱 아이디 우선 사용
+        // 비밀노트 앱 아이디 (동기화 코드) 우선 사용
         let storedUserId = localStorage.getItem('sabok_user_id');
         if (!storedUserId) {
-          storedUserId = localStorage.getItem('socialWorkerUserId');
+          storedUserId = localStorage.getItem('sabok_member_code'); // 하위 호환성
           if (!storedUserId) {
-            storedUserId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-            localStorage.setItem('socialWorkerUserId', storedUserId);
+            storedUserId = localStorage.getItem('socialWorkerUserId');
+            if (!storedUserId) {
+              storedUserId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+              localStorage.setItem('socialWorkerUserId', storedUserId);
+            }
           }
         }
         setUserId(storedUserId);
@@ -1227,6 +1230,7 @@
         if (sabokNickname) setNickname(sabokNickname);
 
         // 저장된 게임 데이터 로드
+        // 멤버 코드가 있으면 멤버 코드용 데이터, 없으면 일반 유저 아이디용 데이터 로드
         const savedData = localStorage.getItem(`gameData_${storedUserId}`);
         if (savedData) {
           try {
