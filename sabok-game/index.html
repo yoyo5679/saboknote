@@ -1230,15 +1230,22 @@
         if (sabokNickname) setNickname(sabokNickname);
 
         // 저장된 게임 데이터 로드
-        // 멤버 코드가 있으면 멤버 코드용 데이터, 없으면 일반 유저 아이디용 데이터 로드
         const savedData = localStorage.getItem(`gameData_${storedUserId}`);
+        let loadedGender = null;
+        let loadedLevel = 1;
+        let loadedClicks = 0;
+        let loadedCases = { child: 0, elderly: 0, disability: 0, mental: 0, family: 0 };
         if (savedData) {
           try {
             const data = JSON.parse(savedData);
             if (data.gender) {
+              loadedGender = data.gender;
               setGender(data.gender);
-              setCurrentScreen('game'); // ✅ FIX: 저장된 캐릭터가 있으면 바로 게임 화면으로
+              setCurrentScreen('game');
             }
+            loadedLevel = data.level || 1;
+            loadedClicks = data.totalClicks || 0;
+            loadedCases = data.casesCompleted || { child: 0, elderly: 0, disability: 0, mental: 0, family: 0 };
             setExperience(data.experience || 0);
             setLevel(data.level || 1);
             setMoney(data.money || 450);
@@ -1251,8 +1258,29 @@
             setTotalClicks(data.totalClicks || 0);
             setSkills({ ...defaultSkills, ...(data.skills || {}) });
             setEquipment({ ...defaultEquipment, ...(data.equipment || {}) });
-            setCasesCompleted(data.casesCompleted || { child: 0, elderly: 0, disability: 0, mental: 0, family: 0 });
+            setCasesCompleted(loadedCases);
           } catch (e) { /* 데이터 파싱 오류 무시 */ }
+        }
+
+        // ✅ 게임 로드 시 Supabase에 자동 등록 (닉네임 포함)
+        if (loadedGender) {
+          const latestNickname = localStorage.getItem('saboks_anonymous_name') || localStorage.getItem('sabok_nickname') || sabokNickname || '';
+          const supaUrl = 'https://seldrnpohdkggennjieo.supabase.co';
+          const supaKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNlbGRybnBvaGRrZ2dlbm5qaWVvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIyMzI3MjksImV4cCI6MjA4NzgwODcyOX0.PyzWPa-kwYgh-HmuDELD642TCVn7Ajri54FsR7Ik2Gs';
+          const headers = { 'Content-Type': 'application/json', 'apikey': supaKey, 'Authorization': `Bearer ${supaKey}`, 'Prefer': 'resolution=merge-duplicates,return=representation' };
+          fetch(`${supaUrl}/rest/v1/rankings`, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({
+              user_id: storedUserId,
+              nickname: latestNickname,
+              gender: loadedGender,
+              level: loadedLevel,
+              total_clicks: loadedClicks,
+              cases_total: Object.values(loadedCases).reduce((a, b) => a + b, 0),
+              last_saved: new Date().toISOString()
+            })
+          }).catch(() => { });
         }
       }, []);
 
@@ -1381,7 +1409,21 @@
         const moneyEarned2 = clickMoneyPower * statusMult;
         setExperience(prev => prev + xpEarned);
         setMoney(prev => prev + moneyEarned2);
-        setTotalClicks(prev => prev + 1);
+        setTotalClicks(prev => {
+          const newClicks = prev + 1;
+          // ✅ 10번째 클릭마다 Supabase 자동 업데이트 (닉네임 포함)
+          if (newClicks % 10 === 0 && userId) {
+            const latestNickname = localStorage.getItem('saboks_anonymous_name') || localStorage.getItem('sabok_nickname') || nickname || '';
+            const supaUrl = 'https://seldrnpohdkggennjieo.supabase.co';
+            const supaKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNlbGRybnBvaGRrZ2dlbm5qaWVvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIyMzI3MjksImV4cCI6MjA4NzgwODcyOX0.PyzWPa-kwYgh-HmuDELD642TCVn7Ajri54FsR7Ik2Gs';
+            const headers = { 'Content-Type': 'application/json', 'apikey': supaKey, 'Authorization': `Bearer ${supaKey}`, 'Prefer': 'resolution=merge-duplicates,return=representation' };
+            fetch(`${supaUrl}/rest/v1/rankings`, {
+              method: 'POST', headers,
+              body: JSON.stringify({ user_id: userId, nickname: latestNickname, gender, level, total_clicks: newClicks, cases_total: Object.values(casesCompleted).reduce((a, b) => a + b, 0), last_saved: new Date().toISOString() })
+            }).catch(() => { });
+          }
+          return newClicks;
+        });
         if (currentCase) {
           setCasesCompleted(prev => ({ ...prev, [currentCase.id]: prev[currentCase.id] + 1 }));
           const caseXP = clickPower * currentCase.bonus * 5;
@@ -2163,9 +2205,10 @@
                     { label: '직급', value: currentRank.name, bg: '#eff6ff', border: '#93c5fd', color: '#1d4ed8', icon: '🏛️' },
                     { label: '현재 레벨', value: level, bg: '#f3e8ff', border: '#c084fc', color: '#7e22ce', icon: '⭐' },
                     { label: '보유 자금', value: `${Math.floor(money).toLocaleString()}원`, bg: '#fef9c3', border: '#facc15', color: '#a16207', icon: '💰' },
-                    { label: '클릭 파워', value: `+${clickPower} xp`, bg: '#dcfce7', border: '#4ade80', color: '#15803d', icon: '🖱️' },
-                    { label: '자동 XP', value: `+${autoXP} xp/초`, bg: '#dbeafe', border: '#60a5fa', color: '#1d4ed8', icon: '⭐' },
-                    { label: '자동 돈', value: `+${autoMoney}원/초`, bg: '#fef9c3', border: '#fbbf24', color: '#a16207', icon: '💴' },
+                    { label: '클릭XP', value: `+${Math.floor(clickPower)} xp`, bg: '#dcfce7', border: '#4ade80', color: '#15803d', icon: '🖱' },
+                    { label: '클릭돈', value: `+${Math.floor(clickMoneyPower)}원`, bg: '#fef9c3', border: '#facc15', color: '#a16207', icon: '💰' },
+                    { label: '자동 XP', value: autoXP > 0 ? `+${autoXP} xp/초` : '+0 xp/초', bg: '#dbeafe', border: '#60a5fa', color: '#1d4ed8', icon: '⭐' },
+                    { label: '자동 돈', value: autoMoney > 0 ? `+${autoMoney}원/초` : '+0원/초', bg: '#fef9c3', border: '#fbbf24', color: '#a16207', icon: '💴' },
                     { label: '총 클릭수', value: totalClicks.toLocaleString(), bg: '#e0e7ff', border: '#a5b4fc', color: '#4338ca', icon: '👆' },
                     { label: '완료 케이스', value: `${Object.values(casesCompleted).reduce((a, b) => a + b, 0)}건`, bg: '#fce7f3', border: '#f9a8d4', color: '#9d174d', icon: '📋' },
                   ].map(({ label, value, bg, border, color, icon }) => (
@@ -2208,8 +2251,8 @@
             <div style={{ maxWidth: '672px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '4px' }}>
               {[
                 { screen: 'game', icon: '🏠', label: '홈' },
-                { screen: 'ranking', icon: '📈', label: '랭킹' },
                 { screen: 'stats', icon: '🏆', label: '정보' },
+                { screen: 'ranking', icon: '📈', label: '랭킹' },
               ].map(({ screen, icon, label }) => (
                 <button key={screen} onClick={() => setCurrentScreen(screen)}
                   className={`nav-button ${currentScreen === screen ? 'active' : ''}`}
