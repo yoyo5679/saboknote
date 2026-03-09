@@ -1084,6 +1084,7 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
                     <button class="tab-btn" id="tab-budget" onclick="switchAdminTab('budget')" style="flex:1; min-width:80px; padding:10px 4px; border:none; border-radius:8px; background:transparent; font-weight:600; color:#64748b; font-size:0.75rem; transition:all 0.2s; white-space:nowrap;">5.단가계산</button>
                     <button class="tab-btn" id="tab-youth" onclick="switchAdminTab('youth')" style="flex:1; min-width:80px; padding:10px 4px; border:none; border-radius:8px; background:transparent; font-weight:600; color:#64748b; font-size:0.75rem; transition:all 0.2s; white-space:nowrap;">6.자립청년</button>
                     <button class="tab-btn" id="tab-target" onclick="switchAdminTab('target')" style="flex:1; min-width:80px; padding:10px 4px; border:none; border-radius:8px; background:transparent; font-weight:600; color:#64748b; font-size:0.75rem; transition:all 0.2s; white-space:nowrap;">7.목표달성</button>
+                     <button class="tab-btn" id="tab-compressor" onclick="switchAdminTab('compressor')" style="flex:1; min-width:80px; padding:10px 4px; border:none; border-radius:8px; background:transparent; font-weight:600; color:#64748b; font-size:0.75rem; transition:all 0.2s; white-space:nowrap;">8.사진압축</button>
                 </div>
 
                 <div id="admin-content-vat" class="tab-content" style="animation: fadeIn 0.3s ease;">
@@ -1445,8 +1446,137 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
                             <div id="target-rate-bar" style="height:100%; width:0%; background:linear-gradient(90deg, #3b82f6, #10b981); transition:width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);"></div>
                         </div>
 
-                        <div id="target-rate-msg" style="margin-top:12px; padding-top:12px; border-top:1px dashed #cbd5e1; font-size:0.95rem; color:#475569; font-weight:600; line-height:1.4;">목표값과 실적값을 입력해주세요.</div>
+                    <div id="target-rate-msg" style="margin-top:12px; padding-top:12px; border-top:1px dashed #cbd5e1; font-size:0.95rem; color:#475569; font-weight:600; line-height:1.4;">목표값과 실적값을 입력해주세요.</div>
                     </div>
+                </div>
+            </div>
+
+            <!-- 사진 압축기 -->
+            <div id="admin-content-compressor" class="tab-content" style="display:none; animation: fadeIn 0.3s ease;">
+                <style>
+                    #admin-content-compressor .compressor-container { position: relative; z-index: 1; width: 100%; }
+                    #admin-content-compressor .compressor-subtitle { text-align: center; color: #6b6b80; font-size: 0.85rem; font-weight: 300; margin-bottom: 25px; }
+                    #admin-content-compressor .drop-zone {
+                        border: 2px dashed #2a2a38; border-radius: 20px; padding: 3rem 2rem;
+                        text-align: center; cursor: pointer; background: #1c1c26;
+                        transition: all 0.3s ease; position: relative; overflow: hidden;
+                    }
+                    #admin-content-compressor .drop-zone:hover, #admin-content-compressor .drop-zone.dragover { border-color: #7b61ff; transform: translateY(-2px); }
+                    #admin-content-compressor .drop-icon { font-size: 3rem; margin-bottom: 1rem; display: block; }
+                    #admin-content-compressor .drop-text { font-size: 1rem; font-weight: 500; color: #e8e8f0; margin-bottom: 0.4rem; }
+                    #admin-content-compressor .drop-sub { font-size: 0.78rem; color: #6b6b80; font-weight: 300; }
+                    #admin-content-compressor input[type="file"] { display: none; }
+                    #admin-content-compressor .settings {
+                        background: #1c1c26; border: 1px solid #2a2a38; border-radius: 16px;
+                        padding: 1.4rem 1.6rem; margin-top: 1.2rem; display: none;
+                    }
+                    #admin-content-compressor .settings.visible { display: block; }
+                    #admin-content-compressor .setting-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+                    #admin-content-compressor .setting-label { font-size: 0.85rem; color: #6b6b80; font-weight: 300; }
+                    #admin-content-compressor .target-display { font-size: 1.1rem; font-weight: 700; color: #7b61ff; }
+                    #admin-content-compressor .slider-wrap { flex: 1; margin: 0 0.5rem; }
+                    #admin-content-compressor input[type="range"] {
+                        -webkit-appearance: none; width: 100%; height: 4px; border-radius: 4px;
+                        background: #2a2a38; outline: none; cursor: pointer;
+                    }
+                    #admin-content-compressor input[type="range"]::-webkit-slider-thumb {
+                        -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%;
+                        background: #7b61ff; cursor: pointer; box-shadow: 0 0 8px rgba(123,97,255,0.5);
+                    }
+                    #admin-content-compressor .compress-btn {
+                        width: 100%; margin-top: 1.2rem; padding: 1rem; border: none; border-radius: 14px;
+                        background: linear-gradient(135deg, #7b61ff, #ff6b9d); color: #fff;
+                        font-family: inherit; font-size: 1rem; font-weight: 700;
+                        cursor: pointer; transition: all 0.3s ease; letter-spacing: 0.5px; display: none;
+                    }
+                    #admin-content-compressor .compress-btn.visible { display: block; }
+                    #admin-content-compressor .compress-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(123,97,255,0.4); }
+                    #admin-content-compressor .compress-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+                    #admin-content-compressor .result-card {
+                        background: #1c1c26; border: 1px solid #2a2a38; border-radius: 20px;
+                        padding: 1.6rem; margin-top: 1.2rem; display: none; animation: fadeUp 0.4s ease;
+                    }
+                    #admin-content-compressor .result-card.visible { display: block; }
+                    #admin-content-compressor .preview-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.4rem; }
+                    #admin-content-compressor .preview-item { text-align: center; }
+                    #admin-content-compressor .preview-item img {
+                        width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 12px;
+                        border: 1px solid #2a2a38; background: #16161d;
+                    }
+                    #admin-content-compressor .preview-label { font-size: 0.72rem; color: #6b6b80; margin-top: 0.5rem; font-weight: 300; }
+                    #admin-content-compressor .preview-size { font-size: 0.9rem; font-weight: 700; margin-top: 0.2rem; }
+                    #admin-content-compressor .size-before { color: #ff6b6b; }
+                    #admin-content-compressor .size-after { color: #6bffb8; }
+                    #admin-content-compressor .stats-row {
+                        display: flex; justify-content: center; align-items: center; gap: 0.5rem;
+                        margin-bottom: 1.4rem; font-size: 0.85rem; color: #6b6b80; font-weight: 300;
+                    }
+                    #admin-content-compressor .reduction-badge {
+                        background: linear-gradient(135deg, #6bffb8, #3dd6f5); color: #0e0e12;
+                        font-weight: 700; font-size: 0.85rem; padding: 0.25rem 0.7rem; border-radius: 99px;
+                    }
+                    #admin-content-compressor .download-btn {
+                        display: block; width: 100%; padding: 0.9rem;
+                        border: 2px solid #7b61ff; border-radius: 12px; background: transparent;
+                        color: #7b61ff; font-family: inherit;
+                        font-size: 0.95rem; font-weight: 700; cursor: pointer; transition: all 0.3s ease;
+                    }
+                    #admin-content-compressor .download-btn:hover { background: #7b61ff; color: #fff; box-shadow: 0 4px 16px rgba(123,97,255,0.35); }
+                    #admin-content-compressor .progress-wrap { margin-top: 1rem; display: none; }
+                    #admin-content-compressor .progress-wrap.visible { display: block; }
+                    #admin-content-compressor .progress-bar-bg { height: 6px; background: #2a2a38; border-radius: 99px; overflow: hidden; }
+                    #admin-content-compressor .progress-bar-fill {
+                        height: 100%; background: linear-gradient(90deg, #7b61ff, #ff6b9d);
+                        border-radius: 99px; width: 0%; transition: width 0.3s ease;
+                    }
+                    #admin-content-compressor .progress-text { text-align: center; font-size: 0.8rem; color: #6b6b80; margin-top: 0.5rem; font-weight: 300; }
+                    #admin-content-compressor .warning-badge {
+                        background: rgba(255,167,40,0.15); border: 1px solid rgba(255,167,40,0.3);
+                        color: #ffa728; font-size: 0.78rem; padding: 0.5rem 0.8rem;
+                        border-radius: 10px; margin-top: 0.8rem; font-weight: 300; display: none;
+                    }
+                    #admin-content-compressor .privacy-note {
+                        text-align: center; margin-top: 1.5rem; font-size: 0.75rem;
+                        color: #6b6b80; font-weight: 300; line-height: 1.6;
+                    }
+                    #admin-content-compressor .privacy-note span { color: #6bffb8; font-weight: 500; }
+                </style>
+                <div class="compressor-container">
+                    <h4 style="color:#0f172a; font-weight:800; font-size:1.1rem; margin-bottom:8px; text-align:center;">📦 사진 압축기</h4>
+                    <p class="compressor-subtitle">업로드하면 목표 용량 이하로 자동 압축돼요</p>
+
+                    <div class="drop-zone" id="dropZoneComp">
+                        <span class="drop-icon">🖼️</span>
+                        <p class="drop-text">여기에 사진을 드래그하거나 클릭하세요</p>
+                        <p class="drop-sub">JPG, PNG, WebP 지원 · 여러 장도 OK</p>
+                        <input type="file" id="fileInputComp" accept="image/*" multiple>
+                    </div>
+
+                    <div class="settings" id="settingsComp">
+                        <div class="setting-row">
+                            <span class="setting-label">목표 용량</span>
+                            <div class="slider-wrap">
+                                <input type="range" id="targetSliderComp" min="100" max="2000" step="50" value="500">
+                            </div>
+                            <span class="target-display" id="targetDisplayComp">500 KB</span>
+                        </div>
+                    </div>
+
+                    <div class="progress-wrap" id="progressWrapComp">
+                        <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFillComp"></div></div>
+                        <p class="progress-text" id="progressTextComp">압축 중...</p>
+                    </div>
+
+                    <button class="compress-btn" id="compressBtnComp">✨ 압축 시작</button>
+
+                    <div class="result-card" id="resultCardComp">
+                        <div class="preview-row" id="previewRowComp"></div>
+                        <div class="stats-row" id="statsRowComp"></div>
+                        <div class="warning-badge" id="warningBadgeComp"></div>
+                        <button class="download-btn" id="downloadBtnComp">⬇️ 압축된 파일 다운로드</button>
+                    </div>
+
+                    <p class="privacy-note">🔒 <span>사진은 서버로 전송되지 않아요.</span><br>모든 압축은 내 브라우저 안에서만 처리됩니다.</p>
                 </div>
             </div>
         `;
@@ -1455,6 +1585,7 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
             // Set initial state
             window.currentTaxRate = 0.033;
             document.getElementById('run-ltc-calc').onclick = calculateLTC;
+            if (typeof initPhotoCompressor === 'function') initPhotoCompressor();
         };
 
         if (btn) btn.onclick = openAdminModal;
@@ -1827,6 +1958,7 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
         const contentBudget = document.getElementById('admin-content-budget');
         const contentYouth = document.getElementById('admin-content-youth');
         const contentTarget = document.getElementById('admin-content-target');
+        const contentCompressor = document.getElementById('admin-content-compressor');
 
         if (contentVat) contentVat.style.display = tabName === 'vat' ? 'block' : 'none';
         if (contentTax) contentTax.style.display = tabName === 'tax' ? 'block' : 'none';
@@ -1835,6 +1967,7 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
         if (contentBudget) contentBudget.style.display = tabName === 'budget' ? 'block' : 'none';
         if (contentYouth) contentYouth.style.display = tabName === 'youth' ? 'block' : 'none';
         if (contentTarget) contentTarget.style.display = tabName === 'target' ? 'block' : 'none';
+        if (contentCompressor) contentCompressor.style.display = tabName === 'compressor' ? 'block' : 'none';
 
         const btnVat = document.getElementById('tab-vat');
         const btnTax = document.getElementById('tab-tax');
@@ -1843,6 +1976,7 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
         const btnBudget = document.getElementById('tab-budget');
         const btnYouth = document.getElementById('tab-youth');
         const btnTarget = document.getElementById('tab-target');
+        const btnCompressor = document.getElementById('tab-compressor');
 
         const setActive = (btn) => {
             if (!btn) return;
@@ -1860,7 +1994,7 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
             btn.style.boxShadow = 'none';
         };
 
-        setInactive(btnVat); setInactive(btnTax); setInactive(btnLtc); setInactive(btnPayroll); setInactive(btnBudget); setInactive(btnYouth); setInactive(btnTarget);
+        setInactive(btnVat); setInactive(btnTax); setInactive(btnLtc); setInactive(btnPayroll); setInactive(btnBudget); setInactive(btnYouth); setInactive(btnTarget); setInactive(btnCompressor);
 
         if (tabName === 'vat') setActive(btnVat);
         else if (tabName === 'tax') setActive(btnTax);
@@ -1869,6 +2003,7 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
         else if (tabName === 'budget') setActive(btnBudget);
         else if (tabName === 'youth') setActive(btnYouth);
         else if (tabName === 'target') setActive(btnTarget);
+        else if (tabName === 'compressor') setActive(btnCompressor);
     };
 
     window.calcTargetRate = function () {
@@ -4309,5 +4444,164 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
             }
         });
     }
+
+
+    /* --- Photo Compressor Logic --- */
+    window.initPhotoCompressor = function () {
+        const dropZone = document.getElementById('dropZoneComp');
+        const fileInput = document.getElementById('fileInputComp');
+        const settings = document.getElementById('settingsComp');
+        const compressBtn = document.getElementById('compressBtnComp');
+        const resultCard = document.getElementById('resultCardComp');
+        const targetSlider = document.getElementById('targetSliderComp');
+        const targetDisplay = document.getElementById('targetDisplayComp');
+        const progressWrap = document.getElementById('progressWrapComp');
+        const progressFill = document.getElementById('progressFillComp');
+        const progressText = document.getElementById('progressTextComp');
+        const previewRow = document.getElementById('previewRowComp');
+        const statsRow = document.getElementById('statsRowComp');
+        const warningBadge = document.getElementById('warningBadgeComp');
+        const downloadBtn = document.getElementById('downloadBtnComp');
+
+        if (!dropZone) return;
+
+        let selectedFiles = [];
+        let compressedBlobs = [];
+
+        targetSlider.addEventListener('input', () => {
+            targetDisplay.textContent = targetSlider.value + ' KB';
+        });
+
+        dropZone.addEventListener('click', () => fileInput.click());
+        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
+        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault(); dropZone.classList.remove('dragover');
+            handleFiles([...e.dataTransfer.files].filter(f => f.type.startsWith('image/')));
+        });
+        fileInput.addEventListener('change', () => handleFiles([...fileInput.files]));
+
+        function handleFiles(files) {
+            if (!files.length) return;
+            selectedFiles = files;
+            const names = files.map(f => f.name).join(', ');
+            dropZone.querySelector('.drop-text').textContent = `📎 ${files.length}장 선택됨`;
+            dropZone.querySelector('.drop-sub').textContent = names.length > 40 ? names.slice(0, 40) + '...' : names;
+            settings.classList.add('visible');
+            compressBtn.classList.add('visible');
+            resultCard.classList.remove('visible');
+        }
+
+        compressBtn.addEventListener('click', async () => {
+            if (!selectedFiles.length) return;
+            compressBtn.disabled = true;
+            resultCard.classList.remove('visible');
+            progressWrap.classList.add('visible');
+            compressedBlobs = [];
+
+            const targetKB = parseInt(targetSlider.value);
+            const targetBytes = targetKB * 1024;
+
+            for (let i = 0; i < selectedFiles.length; i++) {
+                progressFill.style.width = Math.round((i / selectedFiles.length) * 100) + '%';
+                progressText.textContent = `압축 중... (${i + 1}/${selectedFiles.length})`;
+                const blob = await compressImage(selectedFiles[i], targetBytes);
+                compressedBlobs.push({ name: selectedFiles[i].name, original: selectedFiles[i], blob });
+            }
+
+            progressFill.style.width = '100%';
+            progressText.textContent = '완료!';
+            setTimeout(() => {
+                progressWrap.classList.remove('visible');
+                showResults(targetBytes);
+                compressBtn.disabled = false;
+            }, 400);
+        });
+
+        async function compressImage(file, targetBytes) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                const url = URL.createObjectURL(file);
+                img.onload = () => {
+                    URL.revokeObjectURL(url);
+                    const canvas = document.createElement('canvas');
+                    let w = img.width, h = img.height;
+                    let quality = 0.92, scale = 1.0;
+
+                    const tryCompress = () => {
+                        canvas.width = Math.round(w * scale);
+                        canvas.height = Math.round(h * scale);
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                        canvas.toBlob((blob) => {
+                            if (blob.size <= targetBytes || quality <= 0.05) { resolve(blob); return; }
+                            if (quality > 0.1) quality = Math.max(0.05, quality - 0.08);
+                            else scale = Math.max(0.1, scale - 0.1);
+                            tryCompress();
+                        }, 'image/jpeg', quality);
+                    };
+                    tryCompress();
+                };
+                img.src = url;
+            });
+        }
+
+        function formatSize(bytes) {
+            if (bytes >= 1024 * 1024) return (bytes / 1024 / 1024).toFixed(2) + ' MB';
+            return Math.round(bytes / 1024) + ' KB';
+        }
+
+        function showResults(targetBytes) {
+            previewRow.innerHTML = '';
+            statsRow.innerHTML = '';
+            warningBadge.style.display = 'none';
+
+            let totalBefore = 0, totalAfter = 0, hasOver = false;
+
+            compressedBlobs.forEach(({ original, blob }) => {
+                totalBefore += original.size;
+                totalAfter += blob.size;
+                if (blob.size > targetBytes) hasOver = true;
+            });
+
+            const first = compressedBlobs[0];
+            previewRow.innerHTML = `
+              <div class="preview-item">
+                <img src="${URL.createObjectURL(first.original)}" alt="원본">
+                <div class="preview-label">${compressedBlobs.length > 1 ? '대표 원본' : '원본'}</div>
+                <div class="preview-size size-before">${compressedBlobs.length > 1 ? '총 ' : ''}${formatSize(totalBefore)}</div>
+              </div>
+              <div class="preview-item">
+                <img src="${URL.createObjectURL(first.blob)}" alt="압축 후">
+                <div class="preview-label">${compressedBlobs.length > 1 ? '대표 압축 후' : '압축 후'}</div>
+                <div class="preview-size size-after">${compressedBlobs.length > 1 ? '총 ' : ''}${formatSize(totalAfter)}</div>
+              </div>
+            `;
+
+            const reduction = Math.round((1 - totalAfter / totalBefore) * 100);
+            statsRow.innerHTML = `
+              <span>${formatSize(totalBefore)}</span><span>→</span>
+              <span>${formatSize(totalAfter)}</span>
+              <span class="reduction-badge">-${reduction}%</span>
+            `;
+
+            if (hasOver) {
+                warningBadge.textContent = '⚠️ 일부 파일은 목표 용량보다 클 수 있어요. 원본이 이미 작은 경우예요.';
+                warningBadge.style.display = 'block';
+            }
+
+            resultCard.classList.add('visible');
+        }
+
+        downloadBtn.addEventListener('click', async () => {
+            for (const { name, blob } of compressedBlobs) {
+                await new Promise(r => setTimeout(r, 200));
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = 'compressed_' + name.replace(/\.[^.]+$/, '.jpg');
+                a.click();
+            }
+        });
+    };
 
 } catch (e) { console.error('Global JS Error:', e); }
