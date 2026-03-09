@@ -140,8 +140,8 @@
       const [minigameCooldowns, setMinigameCooldowns] = useState({ counseling:0, typing:0, quiz:0 });
       const [typingInput, setTypingInput] = useState('');
       const [quizInput, setQuizInput] = useState('');
-      const [skills, setSkills] = useState({ empathy:0, documentation:0, networking:0, counseling:0, crisis:0, planning:0, budget:0 });
-      const [equipment, setEquipment] = useState({ chair:0, computer:0, coffee:0, bookshelf:0, plant:0, sofa:0, smartphone:0, printer:0 });
+      const [skills, setSkills] = useState({ empathy:0, networking:0, counseling:0, crisis:0, stamina:0, focus:0, persuasion:0, leadership:0 });
+      const [equipment, setEquipment] = useState({ computer:0, printer:0, plant:0, notebook:0, whiteboard:0, bookshelf:0, smartphone:0, accounting:0 });
       const [clickAnimation, setClickAnimation] = useState(false);
       const [floatingNumbers, setFloatingNumbers] = useState([]);
       const [showSaveIndicator, setShowSaveIndicator] = useState(false);
@@ -189,23 +189,24 @@
       ];
 
       const skillsData = [
-        {id:'empathy',    name:'공감능력', icon:'❤️', statType:'click',    statValue:5,  description:'클릭XP +5/레벨',      cost:(lvl)=>Math.floor(150*Math.pow(1.5,lvl))},
-        {id:'documentation',name:'문서작성',icon:'📄', statType:'autoXP',  statValue:10, description:'자동XP +10/초·레벨',  cost:(lvl)=>Math.floor(200*Math.pow(1.6,lvl))},
-        {id:'networking', name:'네트워킹', icon:'🤝', statType:'click_pct',statValue:15, description:'클릭XP+돈 ×15%/레벨', cost:(lvl)=>Math.floor(300*Math.pow(1.7,lvl))},
-        {id:'counseling', name:'상담기술', icon:'💬', statType:'click_pct',statValue:10, description:'클릭XP+돈 ×10%/레벨', cost:(lvl)=>Math.floor(250*Math.pow(1.6,lvl))},
-        {id:'crisis',     name:'위기개입', icon:'🚨', statType:'autoMoney',statValue:20, description:'자동돈 +20원/초·레벨', cost:(lvl)=>Math.floor(400*Math.pow(1.8,lvl))},
-        {id:'planning',   name:'기획력',  icon:'💡', statType:'autoXP',   statValue:15, description:'자동XP +15/초·레벨',  cost:(lvl)=>Math.floor(350*Math.pow(1.7,lvl))},
-        {id:'budget',     name:'예산관리',icon:'💵', statType:'autoMoney',statValue:15, description:'자동돈 +15원/초·레벨', cost:(lvl)=>Math.floor(350*Math.pow(1.7,lvl))},
+        {id:'empathy',    name:'공감능력', icon:'❤️',  statType:'click',    statValue:5,  description:'클릭XP +5/레벨',       cost:(lvl)=>Math.floor(150*Math.pow(1.5,lvl))},
+        {id:'networking', name:'네트워킹', icon:'🤝',  statType:'click_pct',statValue:15, description:'클릭XP+돈 ×15%/레벨',  cost:(lvl)=>Math.floor(300*Math.pow(1.7,lvl))},
+        {id:'counseling', name:'상담기술', icon:'💬',  statType:'click_pct',statValue:10, description:'클릭XP+돈 ×10%/레벨',  cost:(lvl)=>Math.floor(250*Math.pow(1.6,lvl))},
+        {id:'crisis',     name:'위기개입', icon:'🚨',  statType:'click',    statValue:15, description:'클릭XP +15/레벨',      cost:(lvl)=>Math.floor(400*Math.pow(1.7,lvl))},
+        {id:'stamina',    name:'체력관리', icon:'💪',  statType:'click',    statValue:8,  description:'클릭XP +8/레벨',       cost:(lvl)=>Math.floor(200*Math.pow(1.5,lvl))},
+        {id:'focus',      name:'집중력',  icon:'🎯',  statType:'click',    statValue:12, description:'클릭XP +12/레벨',      cost:(lvl)=>Math.floor(350*Math.pow(1.6,lvl))},
+        {id:'persuasion', name:'설득력',  icon:'🗣️',  statType:'click',    statValue:20, description:'클릭XP +20/레벨',      cost:(lvl)=>Math.floor(600*Math.pow(1.7,lvl))},
+        {id:'leadership', name:'리더십',  icon:'👑',  statType:'click_pct',statValue:20, description:'클릭XP+돈 ×20%/레벨',  cost:(lvl)=>Math.floor(800*Math.pow(1.8,lvl))},
       ];
       const equipmentData = [
-        {id:'chair',    name:'좋은 의자',  icon:'💺', statType:'click',    statValue:3,  description:'클릭XP +3/레벨',      cost:(lvl)=>Math.floor(100*Math.pow(1.4,lvl))},
-        {id:'computer', name:'빠른 컴퓨터',icon:'💻', statType:'autoXP',  statValue:15, description:'자동XP +15/초·레벨',  cost:(lvl)=>Math.floor(250*Math.pow(1.5,lvl))},
-        {id:'coffee',   name:'커피머신',   icon:'☕', statType:'click',    statValue:10, description:'클릭XP +10/레벨',     cost:(lvl)=>Math.floor(500*Math.pow(1.6,lvl))},
-        {id:'bookshelf',name:'전문서적',   icon:'📚', statType:'autoMoney',statValue:15, description:'자동돈 +15원/초·레벨', cost:(lvl)=>Math.floor(800*Math.pow(1.7,lvl))},
-        {id:'plant',    name:'관엽식물',   icon:'🪴', statType:'autoXP',  statValue:5,  description:'자동XP +5/초·레벨',   cost:(lvl)=>Math.floor(300*Math.pow(1.4,lvl))},
-        {id:'sofa',     name:'상담 소파',  icon:'🛋️', statType:'click',    statValue:25, description:'클릭XP +25/레벨',     cost:(lvl)=>Math.floor(1000*Math.pow(1.8,lvl))},
-        {id:'smartphone',name:'스마트폰',  icon:'📱', statType:'autoMoney',statValue:10, description:'자동돈 +10원/초·레벨', cost:(lvl)=>Math.floor(450*Math.pow(1.6,lvl))},
-        {id:'printer',  name:'레이저프린터',icon:'🖨️', statType:'autoXP',  statValue:8,  description:'자동XP +8/초·레벨',   cost:(lvl)=>Math.floor(600*Math.pow(1.65,lvl))},
+        {id:'computer',   name:'빠른 컴퓨터',  icon:'💻',  statType:'autoXP',   statValue:15, description:'자동XP +15/초·레벨',   cost:(lvl)=>Math.floor(250*Math.pow(1.5,lvl))},
+        {id:'printer',    name:'레이저프린터', icon:'🖨️',  statType:'autoXP',   statValue:8,  description:'자동XP +8/초·레벨',    cost:(lvl)=>Math.floor(600*Math.pow(1.65,lvl))},
+        {id:'plant',      name:'관엽식물',     icon:'🪴',  statType:'autoXP',   statValue:5,  description:'자동XP +5/초·레벨',    cost:(lvl)=>Math.floor(300*Math.pow(1.4,lvl))},
+        {id:'notebook',   name:'업무수첩',     icon:'📒',  statType:'autoXP',   statValue:10, description:'자동XP +10/초·레벨',   cost:(lvl)=>Math.floor(200*Math.pow(1.5,lvl))},
+        {id:'whiteboard', name:'화이트보드',   icon:'📋',  statType:'autoXP',   statValue:18, description:'자동XP +18/초·레벨',   cost:(lvl)=>Math.floor(500*Math.pow(1.7,lvl))},
+        {id:'bookshelf',  name:'전문서적',     icon:'📚',  statType:'autoMoney',statValue:15, description:'자동돈 +15원/초·레벨', cost:(lvl)=>Math.floor(800*Math.pow(1.7,lvl))},
+        {id:'smartphone', name:'스마트폰',     icon:'📱',  statType:'autoMoney',statValue:10, description:'자동돈 +10원/초·레벨', cost:(lvl)=>Math.floor(450*Math.pow(1.6,lvl))},
+        {id:'accounting', name:'회계프로그램', icon:'💰',  statType:'autoMoney',statValue:20, description:'자동돈 +20원/초·레벨', cost:(lvl)=>Math.floor(1000*Math.pow(1.8,lvl))},
       ];
 
       // ── 초기화 ──
@@ -241,8 +242,8 @@
             setAutoXP(data.autoXP || 0);
             setAutoMoney(data.autoMoney || 0);
             setTotalClicks(data.totalClicks || 0);
-            setSkills(data.skills || { empathy:0, documentation:0, networking:0, counseling:0, crisis:0, planning:0, budget:0 });
-            setEquipment(data.equipment || { chair:0, computer:0, coffee:0, bookshelf:0, plant:0, sofa:0, smartphone:0, printer:0 });
+            setSkills(data.skills || { empathy:0, networking:0, counseling:0, crisis:0, stamina:0, focus:0, persuasion:0, leadership:0 });
+            setEquipment(data.equipment || { computer:0, printer:0, plant:0, notebook:0, whiteboard:0, bookshelf:0, smartphone:0, accounting:0 });
             setCasesCompleted(data.casesCompleted || { child:0, elderly:0, disability:0, mental:0, family:0 });
           } catch(e) { /* 데이터 파싱 오류 무시 */ }
         }
@@ -368,7 +369,7 @@
       }, [mentalCrash]);
 
       const handleWork = (e) => {
-        const baseEarnings = clickPower * (1 + skills.networking * 0.15);
+        const baseEarnings = clickPower * (1 + skills.networking * 0.15) * (1 + skills.leadership * 0.20);
         const counselingBonus = 1 + skills.counseling * 0.1;
         const statusMult = pipetTime > 0 ? 2 : mentalCrash > 0 ? 0.5 : 1;
         const earnings = baseEarnings * counselingBonus * statusMult;
@@ -403,11 +404,12 @@
         if (money >= cost) {
           setMoney(prev => prev - cost);
           setSkills(prev => ({ ...prev, [skillId]: prev[skillId] + 1 }));
-          if (skillId === 'empathy')       setClickPower(prev => prev + 5);
-          if (skillId === 'documentation') setAutoXP(prev => prev + 10);
-          if (skillId === 'crisis')        setAutoMoney(prev => prev + 20);
-          if (skillId === 'planning')      setAutoXP(prev => prev + 15);
-          if (skillId === 'budget')        setAutoMoney(prev => prev + 15);
+          if (skillId === 'empathy')    setClickPower(prev => prev + 5);
+          if (skillId === 'crisis')     setClickPower(prev => prev + 15);
+          if (skillId === 'stamina')    setClickPower(prev => prev + 8);
+          if (skillId === 'focus')      setClickPower(prev => prev + 12);
+          if (skillId === 'persuasion') setClickPower(prev => prev + 20);
+          // networking, counseling, leadership: multipliers applied in handleWork via skills state
         }
       };
       const upgradeEquipment = (equipId) => {
@@ -416,14 +418,14 @@
         if (money >= cost) {
           setMoney(prev => prev - cost);
           setEquipment(prev => ({ ...prev, [equipId]: prev[equipId] + 1 }));
-          if (equipId === 'chair')       setClickPower(prev => prev + 3);
-          if (equipId === 'computer')    setAutoXP(prev => prev + 15);
-          if (equipId === 'coffee')      setClickPower(prev => prev + 10);
-          if (equipId === 'bookshelf')   setAutoMoney(prev => prev + 15);
-          if (equipId === 'plant')       setAutoXP(prev => prev + 5);
-          if (equipId === 'sofa')        setClickPower(prev => prev + 25);
-          if (equipId === 'smartphone')  setAutoMoney(prev => prev + 10);
-          if (equipId === 'printer')     setAutoXP(prev => prev + 8);
+          if (equipId === 'computer')   setAutoXP(prev => prev + 15);
+          if (equipId === 'printer')    setAutoXP(prev => prev + 8);
+          if (equipId === 'plant')      setAutoXP(prev => prev + 5);
+          if (equipId === 'notebook')   setAutoXP(prev => prev + 10);
+          if (equipId === 'whiteboard') setAutoXP(prev => prev + 18);
+          if (equipId === 'bookshelf')  setAutoMoney(prev => prev + 15);
+          if (equipId === 'smartphone') setAutoMoney(prev => prev + 10);
+          if (equipId === 'accounting') setAutoMoney(prev => prev + 20);
         }
       };
 
@@ -454,19 +456,22 @@
           setTypingInput(''); setActiveMinigame('typing');
         } else if (gameType === 'quiz') {
           const questions = [
-            { question: '2024년 기준 4인 가구 기준 중위소득은 얼마인가요? (원)', answer: 5729341, tolerance: 200000 },
-            { question: '기초생활수급자 생계급여 선정 기준은 기준 중위소득의 몇 %인가요?', answer: 32, tolerance: 0 },
-            { question: '노인장기요양보험 1등급 판정 기준 점수는? (점 이상)', answer: 95, tolerance: 0 },
-            { question: '아동수당 지급 대상 연령은 만 몇 세 미만인가요?', answer: 8, tolerance: 0 },
-            { question: '기초연금 수급자격 기준 만 몇 세 이상인가요?', answer: 65, tolerance: 0 },
-            { question: '차상위계층 기준은 기준 중위소득의 몇 % 이하인가요?', answer: 50, tolerance: 0 },
-            { question: '사회복지사 보수교육은 몇 년마다 받아야 하나요?', answer: 1, tolerance: 0 },
-            { question: '아동학대 신고의무자 미신고 최대 과태료는? (만원)', answer: 500, tolerance: 0 },
-            { question: '자살예방 상담전화 번호는?', answer: 1393, tolerance: 0 },
-            { question: '노인학대 신고 전용 전화번호는?', answer: 1577, tolerance: 0 },
+            { question: '기초생활수급자 생계급여 선정 기준은\n기준 중위소득의 몇 %인가요?', options: ['20%','30%','32%','40%'], answer: 2 },
+            { question: '노인장기요양보험 1등급 판정 기준은\n몇 점 이상인가요?', options: ['75점','85점','95점','100점'], answer: 2 },
+            { question: '아동수당 지급 대상은\n만 몇 세 미만인가요?', options: ['6세','7세','8세','10세'], answer: 2 },
+            { question: '기초연금 수급 자격은\n만 몇 세 이상인가요?', options: ['55세','60세','65세','70세'], answer: 2 },
+            { question: '차상위계층 기준은\n기준 중위소득의 몇 % 이하인가요?', options: ['30%','40%','50%','60%'], answer: 2 },
+            { question: '사회복지사 보수교육은\n몇 년마다 받아야 하나요?', options: ['매년','2년','3년','5년'], answer: 0 },
+            { question: '자살예방 상담전화 번호는?', options: ['1393','1388','1391','1395'], answer: 0 },
+            { question: '아동보호전문기관 신고전화 번호는?', options: ['112','1391','1377','120'], answer: 1 },
+            { question: '노인학대 신고전화 번호는?', options: ['1588','1366','1577','1399'], answer: 2 },
+            { question: '장애인 활동지원 신청은\n어디서 하나요?', options: ['병원','주민센터','경찰서','법원'], answer: 1 },
+            { question: '국민기초생활보장법상 부양의무자\n기준이 폐지된 급여는?', options: ['주거급여','의료급여','생계급여','교육급여'], answer: 0 },
+            { question: '사회복지사 1급 시험은\n1년에 몇 회 시행되나요?', options: ['1회','2회','3회','4회'], answer: 0 },
           ];
-          setMinigameData(questions[Math.floor(Math.random() * questions.length)]);
-          setQuizInput(''); setActiveMinigame('quiz');
+          const q = questions[Math.floor(Math.random() * questions.length)];
+          setMinigameData(q);
+          setActiveMinigame('quiz');
         }
       };
 
@@ -498,14 +503,13 @@
           }
           setMinigameCooldowns(prev => ({ ...prev, typing: 60 }));
         } else if (activeMinigame === 'quiz') {
-          const userAnswer = parseInt(quizInput) || 0;
-          const diff = Math.abs(userAnswer - minigameData.answer);
-          if (diff <= minigameData.tolerance) {
+          const isCorrect = answer === minigameData.answer;
+          if (isCorrect) {
             const reward = 1000;
             setMoney(prev => prev + reward); setExperience(prev => prev + reward);
-            setMinigameData({ ...minigameData, result: { success: true, message: '정답!', reward } });
+            setMinigameData({ ...minigameData, result: { success: true, message: `정답! ${minigameData.options[minigameData.answer]}`, reward } });
           } else {
-            setMinigameData({ ...minigameData, result: { success: false, message: `오답! 정답: ${minigameData.answer.toLocaleString()}`, reward: 0 } });
+            setMinigameData({ ...minigameData, result: { success: false, message: `오답! 정답: ${minigameData.options[minigameData.answer]}`, reward: 0 } });
           }
           setMinigameCooldowns(prev => ({ ...prev, quiz: 60 }));
         }
@@ -548,7 +552,7 @@
               <polygon points="70,155 85,135 225,135 210,155" fill="#9B8365"/>
               <rect x="115" y="118" width="55" height="38" rx="3" fill="#3a3a3a"/>
               <rect x="118" y="121" width="49" height="30" fill={equipment.computer > 0 ? "#2980b9" : "#1a1a2a"}/>
-              <ellipse cx="145" cy="195" rx="22" ry="9" fill={equipment.chair > 0 ? "#c0392b" : "#888"}/>
+              <ellipse cx="145" cy="195" rx="22" ry="9" fill={true ? "#c0392b" : "#888"}/>
             </>}
             {(stage === 1 || stage === 2) && <>
               <rect x="0" y="0" width="300" height="250" fill="url(#wallBasic)"/>
@@ -562,7 +566,7 @@
               <polygon points="65,158 80,138 230,138 215,158" fill="#8a7050"/>
               <rect x="110" y="122" width="58" height="38" rx="3" fill="#2c3e50"/>
               <rect x="113" y="125" width="52" height="30" fill={equipment.computer > 0 ? "#2980b9" : "#34495e"}/>
-              <ellipse cx="147" cy="200" rx="24" ry="10" fill={equipment.chair > 0 ? "#c0392b" : "#7f8c8d"}/>
+              <ellipse cx="147" cy="200" rx="24" ry="10" fill={true ? "#c0392b" : "#7f8c8d"}/>
               {equipment.plant > 0 && <><rect x="30" y="158" width="20" height="18" rx="3" fill="#c0794a"/><ellipse cx="40" cy="155" rx="14" ry="8" fill="#2ecc71"/></>}
             </>}
             {(stage === 3 || stage === 4) && <>
@@ -576,10 +580,10 @@
               <polygon points="40,155 55,133 248,133 235,155" fill="#6b4f38"/>
               <rect x="85" y="112" width="66" height="44" rx="4" fill="#111"/>
               <rect x="88" y="115" width="60" height="36" fill={equipment.computer > 0 ? "#0d47a1" : "#263238"}/>
-              <ellipse cx="150" cy="202" rx="28" ry="12" fill={equipment.chair > 0 ? "#7b241c" : "#515a5a"}/>
+              <ellipse cx="150" cy="202" rx="28" ry="12" fill={true ? "#7b241c" : "#515a5a"}/>
               {equipment.plant > 0 && <><rect x="0" y="145" width="30" height="32" rx="5" fill="#b5451b"/><ellipse cx="15" cy="140" rx="18" ry="10" fill="#196f3d"/></>}
-              {equipment.coffee > 0 && <><rect x="258" y="128" width="38" height="50" rx="4" fill="#1a1a2a"/><rect x="262" y="132" width="30" height="20" rx="3" fill="#c0392b"/></>}
-              {equipment.sofa > 0 && <><rect x="5" y="155" width="35" height="22" rx="4" fill="#5d4e8c"/><rect x="5" y="148" width="8" height="29" rx="3" fill="#6c5ea0"/><rect x="32" y="148" width="8" height="29" rx="3" fill="#6c5ea0"/></>}
+              {equipment.smartphone > 0 && <><rect x="258" y="128" width="38" height="50" rx="4" fill="#1a1a2a"/><rect x="262" y="132" width="30" height="20" rx="3" fill="#c0392b"/></>}
+              {equipment.accounting > 0 && <><rect x="5" y="155" width="35" height="22" rx="4" fill="#5d4e8c"/><rect x="5" y="148" width="8" height="29" rx="3" fill="#6c5ea0"/><rect x="32" y="148" width="8" height="29" rx="3" fill="#6c5ea0"/></>}
             </>}
             {(stage === 5 || stage === 6) && <>
               <rect x="0" y="0" width="300" height="250" fill="#1e2a45"/>
@@ -595,10 +599,10 @@
               <line x1="43" y1="130" x2="270" y2="130" stroke="#c8a060" strokeWidth="1.5"/>
               <rect x="65" y="104" width="78" height="50" rx="6" fill="#030305"/>
               <rect x="68" y="107" width="72" height="42" fill={equipment.computer > 0 ? "#040418" : "#0a0a12"}/>
-              <ellipse cx="150" cy="205" rx="34" ry="15" fill={equipment.chair > 0 ? "#1a0505" : "#050508"}/>
+              <ellipse cx="150" cy="205" rx="34" ry="15" fill={true ? "#1a0505" : "#050508"}/>
               {equipment.plant > 0 && <><rect x="0" y="135" width="28" height="48" rx="6" fill="#0a0508" stroke="#c8a060" strokeWidth="1"/></>}
-              {equipment.coffee > 0 && <><rect x="256" y="112" width="42" height="60" rx="6" fill="#050508" stroke="#c8a060" strokeWidth="1.5"/></>}
-              {equipment.sofa > 0 && <><rect x="0" y="148" width="40" height="32" rx="6" fill="#0a0508" stroke="#c8a060" strokeWidth="1"/></>}
+              {equipment.smartphone > 0 && <><rect x="256" y="112" width="42" height="60" rx="6" fill="#050508" stroke="#c8a060" strokeWidth="1.5"/></>}
+              {equipment.accounting > 0 && <><rect x="0" y="148" width="40" height="32" rx="6" fill="#0a0508" stroke="#c8a060" strokeWidth="1"/></>}
             </>}
           </svg>
         );
@@ -779,21 +783,23 @@
                 )}
                 {activeMinigame === 'quiz' && minigameData && (
                   <>
-                    <h2 style={{ fontSize:'18px', fontWeight:'900', color:'#1f2937', marginBottom:'12px' }}>🧮 복지 계산 퀴즈</h2>
-                    <p style={{ fontSize:'13px', marginBottom:'12px', color:'#374151', background:'#fefce8', padding:'10px', borderRadius:'8px', border:'2px solid #fde047', lineHeight:'1.5' }}>{minigameData.question}</p>
+                    <h2 style={{ fontSize:'17px', fontWeight:'900', color:'#1f2937', marginBottom:'10px' }}>🧮 복지 상식 퀴즈</h2>
+                    <p style={{ fontSize:'14px', marginBottom:'14px', color:'#374151', background:'#fefce8', padding:'10px', borderRadius:'8px', border:'2px solid #fde047', lineHeight:'1.6', whiteSpace:'pre-line', textAlign:'center', fontWeight:'700' }}>{minigameData.question}</p>
                     {!minigameData.result ? (
-                      <>
-                        <input type="number" value={quizInput} onChange={(e)=>setQuizInput(e.target.value)} onKeyDown={(e)=>{if(e.key==='Enter')answerMinigame()}}
-                          style={{ width:'100%', padding:'12px', border:'3px solid #d1d5db', borderRadius:'8px', fontSize:'18px', marginBottom:'12px', outline:'none' }}
-                          placeholder="숫자로 입력하세요" autoFocus/>
-                        <button onClick={()=>answerMinigame()} style={{ width:'100%', padding:'12px', background:'linear-gradient(135deg,#a855f7,#db2777)', color:'white', border:'none', borderRadius:'8px', fontWeight:'900', fontSize:'16px', cursor:'pointer' }}>제출</button>
-                      </>
+                      <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'8px' }}>
+                        {minigameData.options.map((opt, idx) => (
+                          <button key={idx} onClick={() => answerMinigame(idx)}
+                            style={{ padding:'14px 8px', background:`linear-gradient(135deg,${['#6366f1','#0ea5e9','#22c55e','#f59e0b'][idx]},${['#4f46e5','#0284c7','#16a34a','#d97706'][idx]})`, color:'white', border:'none', borderRadius:'10px', fontWeight:'900', fontSize:'14px', cursor:'pointer', boxShadow:'0 3px 6px rgba(0,0,0,0.2)' }}>
+                            {['①','②','③','④'][idx]} {opt}
+                          </button>
+                        ))}
+                      </div>
                     ) : (
                       <div style={{ padding:'16px', borderRadius:'8px', background: minigameData.result.success ? '#dcfce7' : '#fee2e2' }}>
-                        <div style={{ fontSize:'18px', fontWeight:'900', marginBottom:'8px', color: minigameData.result.success ? '#15803d' : '#b91c1c' }}>{minigameData.result.success ? '✓ 정답!' : '✗ 오답'}</div>
-                        <p style={{ color:'#374151', marginBottom:'8px', fontSize:'13px' }}>{minigameData.result.message}</p>
-                        {minigameData.result.reward > 0 && <div style={{ fontSize:'15px', fontWeight:'700', color:'#15803d' }}>+{minigameData.result.reward}원</div>}
-                        <button onClick={closeMinigame} style={{ marginTop:'10px', width:'100%', padding:'10px', background:'#1f2937', color:'white', border:'none', borderRadius:'8px', fontWeight:'700', cursor:'pointer' }}>닫기</button>
+                        <div style={{ fontSize:'22px', fontWeight:'900', marginBottom:'6px', color: minigameData.result.success ? '#15803d' : '#b91c1c', textAlign:'center' }}>{minigameData.result.success ? '✓ 정답!' : '✗ 오답'}</div>
+                        <p style={{ color:'#374151', marginBottom:'8px', fontSize:'13px', textAlign:'center' }}>{minigameData.result.message}</p>
+                        {minigameData.result.reward > 0 && <div style={{ fontSize:'15px', fontWeight:'700', color:'#15803d', textAlign:'center' }}>+{minigameData.result.reward}원 · +{minigameData.result.reward}xp</div>}
+                        <button onClick={closeMinigame} style={{ marginTop:'12px', width:'100%', padding:'10px', background:'#1f2937', color:'white', border:'none', borderRadius:'8px', fontWeight:'700', cursor:'pointer' }}>닫기</button>
                       </div>
                     )}
                   </>
@@ -882,21 +888,21 @@
                       <div style={{ fontWeight:'900', color:'white', fontSize:'15px', textAlign:'center', textShadow:'0 0 10px #b91c1c' }}>💔 케이스 실패...<br/><span style={{fontSize:'10px'}}>멘탈 바사삭 20초</span></div>
                     </div>
                   )}
-                  <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+                  <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', gap:'6px' }}>
                     {/* 사무실 미리보기 */}
-                    <div style={{ position:'relative', width:104, height:78, flexShrink:0 }}>
+                    <div style={{ position:'relative', width:80, height:60, flexShrink:0 }}>
                       {floatingNumbers.map(num => (
                         <div key={num.id} style={{ position:'absolute', left:'50%', top:'10%', marginLeft:num.x, fontWeight:'900', fontSize:'11px', color:num.color||'#16a34a', whiteSpace:'nowrap', zIndex:10, textShadow:'1px 1px 2px rgba(0,0,0,0.5)', animation:'float-up 1s ease-out forwards', pointerEvents:'none' }}>
                           {num.value}
                         </div>
                       ))}
-                      <div style={{ transform:'scale(0.347)', transformOrigin:'top left', width:300, height:250 }}>
+                      <div style={{ transform:'scale(0.267)', transformOrigin:'top left', width:300, height:250 }}>
                         {renderOffice()}
                       </div>
                     </div>
                     {/* 캐릭터 + 버튼 */}
-                    <div style={{ flex:1, display:'flex', flexDirection:'column', alignItems:'center', padding:'0 8px' }}>
-                      <div style={{ width:50, height:60 }}>
+                    <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:'2px', flexShrink:0 }}>
+                      <div style={{ width:38, height:46 }}>
                         {gender === 'male' && (
                           <svg viewBox="0 0 80 110" style={{ width:'100%', height:'100%' }}>
                             <rect x="27" y="78" width="9" height="18" rx="3" fill="#2c3e50"/><rect x="44" y="78" width="9" height="18" rx="3" fill="#2c3e50"/>
@@ -940,46 +946,32 @@
                           </svg>
                         )}
                       </div>
-                      <button onClick={handleWork} className={`work-button ${clickAnimation ? 'scale-95' : ''}`} style={{ padding:'6px 18px', marginTop:'4px' }}>
-                        <span style={{ fontWeight:'900', color:'#78350f', fontSize:'14px', textShadow:'1px 1px 0 rgba(255,255,255,0.5)' }}>업무</span>
+                      <button onClick={handleWork} className={`work-button ${clickAnimation ? 'scale-95' : ''}`} style={{ padding:'4px 14px' }}>
+                        <span style={{ fontWeight:'900', color:'#78350f', fontSize:'13px', textShadow:'1px 1px 0 rgba(255,255,255,0.5)' }}>업무</span>
                       </button>
                     </div>
-                    {/* 스탯 */}
-                    <div style={{ display:'flex', flexDirection:'column', gap:'3px', minWidth:'90px' }}>
-                      <div style={{ display:'flex', justifyContent:'space-between', background:'#dcfce7', border:'1px solid #4ade80', borderRadius:'5px', padding:'2px 5px' }}>
-                        <span style={{ fontSize:'8px', fontWeight:'700', color:'#15803d' }}>🖱 클릭xp</span>
-                        <span style={{ fontSize:'9px', fontWeight:'900', color:'#15803d' }}>+{Math.floor(clickPower*(1+skills.networking*0.15)*(1+skills.counseling*0.1))}</span>
+                    {/* 스탯: 2열 그리드 */}
+                    <div style={{ flex:1, display:'grid', gridTemplateColumns:'1fr 1fr', gap:'2px', minWidth:0 }}>
+                      <div style={{ display:'flex', justifyContent:'space-between', background:'#dcfce7', border:'1px solid #4ade80', borderRadius:'4px', padding:'2px 4px' }}>
+                        <span style={{ fontSize:'7px', fontWeight:'700', color:'#15803d' }}>🖱 클릭XP</span>
+                        <span style={{ fontSize:'8px', fontWeight:'900', color:'#15803d' }}>+{Math.floor(clickPower*(1+skills.networking*0.15)*(1+skills.leadership*0.20)*(1+skills.counseling*0.1))}</span>
                       </div>
-                      <div style={{ display:'flex', justifyContent:'space-between', background:'#fef9c3', border:'1px solid #facc15', borderRadius:'5px', padding:'2px 5px' }}>
-                        <span style={{ fontSize:'8px', fontWeight:'700', color:'#a16207' }}>💰 클릭돈</span>
-                        <span style={{ fontSize:'9px', fontWeight:'900', color:'#a16207' }}>+{Math.floor(clickPower*(1+skills.networking*0.15)*(1+skills.counseling*0.1)*0.5)}원</span>
+                      <div style={{ display:'flex', justifyContent:'space-between', background:'#fef9c3', border:'1px solid #facc15', borderRadius:'4px', padding:'2px 4px' }}>
+                        <span style={{ fontSize:'7px', fontWeight:'700', color:'#a16207' }}>💰 클릭돈</span>
+                        <span style={{ fontSize:'8px', fontWeight:'900', color:'#a16207' }}>+{Math.floor(clickPower*(1+skills.networking*0.15)*(1+skills.leadership*0.20)*(1+skills.counseling*0.1)*0.5)}원</span>
                       </div>
-                      {autoXP > 0 ? (
-                        <div style={{ display:'flex', justifyContent:'space-between', background:'#dbeafe', border:'1px solid #60a5fa', borderRadius:'5px', padding:'2px 5px' }}>
-                          <span style={{ fontSize:'8px', fontWeight:'700', color:'#1d4ed8' }}>⭐ 자동XP</span>
-                          <span style={{ fontSize:'9px', fontWeight:'900', color:'#1d4ed8' }}>+{autoXP}/초</span>
-                        </div>
-                      ) : (
-                        <div style={{ display:'flex', justifyContent:'space-between', background:'#e0e7ff', border:'1px solid #a5b4fc', borderRadius:'5px', padding:'2px 5px', opacity:0.4 }}>
-                          <span style={{ fontSize:'8px', fontWeight:'700', color:'#4338ca' }}>⭐ 자동XP</span>
-                          <span style={{ fontSize:'9px', fontWeight:'900', color:'#4338ca' }}>-</span>
-                        </div>
-                      )}
-                      {autoMoney > 0 ? (
-                        <div style={{ display:'flex', justifyContent:'space-between', background:'#fef3c7', border:'1px solid #fbbf24', borderRadius:'5px', padding:'2px 5px' }}>
-                          <span style={{ fontSize:'8px', fontWeight:'700', color:'#92400e' }}>💴 자동돈</span>
-                          <span style={{ fontSize:'9px', fontWeight:'900', color:'#92400e' }}>+{autoMoney}원/초</span>
-                        </div>
-                      ) : (
-                        <div style={{ display:'flex', justifyContent:'space-between', background:'#fef3c7', border:'1px solid #fde68a', borderRadius:'5px', padding:'2px 5px', opacity:0.4 }}>
-                          <span style={{ fontSize:'8px', fontWeight:'700', color:'#92400e' }}>💴 자동돈</span>
-                          <span style={{ fontSize:'9px', fontWeight:'900', color:'#92400e' }}>-</span>
-                        </div>
-                      )}
-                      {/* 케이스 완료 소형 */}
+                      <div style={{ display:'flex', justifyContent:'space-between', background: autoXP>0?'#dbeafe':'#e0e7ff', border:`1px solid ${autoXP>0?'#60a5fa':'#a5b4fc'}`, borderRadius:'4px', padding:'2px 4px', opacity: autoXP>0?1:0.45 }}>
+                        <span style={{ fontSize:'7px', fontWeight:'700', color:'#1d4ed8' }}>⭐ 자동XP</span>
+                        <span style={{ fontSize:'8px', fontWeight:'900', color:'#1d4ed8' }}>{autoXP>0?`+${autoXP}/초`:'-'}</span>
+                      </div>
+                      <div style={{ display:'flex', justifyContent:'space-between', background: autoMoney>0?'#fef3c7':'#fef9c3', border:`1px solid ${autoMoney>0?'#fbbf24':'#fde68a'}`, borderRadius:'4px', padding:'2px 4px', opacity: autoMoney>0?1:0.45 }}>
+                        <span style={{ fontSize:'7px', fontWeight:'700', color:'#92400e' }}>💴 자동돈</span>
+                        <span style={{ fontSize:'8px', fontWeight:'900', color:'#92400e' }}>{autoMoney>0?`+${autoMoney}원/초`:'-'}</span>
+                      </div>
+                      {/* 케이스 5개 - 2열 */}
                       {caseTypes.map(ct => (
-                        <div key={ct.id} style={{ display:'flex', justifyContent:'space-between', padding:'1px 5px' }}>
-                          <span style={{ fontSize:'8px', fontWeight:'700', color:'#78350f' }}>{ct.icon}{ct.name.slice(0,3)}</span>
+                        <div key={ct.id} style={{ display:'flex', justifyContent:'space-between', padding:'1px 4px', background:'rgba(255,255,255,0.3)', borderRadius:'3px' }}>
+                          <span style={{ fontSize:'7px', fontWeight:'700', color:'#78350f' }}>{ct.icon} {ct.name}</span>
                           <span style={{ fontSize:'8px', fontWeight:'900', color:'#92400e' }}>{casesCompleted[ct.id]}</span>
                         </div>
                       ))}
@@ -1016,14 +1008,14 @@
                         background: upgradeTab==='skill' ? 'linear-gradient(135deg,#22c55e,#059669)' : '#e5e7eb',
                         borderColor: upgradeTab==='skill' ? '#15803d' : '#d1d5db',
                         color: upgradeTab==='skill' ? 'white' : '#374151' }}>
-                      ❤️ 스킬
+                      ❤️ 스킬 (클릭)
                     </button>
                     <button onClick={() => setUpgradeTab('equip')}
                       style={{ flex:1, padding:'3px', fontSize:'10px', fontWeight:'900', border:'2px solid', borderRadius:'7px', cursor:'pointer',
                         background: upgradeTab==='equip' ? 'linear-gradient(135deg,#3b82f6,#4f46e5)' : '#e5e7eb',
                         borderColor: upgradeTab==='equip' ? '#1d4ed8' : '#d1d5db',
                         color: upgradeTab==='equip' ? 'white' : '#374151' }}>
-                      💼 장비
+                      💼 장비 (자동)
                     </button>
                   </div>
                   {/* 카드 목록 - 내부 스크롤 */}
