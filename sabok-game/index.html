@@ -130,7 +130,8 @@
       const [level, setLevel] = useState(1);
       const [money, setMoney] = useState(450);
       const [clickPower, setClickPower] = useState(1);
-      const [autoIncome, setAutoIncome] = useState(0);
+      const [autoXP, setAutoXP] = useState(0);
+      const [autoMoney, setAutoMoney] = useState(0);
       const [totalClicks, setTotalClicks] = useState(0);
       const [currentCase, setCurrentCase] = useState(null);
       const [casesCompleted, setCasesCompleted] = useState({ child:0, elderly:0, disability:0, mental:0, family:0 });
@@ -139,8 +140,8 @@
       const [minigameCooldowns, setMinigameCooldowns] = useState({ counseling:0, typing:0, quiz:0 });
       const [typingInput, setTypingInput] = useState('');
       const [quizInput, setQuizInput] = useState('');
-      const [skills, setSkills] = useState({ empathy:0, documentation:0, networking:0, counseling:0, crisis:0 });
-      const [equipment, setEquipment] = useState({ chair:0, computer:0, coffee:0, bookshelf:0, plant:0, sofa:0 });
+      const [skills, setSkills] = useState({ empathy:0, documentation:0, networking:0, counseling:0, crisis:0, planning:0, budget:0 });
+      const [equipment, setEquipment] = useState({ chair:0, computer:0, coffee:0, bookshelf:0, plant:0, sofa:0, smartphone:0, printer:0 });
       const [clickAnimation, setClickAnimation] = useState(false);
       const [floatingNumbers, setFloatingNumbers] = useState([]);
       const [showSaveIndicator, setShowSaveIndicator] = useState(false);
@@ -180,27 +181,31 @@
       const getCurrentRank = () => [...ranks].reverse().find(r => level >= r.minLevel) || ranks[0];
 
       const caseTypes = [
-        {id:'child',name:'아동복지',icon:'👶',color:'from-pink-400 to-rose-500',bonus:1.2,description:'아동 보호 및 지원'},
-        {id:'elderly',name:'노인복지',icon:'👴',color:'from-amber-400 to-orange-500',bonus:1.3,description:'노인 돌봄 서비스'},
-        {id:'disability',name:'장애인복지',icon:'♿',color:'from-blue-400 to-indigo-500',bonus:1.4,description:'장애인 지원 서비스'},
-        {id:'mental',name:'정신건강',icon:'🧠',color:'from-purple-400 to-violet-500',bonus:1.5,description:'정신건강 상담'},
-        {id:'family',name:'가족복지',icon:'👨‍👩‍👧‍👦',color:'from-green-400 to-emerald-500',bonus:1.3,description:'가족 지원 서비스'}
+        {id:'child',name:'아동',icon:'👶',color:'from-pink-400 to-rose-500',bonus:1.2,description:'아동 보호 및 지원'},
+        {id:'elderly',name:'노인',icon:'👴',color:'from-amber-400 to-orange-500',bonus:1.3,description:'노인 돌봄 서비스'},
+        {id:'family',name:'가족',icon:'👨‍👩‍👧‍👦',color:'from-green-400 to-emerald-500',bonus:1.3,description:'가족 지원 서비스'},
+        {id:'mental',name:'정신',icon:'🧠',color:'from-purple-400 to-violet-500',bonus:1.5,description:'정신건강 상담'},
+        {id:'disability',name:'장애인',icon:'♿',color:'from-blue-400 to-indigo-500',bonus:1.4,description:'장애인 지원 서비스'},
       ];
 
       const skillsData = [
-        {id:'empathy',name:'공감능력',icon:'❤️',description:'클릭 파워 +5',effect:(lv)=>`클릭 xp +${lv*5}\n신뢰도 상승`,cost:(lvl)=>Math.floor(150*Math.pow(1.5,lvl))},
-        {id:'documentation',name:'문서작성',icon:'📄',description:'자동 수입 +10',effect:(lv)=>`자동 xp +${lv*10}/초\n문서보상 +${lv*5}%`,cost:(lvl)=>Math.floor(200*Math.pow(1.6,lvl))},
-        {id:'networking',name:'네트워킹',icon:'🤝',description:'경험치 +15%',effect:(lv)=>`클릭 xp +${lv*15}%\n케이스 빈도 증가`,cost:(lvl)=>Math.floor(300*Math.pow(1.7,lvl))},
-        {id:'counseling',name:'상담기술',icon:'💬',description:'케이스 보너스 +10%',effect:(lv)=>`케이스 +${lv*10}%\n상담보상 +${lv*8}%`,cost:(lvl)=>Math.floor(250*Math.pow(1.6,lvl))},
-        {id:'crisis',name:'위기개입',icon:'🚨',description:'특수 케이스 +20%',effect:(lv)=>`위기 +${lv*20}%\n긴급 빈도 +${lv*5}%`,cost:(lvl)=>Math.floor(400*Math.pow(1.8,lvl))}
+        {id:'empathy',    name:'공감능력', icon:'❤️', statType:'click',    statValue:5,  description:'클릭XP +5/레벨',      cost:(lvl)=>Math.floor(150*Math.pow(1.5,lvl))},
+        {id:'documentation',name:'문서작성',icon:'📄', statType:'autoXP',  statValue:10, description:'자동XP +10/초·레벨',  cost:(lvl)=>Math.floor(200*Math.pow(1.6,lvl))},
+        {id:'networking', name:'네트워킹', icon:'🤝', statType:'click_pct',statValue:15, description:'클릭XP+돈 ×15%/레벨', cost:(lvl)=>Math.floor(300*Math.pow(1.7,lvl))},
+        {id:'counseling', name:'상담기술', icon:'💬', statType:'click_pct',statValue:10, description:'클릭XP+돈 ×10%/레벨', cost:(lvl)=>Math.floor(250*Math.pow(1.6,lvl))},
+        {id:'crisis',     name:'위기개입', icon:'🚨', statType:'autoMoney',statValue:20, description:'자동돈 +20원/초·레벨', cost:(lvl)=>Math.floor(400*Math.pow(1.8,lvl))},
+        {id:'planning',   name:'기획력',  icon:'💡', statType:'autoXP',   statValue:15, description:'자동XP +15/초·레벨',  cost:(lvl)=>Math.floor(350*Math.pow(1.7,lvl))},
+        {id:'budget',     name:'예산관리',icon:'💵', statType:'autoMoney',statValue:15, description:'자동돈 +15원/초·레벨', cost:(lvl)=>Math.floor(350*Math.pow(1.7,lvl))},
       ];
       const equipmentData = [
-        {id:'chair',name:'좋은 의자',icon:'💺',description:'클릭 파워 +3',effect:(lv)=>`클릭 xp +${lv*3}\n장시간 효율`,cost:(lvl)=>Math.floor(100*Math.pow(1.4,lvl))},
-        {id:'computer',name:'빠른 컴퓨터',icon:'💻',description:'자동 수입 +15',effect:(lv)=>`자동 xp +${lv*15}/초\n문서속도 향상`,cost:(lvl)=>Math.floor(250*Math.pow(1.5,lvl))},
-        {id:'coffee',name:'커피머신',icon:'☕',description:'클릭 파워 +10',effect:(lv)=>`클릭 xp +${lv*10}\n집중력 향상`,cost:(lvl)=>Math.floor(500*Math.pow(1.6,lvl))},
-        {id:'bookshelf',name:'전문서적',icon:'📚',description:'퀴즈 보상 +15%',effect:(lv)=>`퀴즈 +${lv*15}%\n지식 축적`,cost:(lvl)=>Math.floor(800*Math.pow(1.7,lvl))},
-        {id:'plant',name:'관엽식물',icon:'🪴',description:'자동 수입 +5',effect:(lv)=>`자동 xp +${lv*5}/초\n분위기 개선`,cost:(lvl)=>Math.floor(300*Math.pow(1.4,lvl))},
-        {id:'sofa',name:'상담 소파',icon:'🛋️',description:'상담 보상 +25%',effect:(lv)=>`상담 +${lv*25}%\n만족도 상승`,cost:(lvl)=>Math.floor(1000*Math.pow(1.8,lvl))}
+        {id:'chair',    name:'좋은 의자',  icon:'💺', statType:'click',    statValue:3,  description:'클릭XP +3/레벨',      cost:(lvl)=>Math.floor(100*Math.pow(1.4,lvl))},
+        {id:'computer', name:'빠른 컴퓨터',icon:'💻', statType:'autoXP',  statValue:15, description:'자동XP +15/초·레벨',  cost:(lvl)=>Math.floor(250*Math.pow(1.5,lvl))},
+        {id:'coffee',   name:'커피머신',   icon:'☕', statType:'click',    statValue:10, description:'클릭XP +10/레벨',     cost:(lvl)=>Math.floor(500*Math.pow(1.6,lvl))},
+        {id:'bookshelf',name:'전문서적',   icon:'📚', statType:'autoMoney',statValue:15, description:'자동돈 +15원/초·레벨', cost:(lvl)=>Math.floor(800*Math.pow(1.7,lvl))},
+        {id:'plant',    name:'관엽식물',   icon:'🪴', statType:'autoXP',  statValue:5,  description:'자동XP +5/초·레벨',   cost:(lvl)=>Math.floor(300*Math.pow(1.4,lvl))},
+        {id:'sofa',     name:'상담 소파',  icon:'🛋️', statType:'click',    statValue:25, description:'클릭XP +25/레벨',     cost:(lvl)=>Math.floor(1000*Math.pow(1.8,lvl))},
+        {id:'smartphone',name:'스마트폰',  icon:'📱', statType:'autoMoney',statValue:10, description:'자동돈 +10원/초·레벨', cost:(lvl)=>Math.floor(450*Math.pow(1.6,lvl))},
+        {id:'printer',  name:'레이저프린터',icon:'🖨️', statType:'autoXP',  statValue:8,  description:'자동XP +8/초·레벨',   cost:(lvl)=>Math.floor(600*Math.pow(1.65,lvl))},
       ];
 
       // ── 초기화 ──
@@ -233,10 +238,11 @@
             setLevel(data.level || 1);
             setMoney(data.money || 450);
             setClickPower(data.clickPower || 1);
-            setAutoIncome(data.autoIncome || 0);
+            setAutoXP(data.autoXP || 0);
+            setAutoMoney(data.autoMoney || 0);
             setTotalClicks(data.totalClicks || 0);
-            setSkills(data.skills || { empathy:0, documentation:0, networking:0, counseling:0, crisis:0 });
-            setEquipment(data.equipment || { chair:0, computer:0, coffee:0, bookshelf:0, plant:0, sofa:0 });
+            setSkills(data.skills || { empathy:0, documentation:0, networking:0, counseling:0, crisis:0, planning:0, budget:0 });
+            setEquipment(data.equipment || { chair:0, computer:0, coffee:0, bookshelf:0, plant:0, sofa:0, smartphone:0, printer:0 });
             setCasesCompleted(data.casesCompleted || { child:0, elderly:0, disability:0, mental:0, family:0 });
           } catch(e) { /* 데이터 파싱 오류 무시 */ }
         }
@@ -244,7 +250,7 @@
 
       const saveGameData = useCallback(async () => {
         if (!userId) return;
-        const gameData = { gender, experience, level, money, clickPower, autoIncome, totalClicks, skills, equipment, casesCompleted, lastSaved: Date.now() };
+        const gameData = { gender, experience, level, money, clickPower, autoXP, autoMoney, totalClicks, skills, equipment, casesCompleted, lastSaved: Date.now() };
         localStorage.setItem(`gameData_${userId}`, JSON.stringify(gameData));
         try {
           const latestNickname = localStorage.getItem('saboks_anonymous_name') || localStorage.getItem('sabok_nickname') || nickname || '';
@@ -257,7 +263,7 @@
         } catch(e) {}
         setShowSaveIndicator(true);
         setTimeout(() => setShowSaveIndicator(false), 2000);
-      }, [userId, nickname, gender, experience, level, money, clickPower, autoIncome, totalClicks, skills, equipment, casesCompleted]);
+      }, [userId, nickname, gender, experience, level, money, clickPower, autoXP, autoMoney, totalClicks, skills, equipment, casesCompleted]);
 
       useEffect(() => {
         if (userId && gender) {
@@ -279,14 +285,14 @@
       }, [currentScreen]);
 
       useEffect(() => {
-        if (autoIncome > 0) {
+        if (autoXP > 0 || autoMoney > 0) {
           const interval = setInterval(() => {
-            setExperience(prev => prev + autoIncome);
-            setMoney(prev => prev + autoIncome * 0.5);
+            if (autoXP > 0) setExperience(prev => prev + autoXP);
+            if (autoMoney > 0) setMoney(prev => prev + autoMoney);
           }, 1000);
           return () => clearInterval(interval);
         }
-      }, [autoIncome]);
+      }, [autoXP, autoMoney]);
 
       useEffect(() => {
         const interval = setInterval(() => {
@@ -397,8 +403,11 @@
         if (money >= cost) {
           setMoney(prev => prev - cost);
           setSkills(prev => ({ ...prev, [skillId]: prev[skillId] + 1 }));
-          if (skillId === 'empathy') setClickPower(prev => prev + 5);
-          if (skillId === 'documentation') setAutoIncome(prev => prev + 10);
+          if (skillId === 'empathy')       setClickPower(prev => prev + 5);
+          if (skillId === 'documentation') setAutoXP(prev => prev + 10);
+          if (skillId === 'crisis')        setAutoMoney(prev => prev + 20);
+          if (skillId === 'planning')      setAutoXP(prev => prev + 15);
+          if (skillId === 'budget')        setAutoMoney(prev => prev + 15);
         }
       };
       const upgradeEquipment = (equipId) => {
@@ -407,8 +416,14 @@
         if (money >= cost) {
           setMoney(prev => prev - cost);
           setEquipment(prev => ({ ...prev, [equipId]: prev[equipId] + 1 }));
-          if (equipId === 'computer') setAutoIncome(prev => prev + 15);
-          if (equipId === 'coffee') setClickPower(prev => prev + 10);
+          if (equipId === 'chair')       setClickPower(prev => prev + 3);
+          if (equipId === 'computer')    setAutoXP(prev => prev + 15);
+          if (equipId === 'coffee')      setClickPower(prev => prev + 10);
+          if (equipId === 'bookshelf')   setAutoMoney(prev => prev + 15);
+          if (equipId === 'plant')       setAutoXP(prev => prev + 5);
+          if (equipId === 'sofa')        setClickPower(prev => prev + 25);
+          if (equipId === 'smartphone')  setAutoMoney(prev => prev + 10);
+          if (equipId === 'printer')     setAutoXP(prev => prev + 8);
         }
       };
 
@@ -603,7 +618,7 @@
             <div className="grid grid-cols-2 gap-5 w-full max-w-sm">
               <button className="card-male p-4" onClick={() => {
                 setGender('male'); setCurrentScreen('game');
-                if (userId) { const d = { gender:'male', experience, level, money, clickPower, autoIncome, totalClicks, skills, equipment, casesCompleted, lastSaved: Date.now() }; localStorage.setItem(`gameData_${userId}`, JSON.stringify(d)); }
+                if (userId) { const d = { gender:'male', experience, level, money, clickPower, autoXP, autoMoney, totalClicks, skills, equipment, casesCompleted, lastSaved: Date.now() }; localStorage.setItem(`gameData_${userId}`, JSON.stringify(d)); }
               }}>
                 <div className="char-bob">
                   <svg viewBox="0 0 80 110" className="w-full" style={{ height: 140 }}>
@@ -638,7 +653,7 @@
               </button>
               <button className="card-female p-4" onClick={() => {
                 setGender('female'); setCurrentScreen('game');
-                if (userId) { const d = { gender:'female', experience, level, money, clickPower, autoIncome, totalClicks, skills, equipment, casesCompleted, lastSaved: Date.now() }; localStorage.setItem(`gameData_${userId}`, JSON.stringify(d)); }
+                if (userId) { const d = { gender:'female', experience, level, money, clickPower, autoXP, autoMoney, totalClicks, skills, equipment, casesCompleted, lastSaved: Date.now() }; localStorage.setItem(`gameData_${userId}`, JSON.stringify(d)); }
               }}>
                 <div className="char-bob-delay">
                   <svg viewBox="0 0 80 110" className="w-full" style={{ height: 140 }}>
@@ -939,10 +954,26 @@
                         <span style={{ fontSize:'8px', fontWeight:'700', color:'#a16207' }}>💰 클릭돈</span>
                         <span style={{ fontSize:'9px', fontWeight:'900', color:'#a16207' }}>+{Math.floor(clickPower*(1+skills.networking*0.15)*(1+skills.counseling*0.1)*0.5)}원</span>
                       </div>
-                      {autoIncome > 0 && (
+                      {autoXP > 0 ? (
                         <div style={{ display:'flex', justifyContent:'space-between', background:'#dbeafe', border:'1px solid #60a5fa', borderRadius:'5px', padding:'2px 5px' }}>
-                          <span style={{ fontSize:'8px', fontWeight:'700', color:'#1d4ed8' }}>⏱ 자동</span>
-                          <span style={{ fontSize:'9px', fontWeight:'900', color:'#1d4ed8' }}>+{autoIncome}/초</span>
+                          <span style={{ fontSize:'8px', fontWeight:'700', color:'#1d4ed8' }}>⭐ 자동XP</span>
+                          <span style={{ fontSize:'9px', fontWeight:'900', color:'#1d4ed8' }}>+{autoXP}/초</span>
+                        </div>
+                      ) : (
+                        <div style={{ display:'flex', justifyContent:'space-between', background:'#e0e7ff', border:'1px solid #a5b4fc', borderRadius:'5px', padding:'2px 5px', opacity:0.4 }}>
+                          <span style={{ fontSize:'8px', fontWeight:'700', color:'#4338ca' }}>⭐ 자동XP</span>
+                          <span style={{ fontSize:'9px', fontWeight:'900', color:'#4338ca' }}>-</span>
+                        </div>
+                      )}
+                      {autoMoney > 0 ? (
+                        <div style={{ display:'flex', justifyContent:'space-between', background:'#fef3c7', border:'1px solid #fbbf24', borderRadius:'5px', padding:'2px 5px' }}>
+                          <span style={{ fontSize:'8px', fontWeight:'700', color:'#92400e' }}>💴 자동돈</span>
+                          <span style={{ fontSize:'9px', fontWeight:'900', color:'#92400e' }}>+{autoMoney}원/초</span>
+                        </div>
+                      ) : (
+                        <div style={{ display:'flex', justifyContent:'space-between', background:'#fef3c7', border:'1px solid #fde68a', borderRadius:'5px', padding:'2px 5px', opacity:0.4 }}>
+                          <span style={{ fontSize:'8px', fontWeight:'700', color:'#92400e' }}>💴 자동돈</span>
+                          <span style={{ fontSize:'9px', fontWeight:'900', color:'#92400e' }}>-</span>
                         </div>
                       )}
                       {/* 케이스 완료 소형 */}
@@ -1003,6 +1034,14 @@
                         const cost = item.cost(currentLevel);
                         const canAfford = money >= cost;
                         const isSkill = upgradeTab === 'skill';
+                        // stat badge config
+                        const statBadge = item.statType === 'click'
+                          ? { label:`클릭XP +${item.statValue}`, color:'#bbf7d0', bg:'rgba(22,163,74,0.35)' }
+                          : item.statType === 'autoXP'
+                          ? { label:`자동XP +${item.statValue}/초`, color:'#bfdbfe', bg:'rgba(29,78,216,0.35)' }
+                          : item.statType === 'autoMoney'
+                          ? { label:`자동돈 +${item.statValue}원/초`, color:'#fde68a', bg:'rgba(146,64,14,0.35)' }
+                          : { label:`클릭XP+돈 ×${item.statValue}%`, color:'#f9a8d4', bg:'rgba(157,23,77,0.35)' };
                         return (
                           <button key={item.id}
                             onClick={() => isSkill ? upgradeSkill(item.id) : upgradeEquipment(item.id)}
@@ -1013,7 +1052,7 @@
                               borderRadius:'8px', padding:'5px 6px', cursor: canAfford ? 'pointer' : 'not-allowed',
                               opacity: canAfford ? 1 : 0.6, textAlign:'left'
                             }}>
-                            <div style={{ display:'flex', alignItems:'center', gap:'4px', marginBottom:'2px' }}>
+                            <div style={{ display:'flex', alignItems:'center', gap:'4px', marginBottom:'3px' }}>
                               <span style={{ fontSize:'15px' }}>{item.icon}</span>
                               <div style={{ flex:1, minWidth:0 }}>
                                 <div style={{ fontSize:'9px', fontWeight:'900', color:'white', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{item.name}</div>
@@ -1021,7 +1060,10 @@
                               </div>
                               {canAfford && <span style={{ fontSize:'8px', fontWeight:'900', color:'white', background:'rgba(0,0,0,0.2)', borderRadius:'3px', padding:'1px 3px' }}>TAP</span>}
                             </div>
-                            <div style={{ fontSize:'8px', fontWeight:'700', color:'#bbf7d0' }}>{item.description}</div>
+                            {/* stat badge */}
+                            <div style={{ display:'inline-block', background: statBadge.bg, borderRadius:'4px', padding:'1px 5px', marginBottom:'2px' }}>
+                              <span style={{ fontSize:'8px', fontWeight:'900', color: statBadge.color }}>▲ {statBadge.label}</span>
+                            </div>
                             <div style={{ fontSize:'8px', fontWeight:'700', color:'#fde047' }}>💰 {cost.toLocaleString()}</div>
                           </button>
                         );
@@ -1116,7 +1158,8 @@
                     { label:'현재 레벨', value:level, bg:'#f3e8ff', border:'#c084fc', color:'#7e22ce', icon:'⭐' },
                     { label:'보유 자금', value:`${Math.floor(money).toLocaleString()}원`, bg:'#fef9c3', border:'#facc15', color:'#a16207', icon:'💰' },
                     { label:'클릭 파워', value:`+${clickPower} xp`, bg:'#dcfce7', border:'#4ade80', color:'#15803d', icon:'🖱️' },
-                    { label:'자동 수입', value:`+${autoIncome} xp/초`, bg:'#dbeafe', border:'#60a5fa', color:'#1d4ed8', icon:'⏱️' },
+                    { label:'자동 XP', value:`+${autoXP} xp/초`, bg:'#dbeafe', border:'#60a5fa', color:'#1d4ed8', icon:'⭐' },
+                    { label:'자동 돈', value:`+${autoMoney}원/초`, bg:'#fef9c3', border:'#fbbf24', color:'#a16207', icon:'💴' },
                     { label:'총 클릭수', value:totalClicks.toLocaleString(), bg:'#e0e7ff', border:'#a5b4fc', color:'#4338ca', icon:'👆' },
                     { label:'완료 케이스', value:`${Object.values(casesCompleted).reduce((a,b)=>a+b,0)}건`, bg:'#fce7f3', border:'#f9a8d4', color:'#9d174d', icon:'📋' },
                   ].map(({ label, value, bg, border, color, icon }) => (
