@@ -37,6 +37,35 @@
 </head>
 
 <body>
+    <!-- SEO 정적 콘텐츠 (구글 크롤러 및 JS 미지원 환경용) -->
+    <noscript>
+        <div style="padding:20px; font-family:sans-serif; max-width:800px; margin:0 auto; color:#334155;">
+            <h1 style="font-size:1.8rem; font-weight:900; margin-bottom:12px;">사회복지사 비밀노트 🌿</h1>
+            <p style="font-size:1rem; line-height:1.7; margin-bottom:16px;">
+                사회복지사를 위한 실무 AI 도우미 서비스입니다. AI 프롬프트, 복지 용어 단어장, 행정/회계 계산기, 익명 Q&A, 커뮤니티 등 다양한 기능을 한 곳에서 제공합니다.
+            </p>
+            <h2 style="font-size:1.2rem; font-weight:800; margin-bottom:8px;">주요 기능</h2>
+            <ul style="line-height:2; padding-left:20px;">
+                <li>🪄 사복천재의 비밀 프롬프트 — 사회복지 전문가 AI로 변신하는 마법의 주문</li>
+                <li>💸 행정/회계 마스터 — 복잡한 계산을 1초에 해결</li>
+                <li>📖 초보복지사 생존 단어장 — 복지 용어를 쉽고 빠르게</li>
+                <li>💰 수급판정 계산 — 기초생활수급, 차상위계층, 장기요양 등 판정 기준 계산</li>
+                <li>📊 핵심 지표 — 2026년 기준 중위소득, 장기요양 한도액, 최신 복지 지표 확인</li>
+                <li>🆘 익명 Q&A — 실무 고민을 익명으로 털어놓고 전국 사복인들의 답변 받기</li>
+                <li>💬 커뮤니티 — 자유게시판, 정보 공유방, 취업/이직, 하루일기</li>
+                <li>🎢 사복놀이터 — 나는 어떤 유형의 사회복지사? 심리테스트 & 사복 키우기 게임</li>
+            </ul>
+            <h2 style="font-size:1.2rem; font-weight:800; margin-top:20px; margin-bottom:8px;">서비스 이용 안내</h2>
+            <p style="line-height:1.7;">
+                별도 회원가입 없이 익명으로 이용할 수 있습니다. 시스템이 자동으로 유쾌한 익명 닉네임을 생성해 드립니다.
+                동기화 코드를 통해 기기를 변경해도 내 정보를 그대로 이어갈 수 있습니다.
+            </p>
+            <p style="margin-top:16px; font-size:0.9rem; color:#64748b;">
+                사회복지사 | 사례관리 | 기초생활수급 | 노인장기요양 | 장애인복지 | 행정/회계 | 복지 실무
+            </p>
+        </div>
+    </noscript>
+
     <div id="app">
 
         <!-- ===== HEADER ===== -->
@@ -229,7 +258,6 @@
                     </div>
                 </section>
 
-                <div style="height:100px;"></div>
             </div> <!-- end view-home -->
 
             <!-- ===== RECORD/HELP VIEW ===== -->
@@ -489,7 +517,419 @@
                             </div>
                         </div>
 
-                        <div style="text-align:center; padding-top:8px;">
+                        <!-- ⑥ 상세 안내 & FAQ (아코디언 - 구글 애드센스 콘텐츠 보강) -->
+                        <div style="margin-top:24px;">
+                            <div style="margin-bottom:12px;">
+                                <span style="font-weight:900; font-size:1.1rem; color:#1e293b;">📚 이용 안내 & 자주 묻는
+                                    질문</span>
+                            </div>
+
+                            <!-- 아코디언 공통 스타일 -->
+                            <style>
+                                .acc-item {
+                                    background: #fff;
+                                    border: 1px solid #e2e8f0;
+                                    border-radius: 14px;
+                                    margin-bottom: 8px;
+                                    overflow: hidden;
+                                }
+
+                                .acc-header {
+                                    display: flex;
+                                    justify-content: space-between;
+                                    align-items: center;
+                                    padding: 14px 16px;
+                                    cursor: pointer;
+                                    font-weight: 800;
+                                    font-size: 0.92rem;
+                                    color: #1e293b;
+                                    user-select: none;
+                                }
+
+                                .acc-arrow {
+                                    font-size: 0.8rem;
+                                    color: #94a3b8;
+                                    transition: transform 0.25s;
+                                }
+
+                                .acc-body {
+                                    display: none;
+                                    padding: 0 16px 16px;
+                                    font-size: 0.875rem;
+                                    color: #475569;
+                                    line-height: 1.8;
+                                }
+
+                                .acc-body.open {
+                                    display: block;
+                                }
+
+                                .acc-arrow.open {
+                                    transform: rotate(180deg);
+                                }
+
+                                .acc-body h3 {
+                                    font-size: 0.95rem;
+                                    font-weight: 800;
+                                    color: #1e293b;
+                                    margin: 14px 0 6px;
+                                }
+
+                                .acc-body p {
+                                    margin-bottom: 10px;
+                                }
+
+                                .acc-body ul {
+                                    padding-left: 18px;
+                                    margin-bottom: 10px;
+                                }
+
+                                .acc-body li {
+                                    margin-bottom: 4px;
+                                }
+
+                                .acc-body table {
+                                    width: 100%;
+                                    border-collapse: collapse;
+                                    font-size: 0.8rem;
+                                    margin: 10px 0;
+                                }
+
+                                .acc-body th {
+                                    background: #f1f5f9;
+                                    padding: 6px 8px;
+                                    text-align: left;
+                                    font-weight: 800;
+                                    border: 1px solid #e2e8f0;
+                                }
+
+                                .acc-body td {
+                                    padding: 6px 8px;
+                                    border: 1px solid #e2e8f0;
+                                }
+                            </style>
+
+                            <!-- 1. 수급판정 계산기 -->
+                            <div class="acc-item">
+                                <div class="acc-header" onclick="toggleAcc(this)">
+                                    💰 2026년 수급판정 계산기 이용 가이드
+                                    <span class="acc-arrow">▼</span>
+                                </div>
+                                <div class="acc-body">
+                                    <h3>2026년 기준 중위소득이란?</h3>
+                                    <p>기준 중위소득은 통계청의 가계금융복지조사 결과를 토대로 중앙생활보장위원회가 매년 고시하는 국민 가구 소득의 중간값입니다. 2026년도 기준
+                                        중위소득은 전년 대비 인상되어 사회복지 현장에서 수급 판정의 핵심 기준으로 활용됩니다. 기초생활보장, 차상위계층, 한부모가족 지원 등 다양한
+                                        복지급여의 선정 기준이 이 수치를 바탕으로 결정됩니다.</p>
+                                    <table>
+                                        <tr>
+                                            <th>가구원수</th>
+                                            <th>2026년 기준 중위소득</th>
+                                        </tr>
+                                        <tr>
+                                            <td>1인</td>
+                                            <td>2,392,013원</td>
+                                        </tr>
+                                        <tr>
+                                            <td>2인</td>
+                                            <td>3,932,658원</td>
+                                        </tr>
+                                        <tr>
+                                            <td>3인</td>
+                                            <td>5,025,353원</td>
+                                        </tr>
+                                        <tr>
+                                            <td>4인</td>
+                                            <td>6,097,773원</td>
+                                        </tr>
+                                        <tr>
+                                            <td>5인</td>
+                                            <td>7,108,192원</td>
+                                        </tr>
+                                        <tr>
+                                            <td>6인</td>
+                                            <td>8,064,805원</td>
+                                        </tr>
+                                    </table>
+                                    <h3>급여 종류별 선정 기준</h3>
+                                    <ul>
+                                        <li><strong>생계급여:</strong> 기준 중위소득 32% 이하 — 소득인정액이 선정 기준 이하일 때 지원</li>
+                                        <li><strong>의료급여:</strong> 기준 중위소득 40% 이하</li>
+                                        <li><strong>주거급여:</strong> 기준 중위소득 48% 이하</li>
+                                        <li><strong>교육급여:</strong> 기준 중위소득 50% 이하</li>
+                                        <li><strong>차상위계층:</strong> 기준 중위소득 50% 이하이나 수급자가 아닌 가구</li>
+                                    </ul>
+                                    <h3>소득인정액 계산 방법</h3>
+                                    <p>소득인정액 = 소득평가액 + 재산의 소득환산액으로 계산됩니다. 소득평가액은 실제 소득에서 가구 특성별 지출비용과 근로·사업소득 공제를 뺀
+                                        금액입니다. 재산의 소득환산액은 (재산 - 기본재산액 - 부채) × 소득환산율로 계산하며, 주거용 재산, 일반재산, 금융재산, 자동차 별로
+                                        환산율이 다르게 적용됩니다.</p>
+                                    <h3>사회복지사 실무 활용 팁</h3>
+                                    <p>수급 판정 계산기를 사용할 때는 클라이언트의 정확한 소득 자료와 재산 내역을 먼저 수집하는 것이 중요합니다. 금융재산의 경우 6개월 평균잔액을
+                                        기준으로 하며, 자동차는 차종과 연식에 따라 기준가액이 달라집니다. 연금 소득, 공적이전소득, 사적이전소득의 구분도 정확히 파악해야 올바른
+                                        판정이 가능합니다.</p>
+                                </div>
+                            </div>
+
+                            <!-- 2. 행정/회계 마스터 -->
+                            <div class="acc-item">
+                                <div class="acc-header" onclick="toggleAcc(this)">
+                                    💸 행정/회계 마스터 — 업무 자동화 활용 가이드
+                                    <span class="acc-arrow">▼</span>
+                                </div>
+                                <div class="acc-body">
+                                    <h3>행정/회계 마스터 통합 도구 활용 가이드</h3>
+                                    <p>행정/회계 마스터는 사회복지 현장에서 발생하는 복잡하고 반복적인 각종 계산 및 행정 처리를 1초 만에 해결할 수 있도록 고안된 8가지 필수 업무
+                                        자동화 솔루션 모음입니다. 급여 계산기뿐만 아니라 사업비 지출, 강사비 지급, 실적 관리, 문서 첨부용 사진 압축 등 사회복지사의 모든 행정
+                                        여정을 전방위적으로 지원합니다. 각 도구별 최적의 활용법을 숙지하여 더 의미 있는 실무에 집중할 수 있는 시간을 확보하시기 바랍니다.</p>
+
+                                    <h3>8가지 통합 행정/회계 솔루션 안내</h3>
+                                    <ul>
+                                        <li><strong>1. 부가세 계산기:</strong> 물품 구입 및 공사 계약 시, 총액만 입력하면 공급가액과 부가세를 즉시 분리하여
+                                            표시합니다. 세금계산서 발행(역발행 포함) 시 숫자가 틀려 공급업체와 다시 연락해야 하는 번거로움을 원천 차단하며, 지출결의서 작성
+                                            빈도가 높은 서무 담당자에게 필수적인 기능입니다. 복사 버튼 하나로 품의서에 바로 붙여넣기가 가능합니다.</li>
+                                        <li><strong>2. 강사료 세금 계산기:</strong> 외부 전문강사나 자원봉사자에게 특강비를 지급할 때, 사업소득(3.3%)과
+                                            기타소득(8.8%) 중 어떤 세율을 적용해야 할지 고민하지 마세요. 지급 총액과 세금 종류만 선택하면 원천징수할 세금과 실 지급액을
+                                            원단위까지 정확하게 산출합니다. 기타소득 과세최저한(125,000원 이하) 조건도 시스템이 자동 감지하여 실수령액을 보정해 줍니다.
+                                        </li>
+                                        <li><strong>3. 급여 정산기:</strong> 신규 직원 채용 면접, 근로계약서 작성, 혹은 급여 명세서 검토 시 활용도가 가장 높은
+                                            도구입니다. 기본급, 가족수당, 연장수당, 식대(비과세 축소/확대 기준 반영)를 입력하면 4대 보험료(국민연금, 건강보험, 장기요양,
+                                            고용보험) 및 갑근세, 지방소득세를 노동부 및 건강보험공단 실무 요율에 맞춰 가산출합니다.</li>
+                                        <li><strong>4. 장기요양 한도 계산기:</strong> 장기요양기관(주야간보호, 방문요양 등) 종사자를 위한 전용 시뮬레이터입니다.
+                                            대상자의 장기요양 등급(1~5등급 및 인지지원등급)과 월별 이용 일수, 시간만 선택하면 해당 월의 총 한도액 대비 이용 예상 금액과
+                                            본인부담금을 직관적으로 파악할 수 있어, 어르신이나 보호자 상담 시 예상 청구액 안내에 특화되어 있습니다.</li>
+                                        <li><strong>5. 1인당 단가 계산기 (예산 체크):</strong> 프로그램 운영 시 다과회나 식대, 혹은 답사 비용 결재를 올리기
+                                            전 필수 관문입니다. 배정된 총예산과 참여 인원, 그리고 내부 결재 지침 상의 제한액(예: 식사 1인당 8,000원 한도)을 입력하면
+                                            1인당 실제 단가가 자동 산출되며, 기준 초과 여부를 즉각적인 색상 경고로 알려주어 예산 집행의 안정성을 더합니다.</li>
+                                        <li><strong>6. 자립준비청년 연령 계산기:</strong> 보호 종료를 앞두거나 이미 종료된 시설 및 위탁가정 퇴소 청년들의 지원
+                                            자격을 명확히 판단하는 도구입니다. 출생연월일과 보호 종료일을 기입하면 군 복무 기간 연장 특례 등을 시스템이 알아서 반영하여, 현재
+                                            '자립준비청년'으로서 자립수당 등 핵심 보호 혜택을 챙겨 받을 수 있는 법적 연령 및 잔여 혜택 기간을 즉시 판별해 냅니다.</li>
+                                        <li><strong>7. 목표 달성률 계산기:</strong> 연말 사업 평가, 중간 성과 보고서, 혹은 외부 재단 프로포절 결과 보고서 작성
+                                            시 가장 유용하게 쓰이는 도구입니다. 연초에 설정한 정량적 목표치와 현재까지의 실제 달성 수치를 넣으면 소수점 단위까지 정확한
+                                            '퍼센트(%)' 달성률을 시각적 게이지 및 텍스트 형태로 제공해 보고서의 신뢰도를 한층 높여 줍니다.</li>
+                                        <li><strong>8. 이미지 용량 줄이기:</strong> 시설 보수 전후 사진 기록, 사업 정산 결과 보고, 혹은 차세대 희망이음(웹)
+                                            시스템 파일 첨부 시 제한된 업로드 용량(보통 2~5MB 이하) 한도 때문에 쩔쩔매던 서류 업무의 병목을 해결합니다. 고가의 화질 저하를
+                                            최소화하면서도 시스템이 요구하는 킬로바이트(KB) 등 초단위 크기로 사진을 압축하고 즉시 저장이 가능합니다.</li>
+                                    </ul>
+                                    <h3>언제 어디서나, 엑셀 없이 실무 역량 강화</h3>
+                                    <p>위 8가지 행정/회계 마스터 도구들은 별도의 앱 설치나 무거운 엑셀 파일 열람 과정을 거치지 않고, 현장에 있는 스마트폰이나 사무실 PC 브라우저
+                                        하나로 즉시 실행됩니다. 특히 외부 유관기관 미팅 중이나 클라이언트의 가정 방문 상담 시, 예상치 못한 행정 수치 확인 요구에도 프로페셔널하고
+                                        신속하게 대응할 수 있는 '나만의 개인 비서' 모드를 완성해 보세요. 복지사가 복잡한 숫자에 얽매이지 않고 사람을 위한 가치 지향적 실무에 더
+                                        집중할 수 있도록 지속적인 업데이트가 이루어질 예정입니다.</p>
+                                </div>
+                            </div>
+
+                            <!-- 3. AI 프롬프트 가이드 -->
+                            <div class="acc-item">
+                                <div class="acc-header" onclick="toggleAcc(this)">
+                                    🪄 사복천재 비밀 프롬프트 활용법
+                                    <span class="acc-arrow">▼</span>
+                                </div>
+                                <div class="acc-body">
+                                    <h3>AI 프롬프트란 무엇인가요?</h3>
+                                    <p>AI 프롬프트는 ChatGPT, Claude, Gemini 등 인공지능 서비스에 입력하는 명령어 또는 지시문입니다. 동일한 AI 서비스라도
+                                        프롬프트를 어떻게 작성하느냐에 따라 결과물의 품질이 크게 달라집니다. 사회복지 실무에 최적화된 프롬프트를 사용하면 케이스 기록, 보고서 작성,
+                                        사례관리 계획서 등의 업무 효율을 크게 높일 수 있습니다.</p>
+                                    <h3>사회복지 실무에서 AI 활용 분야</h3>
+                                    <ul>
+                                        <li><strong>사례 기록 작성:</strong> 면담 내용을 정리하고, PIE(Person In Environment) 관점에서 기록
+                                            초안 생성</li>
+                                        <li><strong>사례관리 계획서:</strong> 욕구 사정 결과를 바탕으로 단기·중기·장기 목표와 개입 계획 수립</li>
+                                        <li><strong>자원 연계 계획:</strong> 클라이언트 상황에 맞는 지역 내 복지서비스와 자원 연계 방안 제안</li>
+                                        <li><strong>공문서 작성:</strong> 사업계획서, 결과 보고서, 협조 공문의 초안 작성</li>
+                                        <li><strong>위기 개입:</strong> 위기 상황 대처 방안과 안전 계획 수립 지원</li>
+                                    </ul>
+                                    <h3>효과적인 프롬프트 작성 원칙</h3>
+                                    <p>좋은 프롬프트는 역할 설정(사회복지사 전문가로서), 맥락 제공(클라이언트 상황), 구체적 요청(작성 형식, 분량, 목적)의 세 가지 요소를
+                                        포함합니다. 예를 들어 "10년 경력의 사례관리 전문가로서, 65세 독거노인 클라이언트의 욕구 사정 결과를 바탕으로 3개월 단기 목표를 포함한
+                                        개인별 서비스 계획서를 작성해 주세요"와 같이 구체적으로 작성할수록 유용한 결과를 얻을 수 있습니다.</p>
+                                </div>
+                            </div>
+
+                            <!-- 4. FAQ -->
+                            <div class="acc-item">
+                                <div class="acc-header" onclick="toggleAcc(this)">
+                                    ❓ 자주 묻는 질문 (FAQ)
+                                    <span class="acc-arrow">▼</span>
+                                </div>
+                                <div class="acc-body">
+                                    <h3>Q. 사복천재 닉네임은 어떻게 만들어지나요?</h3>
+                                    <p>별도의 회원가입 없이 처음 접속 시 시스템이 자동으로 유쾌한 익명 닉네임을 생성합니다. "칼퇴하고 싶은 여우", "월급만 기다리는 햄스터" 같은
+                                        유쾌한 닉네임이 만들어지며, '내 정보' 탭에서 새 닉네임으로 뽑기를 할 수 있습니다. 닉네임과 동기화 코드는 기기의 로컬 스토리지와 서버에
+                                        저장됩니다.</p>
+                                    <h3>Q. 감정 파쇄기 데이터는 정말 서버에 저장이 안 되나요?</h3>
+                                    <p>네, 감정 파쇄기에 입력한 내용은 서버에 전혀 저장되지 않습니다. 파쇄 버튼을 누르는 순간 해당 텍스트는 브라우저 메모리에서 완전히 삭제됩니다.
+                                        오직 사용자의 화면에서만 처리되며, 어떠한 외부 서버로도 전송되지 않습니다.</p>
+                                    <h3>Q. 동기화 코드는 무엇이며, 왜 필요한가요?</h3>
+                                    <p>동기화 코드는 여러 기기 간 내 정보(닉네임, 활동 기록)를 이어주는 고유 식별 코드입니다. 스마트폰을 교체하거나 새 기기에서 앱에 접속할 때,
+                                        '내 정보' 탭에서 기존 동기화 코드를 입력하면 이전 정보를 그대로 복원할 수 있습니다. 코드는 '내 정보 → 계정 동기화' 섹션에서 확인하고
+                                        복사할 수 있습니다.</p>
+                                    <h3>Q. 수급판정 계산기의 계산 결과는 공식 판정과 같은가요?</h3>
+                                    <p>본 계산기는 사회복지사의 실무 업무 보조를 위한 참고용 도구입니다. 실제 수급 판정은 주민센터·복지관 등 공식 기관에서 소득·재산 조사를 통해
+                                        이루어집니다. 본 계산기의 결과는 사전 검토와 클라이언트 상담 준비 목적으로만 활용하시기 바라며, 공식 판정 결과와 차이가 있을 수 있습니다.
+                                    </p>
+                                    <h3>Q. 게시판 글은 익명으로만 작성되나요?</h3>
+                                    <p>네, 모든 게시글과 댓글은 자동 생성된 익명 닉네임으로만 작성됩니다. 작성자의 실명, 소속기관, 연락처 등 개인정보는 절대 공개되지 않으며, 앱
+                                        운영자도 특정 사용자의 실제 신원을 확인할 수 없습니다. 단, 욕설·비방·개인정보 유출 등 운영 원칙에 위반되는 게시물은 공지 없이 삭제될 수
+                                        있습니다.</p>
+                                    <h3>Q. 사복 키우기 게임의 랭킹은 어떻게 등록되나요?</h3>
+                                    <p>사복 키우기 게임을 플레이하면 레벨과 클릭 수가 자동으로 서버에 기록됩니다. 저장 버튼을 누르거나 10번 클릭마다 자동으로 랭킹이 업데이트됩니다.
+                                        랭킹에는 비밀노트 앱의 익명 닉네임이 그대로 표시되며, 상위 10명이 명예의 전당에 오를 수 있습니다.</p>
+                                </div>
+                            </div>
+
+                            <!-- 5. 장기요양 안내 -->
+                            <div class="acc-item">
+                                <div class="acc-header" onclick="toggleAcc(this)">
+                                    🏠 2026년 노인장기요양 한도액 & 제도 안내
+                                    <span class="acc-arrow">▼</span>
+                                </div>
+                                <div class="acc-body">
+                                    <h3>장기요양보험 등급체계</h3>
+                                    <p>노인장기요양보험은 고령이나 노인성 질병으로 일상생활을 혼자 수행하기 어려운 어르신들에게 신체 활동 또는 가사 활동 지원 등의 장기요양급여를
+                                        제공하는 사회보험제도입니다. 장기요양 등급은 1~5등급과 인지지원등급으로 구분됩니다.</p>
+                                    <table>
+                                        <tr>
+                                            <th>등급</th>
+                                            <th>장기요양인정점수</th>
+                                            <th>주요 상태</th>
+                                        </tr>
+                                        <tr>
+                                            <td>1등급</td>
+                                            <td>95점 이상</td>
+                                            <td>일상생활 전적 의존</td>
+                                        </tr>
+                                        <tr>
+                                            <td>2등급</td>
+                                            <td>75~95점 미만</td>
+                                            <td>상당 부분 의존</td>
+                                        </tr>
+                                        <tr>
+                                            <td>3등급</td>
+                                            <td>60~75점 미만</td>
+                                            <td>부분적으로 의존</td>
+                                        </tr>
+                                        <tr>
+                                            <td>4등급</td>
+                                            <td>51~60점 미만</td>
+                                            <td>일정 부분 의존</td>
+                                        </tr>
+                                        <tr>
+                                            <td>5등급</td>
+                                            <td>45~51점 미만</td>
+                                            <td>치매 대상자</td>
+                                        </tr>
+                                        <tr>
+                                            <td>인지지원등급</td>
+                                            <td>45점 미만</td>
+                                            <td>치매 초기 대상자</td>
+                                        </tr>
+                                    </table>
+                                    <h3>2026년 재가급여 월 한도액</h3>
+                                    <p>장기요양 등급에 따라 월 이용 한도액이 정해지며, 매년 단가가 조정됩니다. 재가급여(방문요양, 방문목욕, 방문간호, 주·야간보호, 단기보호)를
+                                        이용 시 한도액 범위 내에서 서비스를 이용할 수 있으며, 본인부담률은 일반 15%, 경감 대상자 7.5~9%입니다. 국민기초생활수급자는
+                                        본인부담금이 없습니다.</p>
+                                    <h3>사회복지사의 실무 역할</h3>
+                                    <p>장기요양 현장의 사회복지사는 서비스 제공계획 수립, 급여 제공 기록 관리, 이용자 모니터링, 지역사회 자원 연계 등의 역할을 수행합니다.
+                                        노인장기요양보험법에 따라 사회복지사는 시설급여기관에서 필수 인력으로 배치되며, 수급자의 삶의 질 향상을 위한 개별 서비스 계획을 수립하고
+                                        실행합니다.</p>
+                                </div>
+                            </div>
+
+                            <script>
+                                function toggleAcc(header) {
+                                    const body = header.nextElementSibling;
+                                    const arrow = header.querySelector('.acc-arrow');
+                                    const isOpen = body.classList.contains('open');
+                                    // 모든 닫기
+                                    document.querySelectorAll('.acc-body').forEach(b => b.classList.remove('open'));
+                                    document.querySelectorAll('.acc-arrow').forEach(a => a.classList.remove('open'));
+                                    // 클릭한 것만 토글
+                                    if (!isOpen) { body.classList.add('open'); arrow.classList.add('open'); }
+                                }
+                            </script>
+                        </div>
+
+                        <!-- 약관 모달창 추가 영역 -->
+                        <!-- 서비스 이용약관 모달 -->
+                        <div id="modal-tos" class="modal-overlay hidden">
+                            <div class="modal-content" style="max-height:80vh; display:flex; flex-direction:column;">
+                                <div class="modal-header">
+                                    <h3 class="modal-title">서비스 이용약관</h3>
+                                    <div class="modal-close" onclick="closeTOSModal()">✕</div>
+                                </div>
+                                <div class="modal-body"
+                                    style="overflow-y:auto; padding:16px; font-size:0.85rem; color:#475569; line-height:1.6; background:#f8fafc; border-radius:8px;">
+                                    <h4 style="color:#1e293b; font-weight:800; margin-bottom:8px; font-size:0.95rem;">
+                                        제1조 (목적)</h4>
+                                    <p style="margin-bottom:16px;">본 약관은 사회복지사 비밀노트(이하 "서비스")가 제공하는 인터넷 관련 서비스의 이용조건 및
+                                        절차, 이용자와 서비스의 권리, 의무, 책임사항을 규정함을 목적으로 합니다.</p>
+
+                                    <h4 style="color:#1e293b; font-weight:800; margin-bottom:8px; font-size:0.95rem;">
+                                        제2조 (서비스의 제공 및 변경)</h4>
+                                    <p style="margin-bottom:16px;">1. 본 서비스는 사회복지사 및 관련 종사자의 실무 편의를 위한 템플릿 제공, 행정/회계 계산,
+                                        익명 커뮤니티 등의 기능을 제공합니다.<br>
+                                        2. 본 서비스 내에서 제공되는 계산 결과 및 생성된 템플릿(프롬프트) 등은 법적 효력이 없으며, 실무 참고용으로만 활용되어야 합니다. 서비스
+                                        이용으로 인해 발생하는 모든 결과에 대한 법적 책임은 전적으로 이용자 본인에게 있습니다.</p>
+
+                                    <h4 style="color:#1e293b; font-weight:800; margin-bottom:8px; font-size:0.95rem;">
+                                        제3조 (익명성 보장 및 게시물 관리)</h4>
+                                    <p style="margin-bottom:16px;">1. 본 서비스는 회원가입 없이 익명으로 운영됩니다.<br>
+                                        2. 익명 게시판 내 욕설, 타인 비방, 광고, 개인정보 유출 등 부적절한 게시물은 관리자에 의해 사전 통보 없이 삭제될 수 있습니다.<br>
+                                        3. 작성된 게시물에 대한 책임은 해당 게시물 작성자에게 있습니다.</p>
+
+                                    <h4 style="color:#1e293b; font-weight:800; margin-bottom:8px; font-size:0.95rem;">
+                                        제4조 (데이터 보관)</h4>
+                                    <p style="margin-bottom:16px;">1. 본 서비스는 이용자의 편의를 위해 익명 닉네임과 동기화 코드 등 최소한의 정보를 브라우저
+                                        및 데이터베이스에 보관합니다.<br>
+                                        2. 감정 파쇄기 등 임시 입력 도구의 데이터는 서버로 전송되거나 저장되지 않습니다.</p>
+
+                                    <h4 style="color:#1e293b; font-weight:800; margin-bottom:8px; font-size:0.95rem;">
+                                        제5조 (서비스 중단)</h4>
+                                    <p>본 서비스는 개인 프로젝트로 운영되며, 서버 점검, 네트워크 장애, 운영자의 사정 등으로 인해 예고 없이 서비스가 일시 중단 또는 종료될 수
+                                        있습니다.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 개인정보처리방침 모달 -->
+                        <div id="modal-privacy" class="modal-overlay hidden">
+                            <div class="modal-content" style="max-height:80vh; display:flex; flex-direction:column;">
+                                <div class="modal-header">
+                                    <h3 class="modal-title">개인정보처리방침</h3>
+                                    <div class="modal-close" onclick="closePrivacyModal()">✕</div>
+                                </div>
+                                <div class="modal-body"
+                                    style="overflow-y:auto; padding:16px; font-size:0.85rem; color:#475569; line-height:1.6; background:#f8fafc; border-radius:8px;">
+                                    <p style="margin-bottom:16px; font-weight:700;">사회복지사 비밀노트("서비스" 또는 "운영자")는 이용자의
+                                        개인정보를 엄격히 보호하며, 정보통신망 이용촉진 및 정보보호 등에 관한 법률 및 개인정보보호법 등 관련 법령을 준수합니다.</p>
+
+                                    <h4 style="color:#1e293b; font-weight:800; margin-bottom:8px; font-size:0.95rem;">1.
+                                        개인정보 수집 항목 및 목적</h4>
+                                    <p style="margin-bottom:16px;">본 서비스는 익명 기반으로 운영되며, 이용자의 실명, 전화번호, 주민등록번호 등 민감한
+                                        개인정보를 수집하지 않습니다.<br>
+                                        - <strong>자동 생성 닉네임, 동기화 식별 코드 (User ID), 활동 레벨/경험치:</strong> 기기 간 데이터 연동 및 게시판,
+                                        랭킹 시스템 운영을 목적으로 수집합니다.</p>
+
+                                    <h4 style="color:#1e293b; font-weight:800; margin-bottom:8px; font-size:0.95rem;">2.
+                                        개인정보의 제3자 제공</h4>
+                                    <p style="margin-bottom:16px;">서비스는 수집된 어떠한 개인정보도 제3자에게 제공하거나 판매하지 않습니다. 데이터는 오직 본
+                                        서비스의 원활한 운영 및 익명 사용자 간의 상호작용 목적으로만 이용됩니다.</p>
+
+                                    <h4 style="color:#1e293b; font-weight:800; margin-bottom:8px; font-size:0.95rem;">3.
+                                        데이터 보관 및 파기</h4>
+                                    <p style="margin-bottom:16px;">- <strong>게시글 데이터:</strong> 이용자가 삭제하기 전까지 보관되며, 서비스
+                                        운영 목적에 부합하지 않는 경우 삭제될 수 있습니다.<br>
+                                        - <strong>파쇄기 데이터:</strong> 브라우저 상에서 즉시 파기되며, 서버로 일절 전송되지 않습니다.<br>
+                                        - 동기화 식별 코드를 기반으로 한 닉네임 정보는 서비스 종료 시까지 혹은 이용자의 데이터 삭제 요청 시 일괄 파기됩니다.</p>
+
+                                    <h4 style="color:#1e293b; font-weight:800; margin-bottom:8px; font-size:0.95rem;">4.
+                                        쿠키 및 로컬 스토리지 사용</h4>
+                                    <p>본 서비스는 이용자의 편의성 제공 및 로그인 유지를 위해 브라우저의 로컬 스토리지(Local Storage) 기능을 사용하여 닉네임 식별 기호
+                                        등을 저장합니다. 이용자는 브라우저 설정을 통해 언제든지 저장된 쿠키 및 스토리지 데이터를 삭제할 수 있습니다.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="text-align:center; padding-top:24px;">
                             <span style="font-size:0.75rem; color:#cbd5e1;">ver 1.0.0 · 사회복지사 비밀노트</span>
                         </div>
                         <div style="height:100px;"></div>

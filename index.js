@@ -3881,6 +3881,40 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
         }
     }
 
+    /* ─── 내 정보 탭 정책 모달 제어 함수 ─── */
+    window.openTOSModal = function () {
+        const modal = document.getElementById('tos-modal');
+        if (modal) {
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+    };
+
+    window.closeTOSModal = function () {
+        const modal = document.getElementById('tos-modal');
+        if (modal) {
+            modal.style.display = 'none';
+            document.body.style.overflow = '';
+        }
+    };
+
+    window.openPrivacyModal = function () {
+        const modal = document.getElementById('privacy-modal');
+        if (modal) {
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+    };
+
+    window.closePrivacyModal = function () {
+        const modal = document.getElementById('privacy-modal');
+        if (modal) {
+            modal.style.display = 'none';
+            document.body.style.overflow = '';
+        }
+    };
+
+
     /* ─── 헤더 버튼 핸들러 ─── */
     function initHeaderButtons() {
         // 알림 버튼
