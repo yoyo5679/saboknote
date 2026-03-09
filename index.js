@@ -21,11 +21,28 @@
     function getOrCreateUserId() {
         let userId = localStorage.getItem('sabok_user_id');
         if (!userId) {
+            // First time user: generate a temporary ID
             userId = 'user_' + Math.random().toString(36).substr(2, 9);
             localStorage.setItem('sabok_user_id', userId);
         }
         return userId;
     }
+
+    /* --- Anonymous Profile & Sync --- */
+    window.changeToNewRandomName = function () {
+        localStorage.removeItem('saboks_anonymous_name');
+        const newName = getRandomAnonymousName();
+        // Force refresh UI components
+        if (typeof initMypage === 'function') initMypage();
+        alert('새로운 닉네임이 생성되었습니다! ✨\n' + newName);
+    };
+
+    window.copySyncCode = function () {
+        const code = getOrCreateUserId();
+        navigator.clipboard.writeText(code).then(() => {
+            alert('동기화 코드가 복사되었습니다. 다른 기기에서 이 코드를 입력해 정보를 가져올 수 있습니다.');
+        });
+    };
 
     /* --- Bokjiro Gateway Configuration --- */
     const BOKJIRO_SIMULATOR_URL = "https://www.bokjiro.go.kr/ssis-tbu/twatbz/mkclAsis/mkclInsertNblgPage.do";
@@ -3542,20 +3559,24 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
         const listEl = document.getElementById('my-posts-list');
         if (!listEl) return;
 
-        // 프로필 동적 업데이트 (유쾌한 익명)
+        // 프로필 동적 업데이트
         const profileNameEl = document.getElementById('mypage-profile-name');
         const profileEmojiEl = document.getElementById('mypage-profile-emoji');
         const headerEmojiEl = document.getElementById('mypage-header-emoji');
 
-        if (profileNameEl && !profileNameEl.dataset.initialized) {
-            const randomIdentity = getRandomAnonymousName();
-            const emoji = randomIdentity.split(' ')[0];
-            const name = randomIdentity.split(' ').slice(1).join(' ');
+        let currentNickname = localStorage.getItem('saboks_anonymous_name');
 
-            profileNameEl.innerText = name;
+        if (!currentNickname) {
+            currentNickname = getRandomAnonymousName();
+        }
+
+        if (currentNickname) {
+            const emoji = currentNickname.split(' ')[0];
+            const name = currentNickname.split(' ').slice(1).join(' ');
+
+            if (profileNameEl) profileNameEl.innerText = name || currentNickname;
             if (profileEmojiEl) profileEmojiEl.innerText = emoji;
             if (headerEmojiEl) headerEmojiEl.innerText = emoji;
-            profileNameEl.dataset.initialized = "true";
         }
 
         const myUserId = getOrCreateUserId();
@@ -3565,8 +3586,7 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
         if (syncCodeEl) syncCodeEl.innerText = myUserId;
 
         // 이름이 있으면 Supabase에 백그라운드 동기화 (최초 1회 보장용)
-        const myName = localStorage.getItem('saboks_anonymous_name');
-        if (myName) saveProfileToSupabase(myUserId, myName);
+        if (currentNickname) saveProfileToSupabase(myUserId, currentNickname);
 
         if (!supabase) {
             listEl.innerHTML = '<p style="text-align:center; color:#94a3b8; font-size:0.85rem; padding:16px;">Supabase 설정이 필요합니다.</p>';

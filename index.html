@@ -412,27 +412,54 @@
                             </div>
                         </div>
 
-                        <!-- 계정 동기화 (기기 변경) -->
+                        <!-- 내 유쾌한 익명 프로필 -->
                         <div
                             style="background:#fff; border-radius:16px; padding:18px; border:1px solid #e2e8f0; box-shadow:var(--shadow-card);">
                             <div style="font-size:0.75rem; font-weight:800; color:var(--primary); margin-bottom:12px;">
-                                🔄 계정 동기화 (기기 변경)</div>
+                                🎭 내 유쾌한 익명 프로필</div>
+
+                            <div style="display:flex; flex-direction:column; gap:10px;">
+                                <div style="font-size:0.85rem; color:#475569; line-height:1.5;">
+                                    따로 가입할 필요 없어요! <br>
+                                    시스템이 유쾌한 익명 닉네임과 동기화 코드를 자동으로 생성해 드립니다. ✨
+                                </div>
+                                <div style="display:flex; gap:8px; margin-top:4px;">
+                                    <button onclick="changeToNewRandomName()"
+                                        style="flex:1; background:#f8fafc; color:#475569; border:1px solid #e2e8f0; border-radius:10px; padding:10px; font-weight:700; font-size:13px; cursor:pointer;">🆕
+                                        새로운 닉네임 뽑기</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 계정 동기화 (기기 변경/백업) -->
+                        <div
+                            style="background:#fff; border-radius:16px; padding:18px; border:1px solid #e2e8f0; box-shadow:var(--shadow-card);">
+                            <div style="font-size:0.75rem; font-weight:800; color:var(--primary); margin-bottom:12px;">
+                                🔄 계정 동기화 (기기 변경/백업)</div>
 
                             <div
-                                style="background:#f8fafc; padding:12px; border-radius:10px; margin-bottom:16px; border:1px solid #edf2f7;">
-                                <div style="font-size:0.7rem; color:#64748b; margin-bottom:4px;">내 동기화 코드</div>
-                                <div id="my-sync-code"
-                                    style="font-size:1.1rem; font-weight:900; color:#1e293b; letter-spacing:0.5px;">-
+                                style="background:#f5f3ff; padding:14px; border-radius:12px; margin-bottom:16px; border:1px solid #ddd6fe;">
+                                <div style="font-size:0.7rem; color:#7c3aed; margin-bottom:4px; font-weight:800;">내 동기화
+                                    코드 (매우 중요!)</div>
+                                <div style="display:flex; align-items:center; justify-content:space-between;">
+                                    <div id="my-sync-code"
+                                        style="font-size:1.2rem; font-weight:900; color:#4338ca; letter-spacing:0.5px;">
+                                        -</div>
+                                    <button onclick="copySyncCode()"
+                                        style="background:#fff; border:1px solid #ddd6fe; border-radius:6px; padding:4px 8px; font-size:11px; font-weight:700; color:#7c3aed; cursor:pointer;">복사</button>
+                                </div>
+                                <div style="font-size:0.65rem; color:#94a3b8; margin-top:8px;">
+                                    * 이 코드를 다른 기기에서 입력하면 내 정보를 그대로 가져옵니다.
                                 </div>
                             </div>
 
                             <div>
-                                <div style="font-size:0.7rem; color:#64748b; margin-bottom:8px;">다른 기기에서 가져오기</div>
+                                <div style="font-size:0.7rem; color:#64748b; margin-bottom:8px;">다른 기기 정보 가져오기</div>
                                 <div style="display:flex; gap:8px;">
-                                    <input type="text" id="sync-code-input" placeholder="코드 입력"
+                                    <input type="text" id="sync-code-input" placeholder="동기화 코드 입력"
                                         style="flex:1; padding:10px; border-radius:10px; border:1px solid #e2e8f0; font-size:14px; outline:none;">
                                     <button id="sync-restore-btn" onclick="restoreProfile()"
-                                        style="background:var(--primary); color:white; border:none; border-radius:10px; padding:0 16px; font-weight:700; font-size:13px;">가져오기</button>
+                                        style="background:var(--primary); color:white; border:none; border-radius:10px; padding:0 16px; font-weight:700; font-size:13px; cursor:pointer;">확인</button>
                                 </div>
                             </div>
                         </div>
