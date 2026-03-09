@@ -1076,15 +1076,15 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
 
         const openAdminModal = () => {
             const content = `
-            <div class="admin-tabs" style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:24px; padding:4px; background:#f1f5f9; border-radius:12px;" >
-                    <button class="tab-btn active" id="tab-vat" onclick="switchAdminTab('vat')" style="flex:1; min-width:80px; padding:10px 4px; border:none; border-radius:8px; background:white; font-weight:700; color:var(--primary); box-shadow:0 2px 4px rgba(0,0,0,0.05); font-size:0.75rem; transition:all 0.2s; white-space:nowrap;">1.부가세</button>
-                    <button class="tab-btn" id="tab-tax" onclick="switchAdminTab('tax')" style="flex:1; min-width:80px; padding:10px 4px; border:none; border-radius:8px; background:transparent; font-weight:600; color:#64748b; font-size:0.75rem; transition:all 0.2s; white-space:nowrap;">2.강사료</button>
-                    <button class="tab-btn" id="tab-payroll" onclick="switchAdminTab('payroll')" style="flex:1; min-width:80px; padding:10px 4px; border:none; border-radius:8px; background:transparent; font-weight:600; color:#64748b; font-size:0.75rem; transition:all 0.2s; white-space:nowrap;">3.급여정산</button>
-                    <button class="tab-btn" id="tab-ltc" onclick="switchAdminTab('ltc')" style="flex:1; min-width:80px; padding:10px 4px; border:none; border-radius:8px; background:transparent; font-weight:600; color:#64748b; font-size:0.75rem; transition:all 0.2s; white-space:nowrap;">4.장기요양</button>
-                    <button class="tab-btn" id="tab-budget" onclick="switchAdminTab('budget')" style="flex:1; min-width:80px; padding:10px 4px; border:none; border-radius:8px; background:transparent; font-weight:600; color:#64748b; font-size:0.75rem; transition:all 0.2s; white-space:nowrap;">5.단가계산</button>
-                    <button class="tab-btn" id="tab-youth" onclick="switchAdminTab('youth')" style="flex:1; min-width:80px; padding:10px 4px; border:none; border-radius:8px; background:transparent; font-weight:600; color:#64748b; font-size:0.75rem; transition:all 0.2s; white-space:nowrap;">6.자립청년</button>
-                    <button class="tab-btn" id="tab-target" onclick="switchAdminTab('target')" style="flex:1; min-width:80px; padding:10px 4px; border:none; border-radius:8px; background:transparent; font-weight:600; color:#64748b; font-size:0.75rem; transition:all 0.2s; white-space:nowrap;">7.목표달성</button>
-                     <button class="tab-btn" id="tab-compressor" onclick="switchAdminTab('compressor')" style="flex:1; min-width:80px; padding:10px 4px; border:none; border-radius:8px; background:transparent; font-weight:600; color:#64748b; font-size:0.75rem; transition:all 0.2s; white-space:nowrap;">8.사진압축</button>
+            <div class="admin-tabs" style="display:grid; grid-template-columns: repeat(4, 1fr); gap:6px; margin-bottom:24px; padding:4px; background:#f1f5f9; border-radius:12px;" >
+                    <button class="tab-btn active" id="tab-vat" onclick="switchAdminTab('vat')" style="padding:10px 4px; border:none; border-radius:8px; background:white; font-weight:700; color:var(--primary); box-shadow:0 2px 4px rgba(0,0,0,0.05); font-size:0.7rem; transition:all 0.2s; white-space:nowrap;">1.부가세</button>
+                    <button class="tab-btn" id="tab-tax" onclick="switchAdminTab('tax')" style="padding:10px 4px; border:none; border-radius:8px; background:transparent; font-weight:600; color:#64748b; font-size:0.7rem; transition:all 0.2s; white-space:nowrap;">2.강사료</button>
+                    <button class="tab-btn" id="tab-payroll" onclick="switchAdminTab('payroll')" style="padding:10px 4px; border:none; border-radius:8px; background:transparent; font-weight:600; color:#64748b; font-size:0.7rem; transition:all 0.2s; white-space:nowrap;">3.급여정산</button>
+                    <button class="tab-btn" id="tab-ltc" onclick="switchAdminTab('ltc')" style="padding:10px 4px; border:none; border-radius:8px; background:transparent; font-weight:600; color:#64748b; font-size:0.7rem; transition:all 0.2s; white-space:nowrap;">4.장기요양</button>
+                    <button class="tab-btn" id="tab-budget" onclick="switchAdminTab('budget')" style="padding:10px 4px; border:none; border-radius:8px; background:transparent; font-weight:600; color:#64748b; font-size:0.7rem; transition:all 0.2s; white-space:nowrap;">5.단가계산</button>
+                    <button class="tab-btn" id="tab-youth" onclick="switchAdminTab('youth')" style="padding:10px 4px; border:none; border-radius:8px; background:transparent; font-weight:600; color:#64748b; font-size:0.7rem; transition:all 0.2s; white-space:nowrap;">6.자립청년</button>
+                    <button class="tab-btn" id="tab-target" onclick="switchAdminTab('target')" style="padding:10px 4px; border:none; border-radius:8px; background:transparent; font-weight:600; color:#64748b; font-size:0.7rem; transition:all 0.2s; white-space:nowrap;">7.목표달성</button>
+                    <button class="tab-btn" id="tab-compressor" onclick="switchAdminTab('compressor')" style="padding:10px 4px; border:none; border-radius:8px; background:transparent; font-weight:600; color:#64748b; font-size:0.7rem; transition:all 0.2s; white-space:nowrap;">8.용량줄이기</button>
                 </div>
 
                 <div id="admin-content-vat" class="tab-content" style="animation: fadeIn 0.3s ease;">
@@ -1433,6 +1433,7 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
                         <div>
                             <label style="font-size:0.85rem; color:#475569; font-weight:600; margin-bottom:6px; display:block;">실적값 (Actual)</label>
                             <input type="number" id="target-actual-input" class="calc-input" placeholder="예: 85" oninput="calcTargetRate()" style="font-size:1.1rem; padding:12px; width:100%;">
+                        </div>
                     </div>
 
                     <button class="btn-primary" onclick="calcTargetRate()" style="width:100%; margin-bottom:20px; padding:14px; font-size:1rem;">📊 달성률 계산하기</button>
@@ -1454,92 +1455,92 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
             <!-- 사진 압축기 -->
             <div id="admin-content-compressor" class="tab-content" style="display:none; animation: fadeIn 0.3s ease;">
                 <style>
-                    #admin-content-compressor .compressor-container { position: relative; z-index: 1; width: 100%; }
-                    #admin-content-compressor .compressor-subtitle { text-align: center; color: #6b6b80; font-size: 0.85rem; font-weight: 300; margin-bottom: 25px; }
+                    #admin-content-compressor .compressor-container { position: relative; z-index: 1; width: 100%; color: #334155; }
+                    #admin-content-compressor .compressor-subtitle { text-align: center; color: #64748b; font-size: 0.85rem; font-weight: 300; margin-bottom: 25px; }
                     #admin-content-compressor .drop-zone {
-                        border: 2px dashed #2a2a38; border-radius: 20px; padding: 3rem 2rem;
-                        text-align: center; cursor: pointer; background: #1c1c26;
+                        border: 2px dashed #e2e8f0; border-radius: 20px; padding: 3rem 2rem;
+                        text-align: center; cursor: pointer; background: #f8fafc;
                         transition: all 0.3s ease; position: relative; overflow: hidden;
                     }
-                    #admin-content-compressor .drop-zone:hover, #admin-content-compressor .drop-zone.dragover { border-color: #7b61ff; transform: translateY(-2px); }
+                    #admin-content-compressor .drop-zone:hover, #admin-content-compressor .drop-zone.dragover { border-color: #7b61ff; background: #f1f5f9; }
                     #admin-content-compressor .drop-icon { font-size: 3rem; margin-bottom: 1rem; display: block; }
-                    #admin-content-compressor .drop-text { font-size: 1rem; font-weight: 500; color: #e8e8f0; margin-bottom: 0.4rem; }
-                    #admin-content-compressor .drop-sub { font-size: 0.78rem; color: #6b6b80; font-weight: 300; }
+                    #admin-content-compressor .drop-text { font-size: 1rem; font-weight: 700; color: #1e293b; margin-bottom: 0.4rem; }
+                    #admin-content-compressor .drop-sub { font-size: 0.78rem; color: #64748b; font-weight: 400; }
                     #admin-content-compressor input[type="file"] { display: none; }
                     #admin-content-compressor .settings {
-                        background: #1c1c26; border: 1px solid #2a2a38; border-radius: 16px;
+                        background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 16px;
                         padding: 1.4rem 1.6rem; margin-top: 1.2rem; display: none;
                     }
                     #admin-content-compressor .settings.visible { display: block; }
                     #admin-content-compressor .setting-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
-                    #admin-content-compressor .setting-label { font-size: 0.85rem; color: #6b6b80; font-weight: 300; }
-                    #admin-content-compressor .target-display { font-size: 1.1rem; font-weight: 700; color: #7b61ff; }
+                    #admin-content-compressor .setting-label { font-size: 0.85rem; color: #64748b; font-weight: 700; }
+                    #admin-content-compressor .target-display { font-size: 1.1rem; font-weight: 800; color: #7b61ff; }
                     #admin-content-compressor .slider-wrap { flex: 1; margin: 0 0.5rem; }
                     #admin-content-compressor input[type="range"] {
-                        -webkit-appearance: none; width: 100%; height: 4px; border-radius: 4px;
-                        background: #2a2a38; outline: none; cursor: pointer;
+                        -webkit-appearance: none; width: 100%; height: 6px; border-radius: 4px;
+                        background: #e2e8f0; outline: none; cursor: pointer;
                     }
                     #admin-content-compressor input[type="range"]::-webkit-slider-thumb {
-                        -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%;
-                        background: #7b61ff; cursor: pointer; box-shadow: 0 0 8px rgba(123,97,255,0.5);
+                        -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%;
+                        background: #7b61ff; cursor: pointer; border: 2px solid #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
                     }
+                    #admin-content-compressor img { border-radius: 12px; border: 1px solid #e2e8f0; }
                     #admin-content-compressor .compress-btn {
                         width: 100%; margin-top: 1.2rem; padding: 1rem; border: none; border-radius: 14px;
                         background: linear-gradient(135deg, #7b61ff, #ff6b9d); color: #fff;
-                        font-family: inherit; font-size: 1rem; font-weight: 700;
-                        cursor: pointer; transition: all 0.3s ease; letter-spacing: 0.5px; display: none;
+                        font-family: inherit; font-size: 1rem; font-weight: 800;
+                        cursor: pointer; transition: all 0.2s ease; box-shadow: 0 4px 12px rgba(123,97,255,0.3); display: none;
                     }
                     #admin-content-compressor .compress-btn.visible { display: block; }
-                    #admin-content-compressor .compress-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(123,97,255,0.4); }
-                    #admin-content-compressor .compress-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+                    #admin-content-compressor .compress-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(123,97,255,0.4); }
                     #admin-content-compressor .result-card {
-                        background: #1c1c26; border: 1px solid #2a2a38; border-radius: 20px;
-                        padding: 1.6rem; margin-top: 1.2rem; display: none; animation: fadeUp 0.4s ease;
+                        background: #fff; border: 1px solid #e2e8f0; border-radius: 20px;
+                        padding: 1.6rem; margin-top: 1.2rem; display: none;
                     }
                     #admin-content-compressor .result-card.visible { display: block; }
                     #admin-content-compressor .preview-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.4rem; }
                     #admin-content-compressor .preview-item { text-align: center; }
                     #admin-content-compressor .preview-item img {
                         width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 12px;
-                        border: 1px solid #2a2a38; background: #16161d;
+                        border: 1px solid #e2e8f0; background: #f8fafc;
                     }
-                    #admin-content-compressor .preview-label { font-size: 0.72rem; color: #6b6b80; margin-top: 0.5rem; font-weight: 300; }
-                    #admin-content-compressor .preview-size { font-size: 0.9rem; font-weight: 700; margin-top: 0.2rem; }
-                    #admin-content-compressor .size-before { color: #ff6b6b; }
-                    #admin-content-compressor .size-after { color: #6bffb8; }
+                    #admin-content-compressor .preview-label { font-size: 0.72rem; color: #64748b; margin-top: 0.5rem; font-weight: 700; }
+                    #admin-content-compressor .preview-size { font-size: 0.9rem; font-weight: 800; margin-top: 0.2rem; }
+                    #admin-content-compressor .size-before { color: #f43f5e; }
+                    #admin-content-compressor .size-after { color: #10b981; }
                     #admin-content-compressor .stats-row {
                         display: flex; justify-content: center; align-items: center; gap: 0.5rem;
-                        margin-bottom: 1.4rem; font-size: 0.85rem; color: #6b6b80; font-weight: 300;
+                        margin-bottom: 1.4rem; font-size: 0.85rem; color: #64748b; font-weight: 700;
                     }
                     #admin-content-compressor .reduction-badge {
-                        background: linear-gradient(135deg, #6bffb8, #3dd6f5); color: #0e0e12;
-                        font-weight: 700; font-size: 0.85rem; padding: 0.25rem 0.7rem; border-radius: 99px;
+                        background: linear-gradient(135deg, #10b981, #3dd6f5); color: #fff;
+                        font-weight: 800; font-size: 0.85rem; padding: 0.25rem 0.7rem; border-radius: 99px;
                     }
                     #admin-content-compressor .download-btn {
                         display: block; width: 100%; padding: 0.9rem;
                         border: 2px solid #7b61ff; border-radius: 12px; background: transparent;
                         color: #7b61ff; font-family: inherit;
-                        font-size: 0.95rem; font-weight: 700; cursor: pointer; transition: all 0.3s ease;
+                        font-size: 0.95rem; font-weight: 800; cursor: pointer; transition: all 0.2s ease;
                     }
-                    #admin-content-compressor .download-btn:hover { background: #7b61ff; color: #fff; box-shadow: 0 4px 16px rgba(123,97,255,0.35); }
+                    #admin-content-compressor .download-btn:hover { background: #7b61ff; color: #fff; box-shadow: 0 4px 16px rgba(123,97,255,0.3); }
                     #admin-content-compressor .progress-wrap { margin-top: 1rem; display: none; }
                     #admin-content-compressor .progress-wrap.visible { display: block; }
-                    #admin-content-compressor .progress-bar-bg { height: 6px; background: #2a2a38; border-radius: 99px; overflow: hidden; }
+                    #admin-content-compressor .progress-bar-bg { height: 6px; background: #e2e8f0; border-radius: 99px; overflow: hidden; }
                     #admin-content-compressor .progress-bar-fill {
                         height: 100%; background: linear-gradient(90deg, #7b61ff, #ff6b9d);
                         border-radius: 99px; width: 0%; transition: width 0.3s ease;
                     }
-                    #admin-content-compressor .progress-text { text-align: center; font-size: 0.8rem; color: #6b6b80; margin-top: 0.5rem; font-weight: 300; }
+                    #admin-content-compressor .progress-text { text-align: center; font-size: 0.8rem; color: #64748b; margin-top: 0.5rem; font-weight: 400; }
                     #admin-content-compressor .warning-badge {
-                        background: rgba(255,167,40,0.15); border: 1px solid rgba(255,167,40,0.3);
-                        color: #ffa728; font-size: 0.78rem; padding: 0.5rem 0.8rem;
-                        border-radius: 10px; margin-top: 0.8rem; font-weight: 300; display: none;
+                        background: #fffbeb; border: 1px solid #fde68a;
+                        color: #b45309; font-size: 0.78rem; padding: 0.5rem 0.8rem;
+                        border-radius: 10px; margin-top: 0.8rem; font-weight: 400; display: none;
                     }
                     #admin-content-compressor .privacy-note {
                         text-align: center; margin-top: 1.5rem; font-size: 0.75rem;
-                        color: #6b6b80; font-weight: 300; line-height: 1.6;
+                        color: #64748b; font-weight: 400; line-height: 1.6;
                     }
-                    #admin-content-compressor .privacy-note span { color: #6bffb8; font-weight: 500; }
+                    #admin-content-compressor .privacy-note span { color: #10b981; font-weight: 700; }
                 </style>
                 <div class="compressor-container">
                     <h4 style="color:#0f172a; font-weight:800; font-size:1.1rem; margin-bottom:8px; text-align:center;">📦 사진 압축기</h4>
@@ -1585,6 +1586,10 @@ AI는 반드시 동일한 내용을 아래 ** 두 가지 버전 ** 으로 각각
             // Set initial state
             window.currentTaxRate = 0.033;
             document.getElementById('run-ltc-calc').onclick = calculateLTC;
+
+            // Ensure the first tab is visually and functionally active
+            if (typeof switchAdminTab === 'function') switchAdminTab('vat');
+
             if (typeof initPhotoCompressor === 'function') initPhotoCompressor();
         };
 
