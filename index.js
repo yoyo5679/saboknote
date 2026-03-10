@@ -567,8 +567,8 @@
 
     /* --- 2026 KPI Dashboard --- */
 
-    // Base 100% Median Income for 1,2,3,4 person households (2026)
-    const MED_INCOME_BASE = { 1: 2564238, 2: 4199292, 3: 5359036, 4: 6494738 };
+    // Base 100% Median Income for 1,2,3,4,5,6 person households (2026)
+    const MED_INCOME_BASE = { 1: 2564238, 2: 4199292, 3: 5359036, 4: 6494738, 5: 7556719, 6: 8555952 };
 
     // Key KPI data for 2026
     const KPI_DATA_2026 = {
@@ -576,7 +576,9 @@
             1: '820,556원',
             2: '1,343,773원',
             3: '1,714,892원',
-            4: '2,078,316원'
+            4: '2,078,316원',
+            5: '2,418,150원',
+            6: '2,737,905원'
         },
         ltcLimits: {
             1: '2,512,900원',
@@ -595,7 +597,7 @@
                 const ratios = [0.6, 0.8, 1.0, 1.2, 1.4];
                 let incomeHtml = '';
 
-                [1, 2, 3, 4].forEach(size => {
+                [1, 2, 3, 4, 5, 6].forEach(size => {
                     let ratioBlocks = ratios.map(r => {
                         let val = Math.round(MED_INCOME_BASE[size] * r);
                         return `<div class="result-item" style="padding:6px 0; border-bottom:1px solid #f1f5f9;">
