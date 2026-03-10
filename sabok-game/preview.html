@@ -1776,7 +1776,7 @@
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                         {minigameData.options.map((option, index) => (
                           <button key={index} onClick={() => answerMinigame(option)}
-                            style={{ padding: '10px 12px', background: 'linear-gradient(135deg,#3b82f6,#4f46e5)', color: 'white', border: 'none', borderRadius: '8px', fontWeight: '700', cursor: 'pointer', textAlign: 'left', fontSize: '15px' }}>
+                            style={{ padding: '10px 12px', background: 'linear-gradient(135deg,#3b82f6,#4f46e5)', color: 'white', border: 'none', borderRadius: '8px', fontWeight: '700', cursor: 'pointer', textAlign: 'left', fontSize: '17px' }}>
                             {option.text}
                           </button>
                         ))}
@@ -1784,7 +1784,7 @@
                     ) : (
                       <div style={{ padding: '16px', borderRadius: '8px', background: minigameData.result.success ? '#dcfce7' : '#fee2e2' }}>
                         <div style={{ fontSize: '18px', fontWeight: '900', marginBottom: '8px', color: minigameData.result.success ? '#15803d' : '#b91c1c' }}>{minigameData.result.success ? '✓ 정답!' : '✗ 오답'}</div>
-                        <p style={{ color: '#374151', marginBottom: '12px', fontSize: '15px' }}>{minigameData.result.message}</p>
+                        <p style={{ color: '#374151', marginBottom: '12px', fontSize: '17px' }}>{minigameData.result.message}</p>
                         {minigameData.result.reward > 0 && <div style={{ fontSize: '16px', fontWeight: '700', color: '#15803d' }}>+{Math.floor(minigameData.result.reward)}원</div>}
                         <button onClick={closeMinigame} style={{ marginTop: '12px', width: '100%', padding: '10px', background: '#1f2937', color: 'white', border: 'none', borderRadius: '8px', fontWeight: '700', cursor: 'pointer' }}>닫기</button>
                       </div>
@@ -1824,7 +1824,7 @@
                     ) : (
                       <div style={{ padding: '16px', borderRadius: '8px', background: minigameData.result.success ? '#dcfce7' : '#fee2e2' }}>
                         <div style={{ fontSize: '18px', fontWeight: '900', marginBottom: '8px', color: minigameData.result.success ? '#15803d' : '#b91c1c' }}>{minigameData.result.success ? '✓ 완료!' : '✗ 실패'}</div>
-                        <p style={{ color: '#374151', marginBottom: '8px', fontSize: '15px' }}>{minigameData.result.message}</p>
+                        <p style={{ color: '#374151', marginBottom: '8px', fontSize: '17px' }}>{minigameData.result.message}</p>
                         {minigameData.result.reward > 0 && <div style={{ fontSize: '17px', fontWeight: '700', color: '#15803d' }}>+{Math.floor(minigameData.result.reward)}원</div>}
                         <button onClick={closeMinigame} style={{ marginTop: '10px', width: '100%', padding: '10px', background: '#1f2937', color: 'white', border: 'none', borderRadius: '8px', fontWeight: '700', cursor: 'pointer' }}>닫기</button>
                       </div>
@@ -1847,7 +1847,7 @@
                     ) : (
                       <div style={{ padding: '16px', borderRadius: '8px', background: minigameData.result.success ? '#dcfce7' : '#fee2e2' }}>
                         <div style={{ fontSize: '22px', fontWeight: '900', marginBottom: '6px', color: minigameData.result.success ? '#15803d' : '#b91c1c', textAlign: 'center' }}>{minigameData.result.success ? '✓ 정답!' : '✗ 오답'}</div>
-                        <p style={{ color: '#374151', marginBottom: '8px', fontSize: '15px', textAlign: 'center' }}>{minigameData.result.message}</p>
+                        <p style={{ color: '#374151', marginBottom: '8px', fontSize: '17px', textAlign: 'center' }}>{minigameData.result.message}</p>
                         {minigameData.result.reward > 0 && <div style={{ fontSize: '17px', fontWeight: '700', color: '#15803d', textAlign: 'center' }}>+{minigameData.result.reward}원 · +{minigameData.result.reward}xp</div>}
                         <button onClick={closeMinigame} style={{ marginTop: '12px', width: '100%', padding: '10px', background: '#1f2937', color: 'white', border: 'none', borderRadius: '8px', fontWeight: '700', cursor: 'pointer' }}>닫기</button>
                       </div>
@@ -1864,7 +1864,7 @@
               <div style={{ background: 'linear-gradient(135deg,#FFD700,#FF8C00)', border: '4px solid #8B4513', borderRadius: '20px', padding: '20px 32px', boxShadow: '0 0 40px rgba(255,215,0,0.8)', animation: 'officeUpgrade 3.5s ease-out forwards', textAlign: 'center' }}>
                 <div style={{ fontSize: '36px', marginBottom: '8px' }}>🏢✨</div>
                 <div style={{ fontSize: '20px', fontWeight: '900', color: '#4a2000', marginBottom: '4px' }}>사무실 업그레이드!</div>
-                <div style={{ fontSize: '15px', fontWeight: '700', color: '#6b3000' }}>
+                <div style={{ fontSize: '17px', fontWeight: '700', color: '#6b3000' }}>
                   {['😓 허름한 공간', '🏢 기본 사무실', '📋 정돈된 사무실', '👔 팀장 사무실', '🏛️ 고급 사무실', '🌆 부장 집무실', '👑 센터장 임원실'][getOfficeStage()]}으로 승급!
                 </div>
               </div>
@@ -1882,11 +1882,11 @@
             <div className="gold-frame" style={{ padding: '5px 8px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3px' }}>
                 <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                  <span style={{ fontWeight: '900', color: '#78350f', fontSize: '13px' }}>🏛️ {currentRank.name}</span>
-                  <span style={{ fontWeight: '900', color: '#15803d', fontSize: '13px' }}>💰 {Math.floor(money).toLocaleString()}원</span>
+                  <span style={{ fontWeight: '900', color: '#78350f', fontSize: '17px' }}>🏛️ {currentRank.name}</span>
+                  <span style={{ fontWeight: '900', color: '#15803d', fontSize: '17px' }}>💰 {Math.floor(money).toLocaleString()}원</span>
                 </div>
                 <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                  <span style={{ fontWeight: '900', color: '#92400e', fontSize: '13px' }}>LVL {level}</span>
+                  <span style={{ fontWeight: '900', color: '#92400e', fontSize: '17px' }}>LVL {level}</span>
                   <button onClick={saveGameData} style={{ fontSize: '12px', fontWeight: '700', color: '#1d4ed8', background: '#dbeafe', borderRadius: '4px', padding: '2px 6px', border: '1px solid #93c5fd', cursor: 'pointer' }}>저장</button>
                 </div>
               </div>
@@ -1942,7 +1942,7 @@
                     {/* 사무실 미리보기 */}
                     <div style={{ position: 'relative', width: 80, height: 60, flexShrink: 0 }}>
                       {floatingNumbers.map(num => (
-                        <div key={num.id} style={{ position: 'absolute', left: '50%', top: '10%', marginLeft: num.x, fontWeight: '900', fontSize: '13px', color: num.color || '#16a34a', whiteSpace: 'nowrap', zIndex: 10, textShadow: '1px 1px 2px rgba(0,0,0,0.5)', animation: 'float-up 1s ease-out forwards', pointerEvents: 'none' }}>
+                        <div key={num.id} style={{ position: 'absolute', left: '50%', top: '10%', marginLeft: num.x, fontWeight: '900', fontSize: '17px', color: num.color || '#16a34a', whiteSpace: 'nowrap', zIndex: 10, textShadow: '1px 1px 2px rgba(0,0,0,0.5)', animation: 'float-up 1s ease-out forwards', pointerEvents: 'none' }}>
                           {num.value}
                         </div>
                       ))}
@@ -1997,7 +1997,7 @@
                         )}
                       </div>
                       <button onClick={handleWork} className={`work-button ${clickAnimation ? 'scale-95' : ''}`} style={{ padding: '4px 14px' }}>
-                        <span style={{ fontWeight: '900', color: '#78350f', fontSize: '15px', textShadow: '1px 1px 0 rgba(255,255,255,0.5)' }}>업무</span>
+                        <span style={{ fontWeight: '900', color: '#78350f', fontSize: '17px', textShadow: '1px 1px 0 rgba(255,255,255,0.5)' }}>업무</span>
                       </button>
                     </div>
                     {/* 스탯: 2열 그리드 */}
@@ -2041,7 +2041,7 @@
                       ].map(({ type, icon, label, bg }) => (
                         <button key={type} onClick={() => startMinigame(type)} disabled={minigameCooldowns[type] > 0}
                           style={{ flex: 1, background: minigameCooldowns[type] > 0 ? '#9ca3af' : bg, color: 'white', border: 'none', borderRadius: '6px', padding: '4px 2px', cursor: minigameCooldowns[type] > 0 ? 'not-allowed' : 'pointer', position: 'relative', fontSize: '11px', fontWeight: '700' }}>
-                          <div style={{ fontSize: '15px' }}>{icon}</div>
+                          <div style={{ fontSize: '17px' }}>{icon}</div>
                           <div>{minigameCooldowns[type] > 0 ? `${minigameCooldowns[type]}s` : label}</div>
                         </button>
                       ))}
@@ -2219,7 +2219,7 @@
                   ))}
                   {/* 케이스 상세 */}
                   <div style={{ background: '#fff7ed', border: '2px solid #fdba74', borderRadius: '8px', padding: '7px 10px', flexShrink: 0 }}>
-                    <div style={{ fontSize: '13px', fontWeight: '900', color: '#c2410c', marginBottom: '4px' }}>📊 케이스 상세</div>
+                    <div style={{ fontSize: '17px', fontWeight: '900', color: '#c2410c', marginBottom: '4px' }}>📊 케이스 상세</div>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3px' }}>
                       {caseTypes.map(ct => (
                         <div key={ct.id} style={{ display: 'flex', justifyContent: 'space-between', padding: '2px 4px', background: 'rgba(255,255,255,0.6)', borderRadius: '4px' }}>
@@ -2231,13 +2231,13 @@
                   </div>
                   {/* 비밀노트 연동 정보 */}
                   <div style={{ background: '#f0fdf4', border: '2px solid #4ade80', borderRadius: '8px', padding: '7px 10px', flexShrink: 0 }}>
-                    <div style={{ fontSize: '13px', fontWeight: '900', color: '#15803d', marginBottom: '2px' }}>🔗 비밀노트 연동</div>
+                    <div style={{ fontSize: '17px', fontWeight: '900', color: '#15803d', marginBottom: '2px' }}>🔗 비밀노트 연동</div>
                     <div style={{ fontSize: '11px', fontWeight: '700', color: '#166534' }}>닉네임: {nickname || '(미설정 - 비밀노트에서 설정)'}</div>
                     <div style={{ fontSize: '11px', fontWeight: '700', color: '#166534' }}>ID: {userId ? userId.slice(0, 16) + '...' : '로딩중...'}</div>
                   </div>
                   <button
                     onClick={() => { if (confirm('정말 초기화하시겠습니까? 모든 게임 데이터가 삭제됩니다.')) { localStorage.removeItem(`gameData_${userId}`); window.location.reload(); } }}
-                    style={{ width: '100%', padding: '10px', background: 'linear-gradient(135deg,#ef4444,#f43f5e)', color: 'white', border: '3px solid #b91c1c', borderRadius: '10px', fontWeight: '900', fontSize: '15px', cursor: 'pointer', flexShrink: 0 }}>
+                    style={{ width: '100%', padding: '10px', background: 'linear-gradient(135deg,#ef4444,#f43f5e)', color: 'white', border: '3px solid #b91c1c', borderRadius: '10px', fontWeight: '900', fontSize: '17px', cursor: 'pointer', flexShrink: 0 }}>
                     🗑️ 게임 데이터 초기화
                   </button>
                   <div style={{ textAlign: 'center', fontSize: '12px', fontWeight: '700', color: '#b45309', flexShrink: 0 }}>⚠️ 초기화하면 모든 데이터가 삭제됩니다</div>
