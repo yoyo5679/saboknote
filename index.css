@@ -950,7 +950,7 @@ select:focus {
 /* --- 사복천재의 비밀 프롬프트 (AI Work Prompter) Styles --- */
 
 .prompter-intro {
-  text-align: center;
+  text-align: left;
   padding: 24px;
   background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
   border-radius: 20px;
