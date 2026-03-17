@@ -1456,7 +1456,7 @@ try {
                                 <span style="color:#64748b; font-size:0.9rem;">부가세 (10%)</span>
                                 <span id="vat-tax" style="font-weight:700; color:#0f172a; font-size:1rem;">0원</span>
                             </div>
-                            <div style="display:flex; justify-content:space-between; margin-top:12px;">
+                            <div style="display:none; justify-content:space-between; margin-top:12px;">
                                 <span style="font-weight:800; color:var(--primary); font-size:0.95rem;">W4C 복사용 서식</span>
                                 <button onclick="navigator.clipboard.writeText(document.getElementById('vat-copy-text').innerText); alert('복사되었습니다.')" style="background:#e0e7ff; color:var(--primary); border:none; border-radius:6px; padding:6px 12px; font-size:0.8rem; font-weight:800; cursor:pointer;">복사하기</button>
                             </div>
