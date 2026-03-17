@@ -1460,7 +1460,7 @@ try {
                                 <span style="font-weight:800; color:var(--primary); font-size:0.95rem;">W4C 복사용 서식</span>
                                 <button onclick="navigator.clipboard.writeText(document.getElementById('vat-copy-text').innerText); alert('복사되었습니다.')" style="background:#e0e7ff; color:var(--primary); border:none; border-radius:6px; padding:6px 12px; font-size:0.8rem; font-weight:800; cursor:pointer;">복사하기</button>
                             </div>
-                            <div id="vat-copy-text" style="font-size:0.85rem; color:#475569; margin-top:8px;">공급가액 0원 / 부가세 0원</div>
+                            <div id="vat-copy-text" style="display:none; font-size:0.85rem; color:#475569; margin-top:8px;">공급가액 0원 / 부가세 0원</div>
                         </div>
                     </div>
 
