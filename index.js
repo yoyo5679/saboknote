@@ -663,6 +663,82 @@ try {
         }
     }
 
+    window.showLTCUpdateDetails = function () {
+        const content = `
+            <div style="background:#f0f9ff; border-radius:20px; padding:24px; margin-bottom:24px; border:1px solid #e0f2fe;">
+                <h3 style="font-size:1.3rem; font-weight:900; color:#0369a1; margin-bottom:12px; display:flex; align-items:center; gap:8px;">
+                    <span>⚖️</span> 2026년 장기요양 주요 변경사항
+                </h3>
+                <p style="font-size:0.95rem; color:#0c4a6e; line-height:1.6; margin-bottom:0;">
+                    2026년도는 초고령사회 진입에 대응하여 <strong>재가 서비스 한도액이 대폭 인상</strong>되었습니다. 어르신들이 살던 곳에서 더 오래 머무실 수 있도록 지원이 강화되었습니다.
+                </p>
+            </div>
+
+            <div class="kpi-section" style="margin-bottom:24px;">
+                <p style="font-size:1rem; font-weight:800; color:#1e293b; margin-bottom:12px; display:flex; align-items:center; gap:6px;">
+                    <span style="color:#0ea5e9;">●</span> 등급별 재가급여 월 한도액 (2026)
+                </p>
+                <div style="overflow-x:auto;">
+                    <table style="width:100%; border-collapse:collapse; font-size:0.9rem; text-align:center;">
+                        <thead>
+                            <tr style="background:#f8fafc; border-bottom:2px solid #e2e8f0;">
+                                <th style="padding:12px; color:#64748b;">등급</th>
+                                <th style="padding:12px; color:#64748b;">월 한도액</th>
+                                <th style="padding:12px; color:#64748b;">증감률</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="border-bottom:1px solid #f1f5f9;">
+                                <td style="padding:12px; font-weight:700;">1등급</td>
+                                <td style="padding:12px; font-weight:800; color:#0369a1;">2,512,900원</td>
+                                <td style="padding:12px; color:#ef4444; font-weight:700;">↑ 22.3%</td>
+                            </tr>
+                            <tr style="border-bottom:1px solid #f1f5f9;">
+                                <td style="padding:12px; font-weight:700;">2등급</td>
+                                <td style="padding:12px; font-weight:800; color:#0369a1;">2,331,200원</td>
+                                <td style="padding:12px; color:#ef4444; font-weight:700;">↑ 20.1%</td>
+                            </tr>
+                            <tr style="border-bottom:1px solid #f1f5f9;">
+                                <td style="padding:12px; font-weight:700;">3등급</td>
+                                <td style="padding:12px; font-weight:800; color:#1e293b;">1,528,200원</td>
+                                <td style="padding:12px; color:#ef4444; font-weight:700;">↑ 18.5%</td>
+                            </tr>
+                            <tr style="border-bottom:1px solid #f1f5f9;">
+                                <td style="padding:12px; font-weight:700;">4등급</td>
+                                <td style="padding:12px; font-weight:800; color:#1e293b;">1,409,700원</td>
+                                <td style="padding:12px; color:#ef4444; font-weight:700;">↑ 16.2%</td>
+                            </tr>
+                            <tr style="border-bottom:1px solid #f1f5f9;">
+                                <td style="padding:12px; font-weight:700;">5등급</td>
+                                <td style="padding:12px; font-weight:800; color:#1e293b;">1,208,900원</td>
+                                <td style="padding:12px; color:#ef4444; font-weight:700;">↑ 14.8%</td>
+                            </tr>
+                            <tr>
+                                <td style="padding:12px; font-weight:700;">인지지원</td>
+                                <td style="padding:12px; font-weight:800; color:#1e293b;">676,320원</td>
+                                <td style="padding:12px; color:#ef4444; font-weight:700;">↑ 12.0%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div style="background:#f8fafc; border-radius:16px; padding:20px; border:1px solid #e2e8f0;">
+                <h4 style="font-size:0.95rem; font-weight:800; color:#1e293b; margin-bottom:10px;">✨ 실무자 체크포인트</h4>
+                <ul style="padding-left:18px; margin:0; font-size:0.85rem; color:#475569; line-height:1.7;">
+                    <li>가족요양비 보전 금액이 등급별로 세분화되었습니다.</li>
+                    <li>주야간보호 미이용 시에도 방문요양 추가 한도 활용이 가능해졌습니다.</li>
+                    <li>본인부담금 감경 대상자(40~60%) 범위가 확대되었으니 대상자별 재확인이 필요합니다.</li>
+                </ul>
+            </div>
+
+            <div style="margin-top:24px; text-align:center;">
+                <button class="btn-primary" onclick="closeModal()" style="width:100%; max-width:200px; background:#1e293b;">확인하였습니다</button>
+            </div>
+        `;
+        openModal('2026 장기요양 업데이트 안내', content);
+    }
+
     // ... (previous code above) ...
 
     /* --- 사복천재의 비밀 프롬프트 (AI Work Prompter) --- */
@@ -5445,28 +5521,109 @@ try {
     };
 
     /* ─── PWA 전용 로직 ─── */
+    let deferredPrompt;
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+        // Chrome/Android: Prevent the mini-infobar from appearing on mobile
+        e.preventDefault();
+        // Stash the event so it can be triggered later.
+        deferredPrompt = e;
+        // Update UI to let the user know they can install the PWA
+        checkPWAStatus();
+    });
+
     window.showPWAInstallGuide = function () {
-        switchView('mypage');
-        setTimeout(() => {
-            // 이용 안내(FAQ) 아코디언 항목들 중 2번째(인덱스 1)가 앱 설치 안내
-            const pwaAcc = document.querySelectorAll('.acc-item')[1];
-            if (pwaAcc) {
-                const body = pwaAcc.querySelector('.acc-body');
-                const arrow = pwaAcc.querySelector('.acc-arrow');
-                if (body && !body.classList.contains('open')) {
-                    body.classList.add('open');
-                    if (arrow) arrow.classList.add('open');
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        const isAndroid = /Android/.test(navigator.userAgent);
+
+        let guideHtml = '';
+
+        if (isIOS) {
+            guideHtml = `
+            <div style="text-align:center; padding:10px 0;">
+                <div style="font-size:3rem; margin-bottom:20px;">🍎</div>
+                <h3 style="font-size:1.2rem; font-weight:800; color:#1e293b; margin-bottom:12px;">아이폰(iOS) 설치 방법</h3>
+                <p style="font-size:0.95rem; color:#475569; line-height:1.6; margin-bottom:24px;">
+                    사파리(Safari) 브라우저에서 아래 순서대로 진행해주시면 홈 화면에 앱이 설치됩니다. ✨
+                </p>
+                <div style="background:#f8fafc; border-radius:16px; padding:20px; text-align:left; border:1px solid #e2e8f0;">
+                    <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px;">
+                        <span style="background:var(--primary); color:white; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.8rem; font-weight:800; flex-shrink:0;">1</span>
+                        <span style="font-size:0.95rem; font-weight:700;">하단 중앙의 <b>[공유 버튼 📤]</b>을 누르세요.</span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px;">
+                        <span style="background:var(--primary); color:white; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.8rem; font-weight:800; flex-shrink:0;">2</span>
+                        <span style="font-size:0.95rem; font-weight:700;">리스트를 내려 <b>[홈 화면에 추가]</b>를 선택하세요.</span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <span style="background:var(--primary); color:white; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.8rem; font-weight:800; flex-shrink:0;">3</span>
+                        <span style="font-size:0.95rem; font-weight:700;">우측 상단의 <b>[추가]</b>를 누르면 완료!</span>
+                    </div>
+                </div>
+                <p style="font-size:0.8rem; color:#94a3b8; margin-top:20px;">
+                    ※ 반드시 Safari 브라우저를 이용해주세요.
+                </p>
+            </div>`;
+        } else if (isAndroid && deferredPrompt) {
+            // If it's Android and we have the prompt, try to trigger it directly
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then((choiceResult) => {
+                if (choiceResult.outcome === 'accepted') {
+                    console.log('User accepted the PWA install prompt');
+                } else {
+                    console.log('User dismissed the PWA install prompt');
                 }
-                pwaAcc.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
-        }, 500);
+                deferredPrompt = null;
+            });
+            return; // Exit early as we triggered the native prompt
+        } else if (isAndroid) {
+            guideHtml = `
+            <div style="text-align:center; padding:10px 0;">
+                <div style="font-size:3rem; margin-bottom:20px;">🤖</div>
+                <h3 style="font-size:1.2rem; font-weight:800; color:#1e293b; margin-bottom:12px;">안드로이드 설치 방법</h3>
+                <p style="font-size:0.95rem; color:#475569; line-height:1.6; margin-bottom:24px;">
+                    크롬(Chrome) 브라우저에서 아주 쉽게 설치할 수 있습니다.
+                </p>
+                <div style="background:#f8fafc; border-radius:16px; padding:20px; text-align:left; border:1px solid #e2e8f0;">
+                    <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px;">
+                        <span style="background:var(--primary); color:white; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.8rem; font-weight:800; flex-shrink:0;">1</span>
+                        <span style="font-size:0.95rem; font-weight:700;">우측 상단의 <b>[점 3개 메뉴 ⋮]</b>를 누르세요.</span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <span style="background:var(--primary); color:white; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.8rem; font-weight:800; flex-shrink:0;">2</span>
+                        <span style="font-size:0.95rem; font-weight:700;"><b>[홈 화면에 추가]</b> 또는 <b>[앱 설치]</b>를 누르세요.</span>
+                    </div>
+                </div>
+            </div>`;
+        } else {
+            // General Desktop or other
+            guideHtml = `
+            <div style="text-align:center; padding:10px 0;">
+                <div style="font-size:3rem; margin-bottom:20px;">💻</div>
+                <h3 style="font-size:1.2rem; font-weight:800; color:#1e293b; margin-bottom:12px;">앱 설치 안내</h3>
+                <p style="font-size:0.95rem; color:#475569; line-height:1.6; margin-bottom:16px;">
+                    PC에서도 앱처럼 설치하여 이용하실 수 있습니다.
+                </p>
+                <p style="font-size:0.9rem; color:#64748b;">
+                    브라우저 주소창 우측의 <b>[설치 아이콘]</b>을 누르거나,<br>
+                    설정 메뉴에서 <b>[앱 설치]</b>를 선택해주세요.
+                </p>
+                <button class="btn-primary" style="margin-top:24px;" onclick="closeModal()">확인</button>
+            </div>`;
+        }
+
+        openModal('앱으로 설치하기 📲', guideHtml);
     };
 
     function checkPWAStatus() {
         const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
         const promoBanner = document.getElementById('pwa-promo-banner');
-        if (promoBanner && !isStandalone) {
-            promoBanner.style.display = 'block';
+        if (promoBanner) {
+            if (isStandalone) {
+                promoBanner.style.display = 'none';
+            } else {
+                promoBanner.style.display = 'block';
+            }
         }
     }
 
