@@ -4301,18 +4301,7 @@ try {
 
         // 놀이터 메뉴 초기화 (놀이터 탭 진입 시 메뉴화면 먼저 보여주기)
         if (view === 'playground') {
-            const menu = document.getElementById('pg-step-menu');
-            const intro = document.getElementById('pg-step-intro');
-            const quiz = document.getElementById('pg-step-quiz');
-            const loading = document.getElementById('pg-step-loading');
-            const result = document.getElementById('pg-step-result');
-            const game = document.getElementById('pg-step-game');
-            if (menu) menu.style.display = 'block';
-            if (intro) intro.style.display = 'none';
-            if (quiz) quiz.style.display = 'none';
-            if (loading) loading.style.display = 'none';
-            if (result) result.style.display = 'none';
-            if (game) game.style.display = 'none';
+            pgShowAllSteps('menu');
         }
 
         // 커뮤니티 탭 진입 시 데이터 로딩
@@ -4346,18 +4335,466 @@ try {
                 window.open('./sabok-game/index.html', '_blank');
                 return;
             }
+            if (type === 'quiz') {
+                pgShowAllSteps('intro');
+                return;
+            }
+            if (type === 'ladder') {
+                pgShowAllSteps('ladder');
+                initLadderGame();
+                return;
+            }
+            if (type === 'lunch') {
+                pgShowAllSteps('lunch');
+                initLunchPicker();
+                return;
+            }
 
-            const menu = document.getElementById('pg-step-menu');
-            const intro = document.getElementById('pg-step-intro');
-            const game = document.getElementById('pg-step-game');
+        };
 
-            if (menu) menu.style.display = 'none';
-            if (type === 'quiz' && intro) {
-                intro.style.display = 'block';
-            } else if (type === 'game' && game) {
-                game.style.display = 'block';
+        /* ============================================================
+           LADDER GAME (사다리 타기)
+           ============================================================ */
+        function initLadderGame() {
+            const container = document.getElementById('pg-step-ladder');
+            if (!container) return;
+
+            const defaultNames = ['나', '팀장님', '신입쌤', '최고참'];
+            let names = [...defaultNames];
+            let results = ['간식 사기 🍩', '칭찬 한마디 💬', '커피 쏘기 ☕', '화장실 청소 🧹'];
+
+            container.innerHTML = `
+                <div style="text-align:center; padding: 20px 0 10px;">
+                    <div style="font-size:52px; margin-bottom:8px;">🪜</div>
+                    <h2 style="font-size:22px; font-weight:900; color:#1e293b; margin-bottom:6px;">사다리 타기</h2>
+                    <p style="color:#64748b; font-size:13px; margin-bottom:24px;">참가자와 결과를 입력하고 운명을 결정해요 🎲</p>
+                </div>
+
+                <div style="background:#fff; border-radius:20px; padding:20px; margin-bottom:14px; border:1px solid #f1e8ff; box-shadow:0 4px 16px rgba(194,24,91,0.08);">
+                    <div style="font-size:12px; font-weight:800; color:#C2185B; margin-bottom:12px;">👥 참가자 (최대 15명)</div>
+                    <div id="ladder-names-wrap" style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px;"></div>
+                    <div style="display:flex; gap:8px;">
+                        <input id="ladder-name-input" placeholder="이름 입력" maxlength="8"
+                            style="flex:1; padding:10px 12px; border-radius:10px; border:1.5px solid #f9a8d4; font-size:14px; outline:none; font-family:inherit;"
+                            onkeydown="if(event.key==='Enter') addLadderName()">
+                        <button onclick="addLadderName()" style="background:linear-gradient(135deg,#C2185B,#E91E8C); color:#fff; border:none; border-radius:10px; padding:10px 16px; font-weight:800; font-size:13px; cursor:pointer;">추가</button>
+                    </div>
+                </div>
+
+                <div style="background:#fff; border-radius:20px; padding:20px; margin-bottom:20px; border:1px solid #f1e8ff; box-shadow:0 4px 16px rgba(194,24,91,0.08);">
+                    <div style="font-size:12px; font-weight:800; color:#C2185B; margin-bottom:12px;">🎯 결과 항목</div>
+                    <div id="ladder-results-wrap" style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px;"></div>
+                    <div style="display:flex; gap:8px;">
+                        <input id="ladder-result-input" placeholder="결과 입력 (예: 간식 사기)" maxlength="12"
+                            style="flex:1; padding:10px 12px; border-radius:10px; border:1.5px solid #f9a8d4; font-size:14px; outline:none; font-family:inherit;"
+                            onkeydown="if(event.key==='Enter') addLadderResult()">
+                        <button onclick="addLadderResult()" style="background:linear-gradient(135deg,#C2185B,#E91E8C); color:#fff; border:none; border-radius:10px; padding:10px 16px; font-weight:800; font-size:13px; cursor:pointer;">추가</button>
+                    </div>
+                </div>
+
+                <button onclick="startLadder()" style="width:100%; background:linear-gradient(135deg,#C2185B,#E91E8C); color:#fff; border:none; border-radius:16px; padding:18px; font-size:16px; font-weight:900; cursor:pointer; box-shadow:0 6px 20px rgba(194,24,91,0.3); margin-bottom:12px; transition:all 0.2s;">
+                    🎲 사다리 타기 시작!
+                </button>
+
+                <div id="ladder-canvas-wrap" style="display:none; background:#fff; border-radius:20px; padding:20px; border:1px solid #f1e8ff;
+                    box-shadow:0 4px 16px rgba(194,24,91,0.08); margin-bottom:14px;">
+                    <canvas id="ladder-canvas" style="width:100%; border-radius:12px;"></canvas>
+                </div>
+
+                <div id="ladder-result-content" style="display:none;"></div>
+
+                <button onclick="pgShowAllSteps('menu')" style="width:100%; background:#f8fafc; color:#64748b; border:1.5px solid #e2e8f0; border-radius:14px; padding:14px; font-size:14px; font-weight:700; cursor:pointer; margin-top:8px;">
+                    ← 놀이터 메뉴로
+                </button>
+            `;
+
+            // 기본 이름/결과 렌더
+            window.ladderState = { names: [...defaultNames], results: [...results] };
+            renderLadderTags();
+        }
+
+        function renderLadderTags() {
+            const st = window.ladderState;
+            const nWrap = document.getElementById('ladder-names-wrap');
+            const rWrap = document.getElementById('ladder-results-wrap');
+            if (!nWrap || !rWrap) return;
+
+            nWrap.innerHTML = st.names.map((n, i) => `
+                <span style="display:inline-flex; align-items:center; gap:6px; background:#FFF0F6; border:1.5px solid #FFB3D1; border-radius:20px; padding:6px 12px; font-size:13px; font-weight:700; color:#C2185B;">
+                    ${n} <button onclick="removeLadderName(${i})" style="background:none; border:none; color:#C2185B; cursor:pointer; font-size:14px; padding:0; line-height:1;">✕</button>
+                </span>`).join('');
+
+            rWrap.innerHTML = st.results.map((r, i) => `
+                <span style="display:inline-flex; align-items:center; gap:6px; background:#FFF0F6; border:1.5px solid #FFB3D1; border-radius:20px; padding:6px 12px; font-size:13px; font-weight:700; color:#C2185B;">
+                    ${r} <button onclick="removeLadderResult(${i})" style="background:none; border:none; color:#C2185B; cursor:pointer; font-size:14px; padding:0; line-height:1;">✕</button>
+                </span>`).join('');
+        }
+
+        window.addLadderName = function() {
+            const inp = document.getElementById('ladder-name-input');
+            const v = inp.value.trim();
+            if (!v || window.ladderState.names.length >= 15) return;
+            window.ladderState.names.push(v); inp.value = ''; renderLadderTags();
+        };
+        window.removeLadderName = function(i) { window.ladderState.names.splice(i,1); renderLadderTags(); };
+        window.addLadderResult = function() {
+            const inp = document.getElementById('ladder-result-input');
+            const v = inp.value.trim();
+            if (!v) return;
+            window.ladderState.results.push(v); inp.value = ''; renderLadderTags();
+        };
+        window.removeLadderResult = function(i) { window.ladderState.results.splice(i,1); renderLadderTags(); };
+
+        window.startLadder = function() {
+            const st = window.ladderState;
+            if (st.names.length < 2) { alert('참가자를 2명 이상 입력해주세요!'); return; }
+            const n = st.names.length;
+            // 결과를 참가자 수에 맞게 조정
+            let rs = [...st.results];
+            while (rs.length < n) rs.push('행운 🍀');
+            rs = rs.slice(0, n);
+            // 셔플
+            for (let i = rs.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i+1));
+                [rs[i], rs[j]] = [rs[j], rs[i]];
+            }
+            drawLadder(st.names, rs);
+        };
+
+        function drawLadder(names, results) {
+            const wrap = document.getElementById('ladder-canvas-wrap');
+            const canvas = document.getElementById('ladder-canvas');
+            const resultDiv = document.getElementById('ladder-result-content');
+            
+            // 결과창 초기화 및 로딩 연출
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = `
+                <div id="ladder-suspense" style="background:#fff; border-radius:20px; padding:30px 20px; border:2px dashed #FFB3D1; text-align:center; margin-bottom:12px; animation: pulse-border 1.5s infinite;">
+                    <div style="font-size:40px; margin-bottom:15px; animation: spin 2s linear infinite; display:inline-block;">🔮</div>
+                    <div id="suspense-text" style="font-size:16px; font-weight:800; color:#C2185B;">운명의 사다리가 얽히고 있습니다...</div>
+                    <div style="font-size:12px; color:#999; margin-top:10px;">(팀장님의 시선을 피하는 중...)</div>
+                </div>
+            `;
+            resultDiv.scrollIntoView({behavior: 'smooth', block: 'center'});
+
+            const suspenseTexts = [
+                "운명의 사다리가 얽히고 있습니다...",
+                "누구의 지갑이 열릴 것인가...",
+                "사례관리 서류보다 더 꼼꼼하게 계산 중...",
+                "사회복지사의 직감이 발동되고 있습니다...",
+                "하늘이 정한 오늘의 운명은...",
+                "두근두근... 심박수 체크 중...",
+                "결과가 나오기 직전입니다! 🥁"
+            ];
+
+            let textIdx = 0;
+            const textTimer = setInterval(() => {
+                const el = document.getElementById('suspense-text');
+                if (el) el.innerText = suspenseTexts[++textIdx % suspenseTexts.length];
+            }, 800);
+
+            setTimeout(() => {
+                clearInterval(textTimer);
+                wrap.style.display = 'block';
+
+                const n = names.length;
+                const colW = n > 8 ? 50 : 70; // 인원이 많으면 간격 축소
+                const W = Math.max(n * colW + 40, 280);
+                const H = 380;
+                canvas.width = W; canvas.height = H;
+                canvas.style.maxWidth = '100%';
+
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, W, H);
+                ctx.fillStyle = '#FFF0F6';
+                ctx.fillRect(0, 0, W, H);
+
+                const topY = 50, botY = H - 50;
+                const cols = Array.from({length: n}, (_, i) => 20 + i * colW + (colW / 2));
+
+                // 가로 연결선 생성
+                const rungs = [];
+                const levels = Math.floor((botY - topY) / 30);
+                for (let lv = 0; lv < levels; lv++) {
+                    const y = topY + lv * 30 + 15;
+                    const usedCols = new Set();
+                    for (let c = 0; c < n - 1; c++) {
+                        if (!usedCols.has(c) && !usedCols.has(c+1) && Math.random() > 0.4) {
+                            rungs.push({ y, c1: c, c2: c+1 });
+                            usedCols.add(c); usedCols.add(c+1);
+                        }
+                    }
+                }
+
+                // 세로선
+                ctx.lineWidth = n > 10 ? 2 : 3;
+                cols.forEach(x => {
+                    ctx.strokeStyle = '#F48FBD';
+                    ctx.beginPath(); ctx.moveTo(x, topY); ctx.lineTo(x, botY); ctx.stroke();
+                });
+                // 가로선
+                ctx.strokeStyle = '#C2185B';
+                rungs.forEach(r => {
+                    ctx.beginPath(); ctx.moveTo(cols[r.c1], r.y); ctx.lineTo(cols[r.c2], r.y); ctx.stroke();
+                });
+
+                // 이름/결과 텍스트 크기 조절
+                const fontSize = n > 10 ? 10 : 12;
+                ctx.font = `bold ${fontSize}px Pretendard, sans-serif`;
+                ctx.textAlign = 'center';
+                
+                names.forEach((nm, i) => {
+                    ctx.fillStyle = '#C2185B';
+                    ctx.fillText(nm.length > 4 ? nm.slice(0,3)+'…' : nm, cols[i], topY - 10);
+                });
+
+                const finalResults = [];
+                names.forEach((name, startCol) => {
+                    let cur = startCol;
+                    let y = topY;
+                    const steps = rungs.filter(r => r.c1 === cur || r.c2 === cur).sort((a, b) => a.y - b.y);
+                    
+                    let lastY = topY;
+                    steps.forEach(s => {
+                        if (s.y > lastY) {
+                            cur = (s.c1 === cur) ? s.c2 : s.c1;
+                            lastY = s.y;
+                        }
+                    });
+                    finalResults.push({ name, result: results[cur] || '행운 🍀' });
+                });
+
+                results.forEach((r, i) => {
+                    ctx.fillStyle = '#3730A3';
+                    const displayResult = r.length > (n > 10 ? 4 : 6) ? r.slice(0, n > 10 ? 3 : 5)+'…' : r;
+                    ctx.fillText(displayResult, cols[i], botY + 18);
+                });
+
+                // 하나씩 보여주기 애니메이션
+                resultDiv.innerHTML = `
+                    <div style="background:linear-gradient(135deg,#FFF0F6,#F9E8FF); border-radius:20px; padding:20px; border:1.5px solid #FFB3D1; margin-bottom:12px; box-shadow:0 8px 30px rgba(194,24,91,0.15);">
+                        <div style="font-size:16px; font-weight:900; color:#C2185B; margin-bottom:18px; text-align:center;">🥁 과연 결과는?!</div>
+                        <div id="staggered-results"></div>
+                    </div>
+                `;
+
+                const resWrap = document.getElementById('staggered-results');
+                finalResults.forEach((res, i) => {
+                    setTimeout(() => {
+                        const item = document.createElement('div');
+                        item.style.cssText = `
+                            display:flex; justify-content:space-between; align-items:center; 
+                            padding:12px 16px; background:#fff; border-radius:14px; margin-bottom:10px; 
+                            border:1px solid #FFD6E8; opacity:0; transform:translateX(-20px); transition:all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+                        `;
+                        item.innerHTML = `
+                            <span style="font-weight:800; color:#1e293b; font-size:14px;">👤 ${res.name}</span>
+                            <span style="background:linear-gradient(135deg,#C2185B,#E91E8C); color:#fff; border-radius:20px; padding:6px 16px; font-size:13px; font-weight:800; box-shadow:0 4px 10px rgba(194,24,91,0.2);">${res.result}</span>
+                        `;
+                        resWrap.appendChild(item);
+                        
+                        // 트리거 애니메이션
+                        setTimeout(() => {
+                            item.style.opacity = '1';
+                            item.style.transform = 'translateX(0)';
+                        }, 50);
+
+                        // 마지막 항목일 때 스크롤 이동
+                        if (i === finalResults.length - 1) {
+                            setTimeout(() => item.scrollIntoView({behavior: 'smooth', block: 'end'}), 100);
+                        }
+                    }, i * 600 + 400); // 0.6초 간격으로 하나씩 등장
+                });
+
+            }, 2500); // 2.5초간 긴장감 로딩
+        }
+
+        /* ============================================================
+           LUNCH PICKER (점심 메뉴 추천)
+           ============================================================ */
+        function initLunchPicker() {
+            const container = document.getElementById('pg-step-lunch');
+            if (!container) return;
+
+            const menuCategories = [
+                { label: '한식 🍚', items: ['된장찌개백반', '삼겹살', '비빔밥', '순두부찌개', '김치찌개', '갈비탕', '냉면', '국밥', '쌈밥', '제육볶음'] },
+                { label: '중식 🥡', items: ['짜장면', '짬뽕', '볶음밥', '탕수육', '마라탕', '훠궈', '양꼬치', '부대찌개'] },
+                { label: '일식 🍱', items: ['초밥', '우동', '라멘', '돈가스', '규동', '오니기리', '텐동', '야키소바'] },
+                { label: '양식 🍝', items: ['파스타', '피자', '버거', '샌드위치', '스테이크', '리조또', '샐러드', '그라탕'] },
+                { label: '분식 🥚', items: ['떡볶이', '순대', '김밥', '라면', '튀김', '핫도그', '도시락', '오뎅'] },
+            ];
+
+            container.innerHTML = `
+                <div style="text-align:center; padding: 20px 0 10px;">
+                    <div style="font-size:52px; margin-bottom:8px;">🍱</div>
+                    <h2 style="font-size:22px; font-weight:900; color:#1e293b; margin-bottom:6px;">점심 메뉴 추천</h2>
+                    <p style="color:#64748b; font-size:13px; margin-bottom:20px;">오늘 뭐 먹을지 고민될 때, AI가 골라드려요 🎯</p>
+                </div>
+
+                <div style="background:#fff; border-radius:20px; padding:20px; margin-bottom:14px; border:1px solid #FFF0D0; box-shadow:0 4px 16px rgba(255,193,7,0.10);">
+                    <div style="font-size:12px; font-weight:800; color:#E65100; margin-bottom:14px;">좋아하는 카테고리를 선택해요!</div>
+                    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                        ${menuCategories.map((cat, i) => `
+                            <button id="lunch-cat-${i}" onclick="toggleLunchCat(${i})" style="
+                                padding:8px 14px; border-radius:20px; border:1.5px solid #FFD54F;
+                                background:#f8fafc; color:#E65100; font-size:13px; font-weight:700;
+                                cursor:pointer; transition:all 0.2s; font-family:inherit;
+                            ">${cat.label}</button>`).join('')}
+                        <button id="lunch-cat-all" onclick="toggleLunchCat(-1)" style="
+                            padding:8px 14px; border-radius:20px; border:1.5px solid #FFD54F;
+                            background:#f8fafc; color:#E65100; font-size:13px; font-weight:700;
+                            cursor:pointer; transition:all 0.2s; font-family:inherit;
+                        ">전부 다 🎲</button>
+                    </div>
+                </div>
+
+                <div style="background:#fff; border-radius:20px; padding:20px; margin-bottom:20px; border:1px solid #FFF0D0; box-shadow:0 4px 16px rgba(255,193,7,0.10);">
+                    <div style="font-size:12px; font-weight:800; color:#E65100; margin-bottom:12px;">⚡ 피하고 싶은 메뉴가 있나요?</div>
+                    <input id="lunch-exclude" placeholder="예: 국밥, 마라탕" style="width:100%; padding:10px 12px; border-radius:10px; border:1.5px solid #FFD54F; font-size:14px; outline:none; font-family:inherit; box-sizing:border-box;"/>
+                </div>
+
+                <button onclick="pickLunch()" style="width:100%; background:linear-gradient(135deg,#FF8F00,#F57C00); color:#fff; border:none; border-radius:16px; padding:18px; font-size:16px; font-weight:900; cursor:pointer; box-shadow:0 6px 20px rgba(245,124,0,0.3); margin-bottom:12px;">
+                    🎯 메뉴 골라줘!
+                </button>
+
+                <div id="lunch-result" style="display:none;"></div>
+
+                <button onclick="pgShowAllSteps('menu')" style="width:100%; background:#f8fafc; color:#64748b; border:1.5px solid #e2e8f0; border-radius:14px; padding:14px; font-size:14px; font-weight:700; cursor:pointer; margin-top:8px;">
+                    ← 놀이터 메뉴로
+                </button>
+            `;
+
+            window.lunchState = { selectedCats: new Set(), categories: menuCategories, spinAttempts: 0 };
+        }
+
+        window.toggleLunchCat = function(idx) {
+            const st = window.lunchState;
+            const allBtn = document.getElementById('lunch-cat-all');
+            if (idx === -1) {
+                // 전부 선택
+                st.selectedCats.clear();
+                st.categories.forEach((_, i) => st.selectedCats.add(i));
+                if (allBtn) { allBtn.style.background = 'linear-gradient(135deg,#FF8F00,#F57C00)'; allBtn.style.color = '#fff'; }
+                st.categories.forEach((_, i) => {
+                    const btn = document.getElementById('lunch-cat-' + i);
+                    if (btn) { btn.style.background = 'linear-gradient(135deg,#FF8F00,#F57C00)'; btn.style.color = '#fff'; }
+                });
+                return;
+            }
+            // 개별 토글
+            if (allBtn) { allBtn.style.background = '#f8fafc'; allBtn.style.color = '#E65100'; }
+            if (st.selectedCats.has(idx)) { st.selectedCats.delete(idx); }
+            else { st.selectedCats.add(idx); }
+            const btn = document.getElementById('lunch-cat-' + idx);
+            if (btn) {
+                btn.style.background = st.selectedCats.has(idx) ? 'linear-gradient(135deg,#FF8F00,#F57C00)' : '#f8fafc';
+                btn.style.color = st.selectedCats.has(idx) ? '#fff' : '#E65100';
             }
         };
+
+        window.pickLunch = function() {
+            const st = window.lunchState;
+            const excludeText = document.getElementById('lunch-exclude')?.value || '';
+            const excludes = excludeText.split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
+
+            let pool = [];
+            const cats = st.selectedCats.size > 0 ? [...st.selectedCats] : st.categories.map((_, i) => i);
+            cats.forEach(ci => pool.push(...st.categories[ci].items));
+            pool = pool.filter(m => !excludes.some(ex => m.toLowerCase().includes(ex)));
+
+            if (pool.length === 0) {
+                alert('선택한 조건에 맞는 메뉴가 없어요! 조건을 조금 바꿔봐요 😅'); return;
+            }
+
+            // 횟수 증가
+            st.spinAttempts++;
+            
+            const pick = pool[Math.floor(Math.random() * pool.length)];
+            const resultDiv = document.getElementById('lunch-result');
+            
+            let loadingMsg = "AI 엔진 풀가동! 침 고이는 중... 🤤";
+            if (st.spinAttempts === 2) loadingMsg = "음.. 역시 한 번엔 안 되네요. 다시 찾는 중! ⚙️";
+            if (st.spinAttempts === 3) loadingMsg = "🚨 최후 통첩! 영혼을 끌어모으고 있습니다 🚨";
+
+            // 룰렛 UI
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = `
+                <div style="background:linear-gradient(135deg,#FFF8E8,#FFE9B3); border-radius:20px; padding:28px 20px; border:2px dashed #FFD54F; text-align:center; margin-bottom:12px; animation: pulse-border-lunch 1s infinite;">
+                    <div style="font-size:50px; margin-bottom:10px; animation: spin 0.8s linear infinite; display:inline-block;">🎲</div>
+                    <div style="font-size:12px; font-weight:800; color:#F57C00; letter-spacing:2px; margin-bottom:8px;">${loadingMsg}</div>
+                    <div id="lunch-roulette-text" style="font-size:32px; font-weight:900; color:#E65100; margin-bottom:10px;">...</div>
+                    <div style="font-size:13px; color:#F57C00; line-height:1.6;">(침 꼴깍 삼키는 소리 다 들려요 👂)</div>
+                </div>
+            `;
+            resultDiv.scrollIntoView({behavior: 'smooth', block: 'center'});
+
+            let spinCount = 0;
+            const maxSpins = 20;
+            const spinTimer = setInterval(() => {
+                const rt = document.getElementById('lunch-roulette-text');
+                if (rt) {
+                    const tempPick = pool[Math.floor(Math.random() * pool.length)];
+                    rt.innerText = tempPick;
+                }
+                spinCount++;
+                
+                if (spinCount >= maxSpins) {
+                    clearInterval(spinTimer);
+                    
+                    const foodEmojis = {'한식': '🍚', '중식': '🥡', '일식': '🍱', '양식': '🍝', '분식': '🥚'};
+                    const emoji = Object.entries(foodEmojis).find(([k]) => cats.some(ci => st.categories[ci].label.includes(k)))?.[1] || '🍽️';
+
+                    let finalComments = [];
+                    let btnText = "";
+                    let btnDisabled = false;
+
+                    if (st.spinAttempts === 1) {
+                        finalComments = [
+                            `팀장님한테 "${pick} 고고!" 외치러 가시죠! 🏃‍♂️`, 
+                            `솔직히 지금 ${pick} 땡겼잖아요? 다 알아요 😎`,
+                            `오늘 메뉴는 ${pick}!! 후회 없는 선택! 🎯`
+                        ];
+                        btnText = "🔄 솔직히 안 땡겨요.. 한 번 더! (1/3)";
+                    } else if (st.spinAttempts === 2) {
+                        finalComments = [
+                            `이 정도면 타협하시죠? ${pick} 어때요? 😤`, 
+                            `AI도 고민 많이 했어요.. ${pick} 고고! 🔥`,
+                            `이번엔 진짜 ${pick} 드세요! 맛있을 거예요 🤷‍♂️`
+                        ];
+                        btnText = "🔄 흠.. 알겠어요 진짜 마지막 기회! (2/3)";
+                    } else {
+                        finalComments = [
+                            `이게 최종의 최종의 찐최종입니다! ${pick} 가시죠! 🙏`, 
+                            `더 이상은 못 돌려요! 운명의 결론은 ${pick}! 🛑`,
+                            `지금 당장 겉옷 입고 ${pick} 드시러 출발!! 🚀`
+                        ];
+                        btnText = "❌ 더 이상은 안 돼요! 맛있게 드세요 (3/3 타격 완료)";
+                        btnDisabled = true;
+                    }
+
+                    const comment = finalComments[Math.floor(Math.random() * finalComments.length)];
+
+                    resultDiv.innerHTML = `
+                        <div style="background:linear-gradient(135deg,#FFF8E8,#FFE9B3); border-radius:20px; padding:30px 20px; border:1.5px solid #FFD54F; text-align:center; margin-bottom:12px; animation:fadeUp 0.4s ease; box-shadow:0 8px 30px rgba(255,193,7,0.2);">
+                            <div style="font-size:60px; margin-bottom:8px; animation:bounce 1.5s infinite;">${emoji}</div>
+                            <div style="font-size:12px; font-weight:800; color:#F57C00; letter-spacing:3px; margin-bottom:12px;">🎉 오늘의 점심 확정 🎉</div>
+                            <div style="font-size:40px; font-weight:900; color:#E65100; margin-bottom:16px; text-shadow: 2px 2px 0px #FFF0D0;">${pick}</div>
+                            <div style="font-size:14px; font-weight:700; color:#F57C00; background:#FFF0D0; border-radius:12px; padding:10px 16px; display:inline-block; line-height:1.5;">${comment}</div>
+                        </div>
+                        <button onclick="${btnDisabled ? '' : 'pickLunch()'}" ${btnDisabled ? 'disabled' : ''} style="
+                            width:100%; background:${btnDisabled ? '#e2e8f0' : 'linear-gradient(135deg,#FF8F00,#F57C00)'}; 
+                            color:${btnDisabled ? '#94a3b8' : '#fff'}; border:none; border-radius:14px; padding:16px; 
+                            font-size:15px; font-weight:800; cursor:${btnDisabled ? 'default' : 'pointer'}; 
+                            margin-bottom:8px; box-shadow:${btnDisabled ? 'none' : '0 4px 12px rgba(245,124,0,0.3)'}; 
+                            transition:all 0.2s;
+                        ">
+                            ${btnText}
+                        </button>
+                    `;
+                }
+            }, 80);
+        };
+
         initDashboard();
         initPlayground();
         initAdminAccess();
@@ -4496,10 +4933,16 @@ try {
         pgShowStep('intro');
     };
 
-    function pgShowStep(stepName) {
-        ['intro', 'quiz', 'loading', 'result'].forEach(s => {
-            document.getElementById('pg-step-' + s).style.display = (s === stepName) ? 'block' : 'none';
+    // 모든 스텝(메뉴 포함)을 통합 관리하는 함수
+    function pgShowAllSteps(stepName) {
+        ['menu', 'intro', 'quiz', 'loading', 'result', 'ladder', 'lunch'].forEach(s => {
+            const el = document.getElementById('pg-step-' + s);
+            if (el) el.style.display = (s === stepName) ? 'block' : 'none';
         });
+    }
+
+    function pgShowStep(stepName) {
+        pgShowAllSteps(stepName);
     }
 
     function pgRenderQuestion() {

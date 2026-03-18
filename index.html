@@ -930,26 +930,57 @@
                 <div style="width:100%; max-width:480px; margin: 0 auto; padding: 20px;">
                     <!-- MENU STEP -->
                     <div id="pg-step-menu"
-                        style="display:block; text-align:center; animation:fadeUp 0.6s ease; padding-top: 40px; padding-bottom: 40px;">
-                        <div style="font-size:72px; margin-bottom:12px;">🎪</div>
-                        <h2 style="font-size:28px; font-weight:900; color:#1e293b; margin-bottom:8px;">사복놀이터</h2>
-                        <p style="color:#64748b; font-size:15px; margin-bottom:32px;">머리 아픈 서류 작업은 잠시 안녕! 👋<br>재미있는
-                            콘텐츠로 힐링하세요.</p>
+                        style="display:block; text-align:center; animation:fadeUp 0.6s ease; padding-top: 32px; padding-bottom: 40px;">
+                        <div style="font-size:64px; margin-bottom:10px; animation:bounce 2s infinite;">🎪</div>
+                        <h2 style="font-size:26px; font-weight:900; color:#1e293b; margin-bottom:6px;">사복놀이터</h2>
+                        <p style="color:#64748b; font-size:14px; margin-bottom:28px; line-height:1.6;">머리 아픈 서류 작업은 잠시 안녕! 👋<br>동료들과 함께 재미있는 콘텐츠로 힐링해요 🎉</p>
 
-                        <div style="display:flex; flex-direction:column; gap:16px; align-items:center;">
+                        <!-- 섹션 레이블 -->
+                        <div style="text-align:left; font-size:11px; font-weight:800; color:#94a3b8; letter-spacing:2px; margin-bottom:12px; padding-left:4px;">✨ 심리 & 게임</div>
+                        <div style="display:flex; flex-direction:column; gap:12px; align-items:center; margin-bottom:20px;">
                             <button class="pulse-hover btn-primary" onclick="showPlaygroundContent('quiz')"
-                                style="width:100%; max-width:320px; background:linear-gradient(135deg,#FF6B6B,#6C63FF); border-radius:20px; padding:24px 20px; box-shadow:0 8px 24px rgba(108,99,255,0.25); border:none; color:white; display:flex; flex-direction:column; align-items:center; gap:8px;">
-                                <span style="font-size:32px; display:block; margin-bottom:4px;">🧩</span>
-                                <span style="font-size:18px; font-weight:800;">과몰입 주의! 내 안의 사복캐 찾기</span>
-                                <span style="font-size:13px; font-weight:500; opacity:0.9;">12문항 심리테스트</span>
+                                style="width:100%; max-width:360px; background:linear-gradient(135deg,#FF6B6B,#6C63FF); border-radius:18px; padding:20px 20px; box-shadow:0 6px 20px rgba(108,99,255,0.22); border:none; color:white; display:flex; align-items:center; gap:16px; text-align:left;">
+                                <span style="font-size:36px; flex-shrink:0;">🧩</span>
+                                <div>
+                                    <div style="font-size:16px; font-weight:800; margin-bottom:3px;">내 안의 사복캐 찾기</div>
+                                    <div style="font-size:12px; font-weight:500; opacity:0.85;">12문항 과몰입 주의 심리테스트</div>
+                                </div>
                             </button>
 
                             <button class="pulse-hover btn-primary" onclick="showPlaygroundContent('game')"
-                                style="width:100%; max-width:320px; background:linear-gradient(135deg,#10b981,#047857); border-radius:20px; padding:24px 20px; box-shadow:0 8px 24px rgba(16,185,129,0.25); border:none; color:white; display:flex; flex-direction:column; align-items:center; gap:8px;">
-                                <span style="font-size:32px; display:block; margin-bottom:4px;">🌱</span>
-                                <span style="font-size:18px; font-weight:800;">복지의 야망: 사회복지사 키우기</span>
-                                <span style="font-size:13px; font-weight:500; opacity:0.9;">좌충우돌 신입 사복 성장기</span>
+                                style="width:100%; max-width:360px; background:linear-gradient(135deg,#10b981,#047857); border-radius:18px; padding:20px 20px; box-shadow:0 6px 20px rgba(16,185,129,0.22); border:none; color:white; display:flex; align-items:center; gap:16px; text-align:left;">
+                                <span style="font-size:36px; flex-shrink:0;">🌱</span>
+                                <div>
+                                    <div style="font-size:16px; font-weight:800; margin-bottom:3px;">사회복지사 키우기</div>
+                                    <div style="font-size:12px; font-weight:500; opacity:0.85;">좌충우돌 신입 사복 성장기 게임</div>
+                                </div>
                             </button>
+                        </div>
+
+                        <!-- 섹션 레이블 -->
+                        <div style="text-align:left; font-size:11px; font-weight:800; color:#94a3b8; letter-spacing:2px; margin-bottom:12px; padding-left:4px;">🎲 직장인 소소 게임</div>
+                        <div style="display:flex; flex-direction:column; gap:12px; align-items:center;">
+                            <button class="pg-fun-btn" onclick="showPlaygroundContent('ladder')"
+                                style="width:100%; max-width:360px; background:linear-gradient(135deg,#FFF0F6,#FFD6E8); border-radius:18px; padding:20px 20px; box-shadow:0 4px 16px rgba(255,105,180,0.15); border:1.5px solid #FFB3D1; color:#C2185B; display:flex; align-items:center; gap:16px; text-align:left; cursor:pointer; transition:all 0.2s;">
+                                <span style="font-size:36px; flex-shrink:0;">🪜</span>
+                                <div>
+                                    <div style="font-size:16px; font-weight:800; margin-bottom:3px; color:#C2185B;">사다리 타기</div>
+                                    <div style="font-size:12px; font-weight:500; color:#E91E8C; opacity:0.8;">간식 내기? 누가 살지 운명에 맡겨요 🍩</div>
+                                </div>
+                                <span style="margin-left:auto; font-size:18px; opacity:0.5;">›</span>
+                            </button>
+
+                            <button class="pg-fun-btn" onclick="showPlaygroundContent('lunch')"
+                                style="width:100%; max-width:360px; background:linear-gradient(135deg,#FFF8E8,#FFE9B3); border-radius:18px; padding:20px 20px; box-shadow:0 4px 16px rgba(255,193,7,0.15); border:1.5px solid #FFD54F; color:#E65100; display:flex; align-items:center; gap:16px; text-align:left; cursor:pointer; transition:all 0.2s;">
+                                <span style="font-size:36px; flex-shrink:0;">🍱</span>
+                                <div>
+                                    <div style="font-size:16px; font-weight:800; margin-bottom:3px; color:#E65100;">점심 메뉴 추천</div>
+                                    <div style="font-size:12px; font-weight:500; color:#F57C00; opacity:0.8;">오늘 뭐 먹을지 AI가 골라줘요 🎯</div>
+                                </div>
+                                <span style="margin-left:auto; font-size:18px; opacity:0.5;">›</span>
+                            </button>
+
+
                         </div>
                     </div>
 
@@ -1044,6 +1075,19 @@
                     <div id="pg-step-result" style="display:none; animation:fadeUp 0.6s ease; padding-bottom: 80px;">
                         <!-- Injected by JS -->
                     </div>
+
+                    <!-- ===== 사다리 타기 STEP ===== -->
+                    <div id="pg-step-ladder" style="display:none; animation:fadeUp 0.5s ease; padding-bottom:80px;">
+                        <!-- Injected by JS -->
+                    </div>
+
+                    <!-- ===== 점심 메뉴 추천 STEP ===== -->
+                    <div id="pg-step-lunch" style="display:none; animation:fadeUp 0.5s ease; padding-bottom:80px;">
+                        <!-- Injected by JS -->
+                    </div>
+
+
+
                     <div style="height:100px;"></div>
                 </div>
             </div>

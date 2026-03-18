@@ -1253,3 +1253,15 @@ select:focus {
   border-radius: 2px;
   animation: shredStrips 0.8s ease-in forwards;
 }
+
+@keyframes pulse-border {
+  0% { border-color: #FFB3D1; box-shadow: 0 0 0px rgba(194, 24, 91, 0); }
+  50% { border-color: #E91E8C; box-shadow: 0 0 15px rgba(194, 24, 91, 0.2); }
+  100% { border-color: #FFB3D1; box-shadow: 0 0 0px rgba(194, 24, 91, 0); }
+}
+
+@keyframes pulse-border-lunch {
+  0% { border-color: #FFD54F; box-shadow: 0 0 0px rgba(255, 193, 7, 0); }
+  50% { border-color: #F57C00; box-shadow: 0 0 15px rgba(255, 193, 7, 0.2); }
+  100% { border-color: #FFD54F; box-shadow: 0 0 0px rgba(255, 193, 7, 0); }
+}
