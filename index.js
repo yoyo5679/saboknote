@@ -5535,34 +5535,49 @@ try {
     window.showPWAInstallGuide = function () {
         const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
         const isAndroid = /Android/.test(navigator.userAgent);
+        const isSamsungBrowser = /SamsungBrowser/.test(navigator.userAgent);
 
         let guideHtml = '';
 
         if (isIOS) {
             guideHtml = `
             <div style="text-align:center; padding:10px 0;">
-                <div style="font-size:3rem; margin-bottom:20px;">🍎</div>
-                <h3 style="font-size:1.2rem; font-weight:800; color:#1e293b; margin-bottom:12px;">아이폰(iOS) 설치 방법</h3>
-                <p style="font-size:0.95rem; color:#475569; line-height:1.6; margin-bottom:24px;">
-                    사파리(Safari) 브라우저에서 아래 순서대로 진행해주시면 홈 화면에 앱이 설치됩니다. ✨
-                </p>
+                <div style="font-size:3rem; margin-bottom:16px;">🍎</div>
+                <h3 style="font-size:1.2rem; font-weight:800; color:#1e293b; margin-bottom:10px;">아이폰(iOS) 설치 방법</h3>
+                <div style="background:#fff4f4; border:1px solid #ffe2e2; border-radius:12px; padding:12px 14px; margin-bottom:18px; font-size:0.82rem; color:#e11d48; text-align:left; line-height:1.5;">
+                    ⚠️ <strong>반드시 Safari(사파리) 앱</strong>으로 접속하셔야 합니다.<br>
+                    카카오, 크롬 등 다른 앱 내 브라우저는 설치 메뉴가 없어요!
+                </div>
                 <div style="background:#f8fafc; border-radius:16px; padding:20px; text-align:left; border:1px solid #e2e8f0;">
-                    <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px;">
-                        <span style="background:var(--primary); color:white; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.8rem; font-weight:800; flex-shrink:0;">1</span>
-                        <span style="font-size:0.95rem; font-weight:700;">하단 중앙의 <b>[공유 버튼 📤]</b>을 누르세요.</span>
+                    <div style="display:flex; align-items:flex-start; gap:12px; margin-bottom:18px;">
+                        <span style="background:var(--primary); color:white; width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.8rem; font-weight:800; flex-shrink:0; margin-top:1px;">1</span>
+                        <div>
+                            <div style="font-size:0.95rem; font-weight:800; margin-bottom:3px;">주소창 오른쪽 <b>[... 버튼]</b>을 누르세요</div>
+                            <div style="font-size:0.8rem; color:#64748b;">주소창(URL창) 맨 오른쪽 끝에 있는 점 세 개 아이콘이에요 🔍</div>
+                        </div>
                     </div>
-                    <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px;">
-                        <span style="background:var(--primary); color:white; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.8rem; font-weight:800; flex-shrink:0;">2</span>
-                        <span style="font-size:0.95rem; font-weight:700;">리스트를 내려 <b>[홈 화면에 추가]</b>를 선택하세요.</span>
+                    <div style="display:flex; align-items:flex-start; gap:12px; margin-bottom:18px;">
+                        <span style="background:var(--primary); color:white; width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.8rem; font-weight:800; flex-shrink:0; margin-top:1px;">2</span>
+                        <div>
+                            <div style="font-size:0.95rem; font-weight:800; margin-bottom:3px;">메뉴에서 <b>[공유 📤]</b>를 누르세요</div>
+                            <div style="font-size:0.8rem; color:#64748b;">나타나는 메뉴 목록 중 공유 버튼을 찾아주세요</div>
+                        </div>
                     </div>
-                    <div style="display:flex; align-items:center; gap:12px;">
-                        <span style="background:var(--primary); color:white; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.8rem; font-weight:800; flex-shrink:0;">3</span>
-                        <span style="font-size:0.95rem; font-weight:700;">우측 상단의 <b>[추가]</b>를 누르면 완료!</span>
+                    <div style="display:flex; align-items:flex-start; gap:12px; margin-bottom:18px;">
+                        <span style="background:var(--primary); color:white; width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.8rem; font-weight:800; flex-shrink:0; margin-top:1px;">3</span>
+                        <div>
+                            <div style="font-size:0.95rem; font-weight:800; margin-bottom:3px;">아래로 스크롤 → <b>[홈 화면에 추가]</b> 선택</div>
+                            <div style="font-size:0.8rem; color:#64748b;">공유 시트를 아래로 내리면 보여요 📋</div>
+                        </div>
+                    </div>
+                    <div style="display:flex; align-items:flex-start; gap:12px;">
+                        <span style="background:#10b981; color:white; width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.8rem; font-weight:800; flex-shrink:0; margin-top:1px;">✓</span>
+                        <div>
+                            <div style="font-size:0.95rem; font-weight:800; margin-bottom:3px;">오른쪽 상단 <b>[추가]</b>를 누르면 완료! 🎉</div>
+                            <div style="font-size:0.8rem; color:#64748b;">바탕화면에 🌿 아이콘이 생겼어요!</div>
+                        </div>
                     </div>
                 </div>
-                <p style="font-size:0.8rem; color:#94a3b8; margin-top:20px;">
-                    ※ 반드시 Safari 브라우저를 이용해주세요.
-                </p>
             </div>`;
         } else if (isAndroid && deferredPrompt) {
             // If it's Android and we have the prompt, try to trigger it directly
@@ -5577,23 +5592,41 @@ try {
             });
             return; // Exit early as we triggered the native prompt
         } else if (isAndroid) {
+            const browserName = isSamsungBrowser ? '삼성 인터넷' : '크롬(Chrome)';
+            const step1Text = isSamsungBrowser
+                ? '오른쪽 하단 <b>[≡ 메뉴 탭]</b>을 누르세요'
+                : '주소창 오른쪽 <b>[점 3개 ⋮]</b>를 누르세요';
+            const step2Text = isSamsungBrowser
+                ? '<b>[페이지 추가]</b> → <b>[홈 화면]</b>을 선택하세요'
+                : '<b>[홈 화면에 추가]</b> 또는 <b>[앱 설치]</b>를 누르세요';
+
             guideHtml = `
             <div style="text-align:center; padding:10px 0;">
-                <div style="font-size:3rem; margin-bottom:20px;">🤖</div>
-                <h3 style="font-size:1.2rem; font-weight:800; color:#1e293b; margin-bottom:12px;">안드로이드 설치 방법</h3>
-                <p style="font-size:0.95rem; color:#475569; line-height:1.6; margin-bottom:24px;">
-                    크롬(Chrome) 브라우저에서 아주 쉽게 설치할 수 있습니다.
-                </p>
+                <div style="font-size:3rem; margin-bottom:16px;">🤖</div>
+                <h3 style="font-size:1.2rem; font-weight:800; color:#1e293b; margin-bottom:10px;">안드로이드 설치 방법</h3>
+                <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:12px; padding:12px 14px; margin-bottom:18px; font-size:0.82rem; color:#15803d; text-align:left;">
+                    ✅ 감지된 브라우저: <strong>${browserName}</strong>
+                </div>
                 <div style="background:#f8fafc; border-radius:16px; padding:20px; text-align:left; border:1px solid #e2e8f0;">
-                    <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px;">
-                        <span style="background:var(--primary); color:white; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.8rem; font-weight:800; flex-shrink:0;">1</span>
-                        <span style="font-size:0.95rem; font-weight:700;">우측 상단의 <b>[점 3개 메뉴 ⋮]</b>를 누르세요.</span>
+                    <div style="display:flex; align-items:flex-start; gap:12px; margin-bottom:18px;">
+                        <span style="background:var(--primary); color:white; width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.8rem; font-weight:800; flex-shrink:0; margin-top:1px;">1</span>
+                        <div style="font-size:0.95rem; font-weight:700;">${step1Text}</div>
                     </div>
-                    <div style="display:flex; align-items:center; gap:12px;">
-                        <span style="background:var(--primary); color:white; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.8rem; font-weight:800; flex-shrink:0;">2</span>
-                        <span style="font-size:0.95rem; font-weight:700;"><b>[홈 화면에 추가]</b> 또는 <b>[앱 설치]</b>를 누르세요.</span>
+                    <div style="display:flex; align-items:flex-start; gap:12px; margin-bottom:18px;">
+                        <span style="background:var(--primary); color:white; width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.8rem; font-weight:800; flex-shrink:0; margin-top:1px;">2</span>
+                        <div style="font-size:0.95rem; font-weight:700;">${step2Text}</div>
+                    </div>
+                    <div style="display:flex; align-items:flex-start; gap:12px;">
+                        <span style="background:#10b981; color:white; width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.8rem; font-weight:800; flex-shrink:0; margin-top:1px;">✓</span>
+                        <div>
+                            <div style="font-size:0.95rem; font-weight:800;">설치 완료! 🎉</div>
+                            <div style="font-size:0.8rem; color:#64748b; margin-top:2px;">바탕화면에 🌿 아이콘이 생겼어요!</div>
+                        </div>
                     </div>
                 </div>
+                <p style="font-size:0.78rem; color:#94a3b8; margin-top:16px; text-align:left; line-height:1.5;">
+                    ※ 위 방법이 안 되면 크롬(Chrome) 브라우저에서 다시 시도해 보세요.
+                </p>
             </div>`;
         } else {
             // General Desktop or other
@@ -5616,18 +5649,17 @@ try {
     };
 
     function checkPWAStatus() {
-        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+        // standalone: PWA로 실행 중이면 배너 숨김, 아니면 표시
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches
+            || window.navigator.standalone === true;
         const promoBanner = document.getElementById('pwa-promo-banner');
         if (promoBanner) {
-            if (isStandalone) {
-                promoBanner.style.display = 'none';
-            } else {
-                promoBanner.style.display = 'block';
-            }
+            promoBanner.style.display = isStandalone ? 'none' : 'block';
         }
     }
 
-    // 초기 로드 시 PWA 여부 체크
+    // DOMContentLoaded와 load 양쪽에서 체크 (iOS 포함 모든 환경 대응)
+    document.addEventListener('DOMContentLoaded', checkPWAStatus);
     window.addEventListener('load', checkPWAStatus);
 
 } catch (e) { console.error('Global JS Error:', e); }
