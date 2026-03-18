@@ -2990,8 +2990,10 @@ try {
                 <label>상세 내용</label>
                 <textarea id="ask-content" class="calc-input" style="height:150px; resize:none; padding:12px;" placeholder="고민되는 내용을 상세히 적어주시면 더 정확한 답변을 얻을 수 있습니다."></textarea>
             </div>
-            <div style="background:#f8fafc; padding:16px; border-radius:12px; border:1px solid #e2e8f0; font-size:0.85rem; color:#64748b;">
-                📢 게시판 운영 원칙: 욕설, 비방, 개인정보 유출 등은 금지되며 익명으로 게시됩니다.
+            <div style="background:#fff9f0; padding:16px; border-radius:12px; border:1px solid #ffedd5; font-size:0.85rem; color:#9a3412; line-height:1.6;">
+                <div style="font-weight:800; margin-bottom:4px;">⚠️ 쉿! 사복인끼리 약속!</div>
+                익명이라도 예의는 필수! 욕설이나 비방은 AI 팀장님이 바로 삭제 조치합니다. 🤖<br>
+                <span style="font-weight:700; color:#c2410c;">※ 유저 간 주고받는 정보나 조언으로 발생하는 모든 일은 본인 책임! 사복노트는 마음만 아파해줄 수 있어요.. (책임 못 져요! 🙏)</span>
             </div>
             <button class="btn-primary" id="btn-submit-post" onclick="submitQuestion()">🪄 익명으로 게시하기</button>
         </div>
@@ -3468,8 +3470,10 @@ try {
                 <label>상세 내용</label>
                 <textarea id="comm-content" class="calc-input" style="height:150px; resize:none; padding:12px;" placeholder="자유롭게 작성해주세요."></textarea>
             </div>
-            <div style="background:#f8fafc; padding:16px; border-radius:12px; border:1px solid #e2e8f0; font-size:0.85rem; color:#64748b;">
-                📢 게시판 별 성격에 맞게 작성해 주시고, 비방이나 욕설은 통보 없이 삭제될 수 있습니다.
+            <div style="background:#f0f9ff; padding:16px; border-radius:12px; border:1px solid #e0f2fe; font-size:0.85rem; color:#0369a1; line-height:1.6;">
+                <div style="font-weight:800; margin-bottom:4px;">📢 커뮤니티 매너 타임</div>
+                정보 공유는 실명보다 더 뜨겁게, 매너는 영하 20도보다 더 차갑게! ✨<br>
+                <span style="font-weight:700; color:#0369a1;">※ 유저 간의 거래, 분쟁, 썸(?) 등에 대해 사복노트는 일절 개입하거나 책임지지 않습니다. 우리 어른스럽게 놀기로 해요! 🤝</span>
             </div>
             <button class="btn-primary" id="btn-submit-comm" onclick="submitCommunityPost()">✏️ 커뮤니티에 글 남기기</button>
         </div>
@@ -4217,33 +4221,33 @@ try {
 
     /* ─── 내 정보 탭 정책 모달 제어 함수 ─── */
     window.openTOSModal = function () {
-        const modal = document.getElementById('tos-modal');
+        const modal = document.getElementById('modal-tos'); // HTML ID에 맞게 수정
         if (modal) {
-            modal.style.display = 'block';
+            modal.classList.remove('hidden');
             document.body.style.overflow = 'hidden';
         }
     };
 
     window.closeTOSModal = function () {
-        const modal = document.getElementById('tos-modal');
+        const modal = document.getElementById('modal-tos');
         if (modal) {
-            modal.style.display = 'none';
+            modal.classList.add('hidden');
             document.body.style.overflow = '';
         }
     };
 
     window.openPrivacyModal = function () {
-        const modal = document.getElementById('privacy-modal');
+        const modal = document.getElementById('modal-privacy');
         if (modal) {
-            modal.style.display = 'block';
+            modal.classList.remove('hidden');
             document.body.style.overflow = 'hidden';
         }
     };
 
     window.closePrivacyModal = function () {
-        const modal = document.getElementById('privacy-modal');
+        const modal = document.getElementById('modal-privacy');
         if (modal) {
-            modal.style.display = 'none';
+            modal.classList.add('hidden');
             document.body.style.overflow = '';
         }
     };
