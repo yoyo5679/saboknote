@@ -5444,4 +5444,33 @@ try {
         });
     };
 
+    /* ─── PWA 전용 로직 ─── */
+    window.showPWAInstallGuide = function () {
+        switchView('mypage');
+        setTimeout(() => {
+            // 이용 안내(FAQ) 아코디언 항목들 중 2번째(인덱스 1)가 앱 설치 안내
+            const pwaAcc = document.querySelectorAll('.acc-item')[1];
+            if (pwaAcc) {
+                const body = pwaAcc.querySelector('.acc-body');
+                const arrow = pwaAcc.querySelector('.acc-arrow');
+                if (body && !body.classList.contains('open')) {
+                    body.classList.add('open');
+                    if (arrow) arrow.classList.add('open');
+                }
+                pwaAcc.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }, 500);
+    };
+
+    function checkPWAStatus() {
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+        const promoBanner = document.getElementById('pwa-promo-banner');
+        if (promoBanner && !isStandalone) {
+            promoBanner.style.display = 'block';
+        }
+    }
+
+    // 초기 로드 시 PWA 여부 체크
+    window.addEventListener('load', checkPWAStatus);
+
 } catch (e) { console.error('Global JS Error:', e); }

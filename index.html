@@ -120,6 +120,28 @@
                         수급</button>
                 </div>
 
+                <!-- PWA 홍보 배너 -->
+                <div id="pwa-promo-banner" class="sec" style="padding-top: 0; padding-bottom: 8px; display: none;">
+                    <div style="background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%); border-radius: 18px; padding: 16px 20px; color: white; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 10px 20px rgba(37,99,235,0.25); position: relative; overflow: hidden;">
+                        <!-- 반짝이는 효과 -->
+                        <div style="position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%); pointer-events: none;"></div>
+                        
+                        <div style="flex: 1; z-index: 1;">
+                            <div style="font-size: 0.75rem; font-weight: 700; opacity: 0.9; margin-bottom: 4px; display: flex; align-items: center; gap: 4px;">
+                                <span style="background: rgba(255,255,255,0.2); padding: 2px 6px; border-radius: 4px; font-size: 0.65rem;">NEW</span>
+                                쾌적한 앱 버전 출시!
+                            </div>
+                            <div style="font-size: 1rem; font-weight: 900; line-height: 1.3;">
+                                홈 화면에 추가하고<br>실무를 더 빠르게 ✨
+                            </div>
+                        </div>
+                        
+                        <button onclick="showPWAInstallGuide()" style="z-index: 1; background: white; color: #2563eb; border: none; border-radius: 12px; padding: 10px 16px; font-size: 0.85rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 4px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                            설치하기 📲
+                        </button>
+                    </div>
+                </div>
+
                 <!-- ③ 자주 쓰는 도구 -->
                 <section class="sec">
                     <div class="sec-head">
@@ -652,23 +674,7 @@
                                 </div>
                             </div>
 
-                            <!-- 2. 동기화 코드 안내 -->
-                            <div class="acc-item">
-                                <div class="acc-header" onclick="toggleAcc(this)">
-                                    🔑 내 동기화 코드는 왜 중요한가요?
-                                    <span class="acc-arrow">▼</span>
-                                </div>
-                                <div class="acc-body">
-                                    <p>사복노트는 별도의 <strong>회원가입이 없습니다.</strong> 대신 브라우저에 저장된 고유한 '동기화 코드'가 선생님의 계정을 식별합니다.</p>
-                                    <ul>
-                                        <li><strong>기기를 바꿀 때:</strong> 기존 기기의 동기화 코드를 새 기기에 입력하면 내 기록(글, 경험치 등)이 그대로 나타납니다.</li>
-                                        <li><strong>코드 분실 주의:</strong> 코드를 따로 적어두지 않고 브라우저 데이터를 초기화하면 <strong>기존 정보를 절대 찾을 수 없습니다.</strong> (저희도 못 찾아드려요! 😂)</li>
-                                        <li><strong>보안:</strong> 코드가 노출되면 타인이 내 닉네임으로 활동할 수 있으니 꼭 비밀로 간직해 주세요.</li>
-                                    </ul>
-                                </div>
-                            </div>
-
-                            <!-- 3. 앱처럼 쓰는 법 -->
+                            <!-- 2. 앱처럼 쓰는 법 (PWA) -->
                             <div class="acc-item">
                                 <div class="acc-header" onclick="toggleAcc(this)">
                                     📱 앱처럼 홈 화면에 추가하고 싶어요!
@@ -685,6 +691,22 @@
                                         <li><strong>안드로이드(Chrome):</strong> 우측 상단 [점 3개] 클릭 → [홈 화면에 추가] 또는 [앱 설치] 선택</li>
                                     </ul>
                                     <p>이렇게 하면 바탕화면에 예쁜 🌿 아이콘이 생기고, 풀스크린으로 더 쾌적하게 이용하실 수 있습니다.</p>
+                                </div>
+                            </div>
+
+                            <!-- 3. 동기화 코드 안내 -->
+                            <div class="acc-item">
+                                <div class="acc-header" onclick="toggleAcc(this)">
+                                    🔑 내 동기화 코드는 왜 중요한가요?
+                                    <span class="acc-arrow">▼</span>
+                                </div>
+                                <div class="acc-body">
+                                    <p>사복노트는 별도의 <strong>회원가입이 없습니다.</strong> 대신 브라우저에 저장된 고유한 '동기화 코드'가 선생님의 계정을 식별합니다.</p>
+                                    <ul>
+                                        <li><strong>기기를 바꿀 때:</strong> 기존 기기의 동기화 코드를 새 기기에 입력하면 내 기록(글, 경험치 등)이 그대로 나타납니다.</li>
+                                        <li><strong>코드 분실 주의:</strong> 코드를 따로 적어두지 않고 브라우저 데이터를 초기화하면 <strong>기존 정보를 절대 찾을 수 없습니다.</strong> (저희도 못 찾아드려요! 😂)</li>
+                                        <li><strong>보안:</strong> 코드가 노출되면 타인이 내 닉네임으로 활동할 수 있으니 꼭 비밀로 간직해 주세요.</li>
+                                    </ul>
                                 </div>
                             </div>
 
