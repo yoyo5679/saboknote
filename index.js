@@ -3371,6 +3371,18 @@ try {
             if (confirm(`'${data.nickname}' 계정으로 기기 정보를 변경할까요?\n현재 기기의 정보는 사라집니다.`)) {
                 localStorage.setItem('sabok_user_id', data.user_id);
                 localStorage.setItem('saboks_anonymous_name', data.nickname);
+
+                // 사복키우기 게임 데이터 복원 로직
+                const { data: rankData } = await supabase
+                    .from('rankings')
+                    .select('game_data')
+                    .eq('user_id', data.user_id)
+                    .single();
+                
+                if (rankData && rankData.game_data) {
+                    localStorage.setItem(`gameData_${data.user_id}`, JSON.stringify(rankData.game_data));
+                }
+
                 alert('계정 동기화가 완료되었습니다. 앱을 다시 시작합니다.');
                 location.reload();
             }

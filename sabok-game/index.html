@@ -1294,6 +1294,7 @@
             user_id: userId, nickname: latestNickname, gender, level,
             total_clicks: totalClicks,
             cases_total: Object.values(casesCompleted).reduce((a, b) => a + b, 0),
+            game_data: gameData,
             last_saved: new Date().toISOString()
           });
         } catch (e) { }
