@@ -1909,21 +1909,26 @@
           <div style={{ flexShrink: 0, margin: '4px 4px 0 4px' }}>
             <div className="gold-frame" style={{ padding: '5px 8px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3px' }}>
-                <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                  <span style={{ fontWeight: '900', color: '#78350f', fontSize: '13px' }}>🏛️ {currentRank.name}</span>
-                  <span style={{ fontWeight: '900', color: '#15803d', fontSize: '13px' }}>💰 {Math.floor(money).toLocaleString()}원</span>
+                <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                  <span style={{ fontWeight: '900', color: '#78350f', fontSize: '14px' }}>🏛️ {currentRank.name}</span>
+                  <span style={{ fontWeight: '900', color: '#15803d', fontSize: '14px' }}>💰 {Math.floor(money).toLocaleString()}원</span>
                 </div>
                 <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                  <span style={{ fontWeight: '900', color: '#92400e', fontSize: '13px' }}>LVL {level}</span>
-                  <button onClick={saveGameData} style={{ fontSize: '12px', fontWeight: '700', color: '#1d4ed8', background: '#dbeafe', borderRadius: '4px', padding: '2px 6px', border: '1px solid #93c5fd', cursor: 'pointer' }}>저장</button>
+                  <span style={{ fontWeight: '900', color: '#92400e', fontSize: '14px' }}>LVL {level}</span>
+                  <button onClick={saveGameData} style={{ fontSize: '12px', fontWeight: '900', color: '#ffffff', background: 'linear-gradient(to bottom, #3b82f6, #2563eb)', borderRadius: '6px', padding: '4px 10px', border: '1px solid #1d4ed8', cursor: 'pointer', boxShadow: '0 2px 4px rgba(37,99,235,0.4)', textShadow: '0 1px 1px rgba(0,0,0,0.2)' }}>
+                    💾 클라우드 저장
+                  </button>
                 </div>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '3px' }}>
                 <span style={{ fontSize: '11px', fontWeight: '700', color: '#1e3a8a' }}>{Math.floor(experience).toLocaleString()} / {(level * 1000).toLocaleString()} xp</span>
                 <span style={{ fontSize: '11px', fontWeight: '700', color: '#15803d' }}>남은 {Math.max(0, level * 1000 - Math.floor(experience)).toLocaleString()} xp</span>
               </div>
               <div style={{ height: '8px', background: 'linear-gradient(to right,#1e40af,#1e3a8a)', borderRadius: '4px', overflow: 'hidden', border: '1px solid #172554' }}>
                 <div style={{ height: '100%', background: 'linear-gradient(to right,#4ade80,#10b981)', width: `${expProgress}%`, transition: 'width 0.3s' }} />
+              </div>
+              <div style={{ background: '#fef3c7', border: '1px dashed #f59e0b', borderRadius: '4px', padding: '4px', marginTop: '6px', fontSize: '11px', fontWeight: '700', color: '#b45309', textAlign: 'center', lineHeight: '1.4' }}>
+                 💡 <b>클라우드 저장</b> 시 다른 폰/PC에서도 100% 이어서 할 수 있습니다! (동기화 코드 연동)
               </div>
             </div>
           </div>
