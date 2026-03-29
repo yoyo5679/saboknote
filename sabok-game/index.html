@@ -1229,58 +1229,85 @@
         const sabokNickname = localStorage.getItem('saboks_anonymous_name') || localStorage.getItem('sabok_nickname') || '';
         if (sabokNickname) setNickname(sabokNickname);
 
-        // 저장된 게임 데이터 로드
+        const defaultSkills = { empathy: 0, networking: 0, counseling: 0, crisis: 0, stamina: 0, focus: 0, persuasion: 0, leadership: 0 };
+        const defaultEquipment = { computer: 0, printer: 0, plant: 0, notebook: 0, whiteboard: 0, bookshelf: 0, smartphone: 0, accounting: 0 };
+
+        // 1. 저장된 로컬 게임 데이터 로드
         const savedData = localStorage.getItem(`gameData_${storedUserId}`);
         let loadedGender = null;
         let loadedLevel = 1;
         let loadedClicks = 0;
         let loadedCases = { child: 0, elderly: 0, disability: 0, mental: 0, family: 0 };
+        
+        const applyData = (data) => {
+          loadedGender = data.gender;
+          if (data.gender) { setGender(data.gender); setCurrentScreen('game'); }
+          loadedLevel = data.level || 1;
+          loadedClicks = data.totalClicks || 0;
+          loadedCases = data.casesCompleted || { child: 0, elderly: 0, disability: 0, mental: 0, family: 0 };
+          setExperience(data.experience || 0);
+          setLevel(loadedLevel);
+          setMoney(data.money || 450);
+          setClickPower(data.clickPower || 1);
+          setClickMoneyPower(data.clickMoneyPower || 1);
+          setAutoXP(data.autoXP || 0);
+          setAutoMoney(data.autoMoney || 0);
+          setTotalClicks(loadedClicks);
+          setSkills({ ...defaultSkills, ...(data.skills || {}) });
+          setEquipment({ ...defaultEquipment, ...(data.equipment || {}) });
+          setCasesCompleted(loadedCases);
+        };
+
         if (savedData) {
           try {
             const data = JSON.parse(savedData);
-            if (data.gender) {
-              loadedGender = data.gender;
-              setGender(data.gender);
-              setCurrentScreen('game');
-            }
-            loadedLevel = data.level || 1;
-            loadedClicks = data.totalClicks || 0;
-            loadedCases = data.casesCompleted || { child: 0, elderly: 0, disability: 0, mental: 0, family: 0 };
-            setExperience(data.experience || 0);
-            setLevel(data.level || 1);
-            setMoney(data.money || 450);
-            const defaultSkills = { empathy: 0, networking: 0, counseling: 0, crisis: 0, stamina: 0, focus: 0, persuasion: 0, leadership: 0 };
-            const defaultEquipment = { computer: 0, printer: 0, plant: 0, notebook: 0, whiteboard: 0, bookshelf: 0, smartphone: 0, accounting: 0 };
-            setClickPower(data.clickPower || 1);
-            setClickMoneyPower(data.clickMoneyPower || 1);
-            setAutoXP(data.autoXP || 0);
-            setAutoMoney(data.autoMoney || 0);
-            setTotalClicks(data.totalClicks || 0);
-            setSkills({ ...defaultSkills, ...(data.skills || {}) });
-            setEquipment({ ...defaultEquipment, ...(data.equipment || {}) });
-            setCasesCompleted(loadedCases);
+            applyData(data);
           } catch (e) { /* 데이터 파싱 오류 무시 */ }
         }
 
-        // ✅ 게임 로드 시 Supabase에 자동 등록 (닉네임 포함)
-        if (loadedGender) {
-          const latestNickname = localStorage.getItem('saboks_anonymous_name') || localStorage.getItem('sabok_nickname') || sabokNickname || '';
-          const supaUrl = 'https://seldrnpohdkggennjieo.supabase.co';
-          const supaKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNlbGRybnBvaGRrZ2dlbm5qaWVvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIyMzI3MjksImV4cCI6MjA4NzgwODcyOX0.PyzWPa-kwYgh-HmuDELD642TCVn7Ajri54FsR7Ik2Gs';
-          const headers = { 'Content-Type': 'application/json', 'apikey': supaKey, 'Authorization': `Bearer ${supaKey}`, 'Prefer': 'resolution=merge-duplicates,return=representation' };
-          fetch(`${supaUrl}/rest/v1/rankings`, {
-            method: 'POST',
-            headers,
-            body: JSON.stringify({
-              user_id: storedUserId,
-              nickname: latestNickname,
-              gender: loadedGender,
-              level: loadedLevel,
-              total_clicks: loadedClicks,
-              cases_total: Object.values(loadedCases).reduce((a, b) => a + b, 0),
-              last_saved: new Date().toISOString()
-            })
-          }).catch(() => { });
+        const supaUrl = 'https://seldrnpohdkggennjieo.supabase.co';
+        const supaKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNlbGRybnBvaGRrZ2dlbm5qaWVvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIyMzI3MjksImV4cCI6MjA4NzgwODcyOX0.PyzWPa-kwYgh-HmuDELD642TCVn7Ajri54FsR7Ik2Gs';
+        
+        // 2. 서버에서 최신 데이터 자동 동기화
+        if (storedUserId) {
+          const fetchLatest = async () => {
+            try {
+              const res = await fetch(`${supaUrl}/rest/v1/rankings?select=game_data&user_id=eq.${storedUserId}`, {
+                headers: { 'apikey': supaKey, 'Authorization': `Bearer ${supaKey}` }
+              });
+              const rankData = await res.json();
+              if (rankData && rankData.length > 0 && rankData[0].game_data) {
+                const serverData = rankData[0].game_data;
+                const localStr = localStorage.getItem(`gameData_${storedUserId}`);
+                let localData = null;
+                if (localStr) { try { localData = JSON.parse(localStr); } catch(e){} }
+                
+                const serverTime = serverData.lastSaved || 0;
+                const localTime = localData ? (localData.lastSaved || 0) : 0;
+                
+                // 서버 데이터가 더 최신이면 자동 덮어쓰기
+                if (serverTime > localTime) {
+                  localStorage.setItem(`gameData_${storedUserId}`, JSON.stringify(serverData));
+                  applyData(serverData);
+                }
+              }
+            } catch(e) { console.error("Sync error:", e); }
+          };
+          fetchLatest().then(() => {
+            // ✅ 수동 자동 등록 로직을 동기화 끝난 후 실행
+            if (loadedGender) {
+              const latestNickname = localStorage.getItem('saboks_anonymous_name') || localStorage.getItem('sabok_nickname') || sabokNickname || '';
+              fetch(`${supaUrl}/rest/v1/rankings`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'apikey': supaKey, 'Authorization': `Bearer ${supaKey}`, 'Prefer': 'resolution=merge-duplicates,return=representation' },
+                body: JSON.stringify({
+                  user_id: storedUserId, nickname: latestNickname, gender: loadedGender, level: loadedLevel,
+                  total_clicks: loadedClicks, cases_total: Object.values(loadedCases).reduce((a, b) => a + b, 0),
+                  last_saved: new Date().toISOString()
+                })
+              }).catch(() => { });
+            }
+          });
         }
       }, []);
 
