@@ -2248,7 +2248,7 @@
 
           {/* ─── 하단 네비게이션 ─── */}
           <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, background: 'linear-gradient(to top,#78350f,#92400e)', borderTop: '3px solid #451a03', padding: '4px' }}>
-            <div style={{ maxWidth: '672px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '4px' }}>
+            <div style={{ maxWidth: '672px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '4px' }}>
               {[
                 { screen: 'game', icon: '🏠', label: '홈' },
                 { screen: 'stats', icon: '🏆', label: '정보' },
@@ -2261,6 +2261,12 @@
                   <div style={{ fontSize: '11px', fontWeight: '700', color: currentScreen === screen ? '#78350f' : '#fef3c7' }}>{label}</div>
                 </button>
               ))}
+              <button onClick={() => { if (confirm('정말 퇴근하시겠습니까? 💼')) { window.location.href = '../index.html'; } }}
+                className="nav-button"
+                style={{ padding: '3px', textAlign: 'center' }}>
+                <div style={{ fontSize: '16px' }}>🚪</div>
+                <div style={{ fontSize: '11px', fontWeight: '700', color: '#fef3c7' }}>퇴근하기</div>
+              </button>
             </div>
           </div>
         </div>

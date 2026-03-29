@@ -594,14 +594,15 @@ try {
         const dashBtn = document.getElementById('open-dashboard');
         if (dashBtn) {
             dashBtn.onclick = () => {
-                const ratios = [0.6, 0.8, 1.0, 1.2, 1.4];
+                const ratios = [0.6, 0.8, 1.0, 1.2, 1.4, 1.8];
                 let incomeHtml = '';
 
                 [1, 2, 3, 4, 5, 6].forEach(size => {
                     let ratioBlocks = ratios.map(r => {
                         let val = Math.round(MED_INCOME_BASE[size] * r);
-                        return `<div class="result-item" style="padding:6px 0; border-bottom:1px solid #f1f5f9;">
-                                <span class="result-label" style="color:#64748b">${Math.round(r * 100)}%</span>
+                        const isNew = r === 1.8;
+                        return `<div class="result-item" style="padding:6px 0; border-bottom:1px solid #f1f5f9; ${isNew ? 'background:#fffbeb;' : ''}">
+                                <span class="result-label" style="color:${isNew ? '#d97706' : '#64748b'}; font-weight:${isNew ? '800' : '400'}">${Math.round(r * 100)}%${isNew ? ' 🆕' : ''}</span>
                                 <span class="result-value" style="font-weight:700; color:#1e293b">${val.toLocaleString()}원</span>
                             </div>`;
                     }).join('');
@@ -615,23 +616,53 @@ try {
                 });
 
                 const content = `
-                    <div style="background:var(--primary); color:white; padding:24px; border-radius:24px; margin-bottom:24px; position:relative; overflow:hidden">
-                    <div style="position:relative; z-index:2">
-                        <p style="font-size:0.85rem; opacity:0.8">올해의 핵심 숫자</p>
-                        <h3 style="font-size:1.8rem; font-weight:900; margin-top:4px">10,320원</h3>
-                        <p style="font-size:0.9rem; font-weight:700; margin-top:2px">2026년 최저임금 (시급)</p>
-                    </div>
-                    <div style="position:absolute; right:-20px; bottom:-20px; font-size:120px; opacity:0.1">💰</div>
+                <div class="admin-tabs" style="display:grid; grid-template-columns: repeat(4, 1fr); gap:6px; margin-bottom:20px; padding:4px; background:#f1f5f9; border-radius:12px;">
+                    <button class="tab-btn active" id="kpi-tab-wage" onclick="switchKpiTab('wage')" style="padding:10px 4px; border:none; border-radius:8px; background:white; font-weight:700; color:var(--primary); box-shadow:0 2px 4px rgba(0,0,0,0.05); font-size:0.75rem; transition:all 0.2s; white-space:nowrap;">💰 최저임금</button>
+                    <button class="tab-btn" id="kpi-tab-income" onclick="switchKpiTab('income')" style="padding:10px 4px; border:none; border-radius:8px; background:transparent; font-weight:600; color:#64748b; font-size:0.75rem; transition:all 0.2s; white-space:nowrap;">🌳 중위소득</button>
+                    <button class="tab-btn" id="kpi-tab-basic" onclick="switchKpiTab('basic')" style="padding:10px 4px; border:none; border-radius:8px; background:transparent; font-weight:600; color:#64748b; font-size:0.75rem; transition:all 0.2s; white-space:nowrap;">🏠 생계급여</button>
+                    <button class="tab-btn" id="kpi-tab-ltc" onclick="switchKpiTab('ltc')" style="padding:10px 4px; border:none; border-radius:8px; background:transparent; font-weight:600; color:#64748b; font-size:0.75rem; transition:all 0.2s; white-space:nowrap;">🌿 장기요양</button>
                 </div>
 
-                <div class="kpi-section">
+                <div id="kpi-content-wage" style="animation: fadeIn 0.3s ease;">
+                    <div style="background:var(--primary); color:white; padding:24px; border-radius:24px; margin-bottom:20px; position:relative; overflow:hidden">
+                        <div style="position:relative; z-index:2">
+                            <p style="font-size:0.85rem; opacity:0.8">올해의 핵심 숫자</p>
+                            <h3 style="font-size:1.8rem; font-weight:900; margin-top:4px">10,320원</h3>
+                            <p style="font-size:0.9rem; font-weight:700; margin-top:2px">2026년 최저임금 (시급)</p>
+                        </div>
+                        <div style="position:absolute; right:-20px; bottom:-20px; font-size:120px; opacity:0.1">💰</div>
+                    </div>
+                    <div style="background:#f8fafc; padding:16px; border-radius:16px; border:1px solid #e2e8f0;">
+                        <p style="font-size:0.9rem; font-weight:800; color:#0f172a; margin-bottom:12px;">📋 최저임금 상세</p>
+                        <div class="result-item" style="padding:8px 0; border-bottom:1px solid #f1f5f9;">
+                            <span class="result-label" style="color:#64748b">시급</span>
+                            <span class="result-value" style="font-weight:700; color:#1e293b">10,320원</span>
+                        </div>
+                        <div class="result-item" style="padding:8px 0; border-bottom:1px solid #f1f5f9;">
+                            <span class="result-label" style="color:#64748b">일급 (8시간)</span>
+                            <span class="result-value" style="font-weight:700; color:#1e293b">82,560원</span>
+                        </div>
+                        <div class="result-item" style="padding:8px 0; border-bottom:1px solid #f1f5f9;">
+                            <span class="result-label" style="color:#64748b">월급 (209시간)</span>
+                            <span class="result-value" style="font-weight:700; color:#1e293b">2,156,880원</span>
+                        </div>
+                        <div class="result-item" style="padding:8px 0;">
+                            <span class="result-label" style="color:#64748b">전년 대비</span>
+                            <span class="result-value" style="font-weight:700; color:#ef4444">↑ 1.7%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="kpi-content-income" style="display:none; animation: fadeIn 0.3s ease;">
                     <p style="font-size:1.0rem; font-weight:800; color:#0f172a; margin-bottom:12px">💎 2026년 가구 규모별 중위소득 기준표</p>
                     ${incomeHtml}
                 </div>
 
-
-                <div class="kpi-section" style="margin-top:20px">
-                    <p style="font-size:0.85rem; font-weight:800; color:#ef4444; margin-bottom:10px">🏠 생계급여 선정기준 (32%)</p>
+                <div id="kpi-content-basic" style="display:none; animation: fadeIn 0.3s ease;">
+                    <div style="background:#fff1f2; padding:16px; border-radius:16px; border:1px solid #ffe4e6; margin-bottom:16px;">
+                        <p style="font-size:0.9rem; font-weight:800; color:#e11d48; margin-bottom:4px;">📌 생계급여 선정기준</p>
+                        <p style="font-size:0.8rem; color:#fb7185;">기준 중위소득의 32% 이하</p>
+                    </div>
                     <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:10px">
                         ${Object.entries(KPI_DATA_2026.basicLiving).map(([size, val]) => `
                             <div style="background:#fff1f2; padding:12px; border-radius:12px; border:1px solid #ffe4e6">
@@ -642,8 +673,11 @@ try {
                     </div>
                 </div>
 
-                <div class="kpi-section" style="margin-top:20px">
-                    <p style="font-size:0.85rem; font-weight:800; color:var(--accent); margin-bottom:10px">🌿 장기요양 재가한도액</p>
+                <div id="kpi-content-ltc" style="display:none; animation: fadeIn 0.3s ease;">
+                    <div style="background:#f0f9ff; padding:16px; border-radius:16px; border:1px solid #e0f2fe; margin-bottom:16px;">
+                        <p style="font-size:0.9rem; font-weight:800; color:#0369a1; margin-bottom:4px;">📌 장기요양 재가급여 월 한도액</p>
+                        <p style="font-size:0.8rem; color:#0ea5e9;">2026년 기준 등급별 한도액</p>
+                    </div>
                     <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(100px, 1fr)); gap:8px">
                         ${Object.entries(KPI_DATA_2026.ltcLimits).map(([grade, val]) => `
                             <div style="background:#f0f9ff; padding:10px; border-radius:12px; border:1px solid #e0f2fe; text-align:center">
@@ -654,14 +688,37 @@ try {
                     </div>
                 </div>
 
-                <div style="margin-top:32px; padding:16px; background:#f1f5f9; border-radius:16px; font-size:0.75rem; color:#64748b; line-height:1.5">
+                <div style="margin-top:24px; padding:16px; background:#f1f5f9; border-radius:16px; font-size:0.75rem; color:#64748b; line-height:1.5">
                     💡 위 지표는 보건복지부 고시 정보를 바탕으로 구성되었으며, 구체적인 자격 판정은 각각의 전용 계산기를 이용해 주세요.
                 </div>
                 `;
                 openModal('2026 핵심 지표 대시보드', content);
+                if (typeof switchKpiTab === 'function') switchKpiTab('wage');
             };
         }
     }
+
+    window.switchKpiTab = function (tabName) {
+        const tabs = ['wage', 'income', 'basic', 'ltc'];
+        tabs.forEach(t => {
+            const content = document.getElementById(`kpi-content-${t}`);
+            const btn = document.getElementById(`kpi-tab-${t}`);
+            if (content) content.style.display = t === tabName ? 'block' : 'none';
+            if (btn) {
+                if (t === tabName) {
+                    btn.style.background = 'white';
+                    btn.style.color = 'var(--primary)';
+                    btn.style.fontWeight = '700';
+                    btn.style.boxShadow = '0 2px 4px rgba(0,0,0,0.05)';
+                } else {
+                    btn.style.background = 'transparent';
+                    btn.style.color = '#64748b';
+                    btn.style.fontWeight = '600';
+                    btn.style.boxShadow = 'none';
+                }
+            }
+        });
+    };
 
     window.showLTCUpdateDetails = function () {
         const content = `
