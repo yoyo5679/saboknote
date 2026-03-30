@@ -3126,6 +3126,7 @@ try {
             <div style="background:#fff9f0; padding:16px; border-radius:12px; border:1px solid #ffedd5; font-size:0.85rem; color:#9a3412; line-height:1.6;">
                 <div style="font-weight:800; margin-bottom:4px;">✨ 잠시만요, 선생님!</div>
                 익명이라도 따뜻한 예의는 필수! 욕설이나 비방은 AI 팀장님이 슬퍼하며 삭제 조치합니다. 🤖<br>
+                <span style="font-weight:900; color:#b91c1c; text-decoration:underline;">※ 주의: 클라이언트(내담자)의 실명이나 상세 주소, 전화번호 등 특정 가능한 민감정보는 절대 포함하지 마세요!</span><br>
                 <span style="font-weight:700; color:#c2410c;">※ 동료들의 조언은 참고용일 뿐, 최종 결정은 선생님의 멋진 판단을 믿어요! 혹시 모를 결과에 대해 사복노트는 마음으로만 함께할 수 있답니다. 🙏</span>
             </div>
             <button class="btn-primary" id="btn-submit-post" onclick="submitQuestion()">🪄 익명으로 게시하기</button>
@@ -3618,6 +3619,7 @@ try {
             <div style="background:#f0f9ff; padding:16px; border-radius:12px; border:1px solid #e0f2fe; font-size:0.85rem; color:#0369a1; line-height:1.6;">
                 <div style="font-weight:800; margin-bottom:4px;">🌿 사복인들과의 약속</div>
                 정보 공유는 실명보다 더 뜨겁게, 매너는 영하 20도보다 더 차갑게! ✨<br>
+                <span style="font-weight:900; color:#b91c1c; text-decoration:underline;">※ 주의: 사례 공유 시 클라이언트(내담자)의 실명이나 특정 가능한 민감 정보는 절대 포함하지 마세요!</span><br>
                 <span style="font-weight:700; color:#0369a1;">※ 유저 간의 거래나 깊은 조언은 조금 더 신중하게 살펴봐 주세요. 선생님이 상처받지 않고 즐겁게 소통하길 진심으로 응원합니다! 🤝</span>
             </div>
             <button class="btn-primary" id="btn-submit-comm" onclick="submitCommunityPost()">✏️ 커뮤니티에 글 남기기</button>
@@ -4482,6 +4484,10 @@ try {
         window.showPlaygroundContent = function (type) {
             if (type === 'game') {
                 window.open('./sabok-game/index.html', '_blank');
+                return;
+            }
+            if (type === 'escape') {
+                window.open('./sabok-game/sabok escape/overtime-escape.html', '_blank');
                 return;
             }
             if (type === 'quiz') {

@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>야근 탈출 🚪</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Jua&family=Black+Han+Sans&display=swap');
+* { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --night:#0d0f1a; --accent:#f5c518; --red:#ff4757;
+  --green:#2ed573; --dim:#8892b0; --white:#e8eaf0;
+}
+body {
+  background:var(--night);
+  font-family:'Jua',sans-serif;
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  min-height:100vh; overflow:hidden;
+  touch-action:none; user-select:none;
+  -webkit-tap-highlight-color:transparent;
+}
+#wrapper {
+  display:flex; flex-direction:column;
+  align-items:center; gap:10px;
+  width:100%; max-width:500px; padding:10px;
+}
+#titleBar {
+  font-family:'Black Han Sans',sans-serif;
+  font-size:1.6rem; color:var(--accent);
+  text-shadow:0 0 20px rgba(245,197,24,0.5);
+  letter-spacing:2px;
+}
+#titleBar span { color:var(--white); }
+#hud {
+  display:flex; justify-content:space-between;
+  align-items:center; width:100%;
+  padding:8px 14px;
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:12px;
+}
+.hi { display:flex; flex-direction:column; align-items:center; gap:2px; }
+.hl { font-size:0.68rem; color:var(--dim); }
+.hv { font-size:1.1rem; color:var(--white); font-weight:bold; }
+#scoreV { color:var(--accent); }
+.cwrap { display:flex; align-items:center; gap:6px; }
+#cbar { width:80px; height:8px; background:rgba(255,255,255,0.1); border-radius:4px; overflow:hidden; }
+#cfill { height:100%; background:linear-gradient(90deg,var(--green),var(--accent)); border-radius:4px; transition:width 0.1s; }
+#canvasWrap {
+  position:relative; width:100%;
+  border-radius:16px; overflow:hidden;
+  box-shadow:0 0 40px rgba(245,197,24,0.12), 0 8px 32px rgba(0,0,0,0.6);
+}
+#gc { display:block; width:100%; background:#1a1d2e; }
+.ov {
+  position:absolute; inset:0;
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  gap:12px; padding:24px; text-align:center;
+  background:rgba(13,15,26,0.93);
+  backdrop-filter:blur(6px);
+}
+.ov .em { font-size:3rem; animation:fl 2s ease-in-out infinite; }
+@keyframes fl { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+.ov h2 {
+  font-family:'Black Han Sans',sans-serif;
+  font-size:1.7rem; color:var(--accent);
+  text-shadow:0 0 15px rgba(245,197,24,0.4);
+}
+.ov .sub { font-size:0.85rem; color:var(--dim); line-height:1.7; }
+.ov .sub b { color:var(--white); }
+.ov .fs { font-size:2.2rem; color:var(--green); text-shadow:0 0 10px rgba(46,213,115,0.4); }
+.og { display:flex; gap:12px; flex-wrap:wrap; justify-content:center; }
+.oi { display:flex; align-items:center; gap:4px; font-size:0.78rem; color:var(--dim); }
+.btn {
+  background:var(--accent); color:#0d0f1a;
+  border:none; border-radius:12px;
+  padding:12px 32px;
+  font-family:'Jua',sans-serif; font-size:1.1rem;
+  cursor:pointer; font-weight:bold;
+  box-shadow:0 4px 20px rgba(245,197,24,0.4);
+  transition:transform .1s;
+}
+.btn:active { transform:scale(0.95); }
+#combo {
+  position:absolute; top:16px; right:14px;
+  font-family:'Black Han Sans',sans-serif;
+  font-size:1.3rem; color:var(--accent);
+  text-shadow:0 0 10px rgba(245,197,24,0.6);
+  pointer-events:none; opacity:0;
+  transition:opacity 0.3s;
+}
+#tapHint { font-size:0.78rem; color:var(--dim); text-align:center; }
+#rankWrap {
+  width:100%;
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:12px; padding:10px 14px;
+}
+#rankTitle { font-size:0.8rem; color:var(--accent); margin-bottom:6px; }
+.rr {
+  display:flex; justify-content:space-between;
+  font-size:0.82rem; color:var(--dim);
+  padding:2px 0;
+  border-bottom:1px solid rgba(255,255,255,0.04);
+}
+.rr:nth-child(1){color:#ffd700}
+.rr:nth-child(2){color:#c0c0c0}
+.rr:nth-child(3){color:#cd7f32}
+.rs { color:var(--white); font-weight:bold; }
+</style>
+</head>
+<body>
+<div id="wrapper">
+  <div id="titleBar">🌙 야근 <span>탈출</span></div>
+  <div id="hud">
+    <div class="hi"><span class="hl">🏃 점수</span><span class="hv" id="scoreV">0</span></div>
+    <div class="hi cwrap">
+      <span class="hl">⚡ 위험도</span>
+      <div id="cbar"><div id="cfill" style="width:5%"></div></div>
+    </div>
+    <div class="hi"><span class="hl">🏆 최고</span><span class="hv" id="bestV">0</span></div>
+  </div>
+  <div id="canvasWrap">
+    <canvas id="gc" width="480" height="270"></canvas>
+
+    <div class="ov" id="startScr">
+      <div class="em">🧑‍💼</div>
+      <h2>야근 탈출!</h2>
+      <p class="sub">퇴근 시간인데 <b>상사</b>와 <b>업무폭탄</b>이 날아온다!<br>끝없이 쏟아지는 장애물을 피해 버텨라!</p>
+      <div class="og">
+        <div class="oi"><span>📋📞📁</span> → ⬆ 점프</div>
+        <div class="oi"><span>👔🗂️</span> → ⬆ 점프</div>
+        <div class="oi"><span>💻</span> → ⬇ 슬라이드</div>
+      </div>
+      <button class="btn" id="startBtn">🔖 출근부 도장 찍기</button>
+      <p class="sub" style="font-size:0.72rem">스페이스/클릭/탭 → 점프 &nbsp;|&nbsp; ↓/스와이프다운 → 슬라이드</p>
+    </div>
+
+    <div class="ov" id="gameoverScr" style="display:none">
+      <div class="em">😩</div>
+      <h2>결국 야근...</h2>
+      <div class="fs" id="finalScore">0점</div>
+      <p class="sub" id="resultMsg"></p>
+      <button class="btn" id="retryBtn">🏃 다시 달리기</button>
+    </div>
+
+    <div id="combo"></div>
+  </div>
+  <p id="tapHint">📱 터치 → 점프 &nbsp;|&nbsp; 아래로 스와이프 → 슬라이드</p>
+  <div id="rankWrap">
+    <div id="rankTitle">🏅 탈출 랭킹 TOP5</div>
+    <div id="rankList"><div class="rr"><span>기록 없음</span><span class="rs">-</span></div></div>
+  </div>
+</div>
+
+<script>
+(function() {
+  var canvas = document.getElementById('gc');
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width, H = canvas.height;
+
+  var GND = H - 50;
+  var PW = 26, PH = 38;
+  var GRAV = 0.58, JFORCE = -13, SLIDEDUR = 34;
+
+  var STAGE_NAMES = [
+    '🌙 야근시작','😰 업무폭주','😱 퇴근불가',
+    '💀 생존본능','🔥 전설의야근','👹 상사빙의',
+    '🌀 시공왜곡','☠️ 사복지옥','🚀 빛의속도','👑 신의영역'
+  ];
+
+  var OBS = [
+    {e:'📋', w:28, h:42, a:'jump', c:'#3742fa'},
+    {e:'👔', w:24, h:50, a:'jump', c:'#ff4757'},
+    {e:'📞', w:30, h:34, a:'jump', c:'#ff6b81'},
+    {e:'💻', w:36, h:26, a:'slide', c:'#ffa502', yo:-26},
+    {e:'📁', w:26, h:36, a:'jump', c:'#a29bfe'},
+    {e:'🗂️', w:32, h:44, a:'jump', c:'#74b9ff'},
+  ];
+
+  function getStage(idx) {
+    var n = STAGE_NAMES[Math.min(idx, STAGE_NAMES.length-1)];
+    var base = 4.5 + idx * 1.3;
+    return {
+      name: n,
+      spd: base + 0.8,
+      gapMin: Math.max(26, 86 - idx * 7),
+      gapRnd: Math.max(14, 58 - idx * 5),
+      dbl: Math.min(0.6, idx * 0.08)
+    };
+  }
+
+  // Supabase & 랭킹 기능
+  var supabaseUrl = 'https://seldrnpohdkggennjieo.supabase.co';
+  var supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNlbGRybnBvaGRrZ2dlbm5qaWVvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIyMzI3MjksImV4cCI6MjA4NzgwODcyOX0.PyzWPa-kwYgh-HmuDELD642TCVn7Ajri54FsR7Ik2Gs';
+  var supabase = window.supabase ? window.supabase.createClient(supabaseUrl, supabaseKey) : null;
+  var rankCache = [];
+  
+  function getUid() {
+    var id = localStorage.getItem('sabok_user_id');
+    if(!id) { id = 'user_' + Math.random().toString(36).substr(2, 9); localStorage.setItem('sabok_user_id', id); }
+    return id;
+  }
+  function getUname() {
+    return localStorage.getItem('saboks_anonymous_name') || '익명의 열혈사복';
+  }
+
+  function loadRanksLocally() {
+    try { return JSON.parse(localStorage.getItem('ynRanks') || '[]'); } catch(e) { return []; }
+  }
+  function saveRankLocally(score) {
+    var r = loadRanksLocally();
+    r.push({score:score, date:new Date().toLocaleDateString('ko-KR')});
+    r.sort(function(a,b){return b.score-a.score;});
+    r = r.slice(0,5);
+    try { localStorage.setItem('ynRanks', JSON.stringify(r)); } catch(e) {}
+    return r;
+  }
+
+  async function loadRanksServer() {
+    if (!supabase) return;
+    try {
+      var res = await supabase.from('escape_ranks').select('*').order('best_score', { ascending: false }).limit(5);
+      if (res.data && !res.error) {
+         rankCache = res.data;
+         renderRanks();
+      }
+    } catch(e) {}
+  }
+
+  async function saveRankServer(score) {
+    if(!supabase) return;
+    var uid = getUid();
+    var uname = getUname();
+    try {
+      var res = await supabase.from('escape_ranks').select('best_score').eq('user_id', uid);
+      var currentBest = 0;
+      if (res.data && res.data.length > 0) currentBest = res.data[0].best_score;
+      if (score > currentBest) {
+         await supabase.from('escape_ranks').upsert({
+           user_id: uid,
+           nickname: uname,
+           best_score: score,
+           updated_at: new Date().toISOString()
+         });
+      }
+      await loadRanksServer();
+    } catch(e) {}
+  }
+
+  function renderRanks() {
+    var medals = ['🥇','🥈','🥉','4위','5위'];
+    var el = document.getElementById('rankList');
+    var myUid = getUid();
+    
+    // 서버에서 불러온 랭킹이 있으면 서버 랭킹 표출, 없으면 로컬 기록 표출
+    if (rankCache.length > 0) {
+      el.innerHTML = rankCache.map(function(x,i){
+        var isMe = (x.user_id === myUid);
+        return '<div class="rr"><span>'+medals[i]+' '+(isMe?'<b style="color:#2ed573">[나]</b> ':'')+x.nickname+'</span><span class="rs">'+x.best_score+'점</span></div>';
+      }).join('');
+      
+      var localBest = parseInt(document.getElementById('bestV').textContent) || 0;
+      var myRow = rankCache.find(function(r){ return r.user_id === myUid; });
+      if(myRow && myRow.best_score > localBest) {
+         document.getElementById('bestV').textContent = myRow.best_score;
+         best = myRow.best_score;
+      }
+    } else {
+      var r = loadRanksLocally();
+      if (!r.length) { el.innerHTML='<div class="rr"><span>기록 없음</span><span class="rs">-</span></div>'; return; }
+      el.innerHTML = r.map(function(x,i){
+        return '<div class="rr"><span>'+medals[i]+' '+x.date+' (동기화 중)</span><span class="rs">'+x.score+'점</span></div>';
+      }).join('');
+    }
+  }
+
+  loadRanksServer();
+  renderRanks();
+
+  // 상태
+  var S, animId, best = 0;
+
+  function initS() {
+    return {
+      on: false, dead: false,
+      score: 0, frames: 0,
+      stageIdx: 0, speed: 4.5,
+      p: { x:68, y:GND-PH, vy:0, ground:true, slide:false, stimer:0, jumps:0 },
+      obs: [], pfx: [],
+      bgx: 0, nextObs: 90,
+      streak: 0, shake: 0
+    };
+  }
+  S = initS();
+
+  // INPUT
+  function doJump() {
+    if (!S.on || S.dead) return;
+    var p = S.p;
+    if (p.jumps < 2) {
+      p.vy = JFORCE;
+      p.ground = false; p.slide = false;
+      p.jumps++;
+      pfxJump();
+    }
+  }
+  function doSlide() {
+    if (!S.on || S.dead) return;
+    var p = S.p;
+    if (p.ground && !p.slide) { p.slide=true; p.stimer=SLIDEDUR; }
+  }
+
+  document.addEventListener('keydown', function(e) {
+    if (e.code==='Space'||e.code==='ArrowUp') { e.preventDefault(); doJump(); }
+    if (e.code==='ArrowDown') { e.preventDefault(); doSlide(); }
+  });
+
+  var touchY0 = 0;
+  canvas.addEventListener('touchstart', function(e) {
+    e.preventDefault(); touchY0 = e.touches[0].clientY; doJump();
+  }, {passive:false});
+  canvas.addEventListener('touchend', function(e) {
+    e.preventDefault();
+    if (e.changedTouches[0].clientY - touchY0 > 35) doSlide();
+  }, {passive:false});
+  canvas.addEventListener('mousedown', function(e) { e.preventDefault(); doJump(); });
+
+  document.getElementById('startBtn').addEventListener('click', startGame);
+  document.getElementById('retryBtn').addEventListener('click', startGame);
+
+  function startGame() {
+    document.getElementById('startScr').style.display = 'none';
+    document.getElementById('gameoverScr').style.display = 'none';
+    cancelAnimationFrame(animId);
+    S = initS();
+    S.on = true;
+    loop();
+  }
+
+  // PARTICLES
+  function pfxJump() {
+    for (var i=0;i<5;i++) {
+      S.pfx.push({x:S.p.x+PW/2,y:GND,vx:(Math.random()-0.5)*3,vy:-(Math.random()*2+0.5),life:14,ml:14,c:['#f5c518','#ff4757','#2ed573'][i%3]});
+    }
+  }
+  function pfxDodge(ox,oy) {
+    var ts=['✨','👍','💨'];
+    for (var i=0;i<4;i++) {
+      S.pfx.push({x:ox,y:oy,vx:(Math.random()-0.5)*5,vy:-(Math.random()*3+1),life:20,ml:20,t:ts[i%3]});
+    }
+  }
+  function updPfx() {
+    S.pfx = S.pfx.filter(function(p){
+      p.x+=p.vx; p.y+=p.vy; p.vy+=0.2; p.life--;
+      return p.life>0;
+    });
+  }
+  function drawPfx() {
+    S.pfx.forEach(function(p){
+      ctx.globalAlpha = p.life/p.ml;
+      if (p.t) { ctx.font='13px serif'; ctx.fillText(p.t,p.x,p.y); }
+      else { ctx.fillStyle=p.c; ctx.beginPath(); ctx.arc(p.x,p.y,3,0,Math.PI*2); ctx.fill(); }
+      ctx.globalAlpha=1;
+    });
+  }
+
+  // BG
+  function drawBG() {
+    var g = ctx.createLinearGradient(0,0,0,H);
+    g.addColorStop(0,'#0d0f1a'); g.addColorStop(1,'#1a1d2e');
+    ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+
+    // 창문
+    for (var i=0;i<3;i++) {
+      var wx = ((30+i*155) - (S.bgx*0.12 % 155) + 465) % 465;
+      ctx.fillStyle='#0a0c17'; ctx.fillRect(wx,16,66,72);
+      if(i===1){ ctx.fillStyle='#f5c518'; ctx.beginPath(); ctx.arc(wx+33,40,12,0,Math.PI*2); ctx.fill(); }
+      ctx.strokeStyle='#2a2d42'; ctx.lineWidth=2; ctx.strokeRect(wx,16,66,72);
+      ctx.beginPath(); ctx.moveTo(wx+33,16); ctx.lineTo(wx+33,88); ctx.moveTo(wx,50); ctx.lineTo(wx+66,50); ctx.stroke();
+    }
+    // 책상
+    for (var j=0;j<4;j++) {
+      var dx = ((j*130 - S.bgx*0.28) % (W+110) + W+110) % (W+110) - 60;
+      ctx.fillStyle='#252838'; ctx.fillRect(dx,GND-24,86,16);
+      ctx.fillStyle='#0d0f1a'; ctx.fillRect(dx+16,GND-50,46,28);
+      ctx.globalAlpha=0.3+Math.sin(S.frames*0.04+j)*0.28;
+      ctx.fillStyle='#1a237e'; ctx.fillRect(dx+18,GND-48,42,24);
+      ctx.globalAlpha=1;
+    }
+    // 바닥
+    ctx.fillStyle='#0e1018'; ctx.fillRect(0,GND+PH,W,H-GND-PH);
+    ctx.strokeStyle='#1a1d30'; ctx.lineWidth=1;
+    var tw=55, off=S.bgx%tw;
+    for (var x=-off;x<W;x+=tw){ ctx.beginPath(); ctx.moveTo(x,GND+PH); ctx.lineTo(x,H); ctx.stroke(); }
+    // 형광등
+    for (var k=0;k<5;k++) {
+      var lx=((k*110-S.bgx*0.04)%(W+110)+W+110)%(W+110)-30;
+      ctx.fillStyle='#fffbe6'; ctx.fillRect(lx,0,54,4);
+      ctx.globalAlpha=0.04; ctx.fillRect(lx-8,0,70,32); ctx.globalAlpha=1;
+    }
+    // 단계명
+    var st = getStage(S.stageIdx);
+    ctx.fillStyle='rgba(245,197,24,0.75)';
+    ctx.font='bold 11px Jua';
+    ctx.textAlign='left';
+    ctx.fillText(st.name, 10, H-8);
+  }
+
+  // PLAYER
+  function updPlayer() {
+    var p=S.p;
+    if(p.slide){ p.stimer--; if(p.stimer<=0) p.slide=false; }
+    if(!p.ground){ p.vy+=GRAV; p.y+=p.vy; }
+    if(p.y>=GND-PH){ p.y=GND-PH; p.vy=0; p.ground=true; p.jumps=0; }
+  }
+
+  function drawPlayer() {
+    var p=S.p, run=Math.floor(S.frames/5)%2;
+    var sx=S.shake?(Math.random()-0.5)*S.shake*2:0;
+    var sy=S.shake?(Math.random()-0.5)*S.shake:0;
+    ctx.save();
+    ctx.translate(p.x+PW/2+sx, p.y+PH/2+sy);
+    if(p.slide){ ctx.scale(1,0.48); ctx.translate(0,PH*0.52); }
+    // 몸
+    ctx.fillStyle='#3742fa'; ctx.fillRect(-11,-9,22,20);
+    // 넥타이
+    ctx.fillStyle='#ff4757';
+    ctx.beginPath(); ctx.moveTo(0,-7); ctx.lineTo(-4,4); ctx.lineTo(0,8); ctx.lineTo(4,4); ctx.closePath(); ctx.fill();
+    // 머리
+    ctx.fillStyle='#f5c518'; ctx.beginPath(); ctx.arc(0,-18,10,0,Math.PI*2); ctx.fill();
+    // 눈
+    ctx.fillStyle='#1a1d2e'; ctx.beginPath(); ctx.arc(-3,-20,2,0,Math.PI*2); ctx.arc(3,-20,2,0,Math.PI*2); ctx.fill();
+    // 입
+    ctx.strokeStyle='#1a1d2e'; ctx.lineWidth=1.5;
+    ctx.beginPath(); ctx.arc(0,-14,3.5,0,Math.PI); ctx.stroke();
+    // 다리
+    ctx.fillStyle='#2a2d42';
+    if(!p.slide){
+      if(run===0){ctx.fillRect(-9,11,7,13); ctx.fillRect(2,11,7,9);}
+      else{ctx.fillRect(-9,11,7,9); ctx.fillRect(2,11,7,13);}
+    }
+    // 가방
+    ctx.fillStyle='#8892b0'; ctx.fillRect(11,-5,9,11);
+    ctx.strokeStyle='#f5c518'; ctx.lineWidth=1; ctx.strokeRect(11,-5,9,11);
+    ctx.restore();
+    if(S.on && S.frames%18<9){ ctx.font='10px serif'; ctx.fillText('💦',p.x+PW+sx+2,p.y+sy-2); }
+  }
+
+  // OBSTACLES
+  function spawnObs() {
+    var st=getStage(S.stageIdx);
+    var t=OBS[Math.floor(Math.random()*OBS.length)];
+    var yo=t.yo||0;
+    S.obs.push({x:W+28,y:GND-t.h+yo,w:t.w,h:t.h,e:t.e,a:t.a,c:t.c,passed:false});
+    if(Math.random()<st.dbl){
+      var gap=52+Math.random()*28;
+      var t2=OBS[Math.floor(Math.random()*OBS.length)];
+      var yo2=t2.yo||0;
+      S.obs.push({x:W+28+gap,y:GND-t2.h+yo2,w:t2.w,h:t2.h,e:t2.e,a:t2.a,c:t2.c,passed:false});
+    }
+  }
+  function updObs() {
+    S.obs.forEach(function(o){ o.x-=S.speed; });
+    S.obs = S.obs.filter(function(o){
+      if(!o.passed && o.x+o.w < S.p.x){
+        o.passed=true;
+        S.score += 15 + S.stageIdx*5 + S.streak;
+        S.streak++;
+        pfxDodge(S.p.x+PW, S.p.y);
+        showCombo(S.streak);
+      }
+      return o.x>-80;
+    });
+  }
+  function drawObs() {
+    S.obs.forEach(function(o){
+      ctx.fillStyle='rgba(0,0,0,0.22)';
+      ctx.fillRect(o.x+3,GND+PH-4,o.w,5);
+      ctx.font=Math.min(o.h*0.85,40)+'px serif';
+      ctx.fillText(o.e, o.x, o.y+o.h);
+      ctx.fillStyle=o.c; ctx.font='bold 9px Jua';
+      ctx.fillText(o.a==='jump'?'⬆점프':'⬇슬라이드', o.x-2, o.y-4);
+    });
+  }
+
+  // COLLISION
+  function hitTest() {
+    var p=S.p;
+    var ph=p.slide?PH*0.45:PH;
+    var py=p.slide?p.y+PH*0.55:p.y;
+    for(var i=0;i<S.obs.length;i++){
+      var o=S.obs[i];
+      if(p.x+8<o.x+o.w-6 && p.x+PW-8>o.x+6 && py+6<o.y+o.h-4 && py+ph-6>o.y+4) return true;
+    }
+    return false;
+  }
+
+  // COMBO
+  var comboTO;
+  function showCombo(n) {
+    var el=document.getElementById('combo');
+    if(n<2){el.style.opacity=0;return;}
+    var msgs=['','','연속회피!','멋진데!','천재!!','전설!!','퇴근각!!!','신인류!!!'];
+    el.textContent=(msgs[Math.min(n,msgs.length-1)]||n+'연속!')+' ×'+n;
+    el.style.opacity=1;
+    clearTimeout(comboTO);
+    comboTO=setTimeout(function(){el.style.opacity=0;},1100);
+  }
+
+  // HUD
+  function updHUD() {
+    document.getElementById('scoreV').textContent=S.score;
+    var pct=((S.frames%280)/280)*100;
+    document.getElementById('cfill').style.width=pct+'%';
+    var c;
+    if(S.stageIdx<2) c='linear-gradient(90deg,#2ed573,#f5c518)';
+    else if(S.stageIdx<4) c='linear-gradient(90deg,#f5c518,#ffa502)';
+    else c='linear-gradient(90deg,#ff4757,#ff2d55)';
+    document.getElementById('cfill').style.background=c;
+  }
+
+  // STAGE
+  function updStage() {
+    var ni=Math.floor(S.frames/280);
+    if(ni!==S.stageIdx){ S.stageIdx=ni; S.shake=6; }
+    var st=getStage(S.stageIdx);
+    var t=Math.min(1,(S.frames-S.stageIdx*280)/280);
+    S.speed=st.spd*(0.85+t*0.15);
+  }
+
+  // GAME OVER
+  function gameOver() {
+    S.dead=true; S.on=false;
+    var ranks=saveRankLocally(S.score);
+    saveRankServer(S.score);
+    var localB = ranks[0]?ranks[0].score:0;
+    if(localB > best) best = localB;
+    document.getElementById('bestV').textContent=best;
+    renderRanks();
+    var msgs=[
+      [0,'야근 탈출 실패... 😭'],
+      [60,'조금 더 빠르면 됐는데! 😤'],
+      [150,'오늘도 야근입니다 🥹'],
+      [300,'거의 탈출할 뻔! 💪'],
+      [500,'랭커 실력이에요! 🎉'],
+      [800,'전설의 케이스워커 🏆'],
+      [1200,'신인류... 당신은 누구? 👑'],
+    ];
+    var msg=msgs[0][1];
+    for(var i=0;i<msgs.length;i++){ if(S.score>=msgs[i][0]) msg=msgs[i][1]; }
+    document.getElementById('finalScore').textContent=S.score+'점';
+    document.getElementById('resultMsg').textContent=msg;
+    document.getElementById('gameoverScr').style.display='flex';
+  }
+
+  // MAIN LOOP
+  function loop() {
+    S.frames++;
+    S.bgx+=S.speed;
+    updStage();
+
+    S.nextObs--;
+    if(S.nextObs<=0){
+      spawnObs();
+      var st=getStage(S.stageIdx);
+      S.nextObs=st.gapMin+Math.random()*st.gapRnd;
+    }
+
+    updPlayer();
+    updObs();
+    updPfx();
+    if(S.shake>0) S.shake-=0.8;
+
+    if(hitTest()){ gameOver(); draw(); return; }
+
+    if(S.frames%4===0) S.score+=1+S.stageIdx;
+    updHUD();
+    draw();
+    if(S.on) animId=requestAnimationFrame(loop);
+  }
+
+  function draw() {
+    ctx.clearRect(0,0,W,H);
+    drawBG();
+    drawObs();
+    drawPfx();
+    drawPlayer();
+    // 고단계 위험 오버레이
+    if(S.stageIdx>=3 && S.on){
+      var intensity=Math.min(0.1,0.025*(S.stageIdx-2));
+      ctx.fillStyle='rgba(255,45,85,'+(intensity+Math.sin(S.frames*0.15)*0.025)+')';
+      ctx.fillRect(0,0,W,H);
+    }
+    if(S.speed>9 && S.on){
+      ctx.strokeStyle='rgba(255,71,87,'+(0.25+Math.sin(S.frames*0.3)*0.15)+')';
+      ctx.lineWidth=3; ctx.strokeRect(1,1,W-2,H-2);
+    }
+  }
+
+  draw();
+})();
+</script>
+</body>
+</html>
