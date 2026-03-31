@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sabok-note-cache-v2';
+const CACHE_NAME = 'sabok-note-cache-v3';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -40,14 +40,6 @@ self.addEventListener('activate', (event) => {
           }
         })
       ).then(() => self.clients.claim());
-    })
-      return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (cacheWhitelist.indexOf(cacheName) === -1) {
-            return caches.delete(cacheName);
-          }
-        })
-      );
     })
   );
 });
