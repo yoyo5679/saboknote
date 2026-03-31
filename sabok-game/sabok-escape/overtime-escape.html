@@ -125,7 +125,7 @@ body {
     <div class="hi"><span class="hl">🏆 최고</span><span class="hv" id="bestV">0</span></div>
   </div>
   <div id="canvasWrap">
-    <canvas id="gc" width="480" height="270"></canvas>
+    <canvas id="gc" width="480" height="320"></canvas>
 
     <div class="ov" id="startScr">
       <div class="em">🧑‍💼</div>
@@ -134,10 +134,9 @@ body {
       <div class="og">
         <div class="oi"><span>📋📞📁</span> → ⬆ 점프</div>
         <div class="oi"><span>👔🗂️</span> → ⬆ 점프</div>
-        <div class="oi"><span>💻</span> → ⬇ 슬라이드</div>
       </div>
       <button class="btn" id="startBtn">🔖 출근부 도장 찍기</button>
-      <p class="sub" style="font-size:0.72rem">스페이스/클릭/탭 → 점프 &nbsp;|&nbsp; ↓/스와이프다운 → 슬라이드</p>
+      <p class="sub" style="font-size:0.72rem">스페이스 / 클릭 / 화면 터치 → ⬆ 점프!</p>
     </div>
 
     <div class="ov" id="gameoverScr" style="display:none">
@@ -150,7 +149,6 @@ body {
 
     <div id="combo"></div>
   </div>
-  <p id="tapHint">📱 터치 → 점프 &nbsp;|&nbsp; 아래로 스와이프 → 슬라이드</p>
   <div id="rankWrap">
     <div id="rankTitle">🏅 탈출 랭킹 TOP5</div>
     <div id="rankList"><div class="rr"><span>기록 없음</span><span class="rs">-</span></div></div>
@@ -177,7 +175,6 @@ body {
     {e:'📋', w:28, h:42, a:'jump', c:'#3742fa'},
     {e:'👔', w:24, h:50, a:'jump', c:'#ff4757'},
     {e:'📞', w:30, h:34, a:'jump', c:'#ff6b81'},
-    {e:'💻', w:36, h:26, a:'slide', c:'#ffa502', yo:-26},
     {e:'📁', w:26, h:36, a:'jump', c:'#a29bfe'},
     {e:'🗂️', w:32, h:44, a:'jump', c:'#74b9ff'},
   ];
@@ -290,7 +287,7 @@ body {
       on: false, dead: false,
       score: 0, frames: 0,
       stageIdx: 0, speed: 4.5,
-      p: { x:68, y:GND-PH, vy:0, ground:true, slide:false, stimer:0, jumps:0 },
+      p: { x:68, y:GND-PH, vy:0, ground:true, jumps:0 },
       obs: [], pfx: [],
       bgx: 0, nextObs: 90,
       streak: 0, shake: 0
@@ -304,29 +301,18 @@ body {
     var p = S.p;
     if (p.jumps < 2) {
       p.vy = JFORCE;
-      p.ground = false; p.slide = false;
+      p.ground = false;
       p.jumps++;
       pfxJump();
     }
   }
-  function doSlide() {
-    if (!S.on || S.dead) return;
-    var p = S.p;
-    if (p.ground && !p.slide) { p.slide=true; p.stimer=SLIDEDUR; }
-  }
 
   document.addEventListener('keydown', function(e) {
     if (e.code==='Space'||e.code==='ArrowUp') { e.preventDefault(); doJump(); }
-    if (e.code==='ArrowDown') { e.preventDefault(); doSlide(); }
   });
 
-  var touchY0 = 0;
   canvas.addEventListener('touchstart', function(e) {
-    e.preventDefault(); touchY0 = e.touches[0].clientY; doJump();
-  }, {passive:false});
-  canvas.addEventListener('touchend', function(e) {
-    e.preventDefault();
-    if (e.changedTouches[0].clientY - touchY0 > 35) doSlide();
+    e.preventDefault(); doJump();
   }, {passive:false});
   canvas.addEventListener('mousedown', function(e) { e.preventDefault(); doJump(); });
 
@@ -414,7 +400,6 @@ body {
   // PLAYER
   function updPlayer() {
     var p=S.p;
-    if(p.slide){ p.stimer--; if(p.stimer<=0) p.slide=false; }
     if(!p.ground){ p.vy+=GRAV; p.y+=p.vy; }
     if(p.y>=GND-PH){ p.y=GND-PH; p.vy=0; p.ground=true; p.jumps=0; }
   }
@@ -425,7 +410,6 @@ body {
     var sy=S.shake?(Math.random()-0.5)*S.shake:0;
     ctx.save();
     ctx.translate(p.x+PW/2+sx, p.y+PH/2+sy);
-    if(p.slide){ ctx.scale(1,0.48); ctx.translate(0,PH*0.52); }
     // 몸
     ctx.fillStyle='#3742fa'; ctx.fillRect(-11,-9,22,20);
     // 넥타이
@@ -440,10 +424,8 @@ body {
     ctx.beginPath(); ctx.arc(0,-14,3.5,0,Math.PI); ctx.stroke();
     // 다리
     ctx.fillStyle='#2a2d42';
-    if(!p.slide){
-      if(run===0){ctx.fillRect(-9,11,7,13); ctx.fillRect(2,11,7,9);}
-      else{ctx.fillRect(-9,11,7,9); ctx.fillRect(2,11,7,13);}
-    }
+    if(run===0){ctx.fillRect(-9,11,7,13); ctx.fillRect(2,11,7,9);}
+    else{ctx.fillRect(-9,11,7,9); ctx.fillRect(2,11,7,13);}
     // 가방
     ctx.fillStyle='#8892b0'; ctx.fillRect(11,-5,9,11);
     ctx.strokeStyle='#f5c518'; ctx.lineWidth=1; ctx.strokeRect(11,-5,9,11);
@@ -484,15 +466,15 @@ body {
       ctx.font=Math.min(o.h*0.85,40)+'px serif';
       ctx.fillText(o.e, o.x, o.y+o.h);
       ctx.fillStyle=o.c; ctx.font='bold 9px Jua';
-      ctx.fillText(o.a==='jump'?'⬆점프':'⬇슬라이드', o.x-2, o.y-4);
+      ctx.fillText('⬆점프', o.x-2, o.y-4);
     });
   }
 
   // COLLISION
   function hitTest() {
     var p=S.p;
-    var ph=p.slide?PH*0.45:PH;
-    var py=p.slide?p.y+PH*0.55:p.y;
+    var ph=PH;
+    var py=p.y;
     for(var i=0;i<S.obs.length;i++){
       var o=S.obs[i];
       if(p.x+8<o.x+o.w-6 && p.x+PW-8>o.x+6 && py+6<o.y+o.h-4 && py+ph-6>o.y+4) return true;
