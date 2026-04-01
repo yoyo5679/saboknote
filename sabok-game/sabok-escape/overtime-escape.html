@@ -18,14 +18,19 @@ body {
   font-family:'Jua',sans-serif;
   display:flex; flex-direction:column;
   align-items:center; justify-content:center;
-  min-height:100vh; overflow:hidden;
+  min-height:100dvh; box-sizing:border-box;
+  padding: env(safe-area-inset-top, 5px) 0 env(safe-area-inset-bottom, 5px) 0;
+  overflow:hidden;
   touch-action:none; user-select:none;
   -webkit-tap-highlight-color:transparent;
 }
 #wrapper {
   display:flex; flex-direction:column;
   align-items:center; gap:10px;
-  width:100%; max-width:500px; padding:10px;
+  width:100%; max-width:500px;
+  height: 100%; max-height: 100dvh;
+  padding: 10px;
+  box-sizing: border-box;
 }
 #titleBar {
   font-family:'Black Han Sans',sans-serif;
@@ -50,7 +55,7 @@ body {
 #cbar { width:80px; height:8px; background:rgba(255,255,255,0.1); border-radius:4px; overflow:hidden; }
 #cfill { height:100%; background:linear-gradient(90deg,var(--green),var(--accent)); border-radius:4px; transition:width 0.1s; }
 #canvasWrap {
-  position:relative; width:100%;
+  position:relative; width:100%; flex-shrink:0;
   border-radius:16px; overflow:hidden;
   box-shadow:0 0 40px rgba(245,197,24,0.12), 0 8px 32px rgba(0,0,0,0.6);
 }
@@ -99,6 +104,7 @@ body {
   background:rgba(255,255,255,0.04);
   border:1px solid rgba(255,255,255,0.08);
   border-radius:12px; padding:10px 14px;
+  flex:1; overflow-y:auto; min-height:0;
 }
 #rankTitle { font-size:0.8rem; color:var(--accent); margin-bottom:6px; }
 .rr {
@@ -115,7 +121,10 @@ body {
 </head>
 <body>
 <div id="wrapper">
-  <div id="titleBar">🌙 야근 <span>탈출</span></div>
+  <div style="display:flex; width:100%; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-bottom: 5px;">
+    <div id="titleBar" style="margin:0;">🌙 야근 <span>탈출</span></div>
+    <button id="exitBtn" class="btn" style="padding:6px 12px; font-size:0.9rem; background:rgba(255,71,87,0.15); color:#ff4757; box-shadow:none; border:1px solid #ff4757;" onclick="if(confirm('내일 팀장님 얼굴을 볼 자신이 있습니까? 👀\n(정말 도망가시겠어요?)')) window.location.href='../../index.html';">🔌 전원 뽑고 튀기</button>
+  </div>
   <div id="hud">
     <div class="hi"><span class="hl">🏃 점수</span><span class="hv" id="scoreV">0</span></div>
     <div class="hi cwrap">
@@ -281,6 +290,8 @@ body {
 
   // 상태
   var S, animId, best = 0;
+  var lastTime = 0;
+  var fpsInterval = 1000 / 60; // 60 FPS 고정
 
   function initS() {
     return {
@@ -325,7 +336,8 @@ body {
     cancelAnimationFrame(animId);
     S = initS();
     S.on = true;
-    loop();
+    lastTime = 0;
+    requestAnimationFrame(loop);
   }
 
   // PARTICLES
@@ -541,29 +553,38 @@ body {
   }
 
   // MAIN LOOP
-  function loop() {
-    S.frames++;
-    S.bgx+=S.speed;
-    updStage();
-
-    S.nextObs--;
-    if(S.nextObs<=0){
-      spawnObs();
-      var st=getStage(S.stageIdx);
-      S.nextObs=st.gapMin+Math.random()*st.gapRnd;
-    }
-
-    updPlayer();
-    updObs();
-    updPfx();
-    if(S.shake>0) S.shake-=0.8;
-
-    if(hitTest()){ gameOver(); draw(); return; }
-
-    if(S.frames%4===0) S.score+=1+S.stageIdx;
-    updHUD();
-    draw();
+  function loop(currentTime) {
     if(S.on) animId=requestAnimationFrame(loop);
+
+    if (!lastTime) lastTime = currentTime;
+    var elapsed = currentTime - lastTime;
+
+    // 60FPS 제한 (모니터 주사율이 달라도 동일한 속도로 실행되게 함)
+    if (elapsed >= fpsInterval) {
+      lastTime = currentTime - (elapsed % fpsInterval);
+
+      S.frames++;
+      S.bgx+=S.speed;
+      updStage();
+
+      S.nextObs--;
+      if(S.nextObs<=0){
+        spawnObs();
+        var st=getStage(S.stageIdx);
+        S.nextObs=st.gapMin+Math.random()*st.gapRnd;
+      }
+
+      updPlayer();
+      updObs();
+      updPfx();
+      if(S.shake>0) S.shake-=0.8;
+
+      if(hitTest()){ gameOver(); draw(); return; }
+
+      if(S.frames%4===0) S.score+=1+S.stageIdx;
+      updHUD();
+      draw();
+    }
   }
 
   function draw() {
