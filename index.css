@@ -202,12 +202,13 @@ body {
 }
 
 .hero-eyebrow {
-  font-size: 0.7rem;
-  font-weight: 700;
-  color: rgba(255, 255, 255, 0.70);
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 1);
   letter-spacing: 0.04em;
   text-transform: uppercase;
   margin-bottom: 8px;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
 }
 
 .hero-title {
@@ -255,7 +256,7 @@ body {
 /* 히어로 배너 내 PWA 홍보 배지 */
 .hero-pwa-badge {
   position: absolute;
-  top: 14px;
+  top: 38px;
   right: 14px;
   background: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(8px);
