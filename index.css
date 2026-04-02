@@ -177,7 +177,8 @@ body {
   margin: 12px 13px 0;
   border-radius: var(--radius-xl);
   overflow: hidden;
-  height: 172px;
+  height: auto;
+  min-height: 172px;
   background: linear-gradient(125deg, #0f2d6b 0%, #1e4eb5 45%, #3b7ef8 100%);
   display: flex;
   align-items: center;
@@ -255,9 +256,9 @@ body {
 
 /* 히어로 배너 내 PWA 홍보 배지 */
 .hero-pwa-badge {
-  position: absolute;
-  top: 38px;
-  right: 14px;
+  display: inline-flex;
+  margin-top: 14px;
+  width: fit-content;
   background: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
@@ -267,7 +268,6 @@ body {
   color: white;
   font-size: 0.72rem;
   font-weight: 800;
-  display: flex;
   align-items: center;
   gap: 6px;
   cursor: pointer;
