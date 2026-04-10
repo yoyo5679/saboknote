@@ -3502,7 +3502,7 @@ try {
         if (!listContainer) return;
 
         // 탭 활성화 UI 업데이트
-        ['all', 'free', 'info', 'job', 'diary'].forEach(c => {
+        ['all', 'free', 'info', 'job', 'ssul', 'diary'].forEach(c => {
             const btn = document.getElementById('cat-' + c);
             if (btn) {
                 btn.style.background = '#fff';
@@ -3515,6 +3515,7 @@ try {
         if (category === '자유게시판') activeBtnId = 'cat-free';
         if (category === '정보 공유방') activeBtnId = 'cat-info';
         if (category === '취업/이직') activeBtnId = 'cat-job';
+        if (category === '썰게시판') activeBtnId = 'cat-ssul';
         if (category === '하루일기') activeBtnId = 'cat-diary';
 
         const activeBtn = document.getElementById(activeBtnId);
@@ -3532,6 +3533,7 @@ try {
             else if (category === '자유게시판') descText = '일하다 킹받을 때, 점심 뭐 먹지 고민될 때 냅다 들어와! 📢 아무말 대잔치 대환영, 여기가 바로 사복 대나무숲임';
             else if (category === '정보 공유방') descText = '나만 알기 아까운 꿀팁, 공문 해석, 꿀 사이트 공유해줌. 🔥 서로 돕고 사는 사복 에코시스템 가보자고!';
             else if (category === '취업/이직') descText = '이직 고민 중인 경력직부터 갓생 살고 싶은 신입까지 다 모여! 🤝 앞서간 선배들의 찐조언으로 레벨업 할 사람?';
+            else if (category === '썰게시판') descText = '이거 실화냐? 복지 현장에서 겪은 기상천외한 썰, 도파민 터지는 썰들 대방출! 🍿 각 잡고 썰 풀어보자';
             else if (category === '하루일기') descText = '오늘 하루도 사복 현장에서 살아남은 당신, 진짜 고생했음! ☀️ 소소한 행복부터 눈물 핑 도는 일상까지 서로 토닥토닥해줄게';
 
             descEl.innerText = descText;
@@ -3570,6 +3572,7 @@ try {
                 let textColor = '#4338ca';
                 if (post.category === '정보 공유방') { badgeColor = '#fee2e2'; textColor = '#b91c1c'; }
                 if (post.category === '취업/이직') { badgeColor = '#dcfce3'; textColor = '#15803d'; }
+                if (post.category === '썰게시판') { badgeColor = '#f3e8ff'; textColor = '#7e22ce'; }
                 if (post.category === '하루일기') { badgeColor = '#fef3c7'; textColor = '#b45309'; }
 
                 html += `
@@ -3605,6 +3608,7 @@ try {
                     <option value="자유게시판">📢 자유게시판</option>
                     <option value="정보 공유방">🔥 정보 공유방</option>
                     <option value="취업/이직">🧩 취업/이직</option>
+                    <option value="썰게시판">🍿 썰게시판</option>
                     <option value="하루일기">☀️ 하루일기</option>
                 </select>
             </div>
@@ -3634,6 +3638,7 @@ try {
         let cleanCategory = "자유게시판";
         if (category.includes('정보')) cleanCategory = "정보 공유방";
         if (category.includes('취업') || category.includes('이직')) cleanCategory = "취업/이직";
+        if (category.includes('썰')) cleanCategory = "썰게시판";
         if (category.includes('일기')) cleanCategory = "하루일기";
 
         const content = document.getElementById('comm-content').value;
@@ -3670,6 +3675,7 @@ try {
             if (cleanCategory === '자유게시판') loadCommunityPosts('자유게시판');
             else if (cleanCategory === '정보 공유방') loadCommunityPosts('정보 공유방');
             else if (cleanCategory === '취업/이직') loadCommunityPosts('취업/이직');
+            else if (cleanCategory === '썰게시판') loadCommunityPosts('썰게시판');
             else if (cleanCategory === '하루일기') loadCommunityPosts('하루일기');
             else loadCommunityPosts('all');
 
@@ -3733,6 +3739,7 @@ try {
             let textColor = '#4338ca';
             if (post.category === '정보 공유방') { badgeColor = '#fee2e2'; textColor = '#b91c1c'; }
             if (post.category === '취업/이직') { badgeColor = '#dcfce3'; textColor = '#15803d'; }
+            if (post.category === '썰게시판') { badgeColor = '#f3e8ff'; textColor = '#7e22ce'; }
             if (post.category === '하루일기') { badgeColor = '#fef3c7'; textColor = '#b45309'; }
 
             // 내가 쓴 글인지 확인
@@ -3854,6 +3861,7 @@ try {
                         <option value="자유게시판" ${post.category === '자유게시판' ? 'selected' : ''}>📢 자유게시판</option>
                         <option value="정보 공유방" ${post.category === '정보 공유방' ? 'selected' : ''}>🔥 정보 공유방</option>
                         <option value="취업/이직" ${post.category === '취업/이직' ? 'selected' : ''}>🧩 취업/이직</option>
+                        <option value="썰게시판" ${post.category === '썰게시판' ? 'selected' : ''}>🍿 썰게시판</option>
                         <option value="하루일기" ${post.category === '하루일기' ? 'selected' : ''}>☀️ 하루일기</option>
                     </select>
                 </div>
