@@ -78,253 +78,29 @@ try {
     function initNewsletterReader() {
         const btn = document.getElementById('open-newsletter-read');
         if (btn) {
-            btn.onclick = async () => {
-                let listHtml = '<div style="text-align:center; padding:20px;"><div class="loading-spinner" style="margin: 0 auto 8px auto;"></div><p style="font-size:0.85rem; color:#94a3b8;">비밀 편지함 여는 중...</p></div>';
-
-                const getModalContent = (html) => `
+            btn.onclick = () => {
+                const modalContent = `
                 <div style="text-align:center; padding: 20px 0;">
                     <div style="font-size:3rem; margin-bottom:12px; animation: bounce 2s infinite">💌</div>
-                    <h3 style="font-size:1.4rem; color:var(--text-dark); margin-bottom:8px; font-weight:900">비밀 편지</h3>
-                    <p style="font-size:0.95rem; color:#64748b; margin-bottom:24px; line-height:1.5;"><strong>"쉿! 이건 비밀인데 너한테만 알려주는거야."</strong><br>팀장님 몰래 보는 진짜 쓸모있는 복지 트렌드랑 막히는 업무 뚫어주는 AI 꼼수! 출퇴근길 3분이면 충분해 😎</p>
+                    <h3 style="font-size:1.4rem; color:var(--text-dark); margin-bottom:8px; font-weight:900">팀장님 몰래 보는 비밀편지</h3>
+                    <p style="font-size:0.95rem; color:#64748b; margin-bottom:24px; line-height:1.6;"><strong>"쉿! 사복천재가 이메일로 직접 배달 갑니다."</strong><br>막히는 서류 업무 뚫어주는 AI 꼼수부터 최신 복지 트렌드까지! 출퇴근길 3분이면 칼퇴 쌉가능 😎 메일 주소만 쓱 남겨주세요!</p>
                     
-                    <div id="newsletter-list-container" style="background:#f5f3ff; padding:20px; border-radius:16px; border:1px solid #ede9fe; text-align:left; margin-bottom:24px; max-height:250px; overflow-y:auto;">
-                        ${html}
-                    </div>
-
                     <div style="display:flex; flex-direction:column; gap:12px; text-align:left;">
-                        <input type="email" id="newsletter-email" class="calc-input" placeholder="이메일 주소만 쓱 남겨봐" style="font-size:1rem; padding:14px; border:2px solid #e2e8f0; border-radius:12px;">
+                        <input type="email" id="newsletter-email" class="calc-input" placeholder="칼퇴를 도와줄 이메일 주소 입력" style="font-size:1rem; padding:14px; border:2px solid #e2e8f0; border-radius:12px;">
                         <label style="display:flex; align-items:flex-start; gap:10px; cursor:pointer; padding:12px; background:#f8f5ff; border-radius:12px; border:1px solid #ede9fe;">
                             <input type="checkbox" id="newsletter-agree" style="width:18px; height:18px; accent-color:#7c3aed; flex-shrink:0; margin-top:2px;">
                             <span style="font-size:0.8rem; color:#475569; line-height:1.5;">
-                                [필수] <strong style="color:#7c3aed;">개인정보 수집·이용</strong>에 동의합니다.<br>
-                                <span style="color:#94a3b8; font-size:0.75rem;">수집항목: 이메일 | 목적: 뉴스레터 발송 | 보유: 구독 취소 시까지</span>
+                                [필수] <strong style="color:#7c3aed;">개인정보 수집·이용</strong> 건 동의 완료!<br>
+                                <span style="color:#94a3b8; font-size:0.75rem;">쿨하게 약속함: 수집한 이메일은 뉴스레터 발송용으로만 쓰고, 언제든 구독 취소 가능함 🤙</span>
                             </span>
                         </label>
-                        <button class="btn-primary" style="background:linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%); padding:16px; font-size:1.1rem; border-radius:12px; box-shadow:0 4px 14px rgba(124,58,237,0.3)" onclick="subscribeNewsletter()">나도 비밀 편지 받아볼래!</button>
+                        <button class="btn-primary" style="background:linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%); padding:16px; font-size:1.1rem; border-radius:12px; box-shadow:0 4px 14px rgba(124,58,237,0.3)" onclick="subscribeNewsletter()">💌 나도 이 편지 받을래!</button>
                     </div>
                 </div>`;
 
-                openModal('비밀 편지 구독방', getModalContent(listHtml));
-
-                if (!supabase) return;
-
-                const mockListHtml = `
-                    <div style="margin-bottom:12px; padding-bottom:12px; border-bottom:1px dashed #ddd6fe; cursor:pointer;" onclick="showNewsletterDetail('vol4')">
-                        <strong style="color:#0f172a; font-size:0.95rem; display:block; margin-bottom:4px">[Vol 4.] 사복직 생존은 템빨! 업무 효율 떡상하는 사무용품 추천</strong>
-                        <span style="font-size:0.8rem; color:#64748b">발행일: 2026.03.05</span>
-                    </div>
-                    <div style="margin-bottom:12px; padding-bottom:12px; border-bottom:1px dashed #ddd6fe; cursor:pointer;" onclick="showNewsletterDetail('vol1')">
-                        <strong style="color:#0f172a; font-size:0.95rem; display:block; margin-bottom:4px">[Vol 3.] 요즘 핫한 '퍼네이션(Funation)' 동향! 재미있게 기부하는 법 공유함</strong>
-                        <span style="font-size:0.8rem; color:#64748b">발행일: 2026.03.01</span>
-                    </div>
-                    <div style="margin-bottom:12px; padding-bottom:12px; border-bottom:1px dashed #ddd6fe; cursor:pointer;" onclick="showNewsletterDetail('vol2')">
-                        <strong style="color:#0f172a; font-size:0.95rem; display:block; margin-bottom:4px">[Vol 2.] 2026 사회복지 최신 트렌드! 이거 모르면 대화 안 됨</strong>
-                        <span style="font-size:0.8rem; color:#64748b">발행일: 2026.02.20</span>
-                    </div>
-                    <div style="cursor:pointer;" onclick="showNewsletterDetail('vol3')">
-                        <strong style="color:#0f172a; font-size:0.95rem; display:block; margin-bottom:4px">[Vol 1.] 업무 퀄리티 떡상하는 무료 AI 툴 추천! 이거 쓰면 칼퇴 가능</strong>
-                        <span style="font-size:0.8rem; color:#64748b">발행일: 2026.02.10</span>
-                    </div>
-                `;
-
-                try {
-                    const { data, error } = await supabase
-                        .from('newsletters')
-                        .select('*')
-                        .order('created_at', { ascending: false });
-
-                    const container = document.getElementById('newsletter-list-container');
-                    if (container) {
-                        let itemsHtml = '<div style="font-size:0.8rem; font-weight:800; color:#7c3aed; margin-bottom:12px">📮 편지 목록</div>';
-
-                        if (error || !data || data.length === 0) {
-                            itemsHtml += '<div style="text-align:center; padding:10px; color:#64748b; font-size:0.9rem;">새로 도착한 비밀 편지가 없네요! 지난 편지들을 모아봤어요.</div>';
-                        } else {
-                            window.newsletterData = window.newsletterData || {};
-                            data.forEach((post, i) => {
-                                const d = new Date(post.created_at);
-                                const dateStr = `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
-                                window.newsletterData[post.id] = post;
-
-                                itemsHtml += `
-                                <div style="margin-bottom:12px; padding-bottom:12px; border-bottom:1px dashed #ddd6fe; cursor:pointer;" onclick="window.open('https://fluff-dew-8ab.notion.site/31a718fdb19180ccb8f9ed51cbcbdaa0?source=copy_link', '_blank')">
-                                    <strong style="color:#0f172a; font-size:0.95rem; display:block; margin-bottom:4px">[Vol ${data.length + 3 - i}.] ${escapeHtml(post.title)}</strong>
-                                    <span style="font-size:0.8rem; color:#64748b">발행일: ${dateStr}</span>
-                                </div>`;
-                            });
-                        }
-
-                        const mockListHtml = `
-                            <div style="margin-bottom:12px; padding-bottom:12px; border-bottom:1px dashed #ddd6fe; cursor:pointer;" onclick="showNewsletterDetail('vol5')">
-                                <strong style="color:#0f172a; font-size:0.95rem; display:block; margin-bottom:4px">[Vol 5.] 🧹 "이런 것까지 해?" K-사회복지사 찐 생존기 (feat. 만능 엔터테이너)</strong>
-                                <span style="font-size:0.8rem; color:#64748b">발행일: 2026.03.06</span>
-                            </div>
-                            <div style="margin-bottom:12px; padding-bottom:12px; border-bottom:1px dashed #ddd6fe; cursor:pointer;" onclick="showNewsletterDetail('vol4')">
-                                <strong style="color:#0f172a; font-size:0.95rem; display:block; margin-bottom:4px">[Vol 4.] 사복직 생존은 템빨! 업무 효율 떡상하는 사무용품 추천</strong>
-                                <span style="font-size:0.8rem; color:#64748b">발행일: 2026.03.05</span>
-                            </div>
-                            <div style="margin-bottom:12px; padding-bottom:12px; border-bottom:1px dashed #ddd6fe; cursor:pointer;" onclick="showNewsletterDetail('vol1')">
-                                <strong style="color:#0f172a; font-size:0.95rem; display:block; margin-bottom:4px">[Vol 3.] 요즘 핫한 '퍼네이션(Funation)' 동향! 재미있게 기부하는 법 공유함</strong>
-                                <span style="font-size:0.8rem; color:#64748b">발행일: 2026.03.01</span>
-                            </div>
-                            <div style="margin-bottom:12px; padding-bottom:12px; border-bottom:1px dashed #ddd6fe; cursor:pointer;" onclick="showNewsletterDetail('vol2')">
-                                <strong style="color:#0f172a; font-size:0.95rem; display:block; margin-bottom:4px">[Vol 2.] 2026 사회복지 최신 트렌드! 이거 모르면 대화 안 됨</strong>
-                                <span style="font-size:0.8rem; color:#64748b">발행일: 2026.02.20</span>
-                            </div>
-                            <div style="cursor:pointer;" onclick="showNewsletterDetail('vol3')">
-                                <strong style="color:#0f172a; font-size:0.95rem; display:block; margin-bottom:4px">[Vol 1.] 업무 퀄리티 떡상하는 무료 AI 툴 추천! 이거 쓰면 칼퇴 가능</strong>
-                                <span style="font-size:0.8rem; color:#64748b">발행일: 2026.02.10</span>
-                            </div>
-                        `;
-
-                        itemsHtml += mockListHtml;
-                        container.innerHTML = itemsHtml;
-                    }
-                } catch (e) {
-                    console.error('Newsletter load error:', e);
-                }
+                openModal('비밀 편지 구독 신청', modalContent);
             };
         }
-    }
-    window.showNewsletterDetail = function (id) {
-        let title = '';
-        let contentHtml = '';
-
-        if (id === 'vol5') {
-            title = '🧹 "이런 것까지 해?" K-사회복지사 찐 생존기 (feat. 만능 엔터테이너)';
-            contentHtml = `
-                <div style="font-size:0.95rem; line-height:1.6; color:#334155; white-space:pre-wrap;">
-안녕! 팀장님 몰래 보는 <strong>사복천재 비밀편지 Vol. 5</strong>야. 🤫
-
-다들 입사하기 전엔 책상에 앉아서 "어머, 힘드시겠어요 ㅠㅠ 제가 도와드릴게요!" 하며 우아하게 상담만 하는 줄 알았지? (응, 아니야~) 현실은 웬만한 철물점 사장님, 이삿짐센터 직원 못지않게 몸빵(?) 하는 게 우리 일상 아니겠어?
-
-그래서 오늘은 우리가 현장에서 마주하는 <strong>"진짜 이런 것까지 한다고? 🤦‍♀️"</strong> 싶은 사복직의 눈물겨운 찐 생존기 썰을 풀어볼까 해. 다들 읽으면서 '내 얘기잖아' 하고 이마 탁! 칠 준비 해.
-
-🪛 <strong>1. 전등 갈기부터 배관 뚫기까지... 인간 맥가이버 등극</strong>
-어르신 댁에 방문 상담 갔는데 갑자기 화장실 불이 안 들어온다? "어르신, 수리 기사님 부르세요~" 하고 쿨하게 나오기엔 우리의 오지랖과 직업의식이 허락질 않지. 결국 현관문 열고 나가서 전구 사 오고, 의자 밟고 올라가서 형광등 갈아 끼우는 내 모습 발견 😇... 변기 막힌 거 뚫어주고, 고장 난 선풍기 조립해 주는 건 기본 중에 기본이야. 우리 이력서에 '간단한 설비 수리 가능' 한 줄 추가해야 하는 거 아니냐고.
-
-🚚 <strong>2. 당근마켓 뺨치는 자원 연계와 가구 운반</strong>
-"선생님, 저 이거 장롱 좀 옮겨주시면 안 될까요...?" 혼자 사시는 어르신이나 장애인 클라이언트 댁에 가면 심심찮게 듣는 부탁이지. 근데 또 우리가 누구야. 안 된다고 단칼에 거절 못하고 결국 옆구리에 힘 딱 주고 같이 가구 밀고 있는 나 비정상인가요? ㅋㅋㅋ 심지어 후원 물품으로 냉장고나 세탁기 들어오면 기관 트럭 영혼까지 끌어모아서 배송부터 설치 셋팅까지 다 해드림. 이 정도면 이삿짐센터 스카웃 제의 들어와야 한다 진짜.
-
-📸 <strong>3. 폰카메라로 증명사진 찍고 포토샵 장인 되기</strong>
-대상자분들 기초수급자 신청하거나 각종 복지 혜택 서류 넣으려는데 '최근 6개월 이내 증명사진'이 필요할 때! 다리 불편하셔서 사진관 가기 힘든 분들 모시고 가기 막막하잖아? 결국 어떻게 해? 사무실에 있는 하얀색 벽지(내지는 전지) 찾아와서 뒤에 대고 폰으로 찰칵 📸. 그리고 사무실 돌아와서 누끼 예쁘게 따고, 머리 삐져나온 거 다듬어주고, 양복 입힌 것처럼 포토샵 합성해 주는 매직... 나 사회복지학과 나왔나 사진학과 나왔나 가끔 헷갈림.
-
-👩‍⚖️ <strong>4. 가짜 가족 싸움 중재하는 솔로몬</strong>
-명절이나 특별한 날에만 연락 오고 평소엔 코빼기도 안 보이는 자녀분들 ㅂㄷㅂㄷ... 근데 지원금이나 후원품 나오면 귀신같이 알고 나타나서 서로 더 가져가겠다고 싸우는 꼴 볼 때 진짜 속 터지지? 😡 그럴 때 중간에 껴서 쌍방 흥분 가라앉히고, 팩트 체크하고, 어떻게 배분할지 원만하게(?) 중재하는 역할도 바로 우리 몫이야. 거의 가족 공증인이나 변호사 수준의 협상 스킬이 필요하다고 봄.
-
-우리가 화려한 무대 위 주인공은 아니지만, 이런 소소하고 자잘한 손길들이 모여서 누군가의 하루를 훨씬 더 살만하게 만들어주고 있다는 거! 가끔은 현타 오고 몸도 힘들지만, 네모난 책상을 벗어나 진짜 현장에서 땀 흘리는 우리가 찐 사회복지 아니겠어? ✨
-
-오늘도 몸 사리지 않고 현장에서 구르고 온 나 자신! 진짜 칭찬해 주자. 주말엔 푹 쉬면서 체력 보충 꼭 하고, 다음 편지에서 또 재밌는 썰 들고 올게! 👋
-                </div>`;
-        } else if (id === 'vol4') {
-            title = "💻 사복직 생존은 템빨! 업무 효율 떡상하는 사무용품 추천";
-            contentHtml = `
-                <div style="font-size:0.95rem; line-height:1.6; color:#334155; white-space:pre-wrap;">
-안녕! 팀장님 몰래 보는 <strong>사복천재 비밀편지 Vol. 4</strong>야. 🤫
-
-다들 오늘도 모니터 앞에서 거북목 장착하고 무한 타이핑 중이지? 솔직히 우리 일이 서비스 대상자 만나는 시간만큼이나 '서류와의 전쟁' 시간이 길잖아. 현장 업무 뛰고 돌아와서 그 버거워진 몸으로 또 키보드를 두드려야 하는 그 고충, 내가 너무 잘 알아. 
-
-그래서 오늘은 우리가 책상 앞에서 조금이라도 덜 피곤하고, 더 빠르게 일을 끝낼 수 있게 도와주는 <strong>'사복직 맞춤형 생존 사무용품 3대장'</strong>을 가져왔어. 이건 단순한 지름신이 아니라 나를 위한 '건강 투자'라고 생각하고 읽어봐!
-
-🖱️ <strong>1. 버티컬 마우스 - 너의 소중한 손목을 구원해줄 방패</strong>
-사례관리 기록, 프로포절 작성, 일일지출결의서... 우리 손가락과 손목이 쉴 틈이 어딨어? 일반 마우스를 오래 쓰면 손목 뼈가 뒤틀리면서 터널 증후군 오기 딱 좋거든. 처음엔 좀 어색할 수 있는데, 세워서 잡는 '버티컬 마우스'로 바꿔봐. 손목이 자연스럽게 중립 자세를 유지하니까 확실히 피로도가 확 줄어들어. 2~3만 원대 가성비 템도 많으니까 이건 진짜 무조건 사야 해. 손목 나가서 병원비 내는 것보다 이게 백번 싸다!
-
-⌨️ <strong>2. 저소음 기계식 키보드 - 타격감은 살리고, 옆자리 눈치는 줄이고</strong>
-키보드 타건감이 좋으면 신기하게도 보고서 쓰는 속도가 빨라져. (이건 과학이야!) 근데 '찰칵찰칵' 소리 나는 건 사무실에서 쓰기엔 좀 민망하잖아? 이럴 땐 '저소음 적축'이나 '무접점' 키보드를 추천해. 구름 위를 걷는 것처럼 부드럽게 눌리면서도 소리는 조용해서 옆 선생님들 눈치 안 보고 미친 듯이 타자를 칠 수 있어. 손가락 끝에 가해지는 힘이 적어서 하루 종일 타이핑해도 피로가 훨씬 덜해. 퇴근할 때 손마디가 욱신거린다면 키보드부터 바꿔봐.
-
-⏰ <strong>3. 비주얼 타이머 (뽀모도로 타이머) - 집중력의 마법사</strong>
-"아, 5분만 쉬고 기획안 써야지" 하다가 30분 순삭된 경험 다들 있지? 빨간색으로 남은 시간이 줄어드는 게 눈에 보이는 '비주얼 타이머'를 책상에 둬봐. 딱 25분만 집중해서 서류 치고, 5분 쉬고! 이걸 반복하는 뽀모도로 기법을 쓰면 멍 때리는 시간이 사라져. 스마트폰 알람은 자꾸 폰을 보게 되니까 이런 물리적인 타이머가 훨씬 효과적이야. 진짜 집중 안 되는 날 이거 켜두면 야근할 거 칼퇴할 수 있다?
-
-🦵 <strong>(보너스) 발 받침대 & 기능성 방석</strong>
-책상 아래 발 받침대 하나만 둬도 허리에 가중되는 하중이 분산돼서 훨씬 편안해. 그리고 우리 의자... 솔직히 오래 앉아있기엔 좀 딱딱하잖아? 엉덩이 통증 줄여주는 젤 방석 같은 거 하나 깔아두면 "아이고 내 허리야" 소리가 절로 줄어들 거야.
-
-사무용품 하나 바꾼다고 인생이 바뀌지는 않지만, 우리가 매일 8시간 넘게 머무는 그 좁은 책상 공간이 조금은 더 다정해질 수 있어. 내가 나를 챙겨야 남도 더 잘 챙겨줄 수 있는 거 알지? 오늘 퇴근길엔 고생한 나를 위해 작은 선물 하나 골라보는 거 어때? 오늘도 현장에서 빛나는 너를 응원할게! 👋
-                </div>`;
-        } else if (id === 'vol1') {
-            title = "🎈 요즘 핫한 '퍼네이션' 동향!";
-            contentHtml = `
-                <div style="font-size:0.95rem; line-height:1.6; color:#334155; white-space:pre-wrap;">
-안녕! 팀장님 몰래 보는 <strong>사복천재 비밀편지 Vol. 3</strong>이야. 🤫
-
-정말 바쁜 하루지? 매일 서류와 씨름하고 민원 응대하느라 고생이 많아. 오늘은 후원 행사를 기획하거나 기부금을 모금할 때 윗선에 보고하기 딱 좋은 트렌드, 바로 <strong>'퍼네이션(Funation)'</strong>을 들고 왔어!
-
-요즘 사람들은 "불쌍하니까 도와주세요"라는 방식의 무거운 기부에는 지갑을 잘 열지 않아. 대신 기부를 하나의 놀이나 챌린지처럼 즐기는 '퍼네이션(Fun + Donation)' 문화가 대세로 자리 잡고 있지. MZ세대뿐만이 아니라 전 연령대에서 이런 '재밌는 기부'에 반응하고 있어.
-
-그럼 현장에서 써먹기 좋은 퍼네이션 아이디어 3가지를 정리해 줄게!
-
-🔥 <strong>1. 만보기 연동 '걸음 기부' 캠페인</strong>
-모바일 앱이랑 연동해서 "참여자들이 하루 1만 보를 걸을 때마다 만 원씩 기부된다"는 식의 캠페인이야. 건강도 챙기고 기부도 할 수 있어서 지역 사회 체육대회나 건강 걷기 대회랑 묶어서 기획하기 너무 좋아. 특히 기업 사회공헌(CSR)팀에서 이런 건강+기부 융합 모델을 아주 좋아해서 후원금 따내기도 수월해.
-
-🔥 <strong>2. 메타버스와 가상 바자회</strong>
-코로나 시대가 지났다고 메타버스가 죽은 게 절대 아냐! 여전히 1020 세대와 소통하기 위해서는 꼭 필요한 채널이야. 제페토나 로블록스 같은 플랫폼에 우리 복지관만의 맵을 만들고, 후원 기업의 로고가 박힌 가상 아이템(티셔츠, 모자 등)을 판매해서 수익금을 기부받는 형태지. 젊은 층을 타겟으로 한 후원 사업을 구상 중이라면 이만한 게 없을 거야.
-
-🔥 <strong>3. 반려동물과 함께하는 기부런 (Run)</strong>
-요즘 강아지, 고양이 안 키우는 집이 드물잖아? '댕댕이와 함께 뛰는 마라톤' 같은 행사를 열고 참가비를 모조리 유기동물 보호소나 취약계층의 반려동물 의료비 지원으로 기부하는 방식이야. 동물을 좋아하는 사람들은 이런 행사에 정말 적극적으로 참여하고, SNS 인증샷 올리기에도 예뻐서 바이럴 홍보가 저절로 돼!
-
-기관에서 연말이나 명절에 흔하게 하는 일일찻집, 바자회도 좋지만, 올해는 이런 '재미 요소'를 하나만 싹 끼워 넣어봐. 후원자들 반응이 확 달라지고, 팀장님도 "오, 이번 기획안 좀 힙한데?" 하실 걸? 😉
-
-오늘도 고생했어! 퇴근까지 화이팅하고 다음 편지에서 또 유용한 꿀팁 전해줄게!
-                </div>`;
-        } else if (id === 'vol2') {
-            title = "🚀 2026 사회복지 최신 트렌드";
-            contentHtml = `
-                <div style="font-size:0.95rem; line-height:1.6; color:#334155; white-space:pre-wrap;">
-안녕! 팀장님 몰래 보는 <strong>사복천재 비밀편지 Vol. 2</strong>이야. 🤫
-
-다들 연말 평가 준비나 내년도 프로포절(사업계획서) 작성하느라 머리 아프지? 이거 모르면 회의 시간에 멍 때려야 하는 <strong>2026 최신 복지 트렌드 3가지</strong>를 아주 길고 상세하게 짚어줄게. 미리 알아두면 사업 기획할 때 "나 트렌드 좀 안다"라고 어필하기 좋을 거야!
-
-🚀 <strong>1. AI/디지털 복지의 폭발적 성장과 고도화</strong>
-작년부터 말이 많았던 비대면, 스마트 기기 활용 복지가 2026년에는 훨씬 고도화될 예정이야. 예전에는 단순히 독거어르신 댁에 '스마트 안심 플러그'나 '움직임 감지 센서'를 우르르 달아놓고 끝이었다면, 이제는 সেই 센서에서 수집된 데이터를 AI가 분석해서 '이 어르신의 패턴이 평소와 다름(예: 물 사용량이 급감함)'을 미리 감지하고 사회복지사 알림앱으로 쏴주는 수준까지 왔어. 치매 예방을 돕는 '대화형 AI 돌봄 로봇' 보급 예산도 엄청나게 풀리고 있지. 다음 사업 기획에는 무조건 <디지털 기술 융합형 돌봄> 키워드를 넣어야 해!
-
-🚀 <strong>2. 기후 위기가 곧 복지의 위기! '기후 불평등' 대응 사업</strong>
-지구온난화로 폭염과 혹한 같은 기후 재난이 일상화되면서, 쪽방촌이나 반지하에 거주하는 주거 취약계층이 가장 먼저 타격을 입고 있어. 이제 '에너지 복지'나 '기후재난 취약계층 보호'는 단순한 지원 사업을 넘어 필수 패러다임이 됐지. "기후 불평등 해소를 위한 커뮤니티 케어", "폭염 대비 쉼터 고도화 및 친환경 에너지 지원 사업" 같은 제목으로 프로포절을 작성하면 심사위원들의 눈길을 한 번에 사로잡을 수 있을 거야. 환경(E)을 고려한 ESG 복지 경영의 핵심 요소이기도 해.
-
-🚀 <strong>3. 공급자 중심에서 '초개인화 맞춤형(Pinned) 혜택'으로</strong>
-과거에는 "만 65세 이상 기초수급자면 동일하게 쌀과 김치를 배분합니다!" 였다면, 2026년의 복지는 데이터를 기반으로 움직여. "같은 만 65세더라도 A 할아버지는 당뇨가 있으니 맞춤형 당뇨식 도시락을, B 할머니는 우울감이 높으니 미술 치료 프로그램을 매칭해 드립니다"라는 식으로 핀셋처럼 딱 집어내는 서비스로 진화하고 있어. 데이터를 수집하고 이를 기반으로 개개인의 욕구를 디테일하게 분석하겠다는 '데이터 기반 맞춤형 사례관리'를 사업 계획에 어필해 봐.
-
-어때? 트렌드 파악이 싹 됐지? 다음 프로포절이나 신규 사업 기획안을 쓸 때 이 세 가지 키워드 중 하나만 제대로 엮어내도 합격률이 확 올라갈 거야. 바쁜 업무 중에 트렌드 챙기는 게 쉽지 않겠지만, 이 비밀편지가 든든한 무기가 되었으면 좋겠다. 👍
-                </div>`;
-        } else if (id === 'vol3') {
-            title = "🔥 야근 삭제하는 무료 AI 툴 3대장";
-            contentHtml = `
-                <div style="font-size:0.95rem; line-height:1.6; color:#334155; white-space:pre-wrap;">
-안녕! 팀장님 몰래 보는 <strong>사복천재 비밀편지 Vol. 1</strong>이야. 🤫
-
-매번 서류의 늪에 빠져서 허우적대는 사람들 있지? 솔직히 클라이언트 만나는 시간보다 컴퓨터 타자 치는 시간이 더 긴 게 우리 현실이잖아. (눈물 닦고...) 오늘은 <strong>업무 퀄리티를 확 끌어올리면서도 야근을 삭제해 주는 '무료 AI 툴 3대장'</strong>을 아주 상세하게 풀어볼게! 당장 오늘 오후부터 써먹어 봐.
-
-💻 <strong>1. 뤼튼(Wrtn) - 너의 전담 사업계획서 대필 작가!</strong>
-챗GPT도 좋지만 한국어에 더 특화되어 있고, 무료 버그도 낭낭한 '뤼튼'을 추천해. 머리가 하얗게 비어서 첫 문장을 못 쓸 때 진짜 최고야. 
-프롬프트(명령어)를 구체적으로 줘 봐. 그냥 "어르신 목욕 봉사 기획서 써줘" 하지 말고, <br><em>"나는 지역사회복지관 사회복지사야. 현대자동차의 후원(1천만원)을 받아서, 독거노인 100명을 대상으로 찾아가는 이동 목욕 봉사 사업 '뽀송뽀송 행복샤워'를 기획할 거야. 이 사업의 추진 배경(문제점), 목적, 예산 활용 방안, 기대효과를 전문적인 공문서 스타일로 500자씩 써줘."</em><br> 라고 부탁해 봐. 진짜 입이 떡 벌어지게 깔끔한 초안을 10초 만에 뱉어낼 거야. 초안 뼈대만 잡아줘도 업무 시간이 반으로 줄어들어!
-
-💻 <strong>2. 클로바노트 (Clova Note) - 사례회의, 간담회 회의록의 구원자</strong>
-회의록 쓰는 거 진짜 끔찍하게 귀찮지 않아? 녹음 파일 틀어놓고 일시 정지, 재생 반복하면서 타자 치는 거 이제 그만해! 네이버에서 만든 '클로바노트' 앱을 스마트폰에 깔고 회의할 때 켜놔. 회의가 끝나면 참석자 목소리(참석자 1, 2, 3)를 알아서 분리해서 대화록 글로 쫙 풀어줘. 게다가 AI 요약 버튼을 누르면 "오늘 주요 안건 3가지, 결정 사항, 향후 계획" 요약까지 완벽하게 해준다고! 사례관리 슈퍼비전 회의나 사례 판정 회의할 때 켜두면 집에 빨리 갈 수 있어.
-
-💻 <strong>3. 캔바(Canva) 혹은 미리캔버스 AI 기능 - 5분 컷 포스터 장인</strong>
-프로그램 홍보지, 현수막, 웹포스터 만들려고 포토샵 붙잡고 낑낑대는 시절은 끝났어. 이제는 디자인 플랫폼에 있는 AI 이미지 생성 기능을 써봐. "가을 느낌 나는 단풍나무 배경에, 어르신들이 웃으면서 송편을 빚고 있는 일러스트 따뜻한 수채화 톤으로 그려줘"라고 입력하면 찰떡같은 이미지를 만들어줘. 거기에 템플릿만 덮어씌워서 글씨만 바꾸면 끝이지. 저작권 걱정 없이 고퀄리티 홍보물을 뚝딱 뽑아낼 수 있어.
-
-이 세 가지 툴만 능숙하게 다뤄도 남들 3시간 걸릴 서류 작업 30분이면 끝낼 수 있어! 진짜로 내일 당장 "저 칼퇴할게요"라고 외칠 수 있으니까 속는 셈 치고 오늘 한 번 꼭 써봐. 다음에도 너의 워라밸을 지켜줄 꿀팁 단단히 챙겨올게! 👋
-                </div>`;
-        } else {
-            if (!window.newsletterData || !window.newsletterData[id]) return;
-            const post = window.newsletterData[id];
-            title = escapeHtml(post.title);
-            contentHtml = `<div style="font-size:0.95rem; line-height:1.7; color:#334155; white-space:pre-wrap;">${escapeHtml(post.content)}</div>`;
-        }
-
-        const finalHtml = `
-            <div style="background:#f8fafc; padding:20px; border-radius:16px; border:1px solid #e2e8f0; margin-bottom:20px;">
-                <div style="margin-bottom:16px; display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid var(--primary); padding-bottom:12px;">
-                    <strong style="color:#1e293b; font-size:1.1rem;">${title}</strong>
-                </div>
-                ${contentHtml}
-            </div>
-            
-            <div style="text-align:center;">
-                <button class="btn-primary" onclick="initNewsletterReader().onclick()" style="background:#cbd5e1; color:#334155; border:none;">목록으로 돌아가기</button>
-            </div>
-        `;
-
-        openModal(title, finalHtml);
     }
     /* --- 감정 파쇄기 로직 --- */
     const SHRED_MESSAGES = [
@@ -491,7 +267,7 @@ try {
                 console.error('Subscription Error', e);
                 alert('앗! 등록 중에 오류가 발생했어요. 나중에 다시 시도해주세요.');
                 if (btn) {
-                    btn.innerText = '나도 비밀 편지 받아볼래!';
+                    btn.innerText = '💌 나도 이 편지 받을래!';
                     btn.disabled = false;
                 }
                 return;
