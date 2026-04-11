@@ -229,6 +229,7 @@ try {
     }
 
     window.subscribeNewsletter = async function () {
+        const myUserId = getOrCreateUserId();
         const emailEl = document.getElementById('newsletter-email');
         const agreeEl = document.getElementById('newsletter-agree');
         const email = emailEl ? emailEl.value.trim() : '';
