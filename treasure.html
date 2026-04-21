@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>사복쌤들의 꿀자료 보물창고 🍯</title>
+<link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --g: #2563eb;--g2: #60a5fa;--g3: #bfdbfe;--g4: #dbeafe;--g5: #eff6ff;
+  --warm: #fef9f0;--amber: #f4a261;--amber2: #ffe8cc;--red: #e76f51;
+  --text: #1e293b;--sub: #64748b;--card: #ffffff;--radius: 16px;
+}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--g5);color:var(--text);padding:0 0 40px;}
+.hero{background:linear-gradient(125deg, #0f2d6b 0%, #1e4eb5 45%, #3b7ef8 100%);padding:36px 24px 28px;text-align:center;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 50%,rgba(59,130,246,0.3) 0%,transparent 60%),radial-gradient(ellipse at 80% 20%,rgba(96,165,250,0.15) 0%,transparent 50%);}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);border-radius:20px;padding:5px 14px;font-size:12px;color:rgba(255,255,255,0.9);margin-bottom:14px;position:relative;z-index:1;}
+.hero-title{font-family:'Gaegu',cursive;font-size:34px;font-weight:700;color:#ffffff;position:relative;z-index:1;line-height:1.2;margin-bottom:8px;}
+.hero-title span{color:#93c5fd;}
+.hero-sub{font-size:14px;color:rgba(255,255,255,0.75);position:relative;z-index:1;line-height:1.6;}
+.hero-emojis{font-size:28px;position:relative;z-index:1;margin-bottom:12px;letter-spacing:4px;}
+.tabs{display:flex;gap:8px;padding:16px 20px 0;overflow-x:auto;border-bottom:1.5px solid var(--g4);background:#fff;}
+.tab{padding:8px 18px;font-size:13px;font-weight:500;border:none;background:none;cursor:pointer;color:var(--sub);border-radius:8px 8px 0 0;white-space:nowrap;transition:all .2s;position:relative;bottom:-1.5px;border:1.5px solid transparent;border-bottom:none;font-family:'Noto Sans KR',sans-serif;}
+.tab.active{color:var(--g);background:#fff;border-color:var(--g4);border-bottom-color:#fff;font-weight:700;}
+.tab:hover:not(.active){background:var(--g5);color:var(--g);}
+.section{padding:20px 20px 0;background:#fff;}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;padding:0 20px 20px;background:#fff;}
+.card{border-radius:var(--radius);border:1.5px solid var(--g3);background:var(--card);overflow:hidden;transition:transform .2s,box-shadow .2s;cursor:pointer;}
+.card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(45,106,79,0.12);}
+.card-top{padding:18px 18px 14px;position:relative;}
+.card-badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;border-radius:20px;padding:3px 10px;margin-bottom:10px;}
+.badge-free{background:var(--g4);color:#1e40af;}
+.badge-vip{background:#ffe8cc;color:#7c3600;}
+.badge-new{background:#e8f4fd;color:#0c4a6e;}
+.badge-soon{background:#f3e8ff;color:#4a1570;}
+.card-emoji{font-size:32px;margin-bottom:8px;display:block;}
+.card-title{font-size:16px;font-weight:700;color:var(--text);margin-bottom:6px;line-height:1.3;}
+.card-desc{font-size:13px;color:var(--sub);line-height:1.6;margin-bottom:12px;}
+.card-meta{display:flex;align-items:center;gap:12px;font-size:12px;color:var(--sub);}
+.card-meta span{display:flex;align-items:center;gap:4px;}
+.card-footer{border-top:1.5px solid var(--g4);padding:12px 18px;display:flex;align-items:center;justify-content:space-between;}
+.btn-download{display:inline-flex;align-items:center;gap:6px;background:var(--g);color:#fff;border:none;border-radius:10px;padding:8px 16px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:background .2s,transform .2s;}
+.btn-download:hover{background:#1e40af;transform:scale(1.03);}
+.page-count{font-size:12px;color:var(--sub);background:var(--g5);border-radius:8px;padding:4px 10px;}
+.subscribe-box{margin:8px 20px 20px;background:linear-gradient(135deg,#1e40af,#2563eb);border-radius:var(--radius);padding:24px 22px;color:#fff;position:relative;overflow:hidden;}
+.subscribe-box::before{content:'';position:absolute;top:-30px;right:-30px;width:120px;height:120px;background:rgba(255,255,255,0.05);border-radius:50%;}
+.sub-title{font-family:'Gaegu',cursive;font-size:20px;font-weight:700;margin-bottom:6px;color:#93c5fd;}
+.sub-desc{font-size:13px;color:rgba(255,255,255,0.8);line-height:1.6;margin-bottom:16px;}
+.sub-perks{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px;}
+.perk{display:flex;align-items:center;gap:5px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:20px;padding:4px 12px;font-size:12px;color:rgba(255,255,255,0.9);}
+.sub-form{display:flex;gap:8px;flex-wrap:wrap;}
+.sub-input{flex:1;min-width:180px;padding:10px 14px;border-radius:10px;border:none;font-size:14px;font-family:'Noto Sans KR',sans-serif;background:rgba(255,255,255,0.95);color:var(--text);outline:none;}
+.sub-btn{padding:10px 20px;border-radius:10px;background:var(--amber);border:none;color:#fff;font-weight:700;font-size:14px;cursor:pointer;white-space:nowrap;font-family:'Noto Sans KR',sans-serif;transition:background .2s,transform .2s;}
+.sub-btn:hover{background:#e8893a;transform:scale(1.03);}
+.divider{height:8px;background:var(--g5);border-top:1px solid var(--g3);border-bottom:1px solid var(--g3);}
+.stat-bar{display:flex;gap:0;background:#fff;border-bottom:1.5px solid var(--g3);padding:14px 20px;}
+.stat{flex:1;text-align:center;border-right:1px solid var(--g3);}
+.stat:last-child{border-right:none;}
+.stat-num{font-size:20px;font-weight:700;color:var(--g);font-family:'Gaegu',cursive;}
+.stat-label{font-size:11px;color:var(--sub);margin-top:2px;}
+.card-chip{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;}
+.chip{font-size:11px;background:var(--g5);color:var(--g);border-radius:8px;padding:3px 8px;border:1px solid var(--g3);}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">📚 사복노트 비밀 창고</div>
+  <div class="hero-emojis">🦊✨🌿</div>
+  <div class="hero-title">사복쌤들의<br><span>꿀자료 보물창고</span> 🍯</div>
+  <div class="hero-sub">현장에서 바로 쓰는 실무 자료 무료 공개<br>비밀편지 구독하면 더 많은 보물이 기다려요!</div>
+</div>
+
+<div class="stat-bar">
+  <div class="stat"><div class="stat-num">1종</div><div class="stat-label">현재 자료</div></div>
+  <div class="stat"><div class="stat-num">무료</div><div class="stat-label">모두 0원</div></div>
+  <div class="stat"><div class="stat-num">+0종</div><div class="stat-label">출시 예정</div></div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="filterData('all', this)">전체 자료</button>
+  <button class="tab" onclick="filterData('ai', this)">AI 활용</button>
+</div>
+
+<div class="section">
+  <div style="padding:16px 0 4px;display:flex;align-items:center;gap:8px;">
+    <span style="font-size:13px;color:var(--sub);">총 <b style="color:var(--g);">1개</b> 자료</span>
+    <span style="margin-left:auto;font-size:12px;color:var(--sub);">최신순 ↓</span>
+  </div>
+</div>
+
+<div class="grid">
+  <div class="card" data-category="ai" style="border-color:#60a5fa;border-width:2px;">
+    <div class="card-top">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+        <div class="card-badge badge-new">🆕 NEW</div>
+        <div class="card-badge badge-free" style="margin-bottom:0;">무료</div>
+      </div>
+      <div class="card-emoji">🤖</div>
+      <div class="card-title">사복쌤을 위한 NotebookLM 완전정복 가이드</div>
+      <div class="card-chip">
+        <span class="chip">AI 활용</span><span class="chip">구글 AI</span><span class="chip">초보 OK</span>
+      </div>
+      <div class="card-desc">지침서 찾다 퇴근하는 그 시간, 이제 끝! 구글 AI로 3초 만에 원하는 내용 찾는 법부터 사례관리 기록 자동화까지 8챕터로 정리했어요.</div>
+      <div class="card-meta">
+        <span>📄 8챕터 완성본</span><span>⭐ 4.9</span><span>👥 127명 다운</span>
+      </div>
+    </div>
+    <div class="card-footer">
+      <span class="page-count">HTML 파일</span>
+      <button class="btn-download" onclick="window.open('./honeydata/NotebookLM Basic Guide.html', '_blank')">🔗 바로가기</button>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<div class="subscribe-box">
+  <div class="sub-title">💌 비밀편지 구독하면 생기는 일</div>
+  <div class="sub-desc">신규 자료 가장 먼저 받아보고, 사복쌤만을 위한 따뜻한 소식을 전해드려요!</div>
+  <div class="sub-perks">
+    <div class="perk">📬 신규 자료 출시 알림</div>
+    <div class="perk">✉️ 사복쌤 전용 비밀편지</div>
+  </div>
+  <div class="sub-form">
+    <input class="sub-input" type="email" placeholder="이메일 주소를 입력해주세요 ✉️" />
+    <button class="sub-btn" onclick="subscribeFromTreasure()">구독하기 🌿</button>
+  </div>
+  <div style="font-size:11px;color:rgba(255,255,255,0.5);margin-top:10px;">스팸 절대 없음 · 언제든 구독 취소 가능 · 사복쌤만을 위한 편지예요 💚</div>
+</div>
+
+<script>
+function filterData(category, btn) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+
+  const cards = document.querySelectorAll('.card');
+  let count = 0;
+  cards.forEach(card => {
+    if (category === 'all' || card.getAttribute('data-category') === category) {
+      card.style.display = 'block';
+      count++;
+    } else {
+      card.style.display = 'none';
+    }
+  });
+
+  const countSpan = document.querySelector('.section b');
+  if (countSpan) countSpan.innerText = count + '개';
+}
+
+async function subscribeFromTreasure() {
+  const emailInput = document.querySelector('.sub-input');
+  const btn = document.querySelector('.sub-btn');
+  const email = emailInput.value.trim();
+
+  if (!email || !email.includes('@')) {
+    emailInput.style.outline = '2px solid #e76f51';
+    emailInput.focus();
+    setTimeout(() => { emailInput.style.outline = 'none'; }, 1500);
+    return;
+  }
+
+  btn.innerText = '접수 중...';
+  btn.disabled = true;
+
+  const parentWin = window.parent;
+  if (parentWin && parentWin.supabase) {
+    try {
+      const myUserId = parentWin.getOrCreateUserId ? parentWin.getOrCreateUserId() : 'anonymous';
+      
+      const { error } = await parentWin.supabase.from('newsletter_subscribers').insert({
+        email: email,
+        user_id: myUserId,
+        agreed_to_terms: true,
+        created_at: new Date().toISOString()
+      });
+      
+      if (error) throw error;
+      
+      btn.innerText = '✨ 구독 완료!';
+      btn.style.background = '#2563eb';
+      emailInput.value = '';
+      
+      // Optionally show a nice alert from the parent
+      if (parentWin.alert) {
+          parentWin.alert('환영합니다! 비밀편지 구독이 완료되었습니다. 💌');
+      }
+      
+    } catch (e) {
+      console.error('Subscription Error', e);
+      alert('앗! 등록 중에 오류가 발생했어요. 다시 시도해주세요.');
+      btn.innerText = '구독하기 🌿';
+      btn.disabled = false;
+    }
+  } else {
+    alert('오류: 시스템 연결을 확인할 수 없습니다.');
+    btn.innerText = '구독하기 🌿';
+    btn.disabled = false;
+  }
+}
+</script>
+
+</body>
+</html>

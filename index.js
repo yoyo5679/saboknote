@@ -4216,7 +4216,7 @@ try {
 
     /* --- View Switcher --- */
     window.switchView = function (view) {
-        const views = ['home', 'record', 'community', 'mypage', 'shredder', 'playground'];
+        const views = ['home', 'record', 'community', 'mypage', 'shredder', 'playground', 'treasure'];
         // 스크롤 잠금 해제 (탭 이동 시 모달 버그 보완)
         document.body.style.overflow = '';
         document.body.style.touchAction = '';
