@@ -57,6 +57,13 @@ a:hover { text-decoration: underline; }
   background: rgba(255,255,255,0.06);
   top: -60px; right: -60px;
 }
+/* PC에서 본문(680px)에 맞추는 내부 래퍼 */
+.hero-inner {
+  max-width: 680px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
 .hero-badge {
   display: inline-block;
   background: rgba(255,255,255,0.18);
@@ -103,7 +110,12 @@ a:hover { text-decoration: underline; }
   position: sticky;
   top: 0;
   z-index: 100;
-  padding: 10px 14px;
+  padding: 10px 20px;
+}
+/* PC에서 목차도 본문 너비(680px)에 맞추는 래퍼 */
+.toc-inner {
+  max-width: 680px;
+  margin: 0 auto;
 }
 .toc-grid {
   display: grid;
@@ -619,24 +631,28 @@ ul.bullet li { margin-bottom: 5px; font-size: 13.5px; line-height: 1.6; }
 
 <!-- ── HERO ── -->
 <div class="hero">
-  <div class="hero-badge">📒 사복쌤을 위한 AI 실무 가이드</div>
-  <h1>서류의 늪에서<br>구출해 드립니다! ☕</h1>
-  <p>지침서 찾느라, 회의록 요약하느라 흘려보낸 시간들.<br>이제 NotebookLM에게 맡기고 클라이언트에게 집중해요.</p>
-  <a href="https://notebooklm.google.com/" target="_blank" class="hero-btn">🚀 NotebookLM 무료 시작</a>
+  <div class="hero-inner">
+    <div class="hero-badge">📒 사복쌤을 위한 AI 실무 가이드</div>
+    <h1>서류의 늪에서<br>구출해 드립니다! ☕</h1>
+    <p>지침서 찾느라, 회의록 요약하느라 흘려보낸 시간들.<br>이제 NotebookLM에게 맡기고 클라이언트에게 집중해요.</p>
+    <a href="https://notebooklm.google.com/" target="_blank" class="hero-btn">🚀 NotebookLM 무료 시작</a>
+  </div>
 </div>
 
 <!-- ── STICKY TOC ── -->
 <div class="toc-sticky">
-  <div class="toc-grid">
-    <a href="#ch1" class="toc-pill">1장 챗GPT와의 차이</a>
-    <a href="#ch2" class="toc-pill">2장 시작 가이드</a>
-    <a href="#ch3" class="toc-pill">3장 파일 올리기</a>
-    <a href="#ch4" class="toc-pill">4장 질문의 기술</a>
-    <a href="#ch5" class="toc-pill">5장 AI 팟캐스트</a>
-    <a href="#ch6" class="toc-pill">6장 폴더 관리</a>
-    <a href="#ch7" class="toc-pill">7장 회의록 변환</a>
-    <a href="#ch8" class="toc-pill">8장 FAQ</a>
-    <a href="#appendix" class="toc-pill">🎁 프롬프트 사전</a>
+  <div class="toc-inner">
+    <div class="toc-grid">
+      <a href="#ch1" class="toc-pill">1장 챗GPT와의 차이</a>
+      <a href="#ch2" class="toc-pill">2장 시작 가이드</a>
+      <a href="#ch3" class="toc-pill">3장 파일 올리기</a>
+      <a href="#ch4" class="toc-pill">4장 질문의 기술</a>
+      <a href="#ch5" class="toc-pill">5장 AI 팟캐스트</a>
+      <a href="#ch6" class="toc-pill">6장 폴더 관리</a>
+      <a href="#ch7" class="toc-pill">7장 회의록 변환</a>
+      <a href="#ch8" class="toc-pill">8장 FAQ</a>
+      <a href="#appendix" class="toc-pill">🎁 프롬프트 사전</a>
+    </div>
   </div>
 </div>
 
