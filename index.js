@@ -4239,6 +4239,12 @@ try {
             if (navBtn) navBtn.classList.toggle('active', v === view);
         });
 
+        // URL 해시 업데이트 (공유 링크용 - history 오염 없이)
+        const hash = view === 'home' ? '' : '#' + view;
+        if (window.location.hash.replace('#', '') !== view) {
+            history.replaceState(null, '', hash || window.location.pathname);
+        }
+
         // 놀이터 메뉴 초기화 (놀이터 탭 진입 시 메뉴화면 먼저 보여주기)
         if (view === 'playground') {
             pgShowAllSteps('menu');
@@ -4268,6 +4274,18 @@ try {
         initMyPageMenus();
         initHeaderButtons();
         initNewsletterReader();
+
+        // URL 해시로 초기 뷰 결정 (공유 링크 지원)
+        const validViews = ['home', 'record', 'community', 'mypage', 'shredder', 'playground', 'treasure'];
+        const initialHash = window.location.hash.replace('#', '');
+        const initialView = validViews.includes(initialHash) ? initialHash : 'home';
+        switchView(initialView);
+
+        // 브라우저 뒤로가기/앞으로가기 시 해시 변경 처리
+        window.addEventListener('hashchange', () => {
+            const h = window.location.hash.replace('#', '');
+            if (validViews.includes(h)) switchView(h);
+        });
 
         // 놀이터 선택 로직 추가
         window.showPlaygroundContent = function (type) {
