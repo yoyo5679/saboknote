@@ -117,17 +117,16 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--g5);color:var(--text
 <div class="divider"></div>
 
 <div class="subscribe-box">
-  <div class="sub-title">💌 비밀편지 구독하면 생기는 일</div>
-  <div class="sub-desc">신규 자료 가장 먼저 받아보고, 사복쌤만을 위한 따뜻한 소식을 전해드려요!</div>
+  <div class="sub-title">💌 팀장님 몰래 보는 비밀편지</div>
+  <div class="sub-desc"><strong>"쉿! 새로운 보물이 이메일로 직접 배달 갑니다."</strong><br>막히는 서류 업무 뚫어주는 AI 꼼수부터 최신 복장 트렌드까지! 출퇴근길 3분이면 칼퇴 쌉가능 😎 메일 주소를 남겨주시면 신규 자료를 가장 먼저 보내드려요!</div>
   <div class="sub-perks">
     <div class="perk">📬 신규 자료 출시 알림</div>
     <div class="perk">✉️ 사복쌤 전용 비밀편지</div>
   </div>
   <div class="sub-form">
-    <input class="sub-input" type="email" placeholder="이메일 주소를 입력해주세요 ✉️" />
-    <button class="sub-btn" onclick="subscribeFromTreasure()">구독하기 🌿</button>
+    <button class="sub-btn" style="flex: 1; width: 100%; padding: 14px; font-size: 15px;" onclick="parent.postMessage('openNewsletterModal', '*');">구독하기 🌿</button>
   </div>
-  <div style="font-size:11px;color:rgba(255,255,255,0.5);margin-top:10px;">스팸 절대 없음 · 언제든 구독 취소 가능 · 사복쌤만을 위한 편지예요 💚</div>
+  <div style="font-size:11px;color:rgba(255,255,255,0.7);margin-top:10px;">스팸 절대 없음 · 언제든 구독 취소 가능 · 사복쌤만을 위한 편지예요 💚</div>
 </div>
 
 <script>
@@ -150,57 +149,7 @@ function filterData(category, btn) {
   if (countSpan) countSpan.innerText = count + '개';
 }
 
-async function subscribeFromTreasure() {
-  const emailInput = document.querySelector('.sub-input');
-  const btn = document.querySelector('.sub-btn');
-  const email = emailInput.value.trim();
 
-  if (!email || !email.includes('@')) {
-    emailInput.style.outline = '2px solid #e76f51';
-    emailInput.focus();
-    setTimeout(() => { emailInput.style.outline = 'none'; }, 1500);
-    return;
-  }
-
-  btn.innerText = '접수 중...';
-  btn.disabled = true;
-
-  const parentWin = window.parent;
-  if (parentWin && parentWin.supabase) {
-    try {
-      const myUserId = parentWin.getOrCreateUserId ? parentWin.getOrCreateUserId() : 'anonymous';
-      
-      const { error } = await parentWin.supabase.from('newsletter_subscribers').insert({
-        email: email,
-        user_id: myUserId,
-        agreed_to_terms: true,
-        created_at: new Date().toISOString()
-      });
-      
-      if (error) throw error;
-      
-      btn.innerText = '✨ 구독 완료!';
-      btn.style.background = '#2563eb';
-      emailInput.value = '';
-      
-      // Optionally show a nice alert from the parent
-      if (parentWin.alert) {
-          parentWin.alert('환영합니다! 비밀편지 구독이 완료되었습니다. 💌');
-      }
-      
-    } catch (e) {
-      console.error('Subscription Error', e);
-      alert('앗! 등록 중에 오류가 발생했어요. 다시 시도해주세요.');
-      btn.innerText = '구독하기 🌿';
-      btn.disabled = false;
-    }
-  } else {
-    alert('오류: 시스템 연결을 확인할 수 없습니다.');
-    btn.innerText = '구독하기 🌿';
-    btn.disabled = false;
-  }
-}
-</script>
 
 </body>
 </html>

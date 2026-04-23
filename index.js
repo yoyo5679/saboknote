@@ -75,33 +75,43 @@ try {
     };
 
     /* --- Newsletter Reader (비밀 편지) --- */
+    window.openNewsletterSubModal = function() {
+        const modalContent = `
+        <div style="text-align:center; padding: 20px 0;">
+            <div style="font-size:3rem; margin-bottom:12px; animation: bounce 2s infinite">💌</div>
+            <h3 style="font-size:1.4rem; color:var(--text-dark); margin-bottom:8px; font-weight:900">팀장님 몰래 보는 비밀편지</h3>
+            <p style="font-size:0.95rem; color:#64748b; margin-bottom:24px; line-height:1.6;"><strong>"쉿! 사복천재가 이메일로 직접 배달 갑니다."</strong><br>막히는 서류 업무 뚫어주는 AI 꼼수부터 최신 복지 트렌드까지! 출퇴근길 3분이면 칼퇴 쌉가능 😎 메일 주소만 쓱 남겨주세요!</p>
+            
+            <div style="display:flex; flex-direction:column; gap:12px; text-align:left;">
+                <input type="email" id="newsletter-email" class="calc-input" placeholder="칼퇴를 도와줄 이메일 주소 입력" style="font-size:1rem; padding:14px; border:2px solid #e2e8f0; border-radius:12px;">
+                <label style="display:flex; align-items:flex-start; gap:10px; cursor:pointer; padding:12px; background:#f8f5ff; border-radius:12px; border:1px solid #ede9fe;">
+                    <input type="checkbox" id="newsletter-agree" style="width:18px; height:18px; accent-color:#7c3aed; flex-shrink:0; margin-top:2px;">
+                    <span style="font-size:0.8rem; color:#475569; line-height:1.5;">
+                        [필수] <strong style="color:#7c3aed;">개인정보 수집·이용</strong> 건 동의 완료!<br>
+                        <span style="color:#94a3b8; font-size:0.75rem;">쿨하게 약속함: 수집한 이메일은 뉴스레터 발송용으로만 쓰고, 언제든 구독 취소 가능함 🤙</span>
+                    </span>
+                </label>
+                <button class="btn-primary" style="background:linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%); padding:16px; font-size:1.1rem; border-radius:12px; box-shadow:0 4px 14px rgba(124,58,237,0.3)" onclick="subscribeNewsletter()">💌 나도 이 편지 받을래!</button>
+            </div>
+        </div>`;
+        openModal('비밀 편지 구독 신청', modalContent);
+    };
+
     function initNewsletterReader() {
         const btn = document.getElementById('open-newsletter-read');
         if (btn) {
-            btn.onclick = () => {
-                const modalContent = `
-                <div style="text-align:center; padding: 20px 0;">
-                    <div style="font-size:3rem; margin-bottom:12px; animation: bounce 2s infinite">💌</div>
-                    <h3 style="font-size:1.4rem; color:var(--text-dark); margin-bottom:8px; font-weight:900">팀장님 몰래 보는 비밀편지</h3>
-                    <p style="font-size:0.95rem; color:#64748b; margin-bottom:24px; line-height:1.6;"><strong>"쉿! 사복천재가 이메일로 직접 배달 갑니다."</strong><br>막히는 서류 업무 뚫어주는 AI 꼼수부터 최신 복지 트렌드까지! 출퇴근길 3분이면 칼퇴 쌉가능 😎 메일 주소만 쓱 남겨주세요!</p>
-                    
-                    <div style="display:flex; flex-direction:column; gap:12px; text-align:left;">
-                        <input type="email" id="newsletter-email" class="calc-input" placeholder="칼퇴를 도와줄 이메일 주소 입력" style="font-size:1rem; padding:14px; border:2px solid #e2e8f0; border-radius:12px;">
-                        <label style="display:flex; align-items:flex-start; gap:10px; cursor:pointer; padding:12px; background:#f8f5ff; border-radius:12px; border:1px solid #ede9fe;">
-                            <input type="checkbox" id="newsletter-agree" style="width:18px; height:18px; accent-color:#7c3aed; flex-shrink:0; margin-top:2px;">
-                            <span style="font-size:0.8rem; color:#475569; line-height:1.5;">
-                                [필수] <strong style="color:#7c3aed;">개인정보 수집·이용</strong> 건 동의 완료!<br>
-                                <span style="color:#94a3b8; font-size:0.75rem;">쿨하게 약속함: 수집한 이메일은 뉴스레터 발송용으로만 쓰고, 언제든 구독 취소 가능함 🤙</span>
-                            </span>
-                        </label>
-                        <button class="btn-primary" style="background:linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%); padding:16px; font-size:1.1rem; border-radius:12px; box-shadow:0 4px 14px rgba(124,58,237,0.3)" onclick="subscribeNewsletter()">💌 나도 이 편지 받을래!</button>
-                    </div>
-                </div>`;
-
-                openModal('비밀 편지 구독 신청', modalContent);
-            };
+            btn.onclick = window.openNewsletterSubModal;
         }
     }
+
+    // iframe (보물창고 등)에서의 접근을 위한 postMessage 리스너
+    window.addEventListener('message', function(event) {
+        if (event.data === 'openNewsletterModal') {
+            if (typeof window.openNewsletterSubModal === 'function') {
+                window.openNewsletterSubModal();
+            }
+        }
+    });
     /* --- 감정 파쇄기 로직 --- */
     const SHRED_MESSAGES = [
         { emoji: '🌙', msg: '오늘 하루도 그 무거운 마음을 견디느라 정말 애썼어요. 이제 두 다리 뻗고 푹 쉬어요.' },

@@ -1,9 +1,10 @@
-const CACHE_NAME = 'sabok-note-cache-v9';
+const CACHE_NAME = 'sabok-note-cache-v10';
 const urlsToCache = [
   '/',
   '/index.html',
   '/index.css',
   '/index.js',
+  '/treasure.html',
   '/manifest.json'
 ];
 
