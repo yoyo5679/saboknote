@@ -94,7 +94,7 @@ try {
                 <button class="btn-primary" style="background:linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%); padding:16px; font-size:1.1rem; border-radius:12px; box-shadow:0 4px 14px rgba(124,58,237,0.3)" onclick="subscribeNewsletter()">💌 나도 이 편지 받을래!</button>
             </div>
         </div>`;
-        openModal('비밀 편지 구독 신청', modalContent);
+        openModal('비밀 편지 구독 신청', modalContent, 'newsletter');
     };
 
     function initNewsletterReader() {
@@ -233,7 +233,7 @@ try {
                     <button class="btn-primary" style="width:100%; background:linear-gradient(135deg, #f59e0b 0%, #d97706 100%); padding:16px; font-size:1.1rem; border-radius:12px; box-shadow:0 4px 14px rgba(245,158,11,0.3); border:none;" onclick="submitRequest()">램프 문지르기 (요청 전송)</button>
                 </div>
             `;
-                openModal('사복천재 소환하기', content);
+                openModal('사복천재 소환하기', content, 'request');
             };
         }
     }
@@ -479,7 +479,7 @@ try {
                     💡 위 지표는 보건복지부 고시 정보를 바탕으로 구성되었으며, 구체적인 자격 판정은 각각의 전용 계산기를 이용해 주세요.
                 </div>
                 `;
-                openModal('2026 핵심 지표 대시보드', content);
+                openModal('2026 핵심 지표 대시보드', content, 'ltc');
                 if (typeof switchKpiTab === 'function') switchKpiTab('wage');
             };
         }
@@ -580,7 +580,7 @@ try {
                 <button class="btn-primary" onclick="closeModal()" style="width:100%; max-width:200px; background:#1e293b;">확인하였습니다</button>
             </div>
         `;
-        openModal('2026 장기요양 업데이트 안내', content);
+        openModal('2026 장기요양 업데이트 안내', content, 'ltc');
     }
 
     // ... (previous code above) ...
@@ -1145,7 +1145,7 @@ try {
                 ${contentsHtml}
             </div>
         `;
-            openModal('사복천재의 비밀 프롬프트', content);
+            openModal('사복천재의 비밀 프롬프트', content, 'prompt');
         };
 
         if (btn) btn.onclick = openPrompterModal;
@@ -1260,7 +1260,7 @@ try {
         });
     }
 
-    function openModal(title, contentHtml) {
+    function openModal(title, contentHtml, modalId) {
         const modalOverlay = document.getElementById('modal-overlay');
         const modalContainer = document.getElementById('modal-container');
         const modalTitle = document.getElementById('modal-title');
@@ -1281,6 +1281,15 @@ try {
             // Background scroll lock
             document.body.style.overflow = 'hidden';
             document.body.style.touchAction = 'none';
+
+            // URL 해시에 모달 ID 추가 (공유 링크 지원)
+            if (modalId) {
+                const currentView = window._currentView || 'home';
+                const newHash = '#' + currentView + '/' + modalId;
+                if (window.location.hash !== newHash) {
+                    history.replaceState({ modal: modalId }, '', newHash);
+                }
+            }
         }
     }
 
@@ -1295,6 +1304,11 @@ try {
             // Background scroll unlock
             document.body.style.overflow = '';
             document.body.style.touchAction = '';
+
+            // URL 해시를 모달 없는 상태(탭만)로 복원
+            const currentView = window._currentView || 'home';
+            const tabHash = currentView === 'home' ? window.location.pathname : '#' + currentView;
+            history.replaceState(null, '', tabHash);
         }, 350);
     }
 
@@ -1334,7 +1348,7 @@ try {
                     </p>
                 </div>
         `;
-                openModal('수급 자격 판정 가이드', content);
+                openModal('수급 자격 판정 가이드', content, 'eligibility');
             };
         }
     }
@@ -1852,7 +1866,7 @@ try {
                 </div>
             </div>
         `;
-            openModal('행정/회계 마스터 💸', content);
+            openModal('행정/회계 마스터 💸', content, 'admin');
 
             // Set initial state
             window.currentTaxRate = 0.033;
@@ -2689,7 +2703,7 @@ try {
                 <div id="voca-list-container" style="display:flex; flex-direction:column; gap:14px; max-height:55vh; overflow-y:auto; padding-right:4px;">
                 </div>
             `;
-                openModal('초보 복지사 생존 단어장 📖', content);
+                openModal('초보 복지사 생존 단어장 📖', content, 'voca');
 
                 // render default tab
                 renderVocaList(VOCABULARY_DATA.filter(d => d.category === vocaActiveCategory));
@@ -2919,7 +2933,7 @@ try {
             <button class="btn-primary" id="btn-submit-post" onclick="submitQuestion()">🪄 익명으로 게시하기</button>
         </div>
     `;
-        openModal('질문하기 🆘', content);
+        openModal('질문하기 🆘', content, 'helpme');
     };
 
     window.submitQuestion = async function () {
@@ -3413,7 +3427,7 @@ try {
             <button class="btn-primary" id="btn-submit-comm" onclick="submitCommunityPost()">✏️ 커뮤니티에 글 남기기</button>
         </div>
     `;
-        openModal('글쓰기 📝', content);
+        openModal('글쓰기 📝', content, 'write-post');
     };
 
     window.submitCommunityPost = async function () {
@@ -4227,6 +4241,7 @@ try {
     /* --- View Switcher --- */
     window.switchView = function (view) {
         const views = ['home', 'record', 'community', 'mypage', 'shredder', 'playground', 'treasure'];
+        window._currentView = view; // 현재 탭 전역 저장 (모달 딥링크용)
         // 스크롤 잠금 해제 (탭 이동 시 모달 버그 보완)
         document.body.style.overflow = '';
         document.body.style.touchAction = '';
@@ -4275,16 +4290,45 @@ try {
         initHeaderButtons();
         initNewsletterReader();
 
-        // URL 해시로 초기 뷰 결정 (공유 링크 지원)
+        // URL 해시로 초기 뷰 + 모달 결정 (공유 링크 지원)
         const validViews = ['home', 'record', 'community', 'mypage', 'shredder', 'playground', 'treasure'];
-        const initialHash = window.location.hash.replace('#', '');
-        const initialView = validViews.includes(initialHash) ? initialHash : 'home';
-        switchView(initialView);
+
+        // 모달 ID → 오프너 함수 매핑 레지스트리
+        window._modalRegistry = {
+            'newsletter':   () => window.openNewsletterSubModal && window.openNewsletterSubModal(),
+            'request':      () => { const b = document.getElementById('open-request'); if (b) b.click(); },
+            'eligibility':  () => { const b = document.getElementById('calc-eligibility'); if (b) b.click(); },
+            'ltc':          () => { const b = document.getElementById('calc-ltc'); if (b) b.click(); },
+            'prompt':       () => { const b = document.getElementById('open-ai-prompter'); if (b) b.click(); },
+            'voca':         () => { const b = document.getElementById('open-voca'); if (b) b.click(); },
+            'admin':        () => { const b = document.getElementById('open-admin-calc'); if (b) b.click(); },
+            'helpme':       () => { const b = document.getElementById('open-helpme'); if (b) b.click(); },
+            'write-post':   () => { const b = document.getElementById('open-write-post'); if (b) b.click(); },
+            'xp-guide':     () => { const b = document.getElementById('open-xp-guide'); if (b) b.click(); },
+            'tos':          () => { const b = document.getElementById('open-tos'); if (b) b.click(); },
+            'privacy':      () => { const b = document.getElementById('open-privacy'); if (b) b.click(); },
+            'install':      () => { const b = document.getElementById('open-install'); if (b) b.click(); },
+        };
+
+        function dispatchHash(hash) {
+            const parts = hash.replace('#', '').split('/');
+            const view = parts[0];
+            const modalId = parts[1];
+            const targetView = validViews.includes(view) ? view : 'home';
+            switchView(targetView);
+            if (modalId && window._modalRegistry[modalId]) {
+                // 초기화 완료 후 모달 열기
+                setTimeout(() => {
+                    if (window._modalRegistry[modalId]) window._modalRegistry[modalId]();
+                }, 200);
+            }
+        }
+
+        dispatchHash(window.location.hash || '#home');
 
         // 브라우저 뒤로가기/앞으로가기 시 해시 변경 처리
         window.addEventListener('hashchange', () => {
-            const h = window.location.hash.replace('#', '');
-            if (validViews.includes(h)) switchView(h);
+            dispatchHash(window.location.hash);
         });
 
         // 놀이터 선택 로직 추가
