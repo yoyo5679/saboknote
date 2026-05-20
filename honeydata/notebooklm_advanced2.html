@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NotebookLM 심화 2편 — 마인드맵 & 브리핑 문서 완전 정복</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap');
+
+:root {
+  --teal: #1a73e8;
+  --teal-dark: #1557b0;
+  --teal-light: #e8f0fe;
+  --teal-mid: #a8c7fa;
+  --blue: #1a73e8;
+  --blue-light: #e8f0fe;
+  --green: #2d6a4f;
+  --green-light: #e6f4ea;
+  --purple: #7c3aed;
+  --purple-light: #f3f0ff;
+  --red: #d93025;
+  --red-light: #fce8e6;
+  --yellow: #f9a825;
+  --yellow-light: #fff8e1;
+  --text: #1a1a2e;
+  --text-sub: #5f6368;
+  --border: #e0e0e0;
+  --bg: #f5f7ff;
+  --radius: 14px;
+  --shadow: 0 2px 12px rgba(26,115,232,0.10);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 15px;
+  line-height: 1.75;
+  -webkit-text-size-adjust: 100%;
+}
+a { color: var(--blue); text-decoration: none; }
+
+/* ── Hero ── */
+.hero {
+  background: linear-gradient(145deg, #1557b0 0%, #1a73e8 55%, #1a73e8 100%);
+  padding: 44px 20px 36px;
+  text-align: center;
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  width: 260px; height: 260px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+  top: -70px; right: -70px;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  width: 160px; height: 160px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.04);
+  bottom: -40px; left: 20px;
+}
+.hero-series {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.hero-tag {
+  background: rgba(255,255,255,0.18);
+  border: 1px solid rgba(255,255,255,0.35);
+  padding: 4px 12px;
+  border-radius: 30px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+.hero-tag.new {
+  background: #34d399;
+  color: #1557b0;
+  border: none;
+  font-weight: 900;
+}
+.hero h1 {
+  font-size: 1.55em;
+  font-weight: 900;
+  line-height: 1.35;
+  margin-bottom: 10px;
+}
+.hero p {
+  font-size: 14px;
+  opacity: 0.88;
+  line-height: 1.7;
+  margin-bottom: 22px;
+  max-width: 340px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.hero-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: white;
+  color: var(--blue-dark);
+  font-weight: 700;
+  font-size: 15px;
+  padding: 12px 26px;
+  border-radius: 50px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+}
+
+/* ── 이전편 배너 ── */
+.prev-banner {
+  background: var(--purple-light);
+  border-bottom: 1px solid rgba(124,58,237,0.2);
+  padding: 10px 16px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #4c1d95;
+}
+.prev-banner a { font-weight: 700; color: var(--purple); }
+
+/* ── Series nav ── */
+.series-nav {
+  background: #1557b0;
+  padding: 16px;
+}
+.series-label { font-size: 11px; color: rgba(255,255,255,0.6); font-weight: 700; letter-spacing: 1px; margin-bottom: 10px; }
+.series-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.series-item {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 11px;
+  color: rgba(255,255,255,0.65);
+  text-align: center;
+  line-height: 1.4;
+}
+.series-item.done {
+  background: rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.5);
+  text-decoration: line-through;
+}
+.series-item.active {
+  background: var(--blue);
+  border-color: var(--blue);
+  color: white;
+  font-weight: 700;
+}
+
+/* ── Sticky TOC ── */
+.toc-sticky {
+  background: white;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  padding: 10px 14px;
+}
+.toc-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 5px;
+}
+.toc-pill {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--blue-light);
+  color: var(--blue-dark);
+  padding: 6px 8px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.3;
+  text-align: left;
+}
+.toc-pill:hover { background: var(--blue); color: white; }
+
+/* ── Main ── */
+.main { padding: 20px 16px 60px; max-width: 680px; margin: 0 auto; }
+
+/* ── Chapter ── */
+.chapter { margin-top: 40px; scroll-margin-top: 56px; }
+.chapter-label {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 12px;
+}
+.chapter-icon {
+  width: 40px; height: 40px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0; background: var(--blue);
+}
+.chapter-title {
+  font-size: 1.2em; font-weight: 900; color: var(--blue-dark); line-height: 1.3;
+}
+.chapter-divider {
+  height: 3px;
+  background: linear-gradient(90deg, var(--teal) 0%, transparent 100%);
+  border-radius: 3px; margin-bottom: 18px;
+}
+.section-title {
+  font-size: 1.05em; font-weight: 700; color: var(--blue-dark);
+  padding: 4px 0 4px 12px; border-left: 4px solid var(--teal);
+  margin: 24px 0 12px;
+}
+
+/* ── Cards ── */
+.card { border-radius: var(--radius); padding: 18px; margin: 14px 0; box-shadow: var(--shadow); }
+.card-teal   { background: var(--blue-light);  border: 1px solid rgba(26,115,232,0.2); }
+.card-blue   { background: var(--blue-light);  border: 1px solid rgba(26,115,232,0.15); }
+.card-green  { background: var(--green-light); border: 1px solid rgba(45,106,79,0.15); }
+.card-yellow { background: var(--yellow-light);border: 1px solid rgba(249,168,37,0.25); }
+.card-purple { background: var(--purple-light);border: 1px solid rgba(124,58,237,0.2); }
+.card-red    { background: var(--red-light);   border: 1px solid rgba(217,48,37,0.2); }
+
+.card-title { font-size: 14px; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+.card-title.teal   { color: var(--blue-dark); }
+.card-title.blue   { color: #1557b0; }
+.card-title.green  { color: var(--green); }
+.card-title.yellow { color: #e65100; }
+.card-title.purple { color: #4c1d95; }
+.card-title.red    { color: var(--red); }
+
+/* ── Feature list ── */
+.feature-list { display: flex; flex-direction: column; gap: 10px; margin: 12px 0; }
+.feature-item {
+  background: white; border-radius: 12px; padding: 14px 16px;
+  display: flex; align-items: flex-start; gap: 12px;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.07); border: 1px solid var(--border);
+}
+.feature-emo { font-size: 22px; flex-shrink: 0; margin-top: 2px; }
+.feature-text strong { display: block; font-size: 14px; font-weight: 700; margin-bottom: 2px; }
+.feature-text span { font-size: 13px; color: var(--text-sub); line-height: 1.55; }
+
+/* ── Step list ── */
+.step-list { list-style: none; margin: 12px 0; display: flex; flex-direction: column; gap: 10px; }
+.step-list li {
+  display: grid; grid-template-columns: 32px 1fr; gap: 0 12px;
+  align-items: start; background: white; border-radius: 12px;
+  padding: 14px; border: 1px solid var(--border);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+.step-num {
+  width: 32px; height: 32px; background: var(--blue); color: white;
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-weight: 900; font-size: 14px; flex-shrink: 0;
+}
+.step-content strong { display: block; font-size: 14px; font-weight: 700; margin-bottom: 3px; }
+.step-content span { font-size: 13px; color: var(--text-sub); line-height: 1.6; }
+
+/* ── Prompt box ── */
+.prompt-box {
+  background: #fffde7; border: 1.5px solid #ffe082;
+  border-radius: 12px; padding: 16px; margin: 12px 0; position: relative;
+}
+.prompt-label {
+  font-size: 11px; font-weight: 700; color: #f57f17;
+  letter-spacing: 1px; margin-bottom: 8px; display: block;
+  padding-right: 68px; text-transform: uppercase;
+}
+.prompt-box div, .prompt-box p {
+  font-size: 14px; line-height: 1.8; color: #333; white-space: pre-line;
+}
+.copy-btn {
+  position: absolute; top: 10px; right: 10px;
+  background: var(--blue); color: white; border: none;
+  border-radius: 8px; padding: 5px 11px; font-size: 11px; font-weight: 700;
+  cursor: pointer; display: flex; align-items: center; gap: 4px;
+  transition: background 0.15s; font-family: 'Noto Sans KR', sans-serif; white-space: nowrap;
+}
+.copy-btn:hover { background: var(--blue-dark); }
+.copy-btn.copied { background: var(--green); }
+
+/* ── 마인드맵 시각화 ── */
+.mindmap-demo {
+  background: white; border: 1px solid var(--border);
+  border-radius: 14px; overflow: hidden; margin: 14px 0;
+  box-shadow: var(--shadow);
+}
+.mindmap-header {
+  background: var(--blue-dark); color: white;
+  padding: 10px 14px; font-size: 12px; font-weight: 700;
+  display: flex; align-items: center; gap: 8px;
+}
+.mindmap-body {
+  padding: 20px 16px;
+  background: #f8fffe;
+}
+.mindmap-center {
+  background: var(--blue); color: white;
+  border-radius: 12px; padding: 10px 14px;
+  font-size: 13px; font-weight: 700; text-align: center;
+  margin: 0 auto 16px; max-width: 200px;
+}
+.mindmap-branches { display: flex; flex-direction: column; gap: 8px; }
+.mindmap-branch {
+  display: flex; align-items: flex-start; gap: 8px;
+}
+.branch-line {
+  width: 3px; background: var(--teal-mid);
+  border-radius: 2px; margin-top: 4px; flex-shrink: 0;
+  align-self: stretch; min-height: 20px;
+}
+.branch-content { flex: 1; }
+.branch-title {
+  background: var(--blue-light); border: 1px solid var(--teal-mid);
+  border-radius: 8px; padding: 7px 12px;
+  font-size: 13px; font-weight: 700; color: var(--blue-dark);
+  margin-bottom: 4px;
+}
+.branch-leaves { padding-left: 12px; display: flex; flex-direction: column; gap: 3px; }
+.leaf {
+  font-size: 12px; color: var(--text-sub);
+  display: flex; align-items: center; gap: 5px; line-height: 1.5;
+}
+.leaf::before { content: '•'; color: var(--blue); font-weight: 900; flex-shrink: 0; }
+
+/* ── Before/After ── */
+.before-after { display: flex; flex-direction: column; gap: 10px; margin: 12px 0; }
+.ba-box { border-radius: 12px; padding: 14px 16px; font-size: 13px; line-height: 1.75; }
+.ba-before { background: #f8f9fa; border: 1px solid var(--border); }
+.ba-after  { background: var(--blue-light); border: 1px solid var(--teal-mid); }
+.ba-label  { font-size: 11px; font-weight: 700; letter-spacing: 0.5px; margin-bottom: 8px; display: block; }
+.ba-before .ba-label { color: var(--text-sub); }
+.ba-after  .ba-label { color: var(--blue-dark); }
+.ba-arrow  { text-align: center; font-size: 22px; color: var(--blue); }
+
+/* ── 브리핑 문서 미리보기 ── */
+.doc-preview {
+  background: white; border: 1px solid var(--border);
+  border-radius: 12px; padding: 18px; margin: 14px 0;
+  box-shadow: var(--shadow); font-size: 13px; line-height: 1.8;
+}
+.doc-h1 {
+  font-size: 15px; font-weight: 900; color: var(--text);
+  border-bottom: 2px solid var(--teal); padding-bottom: 6px; margin-bottom: 10px;
+}
+.doc-h2 { font-size: 13px; font-weight: 700; color: var(--blue); margin: 12px 0 4px; }
+.doc-body { font-size: 12.5px; color: #444; line-height: 1.75; }
+.doc-tag {
+  display: inline-block; background: var(--blue-light); color: var(--blue-dark);
+  border-radius: 4px; padding: 1px 7px; font-size: 11px; font-weight: 700; margin: 2px;
+}
+
+/* ── 활용 시나리오 카드 ── */
+.scenario-list { display: flex; flex-direction: column; gap: 10px; margin: 12px 0; }
+.scenario-item {
+  background: white; border-radius: 12px; padding: 14px 16px;
+  border-left: 4px solid var(--teal); box-shadow: 0 1px 5px rgba(0,0,0,0.06);
+}
+.scenario-situation { font-size: 12px; color: var(--blue); font-weight: 700; margin-bottom: 4px; }
+.scenario-action { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.scenario-result { font-size: 12.5px; color: var(--text-sub); }
+
+/* ── 비교 박스 ── */
+.compare-box { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 12px 0; }
+.compare-item { border-radius: 10px; padding: 14px; }
+.compare-item.left  { background: #fff3e0; }
+.compare-item.right { background: var(--blue-light); }
+.compare-label { font-size: 11px; font-weight: 700; letter-spacing: 0.5px; margin-bottom: 6px; display: block; }
+.compare-item.left  .compare-label { color: #e65100; }
+.compare-item.right .compare-label { color: var(--blue-dark); }
+.compare-item p { font-size: 13px; line-height: 1.6; }
+
+/* ── 조합 플로우 ── */
+.flow-row {
+  display: flex; align-items: center; gap: 8px;
+  margin: 8px 0; flex-wrap: wrap;
+}
+.flow-item {
+  background: white; border: 1px solid var(--teal-mid);
+  border-radius: 10px; padding: 10px 14px;
+  font-size: 13px; font-weight: 700; color: var(--blue-dark);
+  display: flex; align-items: center; gap: 6px;
+  flex: 1; min-width: 120px;
+}
+.flow-arrow { font-size: 18px; color: var(--blue); flex-shrink: 0; }
+
+/* ── Misc ── */
+.text-sm { font-size: 13px; color: var(--text-sub); line-height: 1.7; }
+.mt12 { margin-top: 12px; }
+.link-row {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--blue-light); border-radius: 10px;
+  padding: 12px 14px; margin: 10px 0; font-size: 13.5px;
+}
+.link-row a { font-weight: 700; color: var(--blue); word-break: break-all; }
+
+/* ── Floating buttons ── */
+.float-btns {
+  position: fixed;
+  bottom: 24px; right: 16px;
+  display: flex; flex-direction: column; gap: 10px;
+  z-index: 200;
+}
+.float-btn {
+  width: 46px; height: 46px;
+  background: var(--blue); color: white;
+  border: none; border-radius: 50%; font-size: 18px;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(26,115,232,0.35);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.25s, background 0.15s;
+  font-family: 'Noto Sans KR', sans-serif;
+}
+.float-btn:hover { background: var(--blue-dark); }
+.float-btn.visible { opacity: 1; pointer-events: auto; }
+.float-btn.back-btn { background: white; color: var(--blue); border: 2px solid var(--blue); font-size: 16px; font-weight: 700; }
+.float-btn.back-btn:hover { background: var(--blue-light); }
+
+/* ── Footer ── */
+.footer {
+  background: white; border-top: 1px solid var(--border);
+  padding: 28px 20px; text-align: center;
+  font-size: 13px; color: var(--text-sub);
+}
+.footer strong { color: var(--blue); }
+
+@media(min-width: 600px) {
+  .hero { padding: 56px 40px 46px; }
+  .hero h1 { font-size: 2em; }
+  .main { padding: 28px 24px 80px; }
+  .compare-box { grid-template-columns: 1fr 1fr; }
+  .before-after { flex-direction: row; }
+  .before-after .ba-box { flex: 1; }
+  .before-after .ba-arrow { display: flex; align-items: center; font-size: 28px; }
+  .flow-row { flex-wrap: nowrap; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── HERO ── -->
+<div class="hero">
+  <div class="hero-series">
+    <span class="hero-tag">📒 사복쌤 AI 가이드 심화편</span>
+    <span class="hero-tag new">2편</span>
+  </div>
+  <h1>복잡한 지침서를<br>지도로 만들어버리자! 🗺️</h1>
+  <p>마인드맵 & 브리핑 문서로 지침서를 한눈에 파악하고<br>평가 준비를 절반의 시간으로 끝내는 법</p>
+  <a href="https://notebooklm.google.com/" target="_blank" class="hero-btn">🚀 NotebookLM 열기</a>
+</div>
+
+<!-- ── 이전편 배너 ── -->
+<div class="prev-banner">
+  ← <a href="#">1편: 보고서·슬라이드 자동 초안 만들기</a>도 함께 보세요!
+</div>
+
+<!-- ── 시리즈 로드맵 ── -->
+<div class="series-nav">
+  <div class="series-label">📚 심화 시리즈 진행 현황</div>
+  <div class="series-grid">
+    <div class="series-item done">1편<br>보고서·슬라이드</div>
+    <div class="series-item active">2편<br>마인드맵·브리핑</div>
+    <div class="series-item">3편<br>지침서 비교</div>
+    <div class="series-item">4편<br>팀 협업 공유</div>
+    <div class="series-item">5편<br>음성·영상 분석</div>
+    <div class="series-item" style="opacity:0.4;">6편<br>준비 중</div>
+  </div>
+</div>
+
+<!-- ── STICKY TOC ── -->
+<div class="toc-sticky">
+  <div class="toc-grid">
+    <a href="#ch1" class="toc-pill">1장 마인드맵이란?</a>
+    <a href="#ch2" class="toc-pill">2장 마인드맵 생성법</a>
+    <a href="#ch3" class="toc-pill">3장 마인드맵 활용</a>
+    <a href="#ch4" class="toc-pill">4장 브리핑 문서 심화</a>
+    <a href="#ch5" class="toc-pill">5장 두 기능 조합</a>
+    <a href="#ch6" class="toc-pill">6장 내보내기·공유</a>
+    <a href="#appendix" class="toc-pill">🎁 프롬프트 사전</a>
+    <a href="#tip" class="toc-pill">💡 꿀팁 모음</a>
+    <a href="#next" class="toc-pill">➡️ 다음 편</a>
+  </div>
+</div>
+
+<!-- ── MAIN ── -->
+<div class="main">
+
+<!-- ─────────────── 1장 ─────────────── -->
+<div class="chapter" id="ch1">
+  <div class="chapter-label">
+    <div class="chapter-icon">🗺️</div>
+    <div class="chapter-title">제1장. 마인드맵이 뭔가요?<br>지침서를 '지도'로 바꾸는 마법</div>
+  </div>
+  <div class="chapter-divider"></div>
+
+  <p class="text-sm">300페이지짜리 지침서를 처음부터 끝까지 읽을 시간, 사실 없죠. <strong>마인드맵</strong>은 그 방대한 내용을 핵심 키워드와 계층 구조로 한 화면에 시각화해주는 기능입니다.</p>
+
+  <div class="section-title">텍스트 vs 마인드맵 — 뭐가 다른가요?</div>
+  <div class="compare-box">
+    <div class="compare-item left">
+      <span class="compare-label">📄 기존 방식</span>
+      <p>300페이지 지침서를 처음부터 읽음 → 1시간 후 머릿속이 하얗게 됨</p>
+    </div>
+    <div class="compare-item right">
+      <span class="compare-label">🗺️ 마인드맵</span>
+      <p>소스 업로드 → 버튼 클릭 → 2분 후 전체 구조가 한눈에 펼쳐짐</p>
+    </div>
+  </div>
+
+  <div class="card card-teal">
+    <div class="card-title teal">💡 마인드맵이 특히 유용한 순간</div>
+    <div class="feature-list" style="margin-top:8px;">
+      <div class="feature-item">
+        <span class="feature-emo">🔍</span>
+        <div class="feature-text">
+          <strong>새 지침서가 내려왔을 때</strong>
+          <span>전체 구조를 5분 만에 파악하고 팀 공유</span>
+        </div>
+      </div>
+      <div class="feature-item">
+        <span class="feature-emo">📋</span>
+        <div class="feature-text">
+          <strong>평가 준비 시즌</strong>
+          <span>평가 영역별 지표를 구조화해서 담당자 분배</span>
+        </div>
+      </div>
+      <div class="feature-item">
+        <span class="feature-emo">🎓</span>
+        <div class="feature-text">
+          <strong>신입 직원 교육</strong>
+          <span>복잡한 업무 프로세스를 직관적인 그림으로 설명</span>
+        </div>
+      </div>
+      <div class="feature-item">
+        <span class="feature-emo">🤝</span>
+        <div class="feature-text">
+          <strong>사례회의·팀 브리핑 전</strong>
+          <span>사례 관련 지침 핵심 구조를 공유 자료로 활용</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────── 2장 ─────────────── -->
+<div class="chapter" id="ch2">
+  <div class="chapter-label">
+    <div class="chapter-icon">⚙️</div>
+    <div class="chapter-title">제2장. 마인드맵 생성 방법<br>클릭 두 번으로 완성</div>
+  </div>
+  <div class="chapter-divider"></div>
+
+  <div class="section-title">생성 방법 (4단계)</div>
+  <ol class="step-list">
+    <li>
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <strong>소스 업로드</strong>
+        <span>분석할 지침서, 매뉴얼, 사업안내서를 소스로 올립니다. 여러 파일도 가능!</span>
+      </div>
+    </li>
+    <li>
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <strong>오른쪽 Studio 패널 열기</strong>
+        <span>화면 오른쪽 패널에서 스튜디오 영역을 찾아주세요</span>
+      </div>
+    </li>
+    <li>
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <strong>[마인드맵(Mind Map)] 클릭 → Generate</strong>
+        <span>1~3분 기다리면 자동으로 구조화된 마인드맵이 생성됩니다</span>
+      </div>
+    </li>
+    <li>
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <strong>노드 클릭으로 세부 내용 확인</strong>
+        <span>각 항목을 클릭하면 원본 소스의 해당 부분을 바로 보여줍니다</span>
+      </div>
+    </li>
+  </ol>
+
+  <div class="section-title">마인드맵 화면 미리보기</div>
+
+  <div class="mindmap-demo">
+    <div class="mindmap-header">
+      🗺️ AI 생성 마인드맵 — 아동분야 사업안내 지침 2026
+    </div>
+    <div class="mindmap-body">
+      <div class="mindmap-center">📘 아동분야<br>사업안내 2026</div>
+      <div class="mindmap-branches">
+
+        <div class="mindmap-branch">
+          <div class="branch-line"></div>
+          <div class="branch-content">
+            <div class="branch-title">📋 사업 목적 및 대상</div>
+            <div class="branch-leaves">
+              <div class="leaf">저소득 아동 결식 예방</div>
+              <div class="leaf">만 18세 미만 지원 대상</div>
+              <div class="leaf">긴급 보호 아동 우선 지원</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mindmap-branch">
+          <div class="branch-line"></div>
+          <div class="branch-content">
+            <div class="branch-title">💰 예산 편성 기준</div>
+            <div class="branch-leaves">
+              <div class="leaf">국비·지방비 매칭 비율</div>
+              <div class="leaf">사업비 집행 기준</div>
+              <div class="leaf">정산 방법 및 시기</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mindmap-branch">
+          <div class="branch-line"></div>
+          <div class="branch-content">
+            <div class="branch-title">📊 성과 관리</div>
+            <div class="branch-leaves">
+              <div class="leaf">지표: 서비스 이용률, 만족도</div>
+              <div class="leaf">중간 점검 일정</div>
+              <div class="leaf">결과 보고 양식</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mindmap-branch">
+          <div class="branch-line"></div>
+          <div class="branch-content">
+            <div class="branch-title">⚠️ 준수 사항 및 금지</div>
+            <div class="branch-leaves">
+              <div class="leaf">개인정보 보호 의무</div>
+              <div class="leaf">사업비 용도 외 사용 금지</div>
+              <div class="leaf">허위 보고 금지</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <p style="font-size:11px;color:var(--text-sub);margin-top:14px;text-align:center;">* 실제 마인드맵은 인터랙티브하게 클릭·확장 가능합니다</p>
+    </div>
+  </div>
+
+  <div class="card card-yellow">
+    <div class="card-title yellow">⚠️ 소스가 많을수록 마인드맵이 풍부해집니다</div>
+    <p class="text-sm">파일 1개만 올리면 그 파일 범위에서만 구조를 잡습니다. 관련 자료 여러 개를 함께 올리면 더 넓고 깊은 마인드맵이 생성됩니다.</p>
+  </div>
+</div>
+
+<!-- ─────────────── 3장 ─────────────── -->
+<div class="chapter" id="ch3">
+  <div class="chapter-label">
+    <div class="chapter-icon">🎯</div>
+    <div class="chapter-title">제3장. 마인드맵 실전 활용법<br>업무별 시나리오 5가지</div>
+  </div>
+  <div class="chapter-divider"></div>
+
+  <div class="section-title">상황별 활용 시나리오</div>
+
+  <div class="scenario-list">
+
+    <div class="scenario-item">
+      <div class="scenario-situation">📅 상황 1 — 새 지침서 배포 당일</div>
+      <div class="scenario-action">지침서 전체 구조를 마인드맵으로 파악 → 팀 공유</div>
+      <div class="scenario-result">✅ 효과: 팀원 전체가 10분 안에 주요 변경사항 파악 완료</div>
+    </div>
+
+    <div class="scenario-item">
+      <div class="scenario-situation">🏆 상황 2 — 평가 D-30</div>
+      <div class="scenario-action">평가 매뉴얼 마인드맵 생성 → 영역별 담당자 분배</div>
+      <div class="scenario-result">✅ 효과: "누가 뭘 준비해야 하는지" 한눈에 정리되어 혼선 제거</div>
+    </div>
+
+    <div class="scenario-item">
+      <div class="scenario-situation">🎓 상황 3 — 신입 직원 첫날</div>
+      <div class="scenario-action">업무 매뉴얼 마인드맵 출력 → 오리엔테이션 자료로 활용</div>
+      <div class="scenario-result">✅ 효과: 신입 직원이 업무 전체 흐름을 직관적으로 파악</div>
+    </div>
+
+    <div class="scenario-item">
+      <div class="scenario-situation">🤝 상황 4 — 사례회의 전 준비</div>
+      <div class="scenario-action">아동학대 대응 매뉴얼 마인드맵으로 개입 단계 정리</div>
+      <div class="scenario-result">✅ 효과: 회의 중 "몇 페이지였더라?" 없이 핵심 절차 바로 확인</div>
+    </div>
+
+    <div class="scenario-item">
+      <div class="scenario-situation">📊 상황 5 — 슈퍼비전 준비</div>
+      <div class="scenario-action">관련 지침·사례 기록 마인드맵으로 논점 시각화</div>
+      <div class="scenario-result">✅ 효과: 슈퍼바이저에게 체계적으로 상황 전달 가능</div>
+    </div>
+
+  </div>
+
+  <div class="section-title">마인드맵 관련 프롬프트</div>
+
+  <div class="prompt-box">
+    <span class="prompt-label">📋 마인드맵 생성 후 특정 영역 상세 분석</span>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+    <div>마인드맵에서 '예산 편성 기준' 영역이 가장 복잡하게 느껴져.
+이 부분만 뽑아서 단계별로 더 자세히 설명해 줘.
+초보자도 이해할 수 있도록 예시를 들어서 설명해 주면 좋겠어.</div>
+  </div>
+
+  <div class="prompt-box">
+    <span class="prompt-label">📋 평가 영역별 담당자 분배표 만들기</span>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+    <div>업로드한 평가 매뉴얼의 전체 평가 영역과 세부 지표를 모두 추출해 줘.
+각 영역별로 준비 난이도(상·중·하)와 주요 증빙 서류를 함께 표로 정리해 줘.
+우리 기관 담당자가 업무를 나눌 수 있도록 '담당자' 열도 빈칸으로 넣어줘.</div>
+  </div>
+
+  <div class="prompt-box">
+    <span class="prompt-label">📋 신입 직원용 업무 흐름 정리</span>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+    <div>업로드한 업무 매뉴얼을 바탕으로 신입 사회복지사가 첫 한 달 동안 익혀야 할 핵심 업무 흐름을 정리해 줘.
+'클라이언트 접수 → 사정 → 계획 수립 → 개입 → 모니터링 → 종결' 순서로 각 단계에서 해야 할 일과 작성 서류를 한눈에 볼 수 있게 표로 만들어 줘.</div>
+  </div>
+</div>
+
+<!-- ─────────────── 4장 ─────────────── -->
+<div class="chapter" id="ch4">
+  <div class="chapter-label">
+    <div class="chapter-icon">📄</div>
+    <div class="chapter-title">제4장. 브리핑 문서 심화<br>목적별로 다르게 뽑는 법</div>
+  </div>
+  <div class="chapter-divider"></div>
+
+  <p class="text-sm">1편에서 브리핑 문서의 기본을 배웠다면, 이번 장에서는 <strong>목적에 따라 다르게 요청하는 방법</strong>을 배웁니다. 같은 소스라도 프롬프트에 따라 전혀 다른 문서가 나옵니다.</p>
+
+  <div class="section-title">브리핑 문서 3가지 활용 유형</div>
+
+  <div class="feature-list">
+    <div class="feature-item">
+      <span class="feature-emo">⚡</span>
+      <div class="feature-text">
+        <strong>유형 1 — 빠른 현황 파악용</strong>
+        <span>회의 전 5분 안에 읽을 수 있는 핵심 요약. "이것만 알면 회의 참여 가능"</span>
+      </div>
+    </div>
+    <div class="feature-item">
+      <span class="feature-emo">📊</span>
+      <div class="feature-text">
+        <strong>유형 2 — 의사결정 지원용</strong>
+        <span>선택지·장단점·리스크를 포함한 보고서. 기관장 결재 자료로 적합</span>
+      </div>
+    </div>
+    <div class="feature-item">
+      <span class="feature-emo">🎓</span>
+      <div class="feature-text">
+        <strong>유형 3 — 교육·전달용</strong>
+        <span>어려운 내용을 쉽게 풀어쓴 자료. 주민설명회·팀 교육에 활용</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">유형별 브리핑 문서 출력 예시</div>
+
+  <div class="doc-preview">
+    <div class="doc-h1">⚡ [유형 1] 빠른 현황 파악용 브리핑</div>
+    <div class="doc-h2">📌 핵심 3줄 요약</div>
+    <div class="doc-body">
+      • 2026년 아동분야 사업에서 가장 크게 바뀐 것은 <strong>소득 기준 완화</strong>입니다.<br>
+      • 기존 중위소득 50% 이하 → 60% 이하로 확대되어 지원 대상이 늘어납니다.<br>
+      • 신청 서류도 3종 → 1종으로 간소화됩니다.
+    </div>
+    <div class="doc-h2">⚠️ 담당자 즉시 확인 사항</div>
+    <div class="doc-body">기존 대상자 재심사 필요 여부, 시스템 업데이트 일정, 안내문 재발송 대상 확인</div>
+    <p style="font-size:11px;color:#bbb;margin-top:10px;text-align:right;">* AI 자동 생성 초안</p>
+  </div>
+
+  <div class="section-title">목적별 브리핑 문서 프롬프트</div>
+
+  <div class="prompt-box">
+    <span class="prompt-label">📋 유형 1 — 빠른 현황 파악용</span>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+    <div>업로드한 지침서에서 가장 중요한 변경사항 3가지만 뽑아줘.
+각 변경사항은 '기존 → 변경 후' 형식으로 한 줄씩 정리해 줘.
+회의 5분 전에 읽어도 대화가 가능할 정도로 짧게.</div>
+  </div>
+
+  <div class="prompt-box">
+    <span class="prompt-label">📋 유형 2 — 기관장 의사결정 지원용</span>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+    <div>업로드한 자료를 바탕으로 기관장님께 보고할 의사결정 지원 문서를 작성해 줘.
+구성: 현황 요약 → 선택 가능한 방안 2~3가지 → 각 방안의 장단점 → 추천 방향
+A4 1페이지, 합니다체로 작성해 줘.</div>
+  </div>
+
+  <div class="prompt-box">
+    <span class="prompt-label">📋 유형 3 — 주민·보호자 설명용</span>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+    <div>업로드한 지침서 내용을 복지 제도를 전혀 모르는 일반 주민도 이해할 수 있게 쉽게 설명해 줘.
+어려운 행정 용어는 쉬운 말로 바꾸고, 일상적인 예시를 들어줘.
+"이런 분이 신청하시면 됩니다" "이렇게 신청하시면 됩니다" 형식으로 안내문처럼 작성해 줘.</div>
+  </div>
+</div>
+
+<!-- ─────────────── 5장 ─────────────── -->
+<div class="chapter" id="ch5">
+  <div class="chapter-label">
+    <div class="chapter-icon">🔗</div>
+    <div class="chapter-title">제5장. 마인드맵 + 브리핑 문서<br>두 기능을 조합하면 최강!</div>
+  </div>
+  <div class="chapter-divider"></div>
+
+  <p class="text-sm">마인드맵과 브리핑 문서를 <strong>순서대로 함께 쓰면</strong> 지침서 파악부터 보고 자료 완성까지 한 번에 처리할 수 있습니다.</p>
+
+  <div class="section-title">추천 워크플로우</div>
+
+  <div class="flow-row">
+    <div class="flow-item">📁 소스 업로드</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-item">🗺️ 마인드맵으로 전체 구조 파악</div>
+  </div>
+  <div class="flow-row">
+    <div class="flow-item">🔍 필요한 영역 채팅으로 상세 질문</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-item">📄 브리핑 문서로 공유용 자료 완성</div>
+  </div>
+
+  <div class="section-title">실전 예시 — 평가 준비 시즌</div>
+
+  <div class="before-after">
+    <div class="ba-box ba-before">
+      <span class="ba-label">😩 기존 평가 준비 방식</span>
+      매뉴얼 전체 읽기(2~3시간) → 지표마다 개별 검색 → 팀장님께 구두로 전달 → 또 잊어버림
+    </div>
+    <div class="ba-arrow">↓</div>
+    <div class="ba-box ba-after">
+      <span class="ba-label">✨ 마인드맵 + 브리핑 문서 조합</span>
+      ① 매뉴얼 소스 업로드<br>
+      ② 마인드맵으로 전체 지표 구조 파악(10분)<br>
+      ③ 모르는 지표 채팅으로 즉시 질문<br>
+      ④ 브리핑 문서로 팀 공유 자료 완성(5분)
+    </div>
+  </div>
+
+  <div class="prompt-box">
+    <span class="prompt-label">📋 마인드맵 → 브리핑 문서 연계 프롬프트</span>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+    <div>방금 생성된 마인드맵에서 '서비스 이용자 권리 보장' 영역만 뽑아서
+우리 팀 전체에 공유할 브리핑 문서를 만들어 줘.
+형식: 핵심 지표 요약 → 준비 서류 목록 → 담당자별 할 일 → 체크리스트
+합니다체, A4 1페이지 이내.</div>
+  </div>
+
+  <div class="card card-teal">
+    <div class="card-title teal">💡 노트에 저장해서 두고두고 활용하기</div>
+    <p class="text-sm">마인드맵과 브리핑 문서에서 유용한 내용이 나왔다면 오른쪽 스튜디오 패널의 <strong>[노트에 저장]</strong> 버튼을 눌러두세요. 나중에 다른 노트북이나 보고서 작성 시 재활용할 수 있습니다.</p>
+  </div>
+</div>
+
+<!-- ─────────────── 6장 ─────────────── -->
+<div class="chapter" id="ch6">
+  <div class="chapter-label">
+    <div class="chapter-icon">📤</div>
+    <div class="chapter-title">제6장. 만든 자료 내보내기 & 공유<br>어디서든 쓸 수 있게</div>
+  </div>
+  <div class="chapter-divider"></div>
+
+  <div class="section-title">내보내기 방법 총정리</div>
+
+  <div class="feature-list">
+    <div class="feature-item">
+      <span class="feature-emo">📋</span>
+      <div class="feature-text">
+        <strong>텍스트 복사 → 한글·워드에 붙여넣기</strong>
+        <span>브리핑 문서 우측 상단 복사 버튼 → 한글(HWP)이나 워드(docx)에 붙여넣기 후 서식 다듬기</span>
+      </div>
+    </div>
+    <div class="feature-item">
+      <span class="feature-emo">📄</span>
+      <div class="feature-text">
+        <strong>구글 Docs로 내보내기</strong>
+        <span>[구글 Docs로 내보내기] 버튼 클릭 → 구글 드라이브에 자동 저장 → 링크로 팀원 공유</span>
+      </div>
+    </div>
+    <div class="feature-item">
+      <span class="feature-emo">🖨️</span>
+      <div class="feature-text">
+        <strong>마인드맵 이미지 저장</strong>
+        <span>마인드맵 화면에서 [다운로드] 또는 브라우저 인쇄(Ctrl+P) → PDF로 저장 → 출력 가능</span>
+      </div>
+    </div>
+    <div class="feature-item">
+      <span class="feature-emo">🔗</span>
+      <div class="feature-text">
+        <strong>노트북 공유 링크로 팀원과 함께 보기</strong>
+        <span>우측 상단 [공유] 버튼 → 링크 복사 → 팀원에게 카카오톡으로 전송</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card card-yellow">
+    <div class="card-title yellow">⚠️ 공유 시 개인정보 주의!</div>
+    <p class="text-sm">노트북 공유 링크를 보내면 소스에 올린 자료도 함께 열람됩니다. 클라이언트 정보가 포함된 소스가 있다면 <strong>공유 전 반드시 해당 소스를 삭제</strong>하거나 별도 노트북을 만들어서 공유하세요.</p>
+  </div>
+</div>
+
+<!-- ─────────────── 부록 ─────────────── -->
+<div class="chapter" id="appendix">
+  <div class="chapter-label">
+    <div class="chapter-icon" style="background:var(--green);">🎁</div>
+    <div class="chapter-title">부록. 심화 2편 프롬프트 전체 모음</div>
+  </div>
+  <div class="chapter-divider"></div>
+  <p class="text-sm">이번 편에서 나온 프롬프트를 한 곳에 모았습니다. 복사해서 바로 쓰세요!</p>
+
+  <div style="margin:16px 0;">
+    <div style="font-size:13px;font-weight:700;color:var(--teal);margin-bottom:8px;">🗺️ 마인드맵 관련</div>
+
+    <div class="prompt-box">
+      <span class="prompt-label">① 마인드맵 영역 상세 분석</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+      <div>마인드맵에서 '예산 편성 기준' 영역이 가장 복잡하게 느껴져.
+이 부분만 뽑아서 단계별로 더 자세히 설명해 줘.
+초보자도 이해할 수 있도록 예시를 들어서 설명해 주면 좋겠어.</div>
+    </div>
+
+    <div class="prompt-box">
+      <span class="prompt-label">② 평가 영역별 담당자 분배표</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+      <div>업로드한 평가 매뉴얼의 전체 평가 영역과 세부 지표를 모두 추출해 줘.
+각 영역별로 준비 난이도(상·중·하)와 주요 증빙 서류를 함께 표로 정리해 줘.
+우리 기관 담당자가 업무를 나눌 수 있도록 '담당자' 열도 빈칸으로 넣어줘.</div>
+    </div>
+
+    <div class="prompt-box">
+      <span class="prompt-label">③ 신입 직원 업무 흐름 정리</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+      <div>업로드한 업무 매뉴얼을 바탕으로 신입 사회복지사가 첫 한 달 동안 익혀야 할 핵심 업무 흐름을 정리해 줘.
+'클라이언트 접수 → 사정 → 계획 수립 → 개입 → 모니터링 → 종결' 순서로 각 단계에서 해야 할 일과 작성 서류를 한눈에 볼 수 있게 표로 만들어 줘.</div>
+    </div>
+  </div>
+
+  <div style="margin:16px 0;">
+    <div style="font-size:13px;font-weight:700;color:var(--teal);margin-bottom:8px;">📄 브리핑 문서 관련</div>
+
+    <div class="prompt-box">
+      <span class="prompt-label">④ 빠른 현황 파악용 브리핑</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+      <div>업로드한 지침서에서 가장 중요한 변경사항 3가지만 뽑아줘.
+각 변경사항은 '기존 → 변경 후' 형식으로 한 줄씩 정리해 줘.
+회의 5분 전에 읽어도 대화가 가능할 정도로 짧게.</div>
+    </div>
+
+    <div class="prompt-box">
+      <span class="prompt-label">⑤ 기관장 의사결정 지원용 브리핑</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+      <div>업로드한 자료를 바탕으로 기관장님께 보고할 의사결정 지원 문서를 작성해 줘.
+구성: 현황 요약 → 선택 가능한 방안 2~3가지 → 각 방안의 장단점 → 추천 방향
+A4 1페이지, 합니다체로 작성해 줘.</div>
+    </div>
+
+    <div class="prompt-box">
+      <span class="prompt-label">⑥ 마인드맵→브리핑 문서 연계</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+      <div>방금 생성된 마인드맵에서 '서비스 이용자 권리 보장' 영역만 뽑아서
+우리 팀 전체에 공유할 브리핑 문서를 만들어 줘.
+형식: 핵심 지표 요약 → 준비 서류 목록 → 담당자별 할 일 → 체크리스트
+합니다체, A4 1페이지 이내.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────── 꿀팁 ─────────────── -->
+<div class="chapter" id="tip">
+  <div class="chapter-label">
+    <div class="chapter-icon" style="background:var(--yellow);color:#1a1a2e;">💡</div>
+    <div class="chapter-title">꿀팁 모음 — 2편 핵심 정리</div>
+  </div>
+  <div class="chapter-divider"></div>
+
+  <div class="feature-list">
+    <div class="feature-item">
+      <span class="feature-emo">🗺️</span>
+      <div class="feature-text">
+        <strong>마인드맵 먼저, 채팅은 그다음</strong>
+        <span>지침서를 받으면 채팅 질문 전에 마인드맵을 먼저 생성하세요. 전체 구조를 알아야 무엇을 질문할지 보입니다.</span>
+      </div>
+    </div>
+    <div class="feature-item">
+      <span class="feature-emo">🔄</span>
+      <div class="feature-text">
+        <strong>브리핑 문서는 목적을 명확히</strong>
+        <span>"기관장 보고용", "주민 설명용", "팀원 공유용" 등 용도를 프롬프트에 명시하면 맞춤 문서가 나옵니다.</span>
+      </div>
+    </div>
+    <div class="feature-item">
+      <span class="feature-emo">📌</span>
+      <div class="feature-text">
+        <strong>마인드맵 노드 클릭 = 원본 확인</strong>
+        <span>마인드맵의 각 항목을 클릭하면 원본 소스의 해당 부분으로 바로 이동합니다. 의심스러운 항목은 꼭 확인!</span>
+      </div>
+    </div>
+    <div class="feature-item">
+      <span class="feature-emo">📊</span>
+      <div class="feature-text">
+        <strong>연도별 지침서 두 개 동시 업로드</strong>
+        <span>올해 지침서 + 작년 지침서를 함께 올리면 "변경된 내용만 정리해 줘" 프롬프트로 빠른 비교가 가능합니다. (3편 내용 선행 공개!)</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────── 다음 편 ─────────────── -->
+<div class="chapter" id="next">
+  <div class="chapter-label">
+    <div class="chapter-icon" style="background:var(--blue);">➡️</div>
+    <div class="chapter-title">다음 편 예고</div>
+  </div>
+  <div class="chapter-divider"></div>
+
+  <div class="card card-blue">
+    <div class="card-title blue">🔍 심화 3편 — 연도별 지침서 비교 분석 완전 정복</div>
+    <p class="text-sm">매년 바뀌는 지침서, 올해 뭐가 달라졌는지 한눈에 보는 법. 두 개의 지침서를 동시에 업로드해서 변경사항만 쏙 뽑아내는 실전 비교 분석법을 다룹니다.</p>
+    <div class="feature-list" style="margin-top:12px;">
+      <div class="feature-item">
+        <span class="feature-emo">📑</span>
+        <div class="feature-text">
+          <strong>연도별 지침서 비교 표 자동 생성</strong>
+          <span>2025년 vs 2026년 변경사항 항목별 비교</span>
+        </div>
+      </div>
+      <div class="feature-item">
+        <span class="feature-emo">⚠️</span>
+        <div class="feature-text">
+          <strong>우리 기관에 영향 있는 변경사항만 추출</strong>
+          <span>수백 페이지 중 "우리한테 해당되는 것"만 골라내기</span>
+        </div>
+      </div>
+    </div>
+    <p style="margin-top:12px;font-size:13px;color:var(--blue);font-weight:700;">→ saboknote.com에서 다음 편 알림 받기</p>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<!-- ── FOOTER ── -->
+<div class="footer">
+  <p style="font-size:22px;margin-bottom:8px;">🗺️ 📒 🌿</p>
+  <p><strong>심화 2편. 마인드맵 & 브리핑 문서 완전 정복</strong></p>
+  <p style="margin-top:6px;font-size:12px;">NotebookLM 심화 시리즈 | 사복쌤을 위한 AI 실무 가이드</p>
+  <p style="margin-top:14px;">든든한 실무 파트너: <a href="https://www.saboknote.com/" target="_blank"><strong>사복노트 (saboknote.com)</strong></a></p>
+</div>
+
+
+
+<!-- ── Floating buttons ── -->
+<div class="float-btns">
+  <button class="float-btn back-btn" onclick="goBack()" title="이전 페이지">←</button>
+  <button class="float-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="맨 위로">↑</button>
+</div>
+
+<script>
+document.querySelectorAll('.float-btn').forEach(btn => {
+  window.addEventListener('scroll', () => {
+    btn.classList.toggle('visible', window.scrollY > 300);
+  });
+});
+function goBack() {
+  if (document.referrer) { window.history.back(); }
+  else { window.scrollTo({top: 0, behavior: 'smooth'}); }
+});
+
+function copyPrompt(el) {
+  const text = el.closest('.prompt-box').querySelector('div').innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    el.textContent = '✅ 복사됨!';
+    el.classList.add('copied');
+    setTimeout(() => { el.textContent = '📋 복사'; el.classList.remove('copied'); }, 1800);
+  }).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    el.textContent = '✅ 복사됨!';
+    el.classList.add('copied');
+    setTimeout(() => { el.textContent = '📋 복사'; el.classList.remove('copied'); }, 1800);
+  });
+}
+</script>
+</body>
+</html>

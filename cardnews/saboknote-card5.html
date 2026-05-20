@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>사복노트 5번 게시글</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: #DDE3ED;
+    font-family: 'Noto Sans KR', sans-serif;
+    min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 32px 16px 48px;
+  }
+  .top-label { font-size: 12px; font-weight: 700; color: #8A94A6; letter-spacing: 2px; margin-bottom: 20px; text-transform: uppercase; }
+  .card { width: 480px; height: 600px; border-radius: 22px; overflow: hidden; box-shadow: 0 16px 48px rgba(0,0,0,0.18); position: relative; flex-shrink: 0; }
+  .slide { display: none; width: 100%; height: 100%; position: absolute; top:0; left:0; }
+  .slide.on { display: flex; flex-direction: column; }
+  .foot { height: 48px; flex-shrink: 0; display: flex; align-items: center; padding: 0 32px; justify-content: space-between; }
+  .foot .fl { font-size: 12px; font-weight: 900; }
+  .foot .fr { font-size: 11px; }
+
+  /* ─── S1 표지 ─── */
+  .s1 { background: #1B2E4B; }
+  .s1 .logo-bar { display: flex; justify-content: space-between; align-items: center; padding: 28px 32px 0; flex-shrink: 0; }
+  .s1 .logo { font-size: 13px; font-weight: 900; color: rgba(255,255,255,0.4); }
+  .s1 .num { font-size: 11px; color: rgba(255,255,255,0.25); }
+  .s1 .body { flex: 1; padding: 0 32px; display: flex; flex-direction: column; justify-content: center; }
+  .s1 .pill { display: inline-block; background: rgba(47,111,237,0.25); border: 1px solid rgba(47,111,237,0.4); color: #7EB3FF; font-size: 10px; font-weight: 700; padding: 4px 12px; border-radius: 20px; margin-bottom: 20px; align-self: flex-start; letter-spacing: 1px; }
+  .s1 .title { font-size: 36px; font-weight: 900; color: white; line-height: 1.25; margin-bottom: 16px; }
+  .s1 .title em { color: #FFD166; font-style: normal; }
+  .s1 .desc { font-size: 14px; color: rgba(255,255,255,0.5); line-height: 1.85; margin-bottom: 22px; word-break: keep-all; }
+  .s1 .save-badge { display: inline-flex; align-items: center; gap: 7px; background: rgba(255,209,102,0.12); border: 1px solid rgba(255,209,102,0.22); border-radius: 12px; padding: 10px 16px; }
+  .s1 .save-text { font-size: 13px; color: #FFD166; font-weight: 700; }
+  .s1 .save-sub { font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 2px; }
+  .s1 .foot { background: rgba(255,255,255,0.04); border-top: 1px solid rgba(255,255,255,0.07); }
+  .s1 .foot .fl { color: rgba(255,255,255,0.35); }
+  .s1 .foot .fr { color: rgba(255,255,255,0.2); }
+
+  /* ─── S2 들어가기 전 ─── */
+  .s2 { background: #fff; }
+  .s2 .head { background: #2F6FED; padding: 26px 32px 22px; flex-shrink: 0; }
+  .s2 .head-tag { font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.6); letter-spacing: 2px; margin-bottom: 6px; }
+  .s2 .head-title { font-size: 24px; font-weight: 900; color: white; line-height: 1.35; }
+  .s2 .body { flex: 1; padding: 24px 32px 0; }
+  .s2 .story { font-size: 14px; color: #3D4A5C; line-height: 1.9; margin-bottom: 18px; word-break: keep-all; }
+  .s2 .story strong { color: #1B2E4B; font-weight: 700; }
+  .s2 .tip-box { background: #EBF2FF; border-radius: 14px; padding: 14px 18px; }
+  .s2 .tip-title { font-size: 12px; font-weight: 700; color: #2F6FED; margin-bottom: 8px; letter-spacing: 1px; }
+  .s2 .tip-list { display: flex; flex-direction: column; gap: 6px; }
+  .s2 .tip-item { font-size: 13px; color: #3D4A5C; line-height: 1.5; }
+  .s2 .tip-item::before { content: "· "; color: #2F6FED; font-weight: 700; }
+  .s2 .foot { background: #F4F6FA; }
+  .s2 .foot .fl { color: #2F6FED; }
+  .s2 .foot .fr { color: #8A94A6; }
+
+  /* ─── 기록 슬라이드 공통 ─── */
+  .rec-slide { background: #fff; }
+  .rec-slide .head { background: #2F6FED; padding: 20px 32px 16px; flex-shrink: 0; }
+  .rec-slide .head-tag { font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.6); letter-spacing: 2px; margin-bottom: 4px; }
+  .rec-slide .head-title { font-size: 20px; font-weight: 900; color: white; line-height: 1.35; }
+  .rec-slide .body { flex: 1; padding: 16px 32px 0; display: flex; flex-direction: column; gap: 10px; }
+
+  .rec-item { background: #F4F6FA; border-radius: 14px; padding: 14px 16px; border-left: 3px solid #2F6FED; }
+  .rec-item.alt { background: #EBF2FF; border-left-color: #2F6FED; }
+  .rec-num { font-size: 10px; font-weight: 900; color: #2F6FED; letter-spacing: 1px; margin-bottom: 5px; }
+  .rec-label { font-size: 11px; font-weight: 700; color: #8A94A6; margin-bottom: 6px; }
+  .rec-text { font-size: 13px; color: #1B2E4B; font-weight: 500; line-height: 1.65; word-break: keep-all; }
+  .rec-text em { background: #D6E8FF; color: #1B4FA8; border-radius: 4px; padding: 1px 5px; font-style: normal; font-weight: 700; font-size: 12px; }
+  .rec-hint { font-size: 11px; color: #8A94A6; margin-top: 5px; line-height: 1.5; }
+
+  .rec-slide .foot { background: #F4F6FA; }
+  .rec-slide .foot .fl { color: #2F6FED; }
+  .rec-slide .foot .fr { color: #8A94A6; }
+
+  /* 짝수 슬라이드는 배경 살짝 다르게 */
+  .rec-even { background: #F8FAFF; }
+  .rec-even .head { background: #1B2E4B; }
+  .rec-even .rec-item { background: white; border-left-color: #1B2E4B; }
+  .rec-even .rec-num { color: #1B2E4B; }
+  .rec-even .foot { background: #EBF2FF; }
+  .rec-even .foot .fl { color: #1B2E4B; }
+
+  /* ─── S7 총정리 ─── */
+  .s7 { background: #1B2E4B; }
+  .s7 .top { padding: 26px 32px 0; flex-shrink: 0; }
+  .s7 .s7-tag { font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.4); letter-spacing: 2px; margin-bottom: 8px; }
+  .s7 .s7-title { font-size: 22px; font-weight: 900; color: white; line-height: 1.35; margin-bottom: 16px; }
+  .s7 .body { flex: 1; padding: 0 32px; }
+  .s7 .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .s7 .s-item { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 10px 12px; }
+  .s7 .s-num { font-size: 10px; font-weight: 900; color: #7EB3FF; margin-bottom: 4px; }
+  .s7 .s-text { font-size: 12px; color: rgba(255,255,255,0.7); font-weight: 500; line-height: 1.5; }
+  .s7 .usage { background: rgba(255,209,102,0.1); border: 1px solid rgba(255,209,102,0.2); border-radius: 14px; padding: 14px 16px; margin-top: 12px; }
+  .s7 .usage-text { font-size: 13px; color: rgba(255,255,255,0.7); line-height: 1.7; word-break: keep-all; }
+  .s7 .usage-text em { color: #FFD166; font-style: normal; font-weight: 700; }
+  .s7 .foot { background: rgba(0,0,0,0.2); border-top: 1px solid rgba(255,255,255,0.07); }
+  .s7 .foot .fl { color: rgba(255,255,255,0.35); }
+  .s7 .foot .fr { color: rgba(255,255,255,0.2); }
+
+  /* ─── S8 마무리 ─── */
+  .s8 { background: linear-gradient(160deg, #0F1E35 0%, #1B3A6B 100%); }
+  .s8 .inner { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0 36px; text-align: center; }
+  .s8 .emoji { font-size: 56px; margin-bottom: 16px; line-height: 1; }
+  .s8 .big { font-size: 22px; font-weight: 900; color: white; line-height: 1.55; margin-bottom: 14px; word-break: keep-all; }
+  .s8 .big em { color: #FFD166; font-style: normal; }
+  .s8 .div2 { width: 36px; height: 2px; background: rgba(255,255,255,0.15); border-radius: 2px; margin: 0 auto 14px; }
+  .s8 .sub { font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.9; margin-bottom: 26px; word-break: keep-all; }
+  .s8 .save-btn { background: #2F6FED; color: white; font-size: 13px; font-weight: 900; padding: 12px 26px; border-radius: 40px; margin-bottom: 10px; }
+  .s8 .follow { font-size: 12px; color: rgba(255,255,255,0.3); }
+  .s8 .foot { background: rgba(0,0,0,0.15); border-top: 1px solid rgba(255,255,255,0.06); }
+  .s8 .foot .fl { color: rgba(255,255,255,0.3); }
+  .s8 .foot .fr { color: rgba(255,255,255,0.2); }
+
+  /* NAV */
+  .nav { display: flex; align-items: center; gap: 14px; margin-top: 18px; }
+  .nbtn { width: 38px; height: 38px; border-radius: 50%; background: white; border: none; cursor: pointer; font-size: 15px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.12); color: #1B2E4B; transition: all .18s; }
+  .nbtn:hover:not(:disabled) { background: #1B2E4B; color: white; }
+  .nbtn:disabled { opacity: .3; cursor: default; }
+  .dots { display: flex; gap: 5px; }
+  .d { width: 7px; height: 7px; border-radius: 50%; background: #C0C8D4; cursor: pointer; transition: all .18s; }
+  .d.on { background: #1B2E4B; width: 18px; border-radius: 4px; }
+  .ctr { font-size: 11px; color: #8A94A6; margin-top: 6px; text-align: center; }
+</style>
+</head>
+<body>
+
+<div class="top-label">사복노트 · 5번 게시글 · 실무팁</div>
+
+<div class="card">
+
+  <!-- S1 표지 -->
+  <div class="slide s1 on">
+    <div class="logo-bar">
+      <span class="logo">sano 사복노트</span>
+      <span class="num">1 / 8</span>
+    </div>
+    <div class="body">
+      <div class="pill">📋 실무팁 · 저장 필수</div>
+      <div class="title">기록에 쓰는<br><em>필수 문장</em><br>10개</div>
+      <div class="desc">문장이 안 떠오를 때<br>복붙해서 바로 쓰세요</div>
+      <div class="save-badge">
+        <div>
+          <div class="save-text">🔖 저장해두면 평생 씁니다</div>
+          <div class="save-sub">실제 현장에서 쓰는 표현들만 골랐어요</div>
+        </div>
+      </div>
+    </div>
+    <div class="foot">
+      <span class="fl">사복노트</span>
+      <span class="fr">1 / 8</span>
+    </div>
+  </div>
+
+  <!-- S2 들어가기 전 -->
+  <div class="slide s2">
+    <div class="head">
+      <div class="head-tag">왜 문장이 안 떠오를까요</div>
+      <div class="head-title">기록이 어려운<br>진짜 이유</div>
+    </div>
+    <div class="body">
+      <div class="story">
+        기록이 어려운 건 <strong>능력 문제가 아니에요.</strong><br>
+        가정방문 끝나고 지쳐있는 상태에서<br>
+        공식 문서 어투로 쓰는 게 어려운 거예요.<br><br>
+        그래서 <strong>자주 쓰는 문장 틀을 미리 갖고</strong> 있으면<br>
+        내용만 채우면 되니까 훨씬 빨라집니다.
+      </div>
+      <div class="tip-box">
+        <div class="tip-title">💡 이렇게 활용하세요</div>
+        <div class="tip-list">
+          <div class="tip-item">메모앱에 저장해두고 복붙하기</div>
+          <div class="tip-item">[ ] 안 내용만 바꿔서 바로 사용</div>
+          <div class="tip-item">기관 특성에 맞게 살짝 수정해서 쓰기</div>
+        </div>
+      </div>
+    </div>
+    <div class="foot">
+      <span class="fl">사복노트</span>
+      <span class="fr">2 / 8</span>
+    </div>
+  </div>
+
+  <!-- S3 문장 1~3 -->
+  <div class="slide rec-slide">
+    <div class="head">
+      <div class="head-tag">방문 기록 · 1~3번</div>
+      <div class="head-title">방문 시작 · 상태 관찰<br>욕구 파악</div>
+    </div>
+    <div class="body">
+      <div class="rec-item">
+        <div class="rec-num">NO.01 · 방문 시작</div>
+        <div class="rec-text">"본 회기는 클라이언트 자택 방문을 통해 이루어졌으며, <em>[날짜]</em> <em>[시간]</em>에 진행됨"</div>
+      </div>
+      <div class="rec-item alt">
+        <div class="rec-num">NO.02 · 상태 관찰</div>
+        <div class="rec-text">"방문 당시 클라이언트는 <em>[상태]</em>한 모습으로 응대하였으며, 전반적인 건강 상태는 <em>[양호/불량]</em>한 것으로 관찰됨"</div>
+      </div>
+      <div class="rec-item">
+        <div class="rec-num">NO.03 · 욕구 파악</div>
+        <div class="rec-text">"클라이언트는 <em>[욕구 내용]</em>에 대한 어려움을 호소하였으며, 이에 대한 지원 요청 의사를 밝힘"</div>
+      </div>
+    </div>
+    <div class="foot">
+      <span class="fl">사복노트</span>
+      <span class="fr">3 / 8</span>
+    </div>
+  </div>
+
+  <!-- S4 문장 4~6 -->
+  <div class="slide rec-slide rec-even">
+    <div class="head">
+      <div class="head-tag">개입 기록 · 4~6번</div>
+      <div class="head-title">개입 내용 · 반응<br>위기 상황</div>
+    </div>
+    <div class="body">
+      <div class="rec-item">
+        <div class="rec-num">NO.04 · 개입 내용</div>
+        <div class="rec-text">"이에 담당자는 <em>[개입 내용]</em>에 대해 안내 및 연계를 실시하였으며, 클라이언트의 동의를 구함"</div>
+      </div>
+      <div class="rec-item alt">
+        <div class="rec-num">NO.05 · 클라이언트 반응</div>
+        <div class="rec-text">"클라이언트는 <em>[반응]</em>하며 향후 서비스 이용 및 개입에 동의하였음"</div>
+      </div>
+      <div class="rec-item">
+        <div class="rec-num">NO.06 · 위기 상황</div>
+        <div class="rec-text">"위기 징후가 감지되어 즉각적인 개입 및 <em>[조치 내용]</em>을 실시하였으며, 향후 모니터링을 강화할 예정임"</div>
+      </div>
+    </div>
+    <div class="foot">
+      <span class="fl">사복노트</span>
+      <span class="fr">4 / 8</span>
+    </div>
+  </div>
+
+  <!-- S5 문장 7~10 -->
+  <div class="slide rec-slide">
+    <div class="head">
+      <div class="head-tag">계획 · 연계 · 종결 · 5~8번</div>
+      <div class="head-title">목표 · 자원연계<br>종결 · 다음 계획</div>
+    </div>
+    <div class="body">
+      <div class="rec-item">
+        <div class="rec-num">NO.07 · 목표 설정</div>
+        <div class="rec-text">"클라이언트와 협의하에 단기목표를 <em>[목표 내용]</em>으로 설정하였으며, 이를 중심으로 개입을 진행할 예정임"</div>
+      </div>
+      <div class="rec-item alt">
+        <div class="rec-num">NO.08 · 자원 연계</div>
+        <div class="rec-text">"<em>[기관명]</em>에 서비스 연계를 의뢰하였으며, 담당자 <em>[이름]</em>과 협조하여 진행하기로 함"</div>
+      </div>
+      <div class="rec-item">
+        <div class="rec-num">NO.09 · 종결 사유</div>
+        <div class="rec-text">"클라이언트의 상황이 안정화됨에 따라 본 사례를 종결하고자 하며, 향후 필요 시 재개입 가능함"</div>
+      </div>
+      <div class="rec-item alt">
+        <div class="rec-num">NO.10 · 다음 계획</div>
+        <div class="rec-text">"차기 방문은 <em>[날짜]</em>로 예정하며, <em>[목적]</em>을 중심으로 개입할 예정임"</div>
+      </div>
+    </div>
+    <div class="foot">
+      <span class="fl">사복노트</span>
+      <span class="fr">5 / 8</span>
+    </div>
+  </div>
+
+  <!-- S6 보너스 팁 -->
+  <div class="slide s2" style="background:#F8FAFF;">
+    <div class="head" style="background:#1B2E4B;">
+      <div class="head-tag" style="color:rgba(255,255,255,0.5);">보너스 · 기록 속도 올리는 팁</div>
+      <div class="head-title" style="color:white;">기록 시간 반으로<br>줄이는 방법</div>
+    </div>
+    <div class="body">
+      <div class="story">
+        위 문장들을 메모앱에 저장해두는 것도 좋지만,<br>
+        <strong>AI에게 초안을 맡기면</strong> 더 빨라져요.
+      </div>
+      <div class="tip-box" style="background:#EBF2FF;">
+        <div class="tip-title" style="color:#1B2E4B;">🤖 AI 활용 기록 방법</div>
+        <div class="tip-list">
+          <div class="tip-item" style="font-size:13px;color:#3D4A5C;">"방문 중 간단히 메모만 해둔다"</div>
+          <div class="tip-item" style="font-size:13px;color:#3D4A5C;">"ChatGPT에 메모 붙여넣고 기록 요청"</div>
+          <div class="tip-item" style="font-size:13px;color:#3D4A5C;">"초안 나오면 사실 확인만 하고 완성"</div>
+        </div>
+      </div>
+      <div class="notice" style="background:#FFF3E0;border-left-color:#FF9800;margin-top:14px;">
+        <span style="font-size:13px;color:#5A6678;line-height:1.7;">AI 활용법 자세한 내용은<br><em style="color:#FF9800;font-style:normal;font-weight:700;">다음 게시글</em>에서 프롬프트까지 공개해요 🤖</span>
+      </div>
+    </div>
+    <div class="foot" style="background:#EBF2FF;">
+      <span class="fl" style="color:#2F6FED;">사복노트</span>
+      <span class="fr" style="color:#8A94A6;">6 / 8</span>
+    </div>
+  </div>
+
+  <!-- S7 총정리 -->
+  <div class="slide s7">
+    <div class="top">
+      <div class="s7-tag">총정리</div>
+      <div class="s7-title">10개 문장 한눈에 보기</div>
+    </div>
+    <div class="body">
+      <div class="summary-grid">
+        <div class="s-item"><div class="s-num">NO.01</div><div class="s-text">방문 시작</div></div>
+        <div class="s-item"><div class="s-num">NO.02</div><div class="s-text">상태 관찰</div></div>
+        <div class="s-item"><div class="s-num">NO.03</div><div class="s-text">욕구 파악</div></div>
+        <div class="s-item"><div class="s-num">NO.04</div><div class="s-text">개입 내용</div></div>
+        <div class="s-item"><div class="s-num">NO.05</div><div class="s-text">클라이언트 반응</div></div>
+        <div class="s-item"><div class="s-num">NO.06</div><div class="s-text">위기 상황</div></div>
+        <div class="s-item"><div class="s-num">NO.07</div><div class="s-text">목표 설정</div></div>
+        <div class="s-item"><div class="s-num">NO.08</div><div class="s-text">자원 연계</div></div>
+        <div class="s-item"><div class="s-num">NO.09</div><div class="s-text">종결 사유</div></div>
+        <div class="s-item"><div class="s-num">NO.10</div><div class="s-text">다음 계획</div></div>
+      </div>
+      <div class="usage">
+        <div class="usage-text"><em>[ ]</em> 안의 내용만 바꿔서 바로 사용하세요.<br>저장해두면 기록 시간이 눈에 띄게 줄어요 🔖</div>
+      </div>
+    </div>
+    <div class="foot">
+      <span class="fl">사복노트</span>
+      <span class="fr">7 / 8</span>
+    </div>
+  </div>
+
+  <!-- S8 마무리 -->
+  <div class="slide s8">
+    <div class="inner">
+      <div class="emoji">📋</div>
+      <div class="big">저장해두면<br><em>평생 씁니다</em></div>
+      <div class="div2"></div>
+      <div class="sub">
+        기록이 빨라지면 퇴근도 빨라져요.<br>
+        오늘 메모앱에 옮겨두세요 🔖<br><br>
+        다음 편에서는 AI로 기록 초안<br>30초 만에 완성하는 법을 알려드려요 🤖
+      </div>
+      <div class="save-btn">🔖 저장하고 바로 써먹기</div>
+      <div class="follow">사복노트 팔로우 · 매주 실무 꿀팁</div>
+    </div>
+    <div class="foot">
+      <span class="fl">사복노트</span>
+      <span class="fr">8 / 8</span>
+    </div>
+  </div>
+
+</div>
+
+<div class="nav">
+  <button class="nbtn" id="p" onclick="go(-1)" disabled>←</button>
+  <div class="dots" id="dots"></div>
+  <button class="nbtn" id="n" onclick="go(1)">→</button>
+</div>
+<div class="ctr" id="ctr">1 / 8</div>
+
+<script>
+  let cur = 0;
+  const N = 8;
+  const slides = document.querySelectorAll('.slide');
+  const wrap = document.getElementById('dots');
+  for(let i=0;i<N;i++){
+    const d = document.createElement('div');
+    d.className='d'+(i===0?' on':'');
+    d.onclick=()=>to(i);
+    wrap.appendChild(d);
+  }
+  function to(n){
+    slides[cur].classList.remove('on');
+    wrap.children[cur].classList.remove('on');
+    cur=n;
+    slides[cur].classList.add('on');
+    wrap.children[cur].classList.add('on');
+    document.getElementById('ctr').textContent=`${cur+1} / ${N}`;
+    document.getElementById('p').disabled=cur===0;
+    document.getElementById('n').disabled=cur===N-1;
+  }
+  function go(d){ const nx=cur+d; if(nx>=0&&nx<N) to(nx); }
+  document.addEventListener('keydown',e=>{
+    if(e.key==='ArrowRight') go(1);
+    if(e.key==='ArrowLeft') go(-1);
+  });
+</script>
+</body>
+</html>

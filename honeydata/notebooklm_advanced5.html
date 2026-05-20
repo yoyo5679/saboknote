@@ -1,0 +1,1174 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NotebookLM 심화 5편 — 음성 녹음 & 유튜브 영상 분석 완전 정복</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap');
+
+:root {
+  --blue: #1a73e8;
+  --blue-dark: #1557b0;
+  --blue-light: #e8f0fe;
+  --blue-mid: #a8c7fa;
+  --green: #2d6a4f;
+  --green-light: #e6f4ea;
+  --red: #d93025;
+  --red-light: #fce8e6;
+  --yellow: #f9a825;
+  --yellow-light: #fff8e1;
+  --purple: #7c3aed;
+  --purple-light: #f3f0ff;
+  --text: #1a1a2e;
+  --text-sub: #5f6368;
+  --border: #e0e0e0;
+  --bg: #f5f7ff;
+  --radius: 14px;
+  --shadow: 0 2px 12px rgba(26,115,232,0.10);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 15px;
+  line-height: 1.75;
+  -webkit-text-size-adjust: 100%;
+}
+a { color: var(--blue); text-decoration: none; }
+
+/* ── Hero ── */
+.hero {
+  background: linear-gradient(145deg, #1557b0 0%, #1a73e8 60%, #0d47a1 100%);
+  padding: 44px 20px 36px;
+  text-align: center;
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  width: 260px; height: 260px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+  top: -70px; right: -70px;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  width: 140px; height: 140px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.04);
+  bottom: -30px; left: 30px;
+}
+.hero-series { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+.hero-tag {
+  background: rgba(255,255,255,0.18);
+  border: 1px solid rgba(255,255,255,0.35);
+  padding: 4px 12px; border-radius: 30px;
+  font-size: 12px; font-weight: 700; letter-spacing: 1px;
+}
+.hero-tag.new { background: #fbbf24; color: #1557b0; border: none; font-weight: 900; }
+.hero h1 { font-size: 1.55em; font-weight: 900; line-height: 1.35; margin-bottom: 10px; }
+.hero p {
+  font-size: 14px; opacity: 0.9; line-height: 1.7; margin-bottom: 22px;
+  max-width: 340px; margin-left: auto; margin-right: auto;
+}
+.hero-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: white; color: var(--blue-dark);
+  font-weight: 700; font-size: 15px; padding: 12px 26px;
+  border-radius: 50px; box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+}
+
+/* ── 이전편 배너 ── */
+.prev-banner {
+  background: var(--blue-light);
+  border-bottom: 1px solid rgba(26,115,232,0.2);
+  padding: 10px 16px; font-size: 13px;
+  display: flex; align-items: center; gap: 8px; color: var(--blue-dark);
+}
+.prev-banner a { font-weight: 700; color: var(--blue); }
+
+/* ── Series nav ── */
+.series-nav { background: #1557b0; padding: 16px; }
+.series-label { font-size: 11px; color: rgba(255,255,255,0.6); font-weight: 700; letter-spacing: 1px; margin-bottom: 10px; }
+.series-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.series-item {
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 8px; padding: 8px 10px;
+  font-size: 11px; color: rgba(255,255,255,0.65); text-align: center; line-height: 1.4;
+}
+.series-item.done { color: rgba(255,255,255,0.4); text-decoration: line-through; }
+.series-item.active { background: white; color: var(--blue-dark); font-weight: 700; }
+
+/* ── Sticky TOC ── */
+.toc-sticky {
+  background: white; border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; z-index: 100; padding: 10px 14px;
+}
+.toc-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; }
+.toc-pill {
+  display: flex; align-items: center; gap: 5px;
+  background: var(--blue-light); color: var(--blue-dark);
+  padding: 6px 8px; border-radius: 8px;
+  font-size: 11px; font-weight: 700; line-height: 1.3; text-align: left;
+}
+.toc-pill:hover { background: var(--blue); color: white; }
+
+/* ── Main ── */
+.main { padding: 20px 16px 60px; max-width: 680px; margin: 0 auto; }
+
+/* ── Chapter ── */
+.chapter { margin-top: 40px; scroll-margin-top: 56px; }
+.chapter-label { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.chapter-icon {
+  width: 40px; height: 40px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0; background: var(--blue);
+}
+.chapter-title { font-size: 1.2em; font-weight: 900; color: var(--blue-dark); line-height: 1.3; }
+.chapter-divider {
+  height: 3px;
+  background: linear-gradient(90deg, var(--blue) 0%, transparent 100%);
+  border-radius: 3px; margin-bottom: 18px;
+}
+.section-title {
+  font-size: 1.05em; font-weight: 700; color: var(--blue-dark);
+  padding: 4px 0 4px 12px; border-left: 4px solid var(--blue);
+  margin: 24px 0 12px;
+}
+
+/* ── Cards ── */
+.card { border-radius: var(--radius); padding: 18px; margin: 14px 0; box-shadow: var(--shadow); }
+.card-blue   { background: var(--blue-light);  border: 1px solid rgba(26,115,232,0.2); }
+.card-green  { background: var(--green-light); border: 1px solid rgba(45,106,79,0.15); }
+.card-yellow { background: var(--yellow-light);border: 1px solid rgba(249,168,37,0.3); }
+.card-red    { background: var(--red-light);   border: 1px solid rgba(217,48,37,0.2); }
+.card-purple { background: var(--purple-light);border: 1px solid rgba(124,58,237,0.2); }
+
+.card-title { font-size: 14px; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+.card-title.blue   { color: var(--blue-dark); }
+.card-title.green  { color: var(--green); }
+.card-title.yellow { color: #e65100; }
+.card-title.red    { color: var(--red); }
+.card-title.purple { color: #4c1d95; }
+
+/* ── Feature list ── */
+.feature-list { display: flex; flex-direction: column; gap: 10px; margin: 12px 0; }
+.feature-item {
+  background: white; border-radius: 12px; padding: 14px 16px;
+  display: flex; align-items: flex-start; gap: 12px;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.07); border: 1px solid var(--border);
+}
+.feature-emo { font-size: 22px; flex-shrink: 0; margin-top: 2px; }
+.feature-text strong { display: block; font-size: 14px; font-weight: 700; margin-bottom: 2px; }
+.feature-text span { font-size: 13px; color: var(--text-sub); line-height: 1.55; }
+
+/* ── Step list ── */
+.step-list { list-style: none; margin: 12px 0; display: flex; flex-direction: column; gap: 10px; }
+.step-list li {
+  display: grid; grid-template-columns: 32px 1fr; gap: 0 12px;
+  align-items: start; background: white; border-radius: 12px;
+  padding: 14px; border: 1px solid var(--border);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+.step-num {
+  width: 32px; height: 32px; background: var(--blue); color: white;
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-weight: 900; font-size: 14px; flex-shrink: 0;
+}
+.step-content strong { display: block; font-size: 14px; font-weight: 700; margin-bottom: 3px; }
+.step-content span { font-size: 13px; color: var(--text-sub); line-height: 1.6; }
+
+/* ── Prompt box ── */
+.prompt-box {
+  background: #fffde7; border: 1.5px solid #ffe082;
+  border-radius: 12px; padding: 16px; margin: 12px 0; position: relative;
+}
+.prompt-label {
+  font-size: 11px; font-weight: 700; color: #f57f17;
+  letter-spacing: 1px; margin-bottom: 8px; display: block;
+  padding-right: 68px; text-transform: uppercase;
+}
+.prompt-box div, .prompt-box p {
+  font-size: 14px; line-height: 1.8; color: #333; white-space: pre-line;
+}
+.copy-btn {
+  position: absolute; top: 10px; right: 10px;
+  background: var(--blue); color: white; border: none;
+  border-radius: 8px; padding: 5px 11px; font-size: 11px; font-weight: 700;
+  cursor: pointer; display: flex; align-items: center; gap: 4px;
+  transition: background 0.15s; font-family: 'Noto Sans KR', sans-serif; white-space: nowrap;
+}
+.copy-btn:hover { background: var(--blue-dark); }
+.copy-btn.copied { background: var(--green); }
+
+/* ── 오디오 플레이어 모의화면 ── */
+.audio-player {
+  background: white; border-radius: 14px; overflow: hidden;
+  border: 1px solid var(--border); box-shadow: var(--shadow); margin: 14px 0;
+}
+.ap-header {
+  background: var(--blue-dark); color: white;
+  padding: 10px 14px; font-size: 12px; font-weight: 700;
+  display: flex; align-items: center; gap: 8px;
+}
+.ap-body { padding: 16px; }
+.ap-file {
+  background: var(--blue-light); border-radius: 10px; padding: 12px 14px;
+  display: flex; align-items: center; gap: 12px; margin-bottom: 12px;
+}
+.ap-file-icon {
+  width: 40px; height: 40px; background: var(--blue); color: white;
+  border-radius: 10px; display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+}
+.ap-file-name { font-size: 13px; font-weight: 700; color: var(--text); }
+.ap-file-meta { font-size: 11px; color: var(--text-sub); margin-top: 2px; }
+.ap-waveform {
+  height: 40px; background: var(--blue-light); border-radius: 8px;
+  margin: 10px 0; position: relative; overflow: hidden;
+  display: flex; align-items: center; padding: 0 12px; gap: 2px;
+}
+.ap-bar {
+  width: 3px; border-radius: 2px; background: var(--blue);
+  opacity: 0.5; flex-shrink: 0;
+}
+.ap-bar.active { opacity: 1; }
+.ap-controls {
+  display: flex; align-items: center; gap: 10px; margin-top: 10px;
+}
+.ap-play {
+  width: 38px; height: 38px; background: var(--blue); color: white;
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-size: 14px; cursor: pointer; flex-shrink: 0;
+}
+.ap-time { font-size: 12px; color: var(--text-sub); }
+.ap-progress {
+  flex: 1; height: 4px; background: var(--border); border-radius: 2px; position: relative;
+}
+.ap-progress-fill {
+  width: 35%; height: 100%; background: var(--blue); border-radius: 2px;
+}
+
+/* ── 유튜브 모의화면 ── */
+.yt-card {
+  background: white; border-radius: 14px; overflow: hidden;
+  border: 1px solid var(--border); box-shadow: var(--shadow); margin: 14px 0;
+}
+.yt-thumb {
+  background: linear-gradient(135deg, #1557b0, #1a73e8);
+  height: 120px; display: flex; align-items: center; justify-content: center;
+  position: relative;
+}
+.yt-play-btn {
+  width: 52px; height: 52px; background: rgba(255,255,255,0.9);
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+}
+.yt-duration {
+  position: absolute; bottom: 8px; right: 10px;
+  background: rgba(0,0,0,0.75); color: white;
+  font-size: 11px; font-weight: 700; padding: 2px 6px; border-radius: 4px;
+}
+.yt-info { padding: 12px 14px; }
+.yt-title { font-size: 13.5px; font-weight: 700; margin-bottom: 4px; color: var(--text); }
+.yt-meta { font-size: 11px; color: var(--text-sub); }
+.yt-tag {
+  display: inline-block; background: var(--blue-light); color: var(--blue-dark);
+  border-radius: 4px; padding: 1px 7px; font-size: 11px; font-weight: 700;
+  margin: 2px;
+}
+
+/* ── 결과 미리보기 (회의록) ── */
+.result-preview {
+  background: white; border-radius: 12px; border: 1px solid var(--border);
+  padding: 18px; margin: 14px 0; box-shadow: var(--shadow); font-size: 13px; line-height: 1.8;
+}
+.rp-h1 {
+  font-size: 14px; font-weight: 900; color: var(--text);
+  border-bottom: 2px solid var(--blue); padding-bottom: 6px; margin-bottom: 10px;
+}
+.rp-h2 { font-size: 13px; font-weight: 700; color: var(--blue); margin: 10px 0 4px; }
+.rp-body { font-size: 12.5px; color: #444; line-height: 1.75; }
+.rp-tag {
+  display: inline-block; background: var(--blue-light); color: var(--blue-dark);
+  border-radius: 4px; padding: 1px 7px; font-size: 11px; font-weight: 700; margin: 2px;
+}
+
+/* ── Before/After ── */
+.before-after { display: flex; flex-direction: column; gap: 10px; margin: 12px 0; }
+.ba-box { border-radius: 12px; padding: 14px 16px; font-size: 13px; line-height: 1.75; }
+.ba-before { background: #f8f9fa; border: 1px solid var(--border); }
+.ba-after  { background: var(--blue-light); border: 1px solid rgba(26,115,232,0.2); }
+.ba-label  { font-size: 11px; font-weight: 700; letter-spacing: 0.5px; margin-bottom: 8px; display: block; }
+.ba-before .ba-label { color: var(--text-sub); }
+.ba-after  .ba-label { color: var(--blue-dark); }
+.ba-arrow  { text-align: center; font-size: 22px; color: var(--blue); }
+
+/* ── 지원 형식 표 ── */
+.format-table { margin: 14px 0; border-radius: 12px; overflow: hidden; box-shadow: var(--shadow); }
+.ft-header {
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  background: var(--blue-dark); color: white;
+  font-size: 12px; font-weight: 700;
+}
+.ft-header div, .ft-row div { padding: 10px 12px; }
+.ft-row {
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  background: white; border-bottom: 1px solid var(--border);
+  font-size: 12.5px; align-items: center;
+}
+.ft-row:last-child { border-bottom: none; }
+.ft-row:nth-child(even) { background: var(--bg); }
+.ft-ok  { color: var(--green); font-weight: 700; }
+.ft-no  { color: #bbb; }
+.ft-tip { font-size: 11px; color: var(--text-sub); margin-top: 2px; }
+
+/* ── 시나리오 카드 ── */
+.scenario-list { display: flex; flex-direction: column; gap: 10px; margin: 12px 0; }
+.scenario-item {
+  background: white; border-radius: 12px; padding: 14px 16px;
+  border-left: 4px solid var(--blue); box-shadow: 0 1px 5px rgba(0,0,0,0.06);
+}
+.scenario-situation { font-size: 12px; color: var(--blue); font-weight: 700; margin-bottom: 4px; }
+.scenario-action { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.scenario-result { font-size: 12.5px; color: var(--text-sub); }
+
+/* ── 워크플로우 ── */
+.wf-item {
+  display: flex; gap: 14px; align-items: flex-start;
+  padding: 14px; background: white; border: 1px solid var(--border);
+  border-radius: 12px; margin-bottom: 6px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+.wf-num {
+  width: 30px; height: 30px; background: var(--blue); color: white;
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-weight: 900; font-size: 13px; flex-shrink: 0;
+}
+.wf-content strong { display: block; font-size: 14px; font-weight: 700; margin-bottom: 2px; }
+.wf-content span { font-size: 13px; color: var(--text-sub); line-height: 1.6; }
+.wf-arrow { text-align: center; color: var(--blue); font-size: 18px; margin: -2px 0; }
+
+/* ── Misc ── */
+.text-sm { font-size: 13px; color: var(--text-sub); line-height: 1.7; }
+.link-row {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--blue-light); border-radius: 10px;
+  padding: 12px 14px; margin: 10px 0; font-size: 13.5px;
+}
+.link-row a { font-weight: 700; color: var(--blue); word-break: break-all; }
+
+/* ── Floating buttons ── */
+.float-btns {
+  position: fixed; bottom: 24px; right: 16px;
+  display: flex; flex-direction: column; gap: 10px; z-index: 200;
+}
+.float-btn {
+  width: 46px; height: 46px; background: var(--blue); color: white;
+  border: none; border-radius: 50%; font-size: 18px; cursor: pointer;
+  box-shadow: 0 4px 14px rgba(26,115,232,0.35);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.25s, background 0.15s;
+  font-family: 'Noto Sans KR', sans-serif;
+}
+.float-btn:hover { background: var(--blue-dark); }
+.float-btn.visible { opacity: 1; pointer-events: auto; }
+.float-btn.back-btn {
+  background: white; color: var(--blue);
+  border: 2px solid var(--blue); font-size: 16px; font-weight: 700;
+}
+.float-btn.back-btn:hover { background: var(--blue-light); }
+
+/* ── Footer ── */
+.footer {
+  background: white; border-top: 1px solid var(--border);
+  padding: 28px 20px; text-align: center;
+  font-size: 13px; color: var(--text-sub);
+}
+.footer strong { color: var(--blue); }
+
+@media(min-width: 600px) {
+  .hero { padding: 56px 40px 46px; }
+  .hero h1 { font-size: 2em; }
+  .main { padding: 28px 24px 80px; }
+  .before-after { flex-direction: row; }
+  .before-after .ba-box { flex: 1; }
+  .before-after .ba-arrow { display: flex; align-items: center; font-size: 28px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── HERO ── -->
+<div class="hero">
+  <div class="hero-series">
+    <span class="hero-tag">📒 사복쌤 AI 가이드 심화편</span>
+    <span class="hero-tag new">5편</span>
+  </div>
+  <h1>회의 녹음을 틀면<br>회의록이 나온다! 🎙️</h1>
+  <p>음성 파일·유튜브 영상도 NotebookLM이 읽습니다.<br>사례회의 녹음부터 복지 교육 영상 요약까지!</p>
+  <a href="https://notebooklm.google.com/" target="_blank" class="hero-btn">🚀 NotebookLM 열기</a>
+</div>
+
+<!-- ── 이전편 배너 ── -->
+<div class="prev-banner">
+  ← <a href="#">4편: 팀 협업 & 노트북 공유 완전 정복</a>도 함께 보세요!
+</div>
+
+<!-- ── 시리즈 로드맵 ── -->
+<div class="series-nav">
+  <div class="series-label">📚 심화 시리즈 진행 현황</div>
+  <div class="series-grid">
+    <div class="series-item done">1편<br>보고서·슬라이드</div>
+    <div class="series-item done">2편<br>마인드맵·브리핑</div>
+    <div class="series-item done">3편<br>지침서 비교</div>
+    <div class="series-item done">4편<br>팀 협업 공유</div>
+    <div class="series-item active">5편<br>음성·영상 분석</div>
+    <div class="series-item" style="opacity:0.4;">6편<br>준비 중</div>
+  </div>
+</div>
+
+<!-- ── STICKY TOC ── -->
+<div class="toc-sticky">
+  <div class="toc-grid">
+    <a href="#ch1" class="toc-pill">1장 음성 분석이란?</a>
+    <a href="#ch2" class="toc-pill">2장 녹음 파일 올리기</a>
+    <a href="#ch3" class="toc-pill">3장 회의록 자동 생성</a>
+    <a href="#ch4" class="toc-pill">4장 유튜브 영상 분석</a>
+    <a href="#ch5" class="toc-pill">5장 실전 활용 시나리오</a>
+    <a href="#ch6" class="toc-pill">6장 주의사항</a>
+    <a href="#appendix" class="toc-pill">🎁 프롬프트 사전</a>
+    <a href="#tip" class="toc-pill">💡 꿀팁 모음</a>
+    <a href="#next" class="toc-pill">🎉 시리즈 완결</a>
+  </div>
+</div>
+
+<!-- ── MAIN ── -->
+<div class="main">
+
+<!-- ─────────────── 1장 ─────────────── -->
+<div class="chapter" id="ch1">
+  <div class="chapter-label">
+    <div class="chapter-icon">🎙️</div>
+    <div class="chapter-title">제1장. 음성·영상 분석이 뭔가요?<br>글이 아니어도 AI가 읽습니다</div>
+  </div>
+  <div class="chapter-divider"></div>
+
+  <p class="text-sm">지금까지는 PDF·문서 파일만 올렸다면, 이번 편에서는 <strong>음성 녹음 파일과 유튜브 영상</strong>도 소스로 활용하는 법을 배웁니다. AI가 소리를 듣고 텍스트로 이해해 분석해 줍니다.</p>
+
+  <div class="before-after">
+    <div class="ba-before ba-box">
+      <span class="ba-label">😩 기존 방식</span>
+      사례회의 1시간 녹음 → 직접 들으며 타이핑 → 2시간 후 회의록 초안 완성<br><br>
+      복지 교육 유튜브 1시간짜리 → 처음부터 끝까지 시청 → 메모 정리 30분
+    </div>
+    <div class="ba-arrow">↓</div>
+    <div class="ba-after ba-box">
+      <span class="ba-label">✨ NotebookLM 방식</span>
+      녹음 파일 업로드 → 프롬프트 입력 → 5분 후 회의록 초안 완성<br><br>
+      유튜브 링크 붙여넣기 → "핵심 3가지 요약해줘" → 1분 후 완료!
+    </div>
+  </div>
+
+  <div class="section-title">음성·영상 분석으로 할 수 있는 것</div>
+  <div class="feature-list">
+    <div class="feature-item">
+      <span class="feature-emo">📋</span>
+      <div class="feature-text">
+        <strong>사례회의·사례회의 녹음 → 회의록 자동 초안</strong>
+        <span>1시간 회의를 5분 만에 결정사항·후속과제 중심으로 정리</span>
+      </div>
+    </div>
+    <div class="feature-item">
+      <span class="feature-emo">📚</span>
+      <div class="feature-text">
+        <strong>복지 교육 세미나 녹음 → 핵심 내용 요약</strong>
+        <span>교육 영상을 직접 안 봐도 핵심 개념과 실무 적용 방안 추출</span>
+      </div>
+    </div>
+    <div class="feature-item">
+      <span class="feature-emo">▶️</span>
+      <div class="feature-text">
+        <strong>정책 설명 유튜브 → 우리 기관 적용 분석</strong>
+        <span>보건복지부 유튜브 정책 브리핑을 우리 상황에 맞게 해석</span>
+      </div>
+    </div>
+    <div class="feature-item">
+      <span class="feature-emo">🎓</span>
+      <div class="feature-text">
+        <strong>교육 강의 영상 → 직원 교육 자료로 변환</strong>
+        <span>유튜브 강의를 요약해 팀원 배포용 학습 자료로 재가공</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────── 2장 ─────────────── -->
+<div class="chapter" id="ch2">
+  <div class="chapter-label">
+    <div class="chapter-icon">📁</div>
+    <div class="chapter-title">제2장. 녹음 파일 올리는 방법<br>스마트폰 녹음도 바로 올릴 수 있어요</div>
+  </div>
+  <div class="chapter-divider"></div>
+
+  <div class="section-title">지원하는 오디오 파일 형식</div>
+
+  <div class="format-table">
+    <div class="ft-header">
+      <div>파일 형식</div>
+      <div>지원 여부</div>
+      <div>비고</div>
+    </div>
+    <div class="ft-row">
+      <div><strong>mp3</strong></div>
+      <div class="ft-ok">✅ 지원</div>
+      <div>가장 일반적, 용량 작음</div>
+    </div>
+    <div class="ft-row">
+      <div><strong>m4a</strong></div>
+      <div class="ft-ok">✅ 지원</div>
+      <div>아이폰 기본 녹음 형식</div>
+    </div>
+    <div class="ft-row">
+      <div><strong>wav</strong></div>
+      <div class="ft-ok">✅ 지원</div>
+      <div>고품질, 용량 큼</div>
+    </div>
+    <div class="ft-row">
+      <div><strong>aac</strong></div>
+      <div class="ft-ok">✅ 지원</div>
+      <div>안드로이드 기본 녹음 형식</div>
+    </div>
+    <div class="ft-row">
+      <div><strong>ogg</strong></div>
+      <div class="ft-ok">✅ 지원</div>
+      <div>카카오톡 음성메시지 형식</div>
+    </div>
+    <div class="ft-row">
+      <div><strong>용량 한도</strong></div>
+      <div class="ft-ok">200MB</div>
+      <div>약 3~4시간 분량까지 가능</div>
+    </div>
+  </div>
+
+  <div class="section-title">스마트폰 녹음 파일 → PC로 옮기기</div>
+
+  <div class="card card-blue">
+    <div class="card-title blue">📱 아이폰 사용자</div>
+    <ol class="step-list" style="margin-top:8px;">
+      <li>
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <strong>기본 앱 '음성 메모'에서 녹음</strong>
+          <span>사례회의 전 음성 메모 앱 열고 빨간 버튼 누르기</span>
+        </div>
+      </li>
+      <li>
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <strong>녹음 파일 → 공유 → '파일에 저장' 또는 AirDrop으로 PC 전송</strong>
+          <span>저장 형식은 m4a로 저장됩니다</span>
+        </div>
+      </li>
+      <li>
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <strong>NotebookLM 소스 추가 → [오디오 파일 업로드] 선택</strong>
+          <span>파일당 200MB 이하면 통째로 업로드 가능합니다</span>
+        </div>
+      </li>
+    </ol>
+  </div>
+
+  <div class="card card-blue" style="margin-top:10px;">
+    <div class="card-title blue">🤖 안드로이드 사용자</div>
+    <ol class="step-list" style="margin-top:8px;">
+      <li>
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <strong>기본 앱 '녹음기'에서 녹음</strong>
+          <span>삼성 기본 녹음 앱 또는 구글 녹음기 앱 사용</span>
+        </div>
+      </li>
+      <li>
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <strong>녹음 파일 → 구글 드라이브에 업로드</strong>
+          <span>안드로이드에서 구글 드라이브 업로드 후 PC에서 다운로드</span>
+        </div>
+      </li>
+      <li>
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <strong>NotebookLM에서 구글 드라이브 연동으로 바로 추가</strong>
+          <span>소스 추가 → [구글 드라이브] 선택으로 바로 연결 가능!</span>
+        </div>
+      </li>
+    </ol>
+  </div>
+
+  <div class="section-title">녹음 파일 업로드 화면 예시</div>
+
+  <div class="audio-player">
+    <div class="ap-header">🎙️ 소스로 추가된 오디오 파일</div>
+    <div class="ap-body">
+      <div class="ap-file">
+        <div class="ap-file-icon">🎙️</div>
+        <div>
+          <div class="ap-file-name">사례회의_2026_0415.m4a</div>
+          <div class="ap-file-meta">📁 18.4MB · 약 58분 · 한국어 인식 완료</div>
+        </div>
+      </div>
+      <div class="ap-waveform">
+        <div class="ap-bar active" style="height:28px;"></div>
+        <div class="ap-bar active" style="height:20px;"></div>
+        <div class="ap-bar active" style="height:34px;"></div>
+        <div class="ap-bar active" style="height:16px;"></div>
+        <div class="ap-bar active" style="height:30px;"></div>
+        <div class="ap-bar active" style="height:22px;"></div>
+        <div class="ap-bar active" style="height:36px;"></div>
+        <div class="ap-bar" style="height:18px;"></div>
+        <div class="ap-bar" style="height:28px;"></div>
+        <div class="ap-bar" style="height:14px;"></div>
+        <div class="ap-bar" style="height:32px;"></div>
+        <div class="ap-bar" style="height:24px;"></div>
+        <div class="ap-bar" style="height:20px;"></div>
+        <div class="ap-bar" style="height:30px;"></div>
+        <div class="ap-bar" style="height:16px;"></div>
+        <div class="ap-bar" style="height:26px;"></div>
+        <div class="ap-bar" style="height:12px;"></div>
+        <div class="ap-bar" style="height:28px;"></div>
+        <div class="ap-bar" style="height:22px;"></div>
+        <div class="ap-bar" style="height:34px;"></div>
+      </div>
+      <div class="ap-controls">
+        <div class="ap-play">▶</div>
+        <div class="ap-time">20:14</div>
+        <div class="ap-progress"><div class="ap-progress-fill"></div></div>
+        <div class="ap-time">58:32</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card card-yellow">
+    <div class="card-title yellow">⚠️ 업로드 전 꼭 확인!</div>
+    <p class="text-sm">사례회의 녹음에는 클라이언트 실명·개인정보가 포함될 수 있습니다. <strong>가능하면 녹음 전 참석자 동의를 받으세요.</strong> 비식별화된 정보는 업로드 후 AI가 처리하지만, 원칙적으로 개인정보가 포함된 녹음 원본은 외부 서버 업로드를 지양합니다.</p>
+  </div>
+</div>
+
+<!-- ─────────────── 3장 ─────────────── -->
+<div class="chapter" id="ch3">
+  <div class="chapter-label">
+    <div class="chapter-icon">📝</div>
+    <div class="chapter-title">제3장. 회의록 자동 초안 생성<br>1시간 회의가 5분 만에 정리</div>
+  </div>
+  <div class="chapter-divider"></div>
+
+  <p class="text-sm">녹음 파일을 올리면 AI가 음성을 텍스트로 변환하고 분석합니다. 채팅창에서 원하는 형식으로 회의록을 뽑아낼 수 있습니다.</p>
+
+  <div class="section-title">회의록 결과물 예시</div>
+
+  <div class="result-preview">
+    <div class="rp-h1">📋 사례회의 결과 보고 — 2026.04.15</div>
+    <div class="rp-h2">👥 참석자</div>
+    <div class="rp-body">팀장 박○○, 담당 사회복지사 김○○, 이○○ (총 3명)</div>
+    <div class="rp-h2">📌 주요 논의 사항</div>
+    <div class="rp-body">
+      1. 아동 A 방임 의심 사례 초기 개입 방향 논의<br>
+      2. 긴급복지 지원 연계 대상자 B 사정 결과 공유<br>
+      3. 5월 프로그램 일정 조정 건
+    </div>
+    <div class="rp-h2">✅ 결정 사항</div>
+    <div class="rp-body">
+      • 아동 A 건: 아동보호전문기관 신고 전 담임교사 면담 후 재논의<br>
+      • 대상자 B: 긴급복지 신청 진행, 김○○ 담당<br>
+      • 5월 프로그램: 셋째 주 → 넷째 주로 변경 확정
+    </div>
+    <div class="rp-h2">🔄 후속 과제</div>
+    <div class="rp-body">
+      <span class="rp-tag">김○○</span> 담임교사 연락 — 4/17(목)까지<br>
+      <span class="rp-tag">이○○</span> 긴급복지 서류 준비 — 4/18(금)까지
+    </div>
+    <p style="font-size:11px;color:#bbb;margin-top:12px;text-align:right;">* AI 자동 생성 초안 — 내용 교차 확인 필요</p>
+  </div>
+
+  <div class="section-title">회의록 생성 프롬프트</div>
+
+  <div class="prompt-box">
+    <span class="prompt-label">📋 기본 회의록 초안</span>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+    <div>업로드한 회의 녹음 파일을 분석해서 공식 회의록 초안을 작성해 줘.
+항목: 일시 / 참석자 / 주요 논의 사항 / 결정 사항 / 후속 과제 및 담당자
+문체는 합니다체, 기관장 결재용으로 깔끔하게 정리해 줘.</div>
+  </div>
+
+  <div class="prompt-box">
+    <span class="prompt-label">📋 결정사항·과제만 빠르게 추출</span>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+    <div>녹음 내용에서 '결정된 것'과 '누가 무엇을 언제까지 해야 하는지'만 뽑아줘.
+불필요한 잡담이나 맥락 설명은 빼고 핵심 액션 아이템만 담당자 이름과 기한을 포함해서 정리해 줘.</div>
+  </div>
+
+  <div class="prompt-box">
+    <span class="prompt-label">📋 사례회의 개입 방향 정리</span>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+    <div>이 사례회의 녹음에서 논의된 클라이언트별 개입 방향을 정리해 줘.
+각 클라이언트(이름 대신 A, B, C로 표기)마다: 현재 상황 요약 / 결정된 개입 방법 / 다음 모니터링 시점
+표 형식으로 만들어 줘.</div>
+  </div>
+
+  <div class="prompt-box">
+    <span class="prompt-label">📋 녹음에서 특정 내용 검색</span>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+    <div>이 녹음에서 '긴급복지 지원'과 관련된 내용만 찾아서 정리해 줘.
+언제 어떤 맥락에서 언급됐는지, 어떤 결론이 났는지 순서대로 알려줘.</div>
+  </div>
+</div>
+
+<!-- ─────────────── 4장 ─────────────── -->
+<div class="chapter" id="ch4">
+  <div class="chapter-label">
+    <div class="chapter-icon">▶️</div>
+    <div class="chapter-title">제4장. 유튜브 영상 분석<br>링크 하나로 강의 내용 완전 흡수</div>
+  </div>
+  <div class="chapter-divider"></div>
+
+  <p class="text-sm">유튜브 영상 URL을 소스로 추가하면 AI가 <strong>자막을 읽고 영상 내용을 분석</strong>합니다. 1시간짜리 강의를 처음부터 끝까지 안 봐도 핵심만 뽑아낼 수 있습니다.</p>
+
+  <div class="section-title">유튜브 소스 추가 방법</div>
+
+  <ol class="step-list">
+    <li>
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <strong>유튜브에서 분석할 영상 주소 복사</strong>
+        <span>영상 주소창에서 전체 URL 복사 (예: https://youtube.com/watch?v=...)</span>
+      </div>
+    </li>
+    <li>
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <strong>NotebookLM 소스 추가 → [유튜브 URL] 선택</strong>
+        <span>소스 추가 팝업에서 유튜브 아이콘 클릭</span>
+      </div>
+    </li>
+    <li>
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <strong>복사한 URL 붙여넣기 → 추가 클릭</strong>
+        <span>AI가 자막을 읽어 소스로 등록합니다 (1~2분 소요)</span>
+      </div>
+    </li>
+    <li>
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <strong>채팅창에서 질문!</strong>
+        <span>영상 내용을 기반으로 원하는 분석 요청</span>
+      </div>
+    </li>
+  </ol>
+
+  <div class="section-title">활용하기 좋은 유튜브 채널 예시</div>
+
+  <div class="yt-card">
+    <div class="yt-thumb">
+      <div class="yt-play-btn">▶</div>
+      <div class="yt-duration">1:08:24</div>
+    </div>
+    <div class="yt-info">
+      <div class="yt-title">2026년 아동복지 사업 주요 변경사항 안내 | 보건복지부</div>
+      <div class="yt-meta">보건복지부 공식 채널 · 조회수 12만회</div>
+      <div style="margin-top:8px;">
+        <span class="yt-tag">✅ 자막 있음</span>
+        <span class="yt-tag">✅ 분석 가능</span>
+        <span class="yt-tag">📋 1시간 강의</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card card-yellow">
+    <div class="card-title yellow">⚠️ 자막이 없는 영상은 분석 불가!</div>
+    <p class="text-sm">AI는 영상의 '자막 텍스트'를 읽습니다. <strong>자막이 없거나 자동 생성 자막이 꺼진 영상</strong>은 분석이 안 됩니다. 유튜브에서 영상 아래 '자막(CC)' 버튼이 활성화되는지 먼저 확인하세요.</p>
+  </div>
+
+  <div class="section-title">유튜브 영상 분석 프롬프트</div>
+
+  <div class="prompt-box">
+    <span class="prompt-label">📋 영상 핵심 3가지 요약</span>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+    <div>업로드한 유튜브 영상에서 가장 중요한 내용 3가지만 뽑아줘.
+각각 한 문단씩, 현장 실무자가 바로 이해할 수 있는 언어로 설명해 줘.
+영상을 안 봐도 핵심을 파악할 수 있는 수준으로 요약해 줘.</div>
+  </div>
+
+  <div class="prompt-box">
+    <span class="prompt-label">📋 우리 기관 적용 방안 분석</span>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+    <div>이 영상에서 소개된 내용 중 종합사회복지관에서 바로 적용할 수 있는 것들을 골라줘.
+각 항목마다 '현재 우리 기관 상황 → 어떻게 적용할 수 있는지 → 예상 효과' 순서로 정리해 줘.</div>
+  </div>
+
+  <div class="prompt-box">
+    <span class="prompt-label">📋 교육 영상 → 직원 배포 학습 자료</span>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+    <div>이 교육 영상 내용을 팀원들에게 공유할 학습 자료로 만들어 줘.
+구성: 영상 개요(3줄) → 핵심 개념 5개(각 1~2줄 설명) → 실무 적용 체크리스트 3개
+팀 카카오톡에 공유할 수 있도록 간결하게 정리해 줘.</div>
+  </div>
+
+  <div class="prompt-box">
+    <span class="prompt-label">📋 영상에서 특정 내용 검색</span>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+    <div>이 영상에서 '아동학대 신고의무' 관련 내용이 나오는 부분을 찾아서 정리해 줘.
+강사가 어떤 맥락에서 이야기했는지, 핵심 메시지가 무엇인지 설명해 줘.</div>
+  </div>
+</div>
+
+<!-- ─────────────── 5장 ─────────────── -->
+<div class="chapter" id="ch5">
+  <div class="chapter-label">
+    <div class="chapter-icon">🎯</div>
+    <div class="chapter-title">제5장. 실전 활용 시나리오<br>업무별 활용법 완전 정리</div>
+  </div>
+  <div class="chapter-divider"></div>
+
+  <div class="section-title">상황별 최적 활용법</div>
+
+  <div class="scenario-list">
+
+    <div class="scenario-item">
+      <div class="scenario-situation">📋 시나리오 1 — 사례회의 후 회의록 작성</div>
+      <div class="scenario-action">회의 녹음 m4a 업로드 → "결정사항 중심 회의록" 프롬프트 → 5분 완성</div>
+      <div class="scenario-result">✅ 효과: 회의록 작성 시간 80% 절감, 당일 결재 가능</div>
+    </div>
+
+    <div class="scenario-item">
+      <div class="scenario-situation">🎓 시나리오 2 — 복지 교육 세미나 다음 날</div>
+      <div class="scenario-action">세미나 녹음 파일 업로드 → "실무 적용 가능한 내용만 뽑아줘" → 팀 공유</div>
+      <div class="scenario-result">✅ 효과: 교육 내용 휘발 방지, 실무 적용 아이디어 즉시 확보</div>
+    </div>
+
+    <div class="scenario-item">
+      <div class="scenario-situation">📺 시나리오 3 — 보건복지부 유튜브 브리핑 영상</div>
+      <div class="scenario-action">영상 URL 추가 → "우리 기관 적용 방안 분석" → 팀장 보고 자료로 활용</div>
+      <div class="scenario-result">✅ 효과: 1시간 영상을 안 봐도 핵심 정책 변화 파악 완료</div>
+    </div>
+
+    <div class="scenario-item">
+      <div class="scenario-situation">🤝 시나리오 4 — 외부 기관 협력 회의</div>
+      <div class="scenario-action">회의 녹음 업로드 → 지침서 PDF도 함께 소스 추가 → "녹음 내용 중 지침에 맞지 않는 합의사항 있나요?" 질문</div>
+      <div class="scenario-result">✅ 효과: 회의 중 놓친 규정 위반 소지 사전 점검</div>
+    </div>
+
+    <div class="scenario-item">
+      <div class="scenario-situation">📖 시나리오 5 — 슈퍼비전 사전 준비</div>
+      <div class="scenario-action">이전 슈퍼비전 녹음 + 현재 사례 기록 함께 업로드 → "이전 슈퍼비전 조언이 현재 사례에 어떻게 반영됐나?" 분석</div>
+      <div class="scenario-result">✅ 효과: 슈퍼비전 연속성 확보, 성장 과정 체계적 정리</div>
+    </div>
+
+  </div>
+
+  <div class="section-title">음성 + 문서 조합 분석 — 최강 활용법</div>
+
+  <div class="wf-item">
+    <div class="wf-num">1</div>
+    <div class="wf-content">
+      <strong>소스 1: 사례회의 녹음 파일 업로드</strong>
+      <span>실제 회의에서 논의된 내용</span>
+    </div>
+  </div>
+  <div class="wf-arrow">+</div>
+  <div class="wf-item">
+    <div class="wf-num">2</div>
+    <div class="wf-content">
+      <strong>소스 2: 관련 지침서 PDF 함께 업로드</strong>
+      <span>아동복지법 매뉴얼, 사업안내서 등</span>
+    </div>
+  </div>
+  <div class="wf-arrow">↓</div>
+  <div class="wf-item" style="border-left:4px solid var(--blue);">
+    <div class="wf-num" style="background:var(--green);">✓</div>
+    <div class="wf-content">
+      <strong>"회의에서 결정된 개입 방법이 지침에 맞는지 확인해줘"</strong>
+      <span>AI가 녹음 내용과 지침서를 동시에 참조해 검토해 줍니다</span>
+    </div>
+  </div>
+
+  <div class="card card-blue">
+    <div class="card-title blue">💡 음성 + 문서 조합이 강력한 이유</div>
+    <p class="text-sm">녹음 파일과 지침서를 같은 노트북에 올리면 AI가 <strong>"회의에서 결정한 것이 규정에 맞는지"</strong>를 한 번에 교차 검증해 줍니다. 현장에서 즉흥적으로 결정했다가 나중에 지적받는 상황을 미리 예방할 수 있습니다.</p>
+  </div>
+</div>
+
+<!-- ─────────────── 6장 ─────────────── -->
+<div class="chapter" id="ch6">
+  <div class="chapter-label">
+    <div class="chapter-icon">⚠️</div>
+    <div class="chapter-title">제6장. 꼭 알아야 할 주의사항<br>안전하고 올바르게 쓰는 법</div>
+  </div>
+  <div class="chapter-divider"></div>
+
+  <div class="feature-list">
+    <div class="feature-item">
+      <span class="feature-emo">🔒</span>
+      <div class="feature-text">
+        <strong>회의 녹음 전 참석자 동의 받기</strong>
+        <span>회의를 녹음하려면 참석자 동의가 원칙입니다. "AI 분석을 위해 녹음하겠습니다"라고 사전 공지하고, 이의 없으면 진행하세요.</span>
+      </div>
+    </div>
+    <div class="feature-item">
+      <span class="feature-emo">👤</span>
+      <div class="feature-text">
+        <strong>클라이언트 녹음 파일 업로드 금지</strong>
+        <span>상담 면담 녹음, 클라이언트와의 통화 녹음은 개인정보 보호 원칙상 외부 서버에 업로드하면 안 됩니다. 반드시 내부 처리하세요.</span>
+      </div>
+    </div>
+    <div class="feature-item">
+      <span class="feature-emo">🔤</span>
+      <div class="feature-text">
+        <strong>한국어 인식 정확도 확인 필수</strong>
+        <span>AI가 한국어 음성을 인식하지만 사투리, 빠른 말, 여러 명이 동시에 말하는 경우 오인식이 생깁니다. 중요한 수치·날짜는 반드시 녹음 원본과 대조하세요.</span>
+      </div>
+    </div>
+    <div class="feature-item">
+      <span class="feature-emo">📶</span>
+      <div class="feature-text">
+        <strong>긴 녹음은 업로드 시간이 걸립니다</strong>
+        <span>1시간 이상 녹음 파일은 업로드 및 처리에 3~5분이 소요될 수 있습니다. 인터넷이 안정적인 환경에서 업로드하세요.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card card-red">
+    <div class="card-title red">🚨 절대 금지 — 이런 파일은 올리지 마세요</div>
+    <div class="feature-list" style="margin-top:8px;">
+      <div class="feature-item" style="border-left:4px solid var(--red);">
+        <span class="feature-emo">🚫</span>
+        <div class="feature-text">
+          <strong>클라이언트와의 상담·면담 녹음</strong>
+          <span>개인정보 보호법 위반 소지. 동의 없이 제3자 서버 업로드 불가</span>
+        </div>
+      </div>
+      <div class="feature-item" style="border-left:4px solid var(--red);">
+        <span class="feature-emo">🚫</span>
+        <div class="feature-text">
+          <strong>기관 내 민감 정보가 포함된 비공개 회의 녹음</strong>
+          <span>징계·인사·계약 관련 회의 내용은 내부 처리 원칙</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────── 부록 ─────────────── -->
+<div class="chapter" id="appendix">
+  <div class="chapter-label">
+    <div class="chapter-icon" style="background:var(--green);">🎁</div>
+    <div class="chapter-title">부록. 심화 5편 프롬프트 전체 모음</div>
+  </div>
+  <div class="chapter-divider"></div>
+  <p class="text-sm">이번 편에서 나온 프롬프트를 한 곳에 모았습니다. 복사해서 바로 쓰세요!</p>
+
+  <div style="margin:16px 0;">
+    <div style="font-size:13px;font-weight:700;color:var(--blue);margin-bottom:8px;">🎙️ 녹음 파일 분석</div>
+
+    <div class="prompt-box">
+      <span class="prompt-label">① 기본 회의록 초안</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+      <div>업로드한 회의 녹음 파일을 분석해서 공식 회의록 초안을 작성해 줘.
+항목: 일시 / 참석자 / 주요 논의 사항 / 결정 사항 / 후속 과제 및 담당자
+문체는 합니다체, 기관장 결재용으로 깔끔하게 정리해 줘.</div>
+    </div>
+
+    <div class="prompt-box">
+      <span class="prompt-label">② 결정사항·과제만 빠르게 추출</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+      <div>녹음 내용에서 '결정된 것'과 '누가 무엇을 언제까지 해야 하는지'만 뽑아줘.
+불필요한 잡담이나 맥락 설명은 빼고 핵심 액션 아이템만 담당자 이름과 기한을 포함해서 정리해 줘.</div>
+    </div>
+
+    <div class="prompt-box">
+      <span class="prompt-label">③ 사례회의 개입 방향 정리</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+      <div>이 사례회의 녹음에서 논의된 클라이언트별 개입 방향을 정리해 줘.
+각 클라이언트(이름 대신 A, B, C로 표기)마다: 현재 상황 요약 / 결정된 개입 방법 / 다음 모니터링 시점
+표 형식으로 만들어 줘.</div>
+    </div>
+  </div>
+
+  <div style="margin:16px 0;">
+    <div style="font-size:13px;font-weight:700;color:var(--blue);margin-bottom:8px;">▶️ 유튜브 영상 분석</div>
+
+    <div class="prompt-box">
+      <span class="prompt-label">④ 영상 핵심 3가지 요약</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+      <div>업로드한 유튜브 영상에서 가장 중요한 내용 3가지만 뽑아줘.
+각각 한 문단씩, 현장 실무자가 바로 이해할 수 있는 언어로 설명해 줘.
+영상을 안 봐도 핵심을 파악할 수 있는 수준으로 요약해 줘.</div>
+    </div>
+
+    <div class="prompt-box">
+      <span class="prompt-label">⑤ 우리 기관 적용 방안 분석</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+      <div>이 영상에서 소개된 내용 중 종합사회복지관에서 바로 적용할 수 있는 것들을 골라줘.
+각 항목마다 '현재 우리 기관 상황 → 어떻게 적용할 수 있는지 → 예상 효과' 순서로 정리해 줘.</div>
+    </div>
+
+    <div class="prompt-box">
+      <span class="prompt-label">⑥ 교육 영상 → 직원 배포 학습 자료</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+      <div>이 교육 영상 내용을 팀원들에게 공유할 학습 자료로 만들어 줘.
+구성: 영상 개요(3줄) → 핵심 개념 5개(각 1~2줄 설명) → 실무 적용 체크리스트 3개
+팀 카카오톡에 공유할 수 있도록 간결하게 정리해 줘.</div>
+    </div>
+  </div>
+
+  <div style="margin:16px 0;">
+    <div style="font-size:13px;font-weight:700;color:var(--blue);margin-bottom:8px;">🔗 음성 + 문서 조합 분석</div>
+
+    <div class="prompt-box">
+      <span class="prompt-label">⑦ 회의 결정사항 지침 교차 검증</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+      <div>업로드한 회의 녹음에서 결정된 내용들이 함께 올린 지침서 기준에 맞는지 확인해 줘.
+규정에 어긋나거나 추가 확인이 필요한 사항이 있으면 구체적으로 짚어줘.
+문제없는 사항도 간단히 확인 완료로 표기해 줘.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────── 꿀팁 ─────────────── -->
+<div class="chapter" id="tip">
+  <div class="chapter-label">
+    <div class="chapter-icon" style="background:var(--yellow);color:#1a1a2e;">💡</div>
+    <div class="chapter-title">꿀팁 모음 — 5편 핵심 정리</div>
+  </div>
+  <div class="chapter-divider"></div>
+
+  <div class="feature-list">
+    <div class="feature-item">
+      <span class="feature-emo">📱</span>
+      <div class="feature-text">
+        <strong>스마트폰 구글 드라이브 연동이 가장 빠릅니다</strong>
+        <span>안드로이드는 녹음 후 구글 드라이브 업로드 → NotebookLM 드라이브 연동. PC 옮기는 과정 없이 가장 빠릅니다.</span>
+      </div>
+    </div>
+    <div class="feature-item">
+      <span class="feature-emo">🎯</span>
+      <div class="feature-text">
+        <strong>회의 전 안건을 미리 소스로 올리세요</strong>
+        <span>회의 안건 문서 + 관련 지침서를 미리 올려두면 회의록 작성 후 "이 결정이 안건의 목적에 맞나요?"라는 연계 분석까지 가능합니다.</span>
+      </div>
+    </div>
+    <div class="feature-item">
+      <span class="feature-emo">🔊</span>
+      <div class="feature-text">
+        <strong>녹음 품질이 인식 정확도를 결정합니다</strong>
+        <span>회의실 중앙에 스마트폰을 놓거나 소형 녹음기를 사용하세요. 잡음이 많거나 멀리서 녹음하면 인식 오류가 늘어납니다.</span>
+      </div>
+    </div>
+    <div class="feature-item">
+      <span class="feature-emo">📌</span>
+      <div class="feature-text">
+        <strong>유튜브 자막 품질 먼저 확인하세요</strong>
+        <span>영상 하단 CC 버튼을 눌러 자막을 미리 확인하세요. 자동 생성 자막이 너무 부정확하면 분석 결과도 부정확해집니다.</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────── 시리즈 완결 ─────────────── -->
+<div class="chapter" id="next">
+  <div class="chapter-label">
+    <div class="chapter-icon" style="background:var(--green);">🎉</div>
+    <div class="chapter-title">심화 시리즈 완결!</div>
+  </div>
+  <div class="chapter-divider"></div>
+
+  <div class="card card-green">
+    <div class="card-title green">🎉 심화 1~5편 완주를 축하합니다!</div>
+    <p class="text-sm">기초편부터 심화 5편까지 모두 익히셨다면, 이제 NotebookLM을 진정한 업무 파트너로 활용할 준비가 되셨습니다!</p>
+    <div class="feature-list" style="margin-top:12px;">
+      <div class="feature-item">
+        <span class="feature-emo">1️⃣</span>
+        <div class="feature-text"><strong>보고서·슬라이드</strong><span>사업결과보고서·PPT 초안 자동 생성</span></div>
+      </div>
+      <div class="feature-item">
+        <span class="feature-emo">2️⃣</span>
+        <div class="feature-text"><strong>마인드맵·브리핑</strong><span>지침서 전체 구조 시각화 & 목적별 요약</span></div>
+      </div>
+      <div class="feature-item">
+        <span class="feature-emo">3️⃣</span>
+        <div class="feature-text"><strong>지침서 비교</strong><span>연도별 변경사항 자동 추출 & 영향도 분류</span></div>
+      </div>
+      <div class="feature-item">
+        <span class="feature-emo">4️⃣</span>
+        <div class="feature-text"><strong>팀 협업</strong><span>노트북 공유·권한 설정·팀 지식베이스 구축</span></div>
+      </div>
+      <div class="feature-item">
+        <span class="feature-emo">5️⃣</span>
+        <div class="feature-text"><strong>음성·영상 분석</strong><span>회의 녹음→회의록, 유튜브→요약 자료</span></div>
+      </div>
+    </div>
+    <p style="margin-top:14px;font-size:13px;color:var(--green);font-weight:700;">→ 더 많은 AI 실무 가이드: <a href="https://www.saboknote.com/" target="_blank" style="color:var(--green);">saboknote.com</a></p>
+  </div>
+
+  <div class="card card-blue" style="margin-top:10px;">
+    <div class="card-title blue">📬 6편 예고 — 준비 중</div>
+    <p class="text-sm">더 발전된 활용법과 새로운 기능 업데이트를 담은 6편을 준비 중입니다. saboknote.com에서 알림을 신청해 두세요!</p>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<!-- ── FOOTER ── -->
+<div class="footer">
+  <p style="font-size:22px;margin-bottom:8px;">🎙️ 📒 🌿</p>
+  <p><strong>심화 5편. 음성 녹음 & 유튜브 영상 분석 완전 정복</strong></p>
+  <p style="margin-top:6px;font-size:12px;">NotebookLM 심화 시리즈 완결 | 사복쌤을 위한 AI 실무 가이드</p>
+  <p style="margin-top:14px;">든든한 실무 파트너: <a href="https://www.saboknote.com/" target="_blank"><strong>사복노트 (saboknote.com)</strong></a></p>
+</div>
+
+<!-- ── Floating buttons ── -->
+<div class="float-btns">
+  <button class="float-btn back-btn" onclick="goBack()" title="이전 페이지">←</button>
+  <button class="float-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="맨 위로">↑</button>
+</div>
+
+<script>
+document.querySelectorAll('.float-btn').forEach(btn => {
+  window.addEventListener('scroll', () => {
+    btn.classList.toggle('visible', window.scrollY > 300);
+  });
+});
+function goBack() {
+  if (document.referrer) { window.history.back(); }
+  else { window.scrollTo({top: 0, behavior: 'smooth'}); }
+}
+function copyPrompt(el) {
+  const text = el.closest('.prompt-box').querySelector('div').innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    el.textContent = '✅ 복사됨!';
+    el.classList.add('copied');
+    setTimeout(() => { el.textContent = '📋 복사'; el.classList.remove('copied'); }, 1800);
+  }).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    el.textContent = '✅ 복사됨!';
+    el.classList.add('copied');
+    setTimeout(() => { el.textContent = '📋 복사'; el.classList.remove('copied'); }, 1800);
+  });
+}
+</script>
+</body>
+</html>

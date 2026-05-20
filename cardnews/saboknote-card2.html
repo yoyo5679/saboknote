@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>사복노트 2번 게시글</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: #DDE3ED;
+    font-family: 'Noto Sans KR', sans-serif;
+    min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 32px 16px 48px;
+  }
+  .top-label { font-size: 12px; font-weight: 700; color: #8A94A6; letter-spacing: 2px; margin-bottom: 20px; text-transform: uppercase; }
+  .card { width: 480px; height: 600px; border-radius: 22px; overflow: hidden; box-shadow: 0 16px 48px rgba(0,0,0,0.18); position: relative; flex-shrink: 0; }
+  .slide { display: none; width: 100%; height: 100%; position: absolute; top:0; left:0; }
+  .slide.on { display: flex; flex-direction: column; }
+  .foot { height: 48px; flex-shrink: 0; display: flex; align-items: center; padding: 0 32px; justify-content: space-between; }
+  .foot .fl { font-size: 12px; font-weight: 900; }
+  .foot .fr { font-size: 11px; }
+
+  /* S1 표지 */
+  .s1 { background: #1B2E4B; }
+  .s1 .logo-bar { display: flex; justify-content: space-between; align-items: center; padding: 28px 32px 0; flex-shrink: 0; }
+  .s1 .logo { font-size: 13px; font-weight: 900; color: rgba(255,255,255,0.4); }
+  .s1 .num { font-size: 11px; color: rgba(255,255,255,0.25); }
+  .s1 .body { flex: 1; padding: 0 32px; display: flex; flex-direction: column; justify-content: center; }
+  .s1 .pill { display: inline-block; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); color: rgba(255,255,255,0.7); font-size: 10px; font-weight: 700; padding: 4px 12px; border-radius: 20px; margin-bottom: 20px; align-self: flex-start; letter-spacing: 1px; }
+  .s1 .time { font-size: 13px; color: rgba(255,255,255,0.3); margin-bottom: 10px; }
+  .s1 .title { font-size: 46px; font-weight: 900; color: white; line-height: 1.2; margin-bottom: 20px; }
+  .s1 .title span { color: #FFD166; }
+  .s1 .accent { width: 44px; height: 3px; background: rgba(255,255,255,0.2); border-radius: 2px; margin-bottom: 20px; }
+  .s1 .desc { font-size: 15px; color: rgba(255,255,255,0.5); line-height: 1.8; }
+  .s1 .foot { background: rgba(255,255,255,0.04); border-top: 1px solid rgba(255,255,255,0.07); }
+  .s1 .foot .fl { color: rgba(255,255,255,0.35); }
+  .s1 .foot .fr { color: rgba(255,255,255,0.2); }
+
+  /* S2 할일 목록 */
+  .s2 { background: #fff; }
+  .s2 .head { background: #1B2E4B; padding: 28px 32px 22px; flex-shrink: 0; }
+  .s2 .head-tag { font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.5); letter-spacing: 2px; margin-bottom: 8px; }
+  .s2 .head-title { font-size: 26px; font-weight: 900; color: white; line-height: 1.3; }
+  .s2 .content { flex: 1; padding: 20px 32px 0; }
+  .s2 .task { display: flex; align-items: center; gap: 12px; padding: 13px 0; border-bottom: 1px solid #F0F2F5; }
+  .s2 .task:last-child { border-bottom: none; }
+  .s2 .task-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .s2 .dot-done { background: #C0C8D4; }
+  .s2 .dot-left { background: #2F6FED; }
+  .s2 .task-text { font-size: 15px; font-weight: 500; }
+  .s2 .done { text-decoration: line-through; color: #C0C8D4; }
+  .s2 .left { color: #3D4A5C; }
+  .s2 .bottom-msg { margin-top: 14px; font-size: 13px; color: #8A94A6; line-height: 1.65; }
+  .s2 .foot { background: #F4F6FA; }
+  .s2 .foot .fl { color: #2F6FED; }
+  .s2 .foot .fr { color: #8A94A6; }
+
+  /* S3 감성 */
+  .s3 { background: #1B2E4B; }
+  .s3 .body { flex: 1; padding: 40px 32px 0; display: flex; flex-direction: column; justify-content: center; }
+  .s3 .quote-mark { font-size: 64px; font-weight: 900; color: rgba(255,255,255,0.06); line-height: 1; margin-bottom: -10px; }
+  .s3 .quote { font-size: 22px; font-weight: 700; color: white; line-height: 1.65; margin-bottom: 28px; word-break: keep-all; }
+  .s3 .quote span { color: #FFD166; }
+  .s3 .sub-quote { font-size: 14px; color: rgba(255,255,255,0.45); line-height: 1.85; word-break: keep-all; padding-left: 16px; border-left: 2px solid rgba(255,255,255,0.15); }
+  .s3 .foot { background: rgba(0,0,0,0.2); border-top: 1px solid rgba(255,255,255,0.07); }
+  .s3 .foot .fl { color: rgba(255,255,255,0.35); }
+  .s3 .foot .fr { color: rgba(255,255,255,0.2); }
+
+  /* S4 공감 체크 */
+  .s4 { background: #FFF8F0; }
+  .s4 .top { flex: 1; padding: 28px 32px 0; }
+  .s4 .pill { display: inline-block; background: #FFD166; color: #1B2E4B; font-size: 10px; font-weight: 900; padding: 4px 12px; border-radius: 20px; margin-bottom: 12px; }
+  .s4 .title { font-size: 26px; font-weight: 900; color: #1B2E4B; line-height: 1.3; margin-bottom: 20px; }
+  .s4 .check-item { display: flex; align-items: flex-start; gap: 12px; background: white; border-radius: 14px; padding: 14px 16px; margin-bottom: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+  .s4 .chk { width: 22px; height: 22px; border-radius: 6px; background: #EBF2FF; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; font-size: 12px; color: #2F6FED; font-weight: 900; }
+  .s4 .ct { font-size: 14px; color: #3D4A5C; font-weight: 500; line-height: 1.55; word-break: keep-all; }
+  .s4 .foot { background: rgba(0,0,0,0.04); }
+  .s4 .foot .fl { color: #1B2E4B; }
+  .s4 .foot .fr { color: #8A94A6; }
+
+  /* S5 공감 응답 */
+  .s5 { background: #1B2E4B; }
+  .s5 .body { flex: 1; padding: 36px 32px 0; display: flex; flex-direction: column; justify-content: center; }
+  .s5 .label { font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.4); letter-spacing: 2px; margin-bottom: 20px; }
+  .s5 .msg-item {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px; padding: 16px 20px; margin-bottom: 12px;
+  }
+  .s5 .msg-top { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .s5 .msg-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+  .s5 .msg-title { font-size: 13px; font-weight: 700; color: white; }
+  .s5 .msg-body { font-size: 13px; color: rgba(255,255,255,0.6); line-height: 1.7; word-break: keep-all; }
+  .s5 .msg-body span { color: #FFD166; font-weight: 700; }
+  .s5 .foot { background: rgba(0,0,0,0.2); border-top: 1px solid rgba(255,255,255,0.07); }
+  .s5 .foot .fl { color: rgba(255,255,255,0.35); }
+  .s5 .foot .fr { color: rgba(255,255,255,0.2); }
+
+  /* S6 마무리 */
+  .s6 { background: linear-gradient(155deg, #1B2E4B 0%, #2A5BCA 100%); }
+  .s6 .inner { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0 36px; text-align: center; }
+  .s6 .big-emoji { font-size: 68px; margin-bottom: 20px; line-height: 1; }
+  .s6 .main { font-size: 32px; font-weight: 900; color: white; line-height: 1.35; margin-bottom: 14px; }
+  .s6 .main span { color: #FFD166; }
+  .s6 .sub { font-size: 14px; color: rgba(255,255,255,0.6); line-height: 1.85; margin-bottom: 28px; word-break: keep-all; }
+  .s6 .save-btn { background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); color: white; font-size: 13px; font-weight: 700; padding: 11px 24px; border-radius: 40px; margin-bottom: 10px; }
+  .s6 .follow { font-size: 12px; color: rgba(255,255,255,0.35); }
+  .s6 .foot { background: rgba(0,0,0,0.15); border-top: 1px solid rgba(255,255,255,0.07); }
+  .s6 .foot .fl { color: rgba(255,255,255,0.35); }
+  .s6 .foot .fr { color: rgba(255,255,255,0.2); }
+
+  /* NAV */
+  .nav { display: flex; align-items: center; gap: 14px; margin-top: 18px; }
+  .nbtn { width: 38px; height: 38px; border-radius: 50%; background: white; border: none; cursor: pointer; font-size: 15px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.12); color: #1B2E4B; transition: all .18s; }
+  .nbtn:hover:not(:disabled) { background: #1B2E4B; color: white; }
+  .nbtn:disabled { opacity: .3; cursor: default; }
+  .dots { display: flex; gap: 5px; }
+  .d { width: 7px; height: 7px; border-radius: 50%; background: #C0C8D4; cursor: pointer; transition: all .18s; }
+  .d.on { background: #1B2E4B; width: 18px; border-radius: 4px; }
+  .ctr { font-size: 11px; color: #8A94A6; margin-top: 6px; text-align: center; }
+</style>
+</head>
+<body>
+
+<div class="top-label">사복노트 · 2번 게시글 · 공감</div>
+
+<div class="card">
+
+  <!-- S1 -->
+  <div class="slide s1 on">
+    <div class="logo-bar">
+      <span class="logo">sano 사복노트</span>
+      <span class="num">1 / 5</span>
+    </div>
+    <div class="body">
+      <div class="pill">💬 공감</div>
+      <div class="time">오후 7시 32분 ·</div>
+      <div class="title">오늘도<br><span>야근</span>입니다</div>
+      <div class="accent"></div>
+      <div class="desc">퇴근 시간이 지났는데<br>아직 기록 중입니다 🥲</div>
+    </div>
+    <div class="foot">
+      <span class="fl">사복노트</span>
+      <span class="fr">1 / 5</span>
+    </div>
+  </div>
+
+  <!-- S2 -->
+  <div class="slide s2">
+    <div class="head">
+      <div class="head-tag">TODAY · 오늘 하루</div>
+      <div class="head-title">이게 다<br>오늘 일이에요</div>
+    </div>
+    <div class="content">
+      <div class="task"><div class="task-dot dot-done"></div><div class="task-text done">가정방문 2건</div></div>
+      <div class="task"><div class="task-dot dot-done"></div><div class="task-text done">긴급 전화 상담 1건</div></div>
+      <div class="task"><div class="task-dot dot-done"></div><div class="task-text done">사례회의 1건</div></div>
+      <div class="task"><div class="task-dot dot-done"></div><div class="task-text done">공문 작성 2건</div></div>
+      <div class="task"><div class="task-dot dot-left"></div><div class="task-text left">가정방문 기록 3건 📝</div></div>
+      <div class="bottom-msg">퇴근 못 하는 게 아니에요.<br>기록을 다 써야 퇴근할 수 있는 거예요.</div>
+    </div>
+    <div class="foot">
+      <span class="fl">사복노트</span>
+      <span class="fr">2 / 5</span>
+    </div>
+  </div>
+
+  <!-- S3 -->
+  <div class="slide s3">
+    <div class="body">
+      <div class="quote-mark">"</div>
+      <div class="quote">
+        그래도 왜 이 일<br>하냐고요?<br><br>
+        <span>그냥요.</span><br>
+        이상하게 못 그만두겠어요.
+      </div>
+      <div class="sub-quote">
+        클라이언트 얼굴이 자꾸 생각나고<br>
+        내가 연락 안 하면 아무도 없을 것 같아서<br>
+        오늘도 여기 있습니다.
+      </div>
+    </div>
+    <div class="foot">
+      <span class="fl">사복노트</span>
+      <span class="fr">3 / 5</span>
+    </div>
+  </div>
+
+  <!-- S4 -->
+  <div class="slide s4">
+    <div class="top">
+      <div class="pill">🙋 나만 이런 거 아니죠?</div>
+      <div class="title">이 중에 몇 개<br>공감되세요?</div>
+      <div class="check-item"><div class="chk">✓</div><div class="ct">퇴근 후에도 일 생각이 멈추지 않는다</div></div>
+      <div class="check-item"><div class="chk">✓</div><div class="ct">주말에 못 한 기록이 머릿속에 남는다</div></div>
+      <div class="check-item"><div class="chk">✓</div><div class="ct">야근이 당연한 것처럼 느껴진다</div></div>
+      <div class="check-item"><div class="chk">✓</div><div class="ct">그래도 내일 또 출근할 것 같다</div></div>
+    </div>
+    <div class="foot">
+      <span class="fl">사복노트</span>
+      <span class="fr">4 / 6</span>
+    </div>
+  </div>
+
+  <!-- S5 공감 응답 -->
+  <div class="slide s5">
+    <div class="body">
+      <div class="label">💙 사복노트가 전합니다</div>
+      <div class="msg-item">
+        <div class="msg-top">
+          <div class="msg-dot" style="background:#FFD166"></div>
+          <div class="msg-title">퇴근 후에도 일 생각이 멈추지 않는다면</div>
+        </div>
+        <div class="msg-body">그건 <span>일을 사랑하기 때문</span>이에요.<br>근데 당신도 쉬어야 해요.</div>
+      </div>
+      <div class="msg-item">
+        <div class="msg-top">
+          <div class="msg-dot" style="background:#4ECDC4"></div>
+          <div class="msg-title">야근이 당연하게 느껴진다면</div>
+        </div>
+        <div class="msg-body">당연한 게 아니에요.<br><span>구조가 잘못된 거예요.</span> 당신 잘못 아닙니다.</div>
+      </div>
+      <div class="msg-item">
+        <div class="msg-top">
+          <div class="msg-dot" style="background:#2F6FED"></div>
+          <div class="msg-title">그래도 내일 또 출근할 것 같다면</div>
+        </div>
+        <div class="msg-body"><span>그게 바로 사회복지사예요.</span><br>대단한 사람입니다, 진짜로.</div>
+      </div>
+    </div>
+    <div class="foot">
+      <span class="fl">사복노트</span>
+      <span class="fr">5 / 6</span>
+    </div>
+  </div>
+
+  <!-- S6 마무리 -->
+  <div class="slide s6">
+    <div class="inner">
+      <div class="big-emoji">💙</div>
+      <div class="main">오늘도<br><span>수고 많으셨어요</span></div>
+      <div class="sub">
+        이상한 거 아니에요.<br>
+        그게 사회복지사니까요.<br><br>
+        혼자 버티고 있는 분들,<br>
+        사복노트가 옆에 있을게요.
+      </div>
+      <div class="save-btn">🔖 저장해두고 꺼내보세요</div>
+      <div class="follow">사복노트 팔로우 · 매주 공감 콘텐츠</div>
+    </div>
+    <div class="foot">
+      <span class="fl">사복노트</span>
+      <span class="fr">6 / 6</span>
+    </div>
+  </div>
+
+</div>
+
+<div class="nav">
+  <button class="nbtn" id="p" onclick="go(-1)" disabled>←</button>
+  <div class="dots" id="dots"></div>
+  <button class="nbtn" id="n" onclick="go(1)">→</button>
+</div>
+<div class="ctr" id="ctr">1 / 5</div>
+
+<script>
+  let cur = 0;
+  const N = 6;
+  const slides = document.querySelectorAll('.slide');
+  const wrap = document.getElementById('dots');
+  for(let i=0;i<N;i++){
+    const d = document.createElement('div');
+    d.className='d'+(i===0?' on':'');
+    d.onclick=()=>to(i);
+    wrap.appendChild(d);
+  }
+  function to(n){
+    slides[cur].classList.remove('on');
+    wrap.children[cur].classList.remove('on');
+    cur=n;
+    slides[cur].classList.add('on');
+    wrap.children[cur].classList.add('on');
+    document.getElementById('ctr').textContent=`${cur+1} / ${N}`;
+    document.getElementById('p').disabled=cur===0;
+    document.getElementById('n').disabled=cur===N-1;
+  }
+  function go(d){ const nx=cur+d; if(nx>=0&&nx<N) to(nx); }
+  document.addEventListener('keydown',e=>{
+    if(e.key==='ArrowRight') go(1);
+    if(e.key==='ArrowLeft') go(-1);
+  });
+</script>
+</body>
+</html>

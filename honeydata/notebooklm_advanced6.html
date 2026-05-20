@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NotebookLM 심화 6편 — 사례관리 특화 완전 정복</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap');
+
+:root {
+  --blue: #1a73e8;
+  --blue-dark: #1557b0;
+  --blue-light: #e8f0fe;
+  --blue-mid: #a8c7fa;
+  --green: #2d6a4f;
+  --green-light: #e6f4ea;
+  --red: #d93025;
+  --red-light: #fce8e6;
+  --yellow: #f9a825;
+  --yellow-light: #fff8e1;
+  --purple: #7c3aed;
+  --purple-light: #f3f0ff;
+  --text: #1a1a2e;
+  --text-sub: #5f6368;
+  --border: #e0e0e0;
+  --bg: #f5f7ff;
+  --radius: 14px;
+  --shadow: 0 2px 12px rgba(26,115,232,0.10);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 15px;
+  line-height: 1.75;
+  -webkit-text-size-adjust: 100%;
+}
+a { color: var(--blue); text-decoration: none; }
+
+/* ── Hero ── */
+.hero {
+  background: linear-gradient(145deg, #1557b0 0%, #1a73e8 60%, #0d47a1 100%);
+  padding: 44px 20px 36px;
+  text-align: center;
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  width: 260px; height: 260px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+  top: -70px; right: -70px;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  width: 140px; height: 140px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.04);
+  bottom: -30px; left: 30px;
+}
+.hero-series { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+.hero-tag {
+  background: rgba(255,255,255,0.18);
+  border: 1px solid rgba(255,255,255,0.35);
+  padding: 4px 12px; border-radius: 30px;
+  font-size: 12px; font-weight: 700; letter-spacing: 1px;
+}
+.hero-tag.new { background: #fbbf24; color: #1557b0; border: none; font-weight: 900; }
+.hero h1 { font-size: 1.55em; font-weight: 900; line-height: 1.35; margin-bottom: 10px; }
+.hero p {
+  font-size: 14px; opacity: 0.9; line-height: 1.7; margin-bottom: 22px;
+  max-width: 340px; margin-left: auto; margin-right: auto;
+}
+.hero-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: white; color: var(--blue-dark);
+  font-weight: 700; font-size: 15px; padding: 12px 26px;
+  border-radius: 50px; box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+}
+
+/* ── 이전편 배너 ── */
+.prev-banner {
+  background: var(--blue-light);
+  border-bottom: 1px solid rgba(26,115,232,0.2);
+  padding: 10px 16px; font-size: 13px;
+  display: flex; align-items: center; gap: 8px; color: var(--blue-dark);
+}
+.prev-banner a { font-weight: 700; color: var(--blue); }
+
+/* ── Series nav ── */
+.series-nav { background: #1557b0; padding: 16px; }
+.series-label { font-size: 11px; color: rgba(255,255,255,0.6); font-weight: 700; letter-spacing: 1px; margin-bottom: 10px; }
+.series-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.series-item {
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 8px; padding: 8px 10px;
+  font-size: 11px; color: rgba(255,255,255,0.65); text-align: center; line-height: 1.4;
+}
+.series-item.done { color: rgba(255,255,255,0.4); text-decoration: line-through; }
+.series-item.active { background: white; color: var(--blue-dark); font-weight: 700; }
+
+/* ── Sticky TOC ── */
+.toc-sticky {
+  background: white; border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; z-index: 100; padding: 10px 14px;
+}
+.toc-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; }
+.toc-pill {
+  display: flex; align-items: center; gap: 5px;
+  background: var(--blue-light); color: var(--blue-dark);
+  padding: 6px 8px; border-radius: 8px;
+  font-size: 11px; font-weight: 700; line-height: 1.3; text-align: left;
+}
+.toc-pill:hover { background: var(--blue); color: white; }
+
+/* ── Main ── */
+.main { padding: 20px 16px 60px; max-width: 680px; margin: 0 auto; }
+
+/* ── Chapter ── */
+.chapter { margin-top: 40px; scroll-margin-top: 56px; }
+.chapter-label { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.chapter-icon {
+  width: 40px; height: 40px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0; background: var(--blue);
+}
+.chapter-title { font-size: 1.2em; font-weight: 900; color: var(--blue-dark); line-height: 1.3; }
+.chapter-divider {
+  height: 3px;
+  background: linear-gradient(90deg, var(--blue) 0%, transparent 100%);
+  border-radius: 3px; margin-bottom: 18px;
+}
+.section-title {
+  font-size: 1.05em; font-weight: 700; color: var(--blue-dark);
+  padding: 4px 0 4px 12px; border-left: 4px solid var(--blue);
+  margin: 24px 0 12px;
+}
+
+/* ── Cards ── */
+.card { border-radius: var(--radius); padding: 18px; margin: 14px 0; box-shadow: var(--shadow); }
+.card-blue   { background: var(--blue-light);  border: 1px solid rgba(26,115,232,0.2); }
+.card-green  { background: var(--green-light); border: 1px solid rgba(45,106,79,0.15); }
+.card-yellow { background: var(--yellow-light);border: 1px solid rgba(249,168,37,0.3); }
+.card-red    { background: var(--red-light);   border: 1px solid rgba(217,48,37,0.2); }
+.card-purple { background: var(--purple-light);border: 1px solid rgba(124,58,237,0.2); }
+
+.card-title { font-size: 14px; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+.card-title.blue   { color: var(--blue-dark); }
+.card-title.green  { color: var(--green); }
+.card-title.yellow { color: #e65100; }
+.card-title.red    { color: var(--red); }
+.card-title.purple { color: #4c1d95; }
+
+/* ── Feature list ── */
+.feature-list { display: flex; flex-direction: column; gap: 10px; margin: 12px 0; }
+.feature-item {
+  background: white; border-radius: 12px; padding: 14px 16px;
+  display: flex; align-items: flex-start; gap: 12px;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.07); border: 1px solid var(--border);
+}
+.feature-emo { font-size: 22px; flex-shrink: 0; margin-top: 2px; }
+.feature-text strong { display: block; font-size: 14px; font-weight: 700; margin-bottom: 2px; }
+.feature-text span { font-size: 13px; color: var(--text-sub); line-height: 1.55; }
+
+/* ── Step list ── */
+.step-list { list-style: none; margin: 12px 0; display: flex; flex-direction: column; gap: 10px; }
+.step-list li {
+  display: grid; grid-template-columns: 32px 1fr; gap: 0 12px;
+  align-items: start; background: white; border-radius: 12px;
+  padding: 14px; border: 1px solid var(--border);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+.step-num {
+  width: 32px; height: 32px; background: var(--blue); color: white;
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-weight: 900; font-size: 14px; flex-shrink: 0;
+}
+.step-content strong { display: block; font-size: 14px; font-weight: 700; margin-bottom: 3px; }
+.step-content span { font-size: 13px; color: var(--text-sub); line-height: 1.6; }
+
+/* ── Prompt box ── */
+.prompt-box {
+  background: #fffde7; border: 1.5px solid #ffe082;
+  border-radius: 12px; padding: 16px; margin: 12px 0; position: relative;
+}
+.prompt-label {
+  font-size: 11px; font-weight: 700; color: #f57f17;
+  letter-spacing: 1px; margin-bottom: 8px; display: block;
+  padding-right: 68px; text-transform: uppercase;
+}
+.prompt-box div, .prompt-box p {
+  font-size: 14px; line-height: 1.8; color: #333; white-space: pre-line;
+}
+.copy-btn {
+  position: absolute; top: 10px; right: 10px;
+  background: var(--blue); color: white; border: none;
+  border-radius: 8px; padding: 5px 11px; font-size: 11px; font-weight: 700;
+  cursor: pointer; display: flex; align-items: center; gap: 4px;
+  transition: background 0.15s; font-family: 'Noto Sans KR', sans-serif; white-space: nowrap;
+}
+.copy-btn:hover { background: var(--blue-dark); }
+.copy-btn.copied { background: var(--green); }
+
+/* ── 사례관리 단계 흐름도 ── */
+.cm-flow {
+  display: flex; flex-direction: column; gap: 0; margin: 14px 0;
+}
+.cm-step {
+  background: white; border-radius: 14px; border: 1px solid var(--border);
+  padding: 14px 16px; box-shadow: 0 1px 5px rgba(0,0,0,0.06);
+  display: grid; grid-template-columns: 44px 1fr; gap: 0 12px; align-items: start;
+  margin-bottom: 4px;
+}
+.cm-step-badge {
+  width: 44px; height: 44px; border-radius: 12px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 700; line-height: 1.3; text-align: center;
+  flex-shrink: 0; background: var(--blue); color: white;
+}
+.cm-step-body strong { display: block; font-size: 14px; font-weight: 700; margin-bottom: 3px; color: var(--text); }
+.cm-step-body span { font-size: 12.5px; color: var(--text-sub); line-height: 1.6; }
+.cm-step-ai {
+  margin-top: 8px; background: var(--blue-light);
+  border-radius: 8px; padding: 8px 12px;
+  font-size: 12px; color: var(--blue-dark); line-height: 1.6;
+}
+.cm-arrow { text-align: center; font-size: 18px; color: var(--blue); margin: 2px 0; }
+
+/* ── 비식별화 체크리스트 ── */
+.anon-table { margin: 14px 0; border-radius: 12px; overflow: hidden; box-shadow: var(--shadow); }
+.anon-header {
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  background: var(--blue-dark); color: white;
+  font-size: 12px; font-weight: 700;
+}
+.anon-header div, .anon-row div { padding: 10px 12px; }
+.anon-row {
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  background: white; border-bottom: 1px solid var(--border);
+  font-size: 12.5px; align-items: center;
+}
+.anon-row:last-child { border-bottom: none; }
+.anon-row:nth-child(even) { background: var(--bg); }
+.anon-before { color: var(--red); font-weight: 500; }
+.anon-after  { color: var(--green); font-weight: 700; }
+.anon-why    { color: var(--text-sub); font-size: 11.5px; }
+
+/* ── 단계별 활용 예시 카드 ── */
+.stage-card {
+  background: white; border-radius: 14px; border: 1px solid var(--border);
+  overflow: hidden; margin: 14px 0; box-shadow: var(--shadow);
+}
+.stage-header {
+  background: var(--blue); color: white;
+  padding: 12px 16px; font-size: 13px; font-weight: 700;
+  display: flex; align-items: center; gap: 8px;
+}
+.stage-body { padding: 14px 16px; }
+.stage-situation { font-size: 12.5px; color: var(--text-sub); margin-bottom: 10px; line-height: 1.6; }
+
+/* ── Before/After ── */
+.before-after { display: flex; flex-direction: column; gap: 10px; margin: 12px 0; }
+.ba-box { border-radius: 12px; padding: 14px 16px; font-size: 13px; line-height: 1.75; }
+.ba-before { background: #f8f9fa; border: 1px solid var(--border); }
+.ba-after  { background: var(--blue-light); border: 1px solid rgba(26,115,232,0.2); }
+.ba-label  { font-size: 11px; font-weight: 700; letter-spacing: 0.5px; margin-bottom: 8px; display: block; }
+.ba-before .ba-label { color: var(--text-sub); }
+.ba-after  .ba-label { color: var(--blue-dark); }
+.ba-arrow  { text-align: center; font-size: 22px; color: var(--blue); }
+
+/* ── Floating buttons ── */
+.float-btns {
+  position: fixed; bottom: 24px; right: 16px;
+  display: flex; flex-direction: column; gap: 10px; z-index: 200;
+}
+.float-btn {
+  width: 46px; height: 46px; background: var(--blue); color: white;
+  border: none; border-radius: 50%; font-size: 18px; cursor: pointer;
+  box-shadow: 0 4px 14px rgba(26,115,232,0.35);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none; transition: opacity 0.25s, background 0.15s;
+  font-family: 'Noto Sans KR', sans-serif;
+}
+.float-btn:hover { background: var(--blue-dark); }
+.float-btn.visible { opacity: 1; pointer-events: auto; }
+.float-btn.back-btn {
+  background: white; color: var(--blue);
+  border: 2px solid var(--blue); font-size: 16px; font-weight: 700;
+}
+.float-btn.back-btn:hover { background: var(--blue-light); }
+
+/* ── Misc ── */
+.text-sm { font-size: 13px; color: var(--text-sub); line-height: 1.7; }
+.link-row {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--blue-light); border-radius: 10px;
+  padding: 12px 14px; margin: 10px 0; font-size: 13.5px;
+}
+.link-row a { font-weight: 700; color: var(--blue); }
+
+/* ── Footer ── */
+.footer {
+  background: white; border-top: 1px solid var(--border);
+  padding: 28px 20px; text-align: center;
+  font-size: 13px; color: var(--text-sub);
+}
+.footer strong { color: var(--blue); }
+
+@media(min-width: 600px) {
+  .hero { padding: 56px 40px 46px; }
+  .hero h1 { font-size: 2em; }
+  .main { padding: 28px 24px 80px; }
+  .before-after { flex-direction: row; }
+  .before-after .ba-box { flex: 1; }
+  .before-after .ba-arrow { display: flex; align-items: center; font-size: 28px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── HERO ── -->
+<div class="hero">
+  <div class="hero-series">
+    <span class="hero-tag">📒 사복쌤 AI 가이드 심화편</span>
+    <span class="hero-tag new">6편</span>
+  </div>
+  <h1>사례관리의 모든 단계에<br>AI를 붙여보자! 🤝</h1>
+  <p>접수부터 종결까지 — 비식별화 실전 가이드와<br>사례관리 5단계 NotebookLM 완전 활용법</p>
+  <a href="https://notebooklm.google.com/" target="_blank" class="hero-btn">🚀 NotebookLM 열기</a>
+</div>
+
+<!-- ── 이전편 배너 ── -->
+<div class="prev-banner">
+  ← <a href="#">5편: 음성 녹음 & 유튜브 영상 분석</a>도 함께 보세요!
+</div>
+
+<!-- ── 시리즈 로드맵 ── -->
+<div class="series-nav">
+  <div class="series-label">📚 심화 시리즈 진행 현황</div>
+  <div class="series-grid">
+    <div class="series-item done">1편<br>보고서·슬라이드</div>
+    <div class="series-item done">2편<br>마인드맵·브리핑</div>
+    <div class="series-item done">3편<br>지침서 비교</div>
+    <div class="series-item done">4편<br>팀 협업 공유</div>
+    <div class="series-item done">5편<br>음성·영상 분석</div>
+    <div class="series-item active">6편<br>사례관리 특화</div>
+  </div>
+</div>
+
+<!-- ── STICKY TOC ── -->
+<div class="toc-sticky">
+  <div class="toc-grid">
+    <a href="#ch1" class="toc-pill">1장 왜 사례관리?</a>
+    <a href="#ch2" class="toc-pill">2장 비식별화 실전</a>
+    <a href="#ch3" class="toc-pill">3장 접수·사정</a>
+    <a href="#ch4" class="toc-pill">4장 계획 수립</a>
+    <a href="#ch5" class="toc-pill">5장 개입·모니터링</a>
+    <a href="#ch6" class="toc-pill">6장 종결·평가</a>
+    <a href="#appendix" class="toc-pill">🎁 프롬프트 사전</a>
+    <a href="#tip" class="toc-pill">💡 꿀팁 모음</a>
+    <a href="#final" class="toc-pill">🎉 시리즈 완결</a>
+  </div>
+</div>
+
+<!-- ── MAIN ── -->
+<div class="main">
+
+<!-- ─────────────── 1장 ─────────────── -->
+<div class="chapter" id="ch1">
+  <div class="chapter-label">
+    <div class="chapter-icon">🤝</div>
+    <div class="chapter-title">제1장. 사례관리에 AI가 필요한 이유<br>기록과 분석에서 시간을 돌려받자</div>
+  </div>
+  <div class="chapter-divider"></div>
+
+  <p class="text-sm">사례관리는 사회복지 실천의 핵심입니다. 그런데 정작 클라이언트와 함께하는 시간보다 <strong>기록, 보고서, 회의 준비</strong>에 더 많은 시간을 쓰고 계시진 않나요?</p>
+
+  <div class="before-after">
+    <div class="ba-before ba-box">
+      <span class="ba-label">😩 AI 없는 사례관리</span>
+      상담 후 → 기록 작성 30분 → 다음 회기 계획 고민 20분 → 슈퍼비전 자료 준비 1시간 → 사례회의 회의록 작성 1시간 → 종결 보고서 2시간
+    </div>
+    <div class="ba-arrow">↓</div>
+    <div class="ba-after ba-box">
+      <span class="ba-label">✨ NotebookLM 활용</span>
+      비식별화 기록 업로드 → AI가 변화 분석 + 다음 계획 제안 + 슈퍼비전 질문 도출 + 회의록 초안 + 종결 보고서 뼈대까지. 기록 행정 시간이 절반 이하로!
+    </div>
+  </div>
+
+  <div class="section-title">6편에서 다루는 사례관리 5단계</div>
+
+  <div class="cm-flow">
+    <div class="cm-step">
+      <div class="cm-step-badge">1단계<br>접수</div>
+      <div class="cm-step-body">
+        <strong>접수 & 초기 사정</strong>
+        <span>의뢰서·신청서 분석, 위기 수준 판단, 우선순위 결정</span>
+        <div class="cm-step-ai">🤖 AI 활용: 접수 서류 분석 → 위기 지표 추출 → 유사 사례 패턴 파악</div>
+      </div>
+    </div>
+    <div class="cm-arrow">↓</div>
+    <div class="cm-step">
+      <div class="cm-step-badge">2단계<br>사정</div>
+      <div class="cm-step-body">
+        <strong>욕구 사정 & 강점 파악</strong>
+        <span>상담 기록 종합, 생태도·가계도 분석, 자원 파악</span>
+        <div class="cm-step-ai">🤖 AI 활용: 누적 상담 기록 분석 → 욕구 우선순위 도출 → 강점 목록 정리</div>
+      </div>
+    </div>
+    <div class="cm-arrow">↓</div>
+    <div class="cm-step">
+      <div class="cm-step-badge">3단계<br>계획</div>
+      <div class="cm-step-body">
+        <strong>개입 계획 수립</strong>
+        <span>목표 설정, 서비스 연계 계획, 자원 목록 작성</span>
+        <div class="cm-step-ai">🤖 AI 활용: 지침서 기반 연계 자원 제안 → SMART 목표 초안 작성</div>
+      </div>
+    </div>
+    <div class="cm-arrow">↓</div>
+    <div class="cm-step">
+      <div class="cm-step-badge">4단계<br>개입</div>
+      <div class="cm-step-body">
+        <strong>직접 개입 & 모니터링</strong>
+        <span>상담 기록, 진행 점검, 계획 수정</span>
+        <div class="cm-step-ai">🤖 AI 활용: 회기별 변화 추적 → 계획 대비 실적 분석 → 슈퍼비전 준비</div>
+      </div>
+    </div>
+    <div class="cm-arrow">↓</div>
+    <div class="cm-step">
+      <div class="cm-step-badge">5단계<br>종결</div>
+      <div class="cm-step-body">
+        <strong>종결 & 사후 관리</strong>
+        <span>성과 평가, 종결 보고서, 사후 모니터링 계획</span>
+        <div class="cm-step-ai">🤖 AI 활용: 전체 기록 종합 분석 → 종결 보고서 초안 → 사후관리 체크리스트</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────── 2장 ─────────────── -->
+<div class="chapter" id="ch2">
+  <div class="chapter-label">
+    <div class="chapter-icon">🔒</div>
+    <div class="chapter-title">제2장. 비식별화 실전 가이드<br>안전하게 올리는 법 완전 정복</div>
+  </div>
+  <div class="chapter-divider"></div>
+
+  <p class="text-sm">사례관리 기록을 AI에 올리기 전 가장 중요한 단계입니다. 개인정보 보호는 타협이 없습니다. 완벽한 비식별화 방법을 단계별로 배워봅니다.</p>
+
+  <div class="section-title">비식별화 항목별 처리 방법</div>
+
+  <div class="anon-table">
+    <div class="anon-header">
+      <div>정보 항목</div>
+      <div>원본 (예시)</div>
+      <div>비식별화 (예시)</div>
+    </div>
+    <div class="anon-row">
+      <div>실명</div>
+      <div class="anon-before">홍길동</div>
+      <div class="anon-after">클라이언트A</div>
+    </div>
+    <div class="anon-row">
+      <div>주민등록번호</div>
+      <div class="anon-before">901201-1234567</div>
+      <div class="anon-after">삭제 또는 ○○○○○○-○○○○○○○</div>
+    </div>
+    <div class="anon-row">
+      <div>상세 주소</div>
+      <div class="anon-before">은평구 녹번동 123-4</div>
+      <div class="anon-after">은평구 거주</div>
+    </div>
+    <div class="anon-row">
+      <div>전화번호</div>
+      <div class="anon-before">010-1234-5678</div>
+      <div class="anon-after">삭제 또는 010-○○○○-○○○○</div>
+    </div>
+    <div class="anon-row">
+      <div>가족관계 실명</div>
+      <div class="anon-before">배우자 김영희, 자녀 홍민준</div>
+      <div class="anon-after">배우자 B, 자녀 C</div>
+    </div>
+    <div class="anon-row">
+      <div>직장·학교명</div>
+      <div class="anon-before">○○초등학교 2학년</div>
+      <div class="anon-after">초등학교 2학년 재학</div>
+    </div>
+    <div class="anon-row">
+      <div>담당 사회복지사명</div>
+      <div class="anon-before">담당: 이복지</div>
+      <div class="anon-after">담당: 사회복지사W</div>
+    </div>
+  </div>
+
+  <div class="section-title">한글/워드 일괄 비식별화 방법</div>
+  <ol class="step-list">
+    <li>
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <strong>Ctrl + H (찾아 바꾸기) 실행</strong>
+        <span>한글·워드 모두 동일한 단축키입니다</span>
+      </div>
+    </li>
+    <li>
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <strong>찾을 말: 실명 입력 → 바꿀 말: 클라이언트A 입력</strong>
+        <span>[모두 바꾸기] 클릭 → 전체 문서에서 한 번에 교체됩니다</span>
+      </div>
+    </li>
+    <li>
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <strong>주민번호·전화번호·주소 동일하게 반복</strong>
+        <span>숫자 패턴은 직접 검색하거나 수동으로 확인합니다</span>
+      </div>
+    </li>
+    <li>
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <strong>비식별화된 파일을 PDF로 저장</strong>
+        <span>파일명에 "_비식별" 태그를 붙여두면 나중에 구분하기 쉽습니다</span>
+      </div>
+    </li>
+    <li>
+      <div class="step-num">5</div>
+      <div class="step-content">
+        <strong>업로드 전 마지막 눈으로 확인</strong>
+        <span>Ctrl+F로 실명·주민번호 등 민감정보가 남아있지 않은지 최종 점검!</span>
+      </div>
+    </li>
+  </ol>
+
+  <div class="card card-red">
+    <div class="card-title red">🚨 비식별화 절대 원칙</div>
+    <div class="feature-list" style="margin-top:8px;">
+      <div class="feature-item">
+        <span class="feature-emo">🚫</span>
+        <div class="feature-text">
+          <strong>원본 파일은 절대 올리지 않습니다</strong>
+          <span>아무리 급해도, 아무리 작은 기관이어도 원본 상담 기록 업로드는 금지입니다</span>
+        </div>
+      </div>
+      <div class="feature-item">
+        <span class="feature-emo">🔒</span>
+        <div class="feature-text">
+          <strong>사례관리 노트북은 절대 공유하지 않습니다</strong>
+          <span>4편(공유 기능)과 연계 시, 사례 내용이 담긴 노트북은 단 한 명에게도 공유 금지</span>
+        </div>
+      </div>
+      <div class="feature-item">
+        <span class="feature-emo">🗑️</span>
+        <div class="feature-text">
+          <strong>사용 후 소스 삭제를 습관화합니다</strong>
+          <span>분석이 끝난 사례 소스는 노트북에서 삭제해 불필요한 데이터 잔류를 방지하세요</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────── 3장 ─────────────── -->
+<div class="chapter" id="ch3">
+  <div class="chapter-label">
+    <div class="chapter-icon">📋</div>
+    <div class="chapter-title">제3장. 1단계 접수 & 2단계 사정<br>첫 만남부터 AI와 함께</div>
+  </div>
+  <div class="chapter-divider"></div>
+
+  <div class="stage-card">
+    <div class="stage-header">📋 1단계 — 접수 & 초기 사정</div>
+    <div class="stage-body">
+      <div class="stage-situation">의뢰서, 신청서, 초기 상담 기록을 올리면 AI가 위기 수준을 판단하고 우선순위를 잡아줍니다.</div>
+      <div class="feature-list">
+        <div class="feature-item">
+          <span class="feature-emo">📄</span>
+          <div class="feature-text">
+            <strong>올릴 소스</strong>
+            <span>비식별화된 의뢰서, 신청서, 초기 상담 기록, 관련 지침서(긴급복지 기준 등)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="prompt-box">
+    <span class="prompt-label">📋 위기 수준 판단 및 우선순위</span>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+    <div>업로드한 초기 상담 기록과 의뢰서를 분석해 줘.
+① 현재 가장 시급한 위기 영역 (경제·주거·신체·정서·안전 중)
+② 위기 수준 판단 근거 (기록에서 확인된 구체적 사실)
+③ 초기 개입에서 가장 먼저 다뤄야 할 욕구 3가지
+④ 관련 지원 제도나 자원이 있다면 함께 제안해 줘.</div>
+  </div>
+
+  <div class="prompt-box">
+    <span class="prompt-label">📋 유사 사례 개입 패턴 파악</span>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+    <div>업로드한 지침서와 사례 관련 자료를 바탕으로,
+이 클라이언트 상황과 유사한 사례에서 효과적이었던 개입 방법을 정리해 줘.
+특히 이 연령대·가구 유형에서 주의해야 할 점도 함께 알려줘.</div>
+  </div>
+
+  <div class="stage-card" style="margin-top:20px;">
+    <div class="stage-header">🔍 2단계 — 욕구 사정 & 강점 파악</div>
+    <div class="stage-body">
+      <div class="stage-situation">여러 회차 상담 기록이 쌓였을 때 AI가 욕구 우선순위와 클라이언트 강점을 통합 분석해 줍니다.</div>
+    </div>
+  </div>
+
+  <div class="prompt-box">
+    <span class="prompt-label">📋 욕구 사정 종합 분석</span>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+    <div>업로드한 초기~3회기 상담 기록 전체를 분석해 줘.
+① 클라이언트가 직접 표현한 욕구 (명시적 욕구)
+② 기록에서 읽히는 숨겨진 욕구 (암묵적 욕구)
+③ 클라이언트의 강점과 자원 (가족·지인·경험·능력)
+④ 사회복지사가 다음 상담에서 더 탐색해야 할 부분
+각 항목을 구분해서 표로 정리해 줘.</div>
+  </div>
+
+  <div class="prompt-box">
+    <span class="prompt-label">📋 생태체계 관점 분석</span>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+    <div>업로드한 상담 기록을 생태체계 관점으로 분석해 줘.
+미시체계(개인·가족) / 중간체계(이웃·학교·직장) / 외체계(지역사회 자원) / 거시체계(정책·문화)
+각 수준에서 클라이언트의 강점과 위험 요인을 구분해서 정리해 줘.</div>
+  </div>
+</div>
+
+<!-- ─────────────── 4장 ─────────────── -->
+<div class="chapter" id="ch4">
+  <div class="chapter-label">
+    <div class="chapter-icon">📝</div>
+    <div class="chapter-title">제4장. 3단계 개입 계획 수립<br>SMART 목표와 자원 연계 계획</div>
+  </div>
+  <div class="chapter-divider"></div>
+
+  <div class="stage-card">
+    <div class="stage-header">📝 3단계 — 개입 계획 수립</div>
+    <div class="stage-body">
+      <div class="stage-situation">사정 결과를 바탕으로 구체적인 목표와 서비스 연계 계획을 세웁니다. AI가 지침서에서 연계 가능한 자원을 찾아주고 SMART 목표 초안을 작성해 줍니다.</div>
+      <div class="feature-list" style="margin-top:8px;">
+        <div class="feature-item">
+          <span class="feature-emo">📘</span>
+          <div class="feature-text">
+            <strong>함께 올릴 소스</strong>
+            <span>사정 결과 기록 + 지역 자원 목록 + 관련 사업 지침서 (긴급복지, 의료비 지원 등)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="prompt-box">
+    <span class="prompt-label">📋 SMART 목표 초안 작성</span>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+    <div>업로드한 사정 결과를 바탕으로 개입 계획의 목표를 SMART 형식으로 작성해 줘.
+S(구체적) / M(측정가능) / A(달성가능) / R(현실적) / T(시간제한) 기준에 맞게
+단기목표(1개월) / 중기목표(3개월) / 장기목표(6개월)로 나눠서 작성해 줘.
+클라이언트의 강점을 목표에 자연스럽게 포함해 줘.</div>
+  </div>
+
+  <div class="prompt-box">
+    <span class="prompt-label">📋 연계 가능한 지역자원 찾기</span>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+    <div>업로드한 지역 자원 목록과 지침서를 바탕으로,
+이 클라이언트 상황(저소득 한부모 가정, 초등학생 자녀 2명)에서 연계 가능한 공식·비공식 자원을 모두 찾아줘.
+각 자원별로: 지원 내용 / 신청 대상 / 신청 방법 / 담당 기관을 표로 정리해 줘.
+우선순위가 높은 것부터 순서대로 나열해 줘.</div>
+  </div>
+
+  <div class="prompt-box">
+    <span class="prompt-label">📋 개입 계획서 초안 작성</span>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+    <div>업로드한 사정 결과와 지원 자원 목록을 바탕으로 사례관리 개입 계획서 초안을 작성해 줘.
+항목: 클라이언트 현황 요약 / 주요 욕구 / 단기·중기·장기 목표 / 서비스 연계 계획 / 담당자 역할 / 모니터링 주기
+합니다체, 기관 공식 서류 어투로 작성해 줘.</div>
+  </div>
+</div>
+
+<!-- ─────────────── 5장 ─────────────── -->
+<div class="chapter" id="ch5">
+  <div class="chapter-label">
+    <div class="chapter-icon">🔄</div>
+    <div class="chapter-title">제5장. 4단계 개입 & 모니터링<br>회기별 변화를 AI가 추적한다</div>
+  </div>
+  <div class="chapter-divider"></div>
+
+  <div class="stage-card">
+    <div class="stage-header">🔄 4단계 — 직접 개입 & 모니터링</div>
+    <div class="stage-body">
+      <div class="stage-situation">회기가 쌓일수록 기록도 늘어납니다. AI가 전체 기록을 통합 분석해 변화 추이를 보여주고, 슈퍼비전 준비까지 도와줍니다.</div>
+    </div>
+  </div>
+
+  <div class="prompt-box">
+    <span class="prompt-label">📋 회기별 변화 추이 분석</span>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+    <div>업로드한 1회기~현재까지의 상담 기록 전체를 분석해 줘.
+① 초기 대비 긍정적으로 변화한 부분 (강점 관점에서)
+② 여전히 어려움이 지속되는 영역
+③ 예상치 못하게 새로 드러난 욕구나 문제
+④ 목표 달성도 점검 (설정한 목표 대비 현재 진행 수준)
+각 항목을 시간 순서로 정리해 줘.</div>
+  </div>
+
+  <div class="prompt-box">
+    <span class="prompt-label">📋 다음 회기 준비 체크리스트</span>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+    <div>지난 회기 기록을 분석해서 다음 상담 전에 준비해야 할 사항을 정리해 줘.
+① 지난 회기에서 확인하기로 한 것 중 아직 안 된 것
+② 다음 회기에서 반드시 탐색해야 할 주제
+③ 연계 신청 진행 상황 확인이 필요한 서비스
+④ 클라이언트가 다음 회기 전에 해오기로 한 과제
+체크박스(☐) 형식으로 만들어 줘.</div>
+  </div>
+
+  <div class="prompt-box">
+    <span class="prompt-label">📋 슈퍼비전 자료 준비</span>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+    <div>업로드한 사례 기록 전체를 검토해서 슈퍼바이저에게 자문을 구할 핵심 질문 5가지를 만들어 줘.
+각 질문은 '현재 클라이언트 상황 + 내가 시도한 개입 + 내가 막히거나 고민되는 부분' 형식으로 구성해 줘.
+슈퍼바이저가 사례 맥락을 빠르게 파악할 수 있도록 첫 문단에 사례 요약(3줄)도 포함해 줘.</div>
+  </div>
+
+  <div class="prompt-box">
+    <span class="prompt-label">📋 중간 점검 보고서 초안</span>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+    <div>사례관리 중간 점검 보고서 초안을 작성해 줘.
+항목: 개입 기간 / 주요 개입 내용 / 목표 달성 현황 / 자원 연계 결과 / 향후 계획
+합니다체, A4 1페이지 이내.
+수치나 구체적 사실이 기록에 있으면 그대로 반영해 줘.</div>
+  </div>
+</div>
+
+<!-- ─────────────── 6장 ─────────────── -->
+<div class="chapter" id="ch6">
+  <div class="chapter-label">
+    <div class="chapter-icon">✅</div>
+    <div class="chapter-title">제6장. 5단계 종결 & 사후 관리<br>마무리도 AI와 함께 깔끔하게</div>
+  </div>
+  <div class="chapter-divider"></div>
+
+  <div class="stage-card">
+    <div class="stage-header">✅ 5단계 — 종결 & 사후 관리</div>
+    <div class="stage-body">
+      <div class="stage-situation">전체 개입 기록을 종합 분석해서 종결 보고서를 작성하고, 사후 모니터링 계획까지 AI가 도와줍니다.</div>
+    </div>
+  </div>
+
+  <div class="prompt-box">
+    <span class="prompt-label">📋 종결 보고서 초안 자동 생성</span>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+    <div>업로드한 전체 사례관리 기록(접수~종결)을 바탕으로 종결 보고서 초안을 작성해 줘.
+항목: 사례 개요 / 개입 기간 및 회기 수 / 주요 개입 내용 / 목표 달성 결과 / 클라이언트 변화 / 종결 사유 / 사후관리 계획
+강점 관점에서 클라이언트의 성장과 변화를 중심으로 서술해 줘.
+합니다체, A4 2페이지 이내.</div>
+  </div>
+
+  <div class="prompt-box">
+    <span class="prompt-label">📋 성과 분석 — 목표 달성도 평가</span>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+    <div>개입 계획서에서 설정한 목표와 실제 달성 결과를 비교 분석해 줘.
+단기·중기·장기 목표 각각에 대해:
+① 달성 여부 (달성 / 부분 달성 / 미달성)
+② 달성 또는 미달성의 구체적 근거 (기록에서 찾아줘)
+③ 미달성 목표에 대한 원인 분석
+표 형식으로 정리해 줘.</div>
+  </div>
+
+  <div class="prompt-box">
+    <span class="prompt-label">📋 사후 모니터링 계획 수립</span>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+    <div>이 사례의 종결 후 사후 모니터링 계획을 수립해 줘.
+① 위기 재발 가능성이 높은 영역과 주의 신호
+② 사후 모니터링 주기와 방법 (전화·방문·연계 기관 확인)
+③ 클라이언트가 스스로 활용할 수 있는 지역 자원 목록
+④ 재의뢰 기준 — 이런 상황이 생기면 다시 연락하세요
+체크리스트 형식으로 만들어 줘.</div>
+  </div>
+
+  <div class="card card-green">
+    <div class="card-title green">✅ 사례관리 전 과정 AI 활용 요약</div>
+    <div class="feature-list" style="margin-top:8px;">
+      <div class="feature-item">
+        <span class="feature-emo">1️⃣</span>
+        <div class="feature-text">
+          <strong>접수·사정</strong>
+          <span>위기 수준 판단 + 욕구 우선순위 + 강점 파악</span>
+        </div>
+      </div>
+      <div class="feature-item">
+        <span class="feature-emo">2️⃣</span>
+        <div class="feature-text">
+          <strong>계획 수립</strong>
+          <span>SMART 목표 초안 + 연계 자원 탐색 + 계획서 작성</span>
+        </div>
+      </div>
+      <div class="feature-item">
+        <span class="feature-emo">3️⃣</span>
+        <div class="feature-text">
+          <strong>개입·모니터링</strong>
+          <span>변화 추이 분석 + 다음 회기 준비 + 슈퍼비전 자료</span>
+        </div>
+      </div>
+      <div class="feature-item">
+        <span class="feature-emo">4️⃣</span>
+        <div class="feature-text">
+          <strong>종결·사후관리</strong>
+          <span>종결 보고서 + 목표 달성도 평가 + 사후 모니터링 계획</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────── 부록 ─────────────── -->
+<div class="chapter" id="appendix">
+  <div class="chapter-label">
+    <div class="chapter-icon" style="background:var(--green);">🎁</div>
+    <div class="chapter-title">부록. 심화 6편 프롬프트 전체 모음</div>
+  </div>
+  <div class="chapter-divider"></div>
+  <p class="text-sm">사례관리 5단계별 프롬프트를 한 곳에 모았습니다. 복사해서 바로 쓰세요!</p>
+
+  <div style="margin:16px 0;">
+    <div style="font-size:13px;font-weight:700;color:var(--blue);margin-bottom:8px;">📋 접수 & 사정 단계</div>
+    <div class="prompt-box">
+      <span class="prompt-label">① 위기 수준 판단</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+      <div>업로드한 초기 상담 기록과 의뢰서를 분석해 줘.
+① 현재 가장 시급한 위기 영역 (경제·주거·신체·정서·안전 중)
+② 위기 수준 판단 근거 (기록에서 확인된 구체적 사실)
+③ 초기 개입에서 가장 먼저 다뤄야 할 욕구 3가지
+④ 관련 지원 제도나 자원이 있다면 함께 제안해 줘.</div>
+    </div>
+    <div class="prompt-box">
+      <span class="prompt-label">② 욕구 사정 종합 분석</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+      <div>업로드한 초기~3회기 상담 기록 전체를 분석해 줘.
+① 클라이언트가 직접 표현한 욕구 (명시적 욕구)
+② 기록에서 읽히는 숨겨진 욕구 (암묵적 욕구)
+③ 클라이언트의 강점과 자원 (가족·지인·경험·능력)
+④ 사회복지사가 다음 상담에서 더 탐색해야 할 부분
+각 항목을 구분해서 표로 정리해 줘.</div>
+    </div>
+  </div>
+
+  <div style="margin:16px 0;">
+    <div style="font-size:13px;font-weight:700;color:var(--blue);margin-bottom:8px;">📝 계획 수립 단계</div>
+    <div class="prompt-box">
+      <span class="prompt-label">③ SMART 목표 초안</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+      <div>업로드한 사정 결과를 바탕으로 개입 계획의 목표를 SMART 형식으로 작성해 줘.
+S(구체적) / M(측정가능) / A(달성가능) / R(현실적) / T(시간제한) 기준에 맞게
+단기목표(1개월) / 중기목표(3개월) / 장기목표(6개월)로 나눠서 작성해 줘.
+클라이언트의 강점을 목표에 자연스럽게 포함해 줘.</div>
+    </div>
+    <div class="prompt-box">
+      <span class="prompt-label">④ 연계 자원 찾기</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+      <div>업로드한 지역 자원 목록과 지침서를 바탕으로,
+이 클라이언트 상황에서 연계 가능한 공식·비공식 자원을 모두 찾아줘.
+각 자원별로: 지원 내용 / 신청 대상 / 신청 방법 / 담당 기관을 표로 정리해 줘.
+우선순위가 높은 것부터 순서대로 나열해 줘.</div>
+    </div>
+  </div>
+
+  <div style="margin:16px 0;">
+    <div style="font-size:13px;font-weight:700;color:var(--blue);margin-bottom:8px;">🔄 개입·모니터링 단계</div>
+    <div class="prompt-box">
+      <span class="prompt-label">⑤ 회기별 변화 추이 분석</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+      <div>업로드한 1회기~현재까지의 상담 기록 전체를 분석해 줘.
+① 초기 대비 긍정적으로 변화한 부분
+② 여전히 어려움이 지속되는 영역
+③ 예상치 못하게 새로 드러난 욕구나 문제
+④ 목표 달성도 점검
+각 항목을 시간 순서로 정리해 줘.</div>
+    </div>
+    <div class="prompt-box">
+      <span class="prompt-label">⑥ 슈퍼비전 자료 준비</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+      <div>업로드한 사례 기록 전체를 검토해서 슈퍼바이저에게 자문을 구할 핵심 질문 5가지를 만들어 줘.
+각 질문은 '현재 클라이언트 상황 + 내가 시도한 개입 + 내가 막히거나 고민되는 부분' 형식으로 구성해 줘.
+첫 문단에 사례 요약(3줄)도 포함해 줘.</div>
+    </div>
+  </div>
+
+  <div style="margin:16px 0;">
+    <div style="font-size:13px;font-weight:700;color:var(--blue);margin-bottom:8px;">✅ 종결·사후관리 단계</div>
+    <div class="prompt-box">
+      <span class="prompt-label">⑦ 종결 보고서 초안</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+      <div>업로드한 전체 사례관리 기록(접수~종결)을 바탕으로 종결 보고서 초안을 작성해 줘.
+항목: 사례 개요 / 개입 기간 및 회기 수 / 주요 개입 내용 / 목표 달성 결과 / 클라이언트 변화 / 종결 사유 / 사후관리 계획
+강점 관점에서 클라이언트의 성장과 변화를 중심으로 서술해 줘.
+합니다체, A4 2페이지 이내.</div>
+    </div>
+    <div class="prompt-box">
+      <span class="prompt-label">⑧ 사후 모니터링 계획</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+      <div>이 사례의 종결 후 사후 모니터링 계획을 수립해 줘.
+① 위기 재발 가능성이 높은 영역과 주의 신호
+② 사후 모니터링 주기와 방법
+③ 클라이언트가 스스로 활용할 수 있는 지역 자원 목록
+④ 재의뢰 기준
+체크리스트 형식으로 만들어 줘.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────── 꿀팁 ─────────────── -->
+<div class="chapter" id="tip">
+  <div class="chapter-label">
+    <div class="chapter-icon" style="background:var(--yellow);color:#1a1a2e;">💡</div>
+    <div class="chapter-title">꿀팁 모음 — 6편 핵심 정리</div>
+  </div>
+  <div class="chapter-divider"></div>
+
+  <div class="feature-list">
+    <div class="feature-item">
+      <span class="feature-emo">🗂️</span>
+      <div class="feature-text">
+        <strong>사례마다 별도 노트북 운영</strong>
+        <span>클라이언트A 노트북, 클라이언트B 노트북처럼 사례별로 분리하면 소스가 섞이지 않아 분석 오류를 방지할 수 있습니다.</span>
+      </div>
+    </div>
+    <div class="feature-item">
+      <span class="feature-emo">📅</span>
+      <div class="feature-text">
+        <strong>회기마다 소스 누적하기</strong>
+        <span>상담할 때마다 비식별화된 기록을 같은 노트북에 추가하면 AI가 전체 흐름을 파악해서 더 정확한 분석을 합니다. 한꺼번에 올리는 것보다 훨씬 효과적!</span>
+      </div>
+    </div>
+    <div class="feature-item">
+      <span class="feature-emo">📖</span>
+      <div class="feature-text">
+        <strong>지침서 + 상담 기록 함께 올리기</strong>
+        <span>상담 기록만 올리면 AI가 지원 자원을 모릅니다. 관련 지침서(긴급복지, 드림스타트 등)를 함께 올리면 "이 클라이언트에게 맞는 지원 제도"를 바로 찾아줍니다.</span>
+      </div>
+    </div>
+    <div class="feature-item">
+      <span class="feature-emo">🔒</span>
+      <div class="feature-text">
+        <strong>종결 후 소스 삭제 루틴</strong>
+        <span>사례가 종결되면 해당 노트북의 소스를 모두 삭제하거나 노트북 자체를 삭제하는 것을 원칙으로 삼으세요. 개인정보 최소 보유 원칙에도 부합합니다.</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────── 완결 ─────────────── -->
+<div class="chapter" id="final">
+  <div class="chapter-label">
+    <div class="chapter-icon" style="background:var(--green);">🎉</div>
+    <div class="chapter-title">심화 시리즈 전편 완결!</div>
+  </div>
+  <div class="chapter-divider"></div>
+
+  <div class="card card-green">
+    <div class="card-title green">🎉 기초편 + 심화 1~6편 완주 축하드립니다!</div>
+    <p class="text-sm" style="margin-bottom:14px;">이제 선생님은 NotebookLM을 사회복지 현장에서 가장 깊이 있게 활용하는 AI 전문 사회복지사입니다. 배운 내용을 하나씩 실천에 옮겨보세요!</p>
+
+    <div class="feature-list">
+      <div class="feature-item">
+        <span class="feature-emo">📖</span>
+        <div class="feature-text">
+          <strong>기초편 — NotebookLM 완전 정복</strong>
+          <span>가입·파일 올리기·질문법·FAQ 기초 마스터</span>
+        </div>
+      </div>
+      <div class="feature-item">
+        <span class="feature-emo">📄</span>
+        <div class="feature-text">
+          <strong>심화 1편 — 보고서·슬라이드 자동 초안</strong>
+          <span>스튜디오 기능으로 문서 작업 절반으로</span>
+        </div>
+      </div>
+      <div class="feature-item">
+        <span class="feature-emo">🗺️</span>
+        <div class="feature-text">
+          <strong>심화 2편 — 마인드맵 & 브리핑 문서</strong>
+          <span>복잡한 지침서를 지도로 시각화</span>
+        </div>
+      </div>
+      <div class="feature-item">
+        <span class="feature-emo">🔍</span>
+        <div class="feature-text">
+          <strong>심화 3편 — 연도별 지침서 비교</strong>
+          <span>변경사항 자동 추출 + 우리 기관 영향도 분류</span>
+        </div>
+      </div>
+      <div class="feature-item">
+        <span class="feature-emo">👥</span>
+        <div class="feature-text">
+          <strong>심화 4편 — 팀 협업 & 공유</strong>
+          <span>팀 전체가 함께 쓰는 AI 지식베이스</span>
+        </div>
+      </div>
+      <div class="feature-item">
+        <span class="feature-emo">🎙️</span>
+        <div class="feature-text">
+          <strong>심화 5편 — 음성·영상 분석</strong>
+          <span>회의 녹음·유튜브로 회의록·교육 자료 자동화</span>
+        </div>
+      </div>
+      <div class="feature-item">
+        <span class="feature-emo">🤝</span>
+        <div class="feature-text">
+          <strong>심화 6편 — 사례관리 특화</strong>
+          <span>비식별화 실전 + 5단계 전 과정 AI 활용</span>
+        </div>
+      </div>
+    </div>
+
+    <p style="margin-top:16px;font-size:13px;color:var(--green);font-weight:700;">→ 더 많은 AI 실무 콘텐츠: <a href="https://www.saboknote.com/" target="_blank" style="color:var(--green);">saboknote.com</a></p>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<!-- ── FOOTER ── -->
+<div class="footer">
+  <p style="font-size:22px;margin-bottom:8px;">🤝 📒 🌿</p>
+  <p><strong>심화 6편. 사례관리 특화 완전 정복 — 시리즈 완결</strong></p>
+  <p style="margin-top:6px;font-size:12px;">NotebookLM 심화 시리즈 | 사복쌤을 위한 AI 실무 가이드</p>
+  <p style="margin-top:14px;">든든한 실무 파트너: <a href="https://www.saboknote.com/" target="_blank"><strong>사복노트 (saboknote.com)</strong></a></p>
+</div>
+
+<!-- ── Floating buttons ── -->
+<div class="float-btns">
+  <button class="float-btn back-btn" onclick="goBack()" title="이전 페이지">←</button>
+  <button class="float-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="맨 위로">↑</button>
+</div>
+
+<script>
+document.querySelectorAll('.float-btn').forEach(btn => {
+  window.addEventListener('scroll', () => {
+    btn.classList.toggle('visible', window.scrollY > 300);
+  });
+});
+function goBack() {
+  if (document.referrer) { window.history.back(); }
+  else { window.scrollTo({top: 0, behavior: 'smooth'}); }
+}
+function copyPrompt(el) {
+  const text = el.closest('.prompt-box').querySelector('div').innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    el.textContent = '✅ 복사됨!';
+    el.classList.add('copied');
+    setTimeout(() => { el.textContent = '📋 복사'; el.classList.remove('copied'); }, 1800);
+  }).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    el.textContent = '✅ 복사됨!';
+    el.classList.add('copied');
+    setTimeout(() => { el.textContent = '📋 복사'; el.classList.remove('copied'); }, 1800);
+  });
+}
+</script>
+</body>
+</html>

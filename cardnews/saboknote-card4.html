@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>사복노트 4번 게시글</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: #DDE3ED;
+    font-family: 'Noto Sans KR', sans-serif;
+    min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 32px 16px 48px;
+  }
+  .top-label { font-size: 12px; font-weight: 700; color: #8A94A6; letter-spacing: 2px; margin-bottom: 20px; text-transform: uppercase; }
+  .card { width: 480px; height: 600px; border-radius: 22px; overflow: hidden; box-shadow: 0 16px 48px rgba(0,0,0,0.18); position: relative; flex-shrink: 0; }
+  .slide { display: none; width: 100%; height: 100%; position: absolute; top:0; left:0; }
+  .slide.on { display: flex; flex-direction: column; }
+  .foot { height: 48px; flex-shrink: 0; display: flex; align-items: center; padding: 0 32px; justify-content: space-between; }
+  .foot .fl { font-size: 12px; font-weight: 900; }
+  .foot .fr { font-size: 11px; }
+
+  /* ─── S1 표지 ─── */
+  .s1 { background: #1B2E4B; }
+  .s1 .logo-bar { display: flex; justify-content: space-between; align-items: center; padding: 28px 32px 0; flex-shrink: 0; }
+  .s1 .logo { font-size: 13px; font-weight: 900; color: rgba(255,255,255,0.4); }
+  .s1 .num { font-size: 11px; color: rgba(255,255,255,0.25); }
+  .s1 .body { flex: 1; padding: 0 32px; display: flex; flex-direction: column; justify-content: center; }
+  .s1 .pill { display: inline-block; background: rgba(255,107,107,0.18); border: 1px solid rgba(255,107,107,0.3); color: #FF8E8E; font-size: 10px; font-weight: 700; padding: 4px 12px; border-radius: 20px; margin-bottom: 20px; align-self: flex-start; letter-spacing: 1px; }
+  .s1 .title { font-size: 38px; font-weight: 900; color: white; line-height: 1.25; margin-bottom: 16px; }
+  .s1 .title em { color: #FFD166; font-style: normal; }
+  .s1 .desc { font-size: 14px; color: rgba(255,255,255,0.5); line-height: 1.85; margin-bottom: 24px; word-break: keep-all; }
+  .s1 .warning { display: flex; align-items: center; gap: 8px; background: rgba(255,107,107,0.1); border: 1px solid rgba(255,107,107,0.2); border-radius: 12px; padding: 10px 14px; }
+  .s1 .warning-text { font-size: 12px; color: rgba(255,255,255,0.55); line-height: 1.6; word-break: keep-all; }
+  .s1 .warning-text em { color: #FF8E8E; font-style: normal; font-weight: 700; }
+  .s1 .foot { background: rgba(255,255,255,0.04); border-top: 1px solid rgba(255,255,255,0.07); }
+  .s1 .foot .fl { color: rgba(255,255,255,0.35); }
+  .s1 .foot .fr { color: rgba(255,255,255,0.2); }
+
+  /* ─── S2 진단 전 이야기 ─── */
+  .s2 { background: #fff; }
+  .s2 .head { background: #1B2E4B; padding: 26px 32px 22px; flex-shrink: 0; }
+  .s2 .head-tag { font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.5); letter-spacing: 2px; margin-bottom: 6px; }
+  .s2 .head-title { font-size: 24px; font-weight: 900; color: white; line-height: 1.35; }
+  .s2 .body { flex: 1; padding: 24px 32px 0; }
+  .s2 .story { font-size: 15px; color: #3D4A5C; line-height: 1.9; word-break: keep-all; margin-bottom: 20px; }
+  .s2 .story strong { color: #1B2E4B; font-weight: 700; }
+  .s2 .notice { background: #FFF3F3; border-left: 3px solid #FF6B6B; border-radius: 0 12px 12px 0; padding: 12px 16px; font-size: 13px; color: #5A6678; line-height: 1.7; word-break: keep-all; }
+  .s2 .notice em { color: #FF6B6B; font-style: normal; font-weight: 700; }
+  .s2 .foot { background: #F4F6FA; }
+  .s2 .foot .fl { color: #1B2E4B; }
+  .s2 .foot .fr { color: #8A94A6; }
+
+  /* ─── S3 체크리스트 1 ─── */
+  .s3 { background: #FFF8F0; }
+  .s3 .head { background: #FF6B6B; padding: 22px 32px 18px; flex-shrink: 0; }
+  .s3 .head-tag { font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.65); letter-spacing: 2px; margin-bottom: 6px; }
+  .s3 .head-title { font-size: 22px; font-weight: 900; color: white; line-height: 1.35; }
+  .s3 .body { flex: 1; padding: 18px 32px 0; }
+  .s3 .check { display: flex; align-items: flex-start; gap: 12px; background: white; border-radius: 14px; padding: 14px 16px; margin-bottom: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+  .s3 .chk-box { width: 22px; height: 22px; border-radius: 6px; border: 2px solid #FFB3B3; flex-shrink: 0; margin-top: 1px; }
+  .s3 .chk-text { font-size: 14px; color: #3D4A5C; font-weight: 500; line-height: 1.55; word-break: keep-all; }
+  .s3 .chk-sub { font-size: 11px; color: #8A94A6; margin-top: 3px; line-height: 1.5; }
+  .s3 .foot { background: rgba(0,0,0,0.04); }
+  .s3 .foot .fl { color: #FF6B6B; }
+  .s3 .foot .fr { color: #8A94A6; }
+
+  /* ─── S4 체크리스트 2 ─── */
+  .s4 { background: #fff; }
+  .s4 .head { background: #FF6B6B; padding: 22px 32px 18px; flex-shrink: 0; }
+  .s4 .head-tag { font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.65); letter-spacing: 2px; margin-bottom: 6px; }
+  .s4 .head-title { font-size: 22px; font-weight: 900; color: white; line-height: 1.35; }
+  .s4 .body { flex: 1; padding: 18px 32px 0; }
+  .s4 .check { display: flex; align-items: flex-start; gap: 12px; background: #FFF8F8; border-radius: 14px; padding: 14px 16px; margin-bottom: 10px; border: 1px solid #FFE4E4; }
+  .s4 .chk-box { width: 22px; height: 22px; border-radius: 6px; border: 2px solid #FFB3B3; flex-shrink: 0; margin-top: 1px; }
+  .s4 .chk-text { font-size: 14px; color: #3D4A5C; font-weight: 500; line-height: 1.55; word-break: keep-all; }
+  .s4 .chk-sub { font-size: 11px; color: #8A94A6; margin-top: 3px; line-height: 1.5; }
+  .s4 .foot { background: #F4F6FA; }
+  .s4 .foot .fl { color: #FF6B6B; }
+  .s4 .foot .fr { color: #8A94A6; }
+
+  /* ─── S5 결과 해석 ─── */
+  .s5 { background: #1B2E4B; }
+  .s5 .top { padding: 26px 32px 0; flex-shrink: 0; }
+  .s5 .s5-tag { font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.4); letter-spacing: 2px; margin-bottom: 8px; }
+  .s5 .s5-title { font-size: 24px; font-weight: 900; color: white; line-height: 1.35; margin-bottom: 18px; }
+  .s5 .body { flex: 1; padding: 0 32px; }
+  .s5 .result { border-radius: 14px; padding: 14px 16px; margin-bottom: 10px; }
+  .s5 .r-row { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+  .s5 .r-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .s5 .r-title { font-size: 13px; font-weight: 700; }
+  .s5 .r-desc { font-size: 12px; line-height: 1.65; padding-left: 18px; word-break: keep-all; }
+  .s5 .result-a { background: rgba(78,205,196,0.12); border: 1px solid rgba(78,205,196,0.2); }
+  .s5 .result-a .r-dot { background: #4ECDC4; }
+  .s5 .result-a .r-title { color: #4ECDC4; }
+  .s5 .result-a .r-desc { color: rgba(255,255,255,0.6); }
+  .s5 .result-b { background: rgba(255,209,102,0.1); border: 1px solid rgba(255,209,102,0.2); }
+  .s5 .result-b .r-dot { background: #FFD166; }
+  .s5 .result-b .r-title { color: #FFD166; }
+  .s5 .result-b .r-desc { color: rgba(255,255,255,0.6); }
+  .s5 .result-c { background: rgba(255,107,107,0.12); border: 1px solid rgba(255,107,107,0.2); }
+  .s5 .result-c .r-dot { background: #FF6B6B; }
+  .s5 .result-c .r-title { color: #FF8E8E; }
+  .s5 .result-c .r-desc { color: rgba(255,255,255,0.6); }
+  .s5 .foot { background: rgba(0,0,0,0.2); border-top: 1px solid rgba(255,255,255,0.07); }
+  .s5 .foot .fl { color: rgba(255,255,255,0.35); }
+  .s5 .foot .fr { color: rgba(255,255,255,0.2); }
+
+  /* ─── S6 공감 메시지 ─── */
+  .s6 { background: #fff; }
+  .s6 .head { background: #1B2E4B; padding: 26px 32px 22px; flex-shrink: 0; }
+  .s6 .head-tag { font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.5); letter-spacing: 2px; margin-bottom: 6px; }
+  .s6 .head-title { font-size: 24px; font-weight: 900; color: white; line-height: 1.35; }
+  .s6 .body { flex: 1; padding: 22px 32px 0; display: flex; flex-direction: column; gap: 10px; }
+  .s6 .msg { background: #F4F6FA; border-radius: 14px; padding: 15px 18px; }
+  .s6 .msg-top { display: flex; align-items: center; gap: 8px; margin-bottom: 7px; }
+  .s6 .msg-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .s6 .msg-label { font-size: 11px; font-weight: 700; color: #8A94A6; letter-spacing: 1px; }
+  .s6 .msg-text { font-size: 13px; color: #3D4A5C; line-height: 1.7; word-break: keep-all; }
+  .s6 .msg-text em { color: #1B2E4B; font-style: normal; font-weight: 700; }
+  .s6 .foot { background: #F4F6FA; }
+  .s6 .foot .fl { color: #1B2E4B; }
+  .s6 .foot .fr { color: #8A94A6; }
+
+  /* ─── S7 감성 ─── */
+  .s7 { background: #1B2E4B; }
+  .s7 .body { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 40px 32px 0; }
+  .s7 .qm { font-size: 72px; font-weight: 900; color: rgba(255,255,255,0.05); line-height: 1; margin-bottom: -10px; }
+  .s7 .quote { font-size: 20px; font-weight: 700; color: white; line-height: 1.75; margin-bottom: 26px; word-break: keep-all; }
+  .s7 .quote em { color: #FFD166; font-style: normal; }
+  .s7 .divider { width: 36px; height: 2px; background: rgba(255,255,255,0.15); border-radius: 2px; margin-bottom: 18px; }
+  .s7 .sub { font-size: 14px; color: rgba(255,255,255,0.45); line-height: 1.85; word-break: keep-all; }
+  .s7 .foot { background: rgba(0,0,0,0.2); border-top: 1px solid rgba(255,255,255,0.07); }
+  .s7 .foot .fl { color: rgba(255,255,255,0.35); }
+  .s7 .foot .fr { color: rgba(255,255,255,0.2); }
+
+  /* ─── S8 마무리 ─── */
+  .s8 { background: linear-gradient(160deg, #0F1E35 0%, #1B3A6B 100%); }
+  .s8 .inner { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0 36px; text-align: center; }
+  .s8 .big { font-size: 21px; font-weight: 900; color: white; line-height: 1.6; margin-bottom: 18px; word-break: keep-all; }
+  .s8 .big em { color: #FFD166; font-style: normal; }
+  .s8 .div2 { width: 36px; height: 2px; background: rgba(255,255,255,0.15); border-radius: 2px; margin: 0 auto 18px; }
+  .s8 .sub { font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.9; margin-bottom: 28px; word-break: keep-all; }
+  .s8 .save-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.18); color: rgba(255,255,255,0.8); font-size: 13px; font-weight: 700; padding: 11px 24px; border-radius: 40px; margin-bottom: 10px; }
+  .s8 .follow { font-size: 12px; color: rgba(255,255,255,0.3); }
+  .s8 .foot { background: rgba(0,0,0,0.15); border-top: 1px solid rgba(255,255,255,0.06); }
+  .s8 .foot .fl { color: rgba(255,255,255,0.3); }
+  .s8 .foot .fr { color: rgba(255,255,255,0.2); }
+
+  /* NAV */
+  .nav { display: flex; align-items: center; gap: 14px; margin-top: 18px; }
+  .nbtn { width: 38px; height: 38px; border-radius: 50%; background: white; border: none; cursor: pointer; font-size: 15px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.12); color: #1B2E4B; transition: all .18s; }
+  .nbtn:hover:not(:disabled) { background: #1B2E4B; color: white; }
+  .nbtn:disabled { opacity: .3; cursor: default; }
+  .dots { display: flex; gap: 5px; }
+  .d { width: 7px; height: 7px; border-radius: 50%; background: #C0C8D4; cursor: pointer; transition: all .18s; }
+  .d.on { background: #1B2E4B; width: 18px; border-radius: 4px; }
+  .ctr { font-size: 11px; color: #8A94A6; margin-top: 6px; text-align: center; }
+</style>
+</head>
+<body>
+
+<div class="top-label">사복노트 · 4번 게시글 · 번아웃</div>
+
+<div class="card">
+
+  <!-- S1 표지 -->
+  <div class="slide s1 on">
+    <div class="logo-bar">
+      <span class="logo">sano 사복노트</span>
+      <span class="num">1 / 8</span>
+    </div>
+    <div class="body">
+      <div class="pill">🔥 번아웃 자가진단</div>
+      <div class="title">나 지금<br><em>번아웃</em>인가요?</div>
+      <div class="desc">
+        그냥 피곤한 건지,<br>
+        아니면 진짜 한계인지<br>
+        스스로 확인해보세요.
+      </div>
+      <div class="warning">
+        <div style="font-size:18px;">⚠️</div>
+        <div class="warning-text">아래 항목 중 <em>5개 이상</em>이면<br>번아웃 신호일 수 있어요.</div>
+      </div>
+    </div>
+    <div class="foot">
+      <span class="fl">사복노트</span>
+      <span class="fr">1 / 8</span>
+    </div>
+  </div>
+
+  <!-- S2 진단 전 이야기 -->
+  <div class="slide s2">
+    <div class="head">
+      <div class="head-tag">들어가기 전에</div>
+      <div class="head-title">번아웃은 의지의<br>문제가 아닙니다</div>
+    </div>
+    <div class="body">
+      <div class="story">
+        사회복지사는 <strong>감정을 도구로 쓰는 직업</strong>입니다.<br>
+        매일 누군가의 고통 앞에 서고,<br>
+        공감하고, 버티고, 또 출근해요.<br><br>
+        그게 쌓이면 어느 순간<br>
+        <strong>몸도 마음도 신호를 보내기 시작합니다.</strong>
+      </div>
+      <div class="notice">
+        번아웃은 <em>약한 사람</em>이 겪는 게 아니에요.<br>
+        오히려 너무 오래, 너무 열심히<br>버텨온 사람에게 찾아옵니다.
+      </div>
+    </div>
+    <div class="foot">
+      <span class="fl">사복노트</span>
+      <span class="fr">2 / 8</span>
+    </div>
+  </div>
+
+  <!-- S3 체크리스트 1~4 -->
+  <div class="slide s3">
+    <div class="head">
+      <div class="head-tag">자가진단 · 1~4번</div>
+      <div class="head-title">해당되는 항목에<br>체크해보세요</div>
+    </div>
+    <div class="body">
+      <div class="check">
+        <div class="chk-box"></div>
+        <div>
+          <div class="chk-text">출근 전날 밤이 무겁다</div>
+          <div class="chk-sub">일요일 저녁만 되면 가슴이 답답해진다</div>
+        </div>
+      </div>
+      <div class="check">
+        <div class="chk-box"></div>
+        <div>
+          <div class="chk-text">클라이언트 연락이 반갑지 않다</div>
+          <div class="chk-sub">예전엔 괜찮았는데 요즘은 전화가 무섭다</div>
+        </div>
+      </div>
+      <div class="check">
+        <div class="chk-box"></div>
+        <div>
+          <div class="chk-text">일이 의미 없게 느껴진다</div>
+          <div class="chk-sub">내가 뭘 하고 있는 건지 모르겠다는 생각</div>
+        </div>
+      </div>
+      <div class="check">
+        <div class="chk-box"></div>
+        <div>
+          <div class="chk-text">퇴근 후에도 일 생각이 멈추지 않는다</div>
+          <div class="chk-sub">쉬어도 쉬는 것 같지 않다</div>
+        </div>
+      </div>
+    </div>
+    <div class="foot">
+      <span class="fl">사복노트</span>
+      <span class="fr">3 / 8</span>
+    </div>
+  </div>
+
+  <!-- S4 체크리스트 5~8 -->
+  <div class="slide s4">
+    <div class="head">
+      <div class="head-tag">자가진단 · 5~8번</div>
+      <div class="head-title">계속 체크해보세요</div>
+    </div>
+    <div class="body">
+      <div class="check">
+        <div class="chk-box"></div>
+        <div>
+          <div class="chk-text">동료와 대화하기 싫어졌다</div>
+          <div class="chk-sub">사람 자체가 버겁게 느껴진다</div>
+        </div>
+      </div>
+      <div class="check">
+        <div class="chk-box"></div>
+        <div>
+          <div class="chk-text">예전엔 넘겼던 말에 상처받는다</div>
+          <div class="chk-sub">작은 말 한마디가 하루 종일 걸린다</div>
+        </div>
+      </div>
+      <div class="check">
+        <div class="chk-box"></div>
+        <div>
+          <div class="chk-text">몸이 자꾸 아프다</div>
+          <div class="chk-sub">두통, 소화불량, 피로감이 반복된다</div>
+        </div>
+      </div>
+      <div class="check">
+        <div class="chk-box"></div>
+        <div>
+          <div class="chk-text">그만두고 싶다는 생각이 자주 든다</div>
+          <div class="chk-sub">충동이 아니라 진짜 지쳐서 드는 생각</div>
+        </div>
+      </div>
+    </div>
+    <div class="foot">
+      <span class="fl">사복노트</span>
+      <span class="fr">4 / 8</span>
+    </div>
+  </div>
+
+  <!-- S5 결과 해석 -->
+  <div class="slide s5">
+    <div class="top">
+      <div class="s5-tag">결과 해석</div>
+      <div class="s5-title">몇 개 체크됐나요?</div>
+    </div>
+    <div class="body">
+      <div class="result result-a">
+        <div class="r-row">
+          <div class="r-dot"></div>
+          <div class="r-title">1~2개 · 경계 신호</div>
+        </div>
+        <div class="r-desc">지금은 괜찮아요. 근데 쉬는 연습을 시작해봐요.<br>번아웃은 갑자기 오지 않아요.</div>
+      </div>
+      <div class="result result-b">
+        <div class="r-row">
+          <div class="r-dot"></div>
+          <div class="r-title">3~5개 · 번아웃 진입 중</div>
+        </div>
+        <div class="r-desc">몸과 마음이 이미 신호를 보내고 있어요.<br>작은 것 하나라도 내려놓아야 할 때예요.</div>
+      </div>
+      <div class="result result-c">
+        <div class="r-row">
+          <div class="r-dot"></div>
+          <div class="r-title">6개 이상 · 번아웃 상태</div>
+        </div>
+        <div class="r-desc">혼자 버티지 않아도 돼요. 지금 당신에게<br>필요한 건 쉬는 것, 그리고 도움 요청이에요.</div>
+      </div>
+    </div>
+    <div class="foot">
+      <span class="fl">사복노트</span>
+      <span class="fr">5 / 8</span>
+    </div>
+  </div>
+
+  <!-- S6 공감 메시지 -->
+  <div class="slide s6">
+    <div class="head">
+      <div class="head-tag">사복노트가 전합니다</div>
+      <div class="head-title">체크하면서<br>마음이 무거웠죠?</div>
+    </div>
+    <div class="body">
+      <div class="msg">
+        <div class="msg-top">
+          <div class="msg-dot" style="background:#FF6B6B;"></div>
+          <div class="msg-label">당신이 약한 게 아니에요</div>
+        </div>
+        <div class="msg-text">번아웃은 <em>너무 오래 버텨온 사람</em>에게 찾아와요.<br>무너지는 게 아니라 한계를 맞이한 거예요.</div>
+      </div>
+      <div class="msg">
+        <div class="msg-top">
+          <div class="msg-dot" style="background:#FFD166;"></div>
+          <div class="msg-label">쉬어도 됩니다</div>
+        </div>
+        <div class="msg-text">클라이언트를 위해서라도 <em>당신이 먼저</em>예요.<br>비행기 산소마스크처럼, 내가 먼저 써야 해요.</div>
+      </div>
+      <div class="msg">
+        <div class="msg-top">
+          <div class="msg-dot" style="background:#4ECDC4;"></div>
+          <div class="msg-label">혼자 해결하려 하지 마세요</div>
+        </div>
+        <div class="msg-text">슈퍼바이저, 동료, 가족 누구든 <em>말을 꺼내세요.</em><br>꺼내는 것만으로도 조금 가벼워져요.</div>
+      </div>
+    </div>
+    <div class="foot">
+      <span class="fl">사복노트</span>
+      <span class="fr">6 / 8</span>
+    </div>
+  </div>
+
+  <!-- S7 감성 -->
+  <div class="slide s7">
+    <div class="body">
+      <div class="qm">"</div>
+      <div class="quote">
+        지치는 건<br>
+        그만큼 <em>열심히 살았다는 증거</em>예요.<br><br>
+        그러니까 부끄러워하지 말고<br>
+        그냥 좀 쉬어요.
+      </div>
+      <div class="divider"></div>
+      <div class="sub">
+        번아웃을 숨기지 않아도 되는 곳,<br>
+        사복노트가 그런 공간이 되고 싶어요 💙
+      </div>
+    </div>
+    <div class="foot">
+      <span class="fl">사복노트</span>
+      <span class="fr">7 / 8</span>
+    </div>
+  </div>
+
+  <!-- S8 마무리 -->
+  <div class="slide s8">
+    <div class="inner">
+      <div class="big">
+        오늘 이 카드가<br>
+        조금이라도 <em>위로</em>가 됐으면 해요
+      </div>
+      <div class="div2"></div>
+      <div class="sub">
+        저장해두고 지치는 날 꺼내보세요 🔖<br>
+        당신의 번아웃은 잘못이 아닙니다.<br>
+        사복노트가 옆에 있을게요 💙
+      </div>
+      <div class="save-btn">🔖 저장해두기</div>
+      <div class="follow">사복노트 팔로우 · 매주 공감 콘텐츠</div>
+    </div>
+    <div class="foot">
+      <span class="fl">사복노트</span>
+      <span class="fr">8 / 8</span>
+    </div>
+  </div>
+
+</div>
+
+<div class="nav">
+  <button class="nbtn" id="p" onclick="go(-1)" disabled>←</button>
+  <div class="dots" id="dots"></div>
+  <button class="nbtn" id="n" onclick="go(1)">→</button>
+</div>
+<div class="ctr" id="ctr">1 / 8</div>
+
+<script>
+  let cur = 0;
+  const N = 8;
+  const slides = document.querySelectorAll('.slide');
+  const wrap = document.getElementById('dots');
+  for(let i=0;i<N;i++){
+    const d = document.createElement('div');
+    d.className='d'+(i===0?' on':'');
+    d.onclick=()=>to(i);
+    wrap.appendChild(d);
+  }
+  function to(n){
+    slides[cur].classList.remove('on');
+    wrap.children[cur].classList.remove('on');
+    cur=n;
+    slides[cur].classList.add('on');
+    wrap.children[cur].classList.add('on');
+    document.getElementById('ctr').textContent=`${cur+1} / ${N}`;
+    document.getElementById('p').disabled=cur===0;
+    document.getElementById('n').disabled=cur===N-1;
+  }
+  function go(d){ const nx=cur+d; if(nx>=0&&nx<N) to(nx); }
+  document.addEventListener('keydown',e=>{
+    if(e.key==='ArrowRight') go(1);
+    if(e.key==='ArrowLeft') go(-1);
+  });
+</script>
+</body>
+</html>

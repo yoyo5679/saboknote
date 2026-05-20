@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>사복노트 3번 게시글</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: #DDE3ED;
+    font-family: 'Noto Sans KR', sans-serif;
+    min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 32px 16px 48px;
+  }
+  .top-label { font-size: 12px; font-weight: 700; color: #8A94A6; letter-spacing: 2px; margin-bottom: 20px; text-transform: uppercase; }
+  .card { width: 480px; height: 600px; border-radius: 22px; overflow: hidden; box-shadow: 0 16px 48px rgba(0,0,0,0.18); position: relative; flex-shrink: 0; }
+  .slide { display: none; width: 100%; height: 100%; position: absolute; top:0; left:0; }
+  .slide.on { display: flex; flex-direction: column; }
+  .foot { height: 48px; flex-shrink: 0; display: flex; align-items: center; padding: 0 32px; justify-content: space-between; }
+  .foot .fl { font-size: 12px; font-weight: 900; }
+  .foot .fr { font-size: 11px; }
+
+  /* ─── S1 표지 ─── */
+  .s1 { background: #1B2E4B; }
+  .s1 .logo-bar { display: flex; justify-content: space-between; align-items: center; padding: 28px 32px 0; flex-shrink: 0; }
+  .s1 .logo { font-size: 13px; font-weight: 900; color: rgba(255,255,255,0.4); }
+  .s1 .num { font-size: 11px; color: rgba(255,255,255,0.25); }
+  .s1 .body { flex: 1; padding: 0 32px; display: flex; flex-direction: column; justify-content: center; }
+  .s1 .pill { display: inline-block; background: rgba(255,209,102,0.15); border: 1px solid rgba(255,209,102,0.25); color: #FFD166; font-size: 10px; font-weight: 700; padding: 4px 12px; border-radius: 20px; margin-bottom: 22px; align-self: flex-start; letter-spacing: 1px; }
+  .s1 .title { font-size: 36px; font-weight: 900; color: white; line-height: 1.3; margin-bottom: 14px; }
+  .s1 .title em { color: #FFD166; font-style: normal; }
+  .s1 .desc { font-size: 14px; color: rgba(255,255,255,0.5); line-height: 1.85; }
+  .s1 .foot { background: rgba(255,255,255,0.04); border-top: 1px solid rgba(255,255,255,0.07); }
+  .s1 .foot .fl { color: rgba(255,255,255,0.35); }
+  .s1 .foot .fr { color: rgba(255,255,255,0.2); }
+
+  /* ─── S2 나 스스로 ─── */
+  .s2 { background: #fff; }
+  .s2 .head { background: #2F6FED; padding: 26px 32px 22px; flex-shrink: 0; }
+  .s2 .head-tag { font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.6); letter-spacing: 2px; margin-bottom: 6px; }
+  .s2 .head-title { font-size: 24px; font-weight: 900; color: white; line-height: 1.35; }
+  .s2 .body { flex: 1; padding: 24px 32px 0; }
+  .s2 .bubble-me {
+    background: #EBF2FF; border-radius: 4px 18px 18px 18px;
+    padding: 14px 18px; margin-bottom: 10px;
+    font-size: 14px; color: #1B2E4B; line-height: 1.7; font-weight: 500; word-break: keep-all;
+  }
+  .s2 .bubble-label { font-size: 11px; color: #8A94A6; margin-bottom: 6px; font-weight: 500; }
+  .s2 .desc-box {
+    background: #F4F6FA; border-radius: 14px; padding: 14px 16px;
+    font-size: 13px; color: #5A6678; line-height: 1.75; word-break: keep-all;
+    margin-top: 8px;
+  }
+  .s2 .desc-box strong { color: #2F6FED; }
+  .s2 .foot { background: #F4F6FA; }
+  .s2 .foot .fl { color: #2F6FED; }
+  .s2 .foot .fr { color: #8A94A6; }
+
+  /* ─── S3 부모님 ─── */
+  .s3 { background: #FFF8F0; }
+  .s3 .head { background: #1B2E4B; padding: 26px 32px 22px; flex-shrink: 0; }
+  .s3 .head-tag { font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.5); letter-spacing: 2px; margin-bottom: 6px; }
+  .s3 .head-title { font-size: 24px; font-weight: 900; color: white; line-height: 1.35; }
+  .s3 .body { flex: 1; padding: 22px 32px 0; }
+  .s3 .chat { display: flex; flex-direction: column; gap: 10px; }
+  .s3 .chat-row { display: flex; gap: 10px; align-items: flex-end; }
+  .s3 .chat-row.right { flex-direction: row-reverse; }
+  .s3 .avatar { width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+  .s3 .bubble {
+    max-width: 280px; padding: 11px 14px; border-radius: 18px;
+    font-size: 13px; line-height: 1.65; word-break: keep-all;
+  }
+  .s3 .bubble-parent { background: #e9e9eb; color: #1B2E4B; border-radius: 4px 18px 18px 18px; }
+  .s3 .bubble-me-r { background: #2F6FED; color: white; border-radius: 18px 4px 18px 18px; }
+  .s3 .bubble-meta { font-size: 11px; color: #8A94A6; margin: 0 6px 2px; }
+  .s3 .foot { background: rgba(0,0,0,0.04); }
+  .s3 .foot .fl { color: #1B2E4B; }
+  .s3 .foot .fr { color: #8A94A6; }
+
+  /* ─── S4 친구 ─── */
+  .s4 { background: #fff; }
+  .s4 .head { background: #4ECDC4; padding: 26px 32px 22px; flex-shrink: 0; }
+  .s4 .head-tag { font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.65); letter-spacing: 2px; margin-bottom: 6px; }
+  .s4 .head-title { font-size: 24px; font-weight: 900; color: white; line-height: 1.35; }
+  .s4 .body { flex: 1; padding: 22px 32px 0; }
+  .s4 .chat { display: flex; flex-direction: column; gap: 10px; }
+  .s4 .chat-row { display: flex; gap: 10px; align-items: flex-end; }
+  .s4 .chat-row.right { flex-direction: row-reverse; }
+  .s4 .bubble { max-width: 280px; padding: 11px 14px; border-radius: 18px; font-size: 13px; line-height: 1.65; word-break: keep-all; }
+  .s4 .bubble-friend { background: #e9e9eb; color: #1B2E4B; border-radius: 4px 18px 18px 18px; }
+  .s4 .bubble-me-r { background: #4ECDC4; color: white; border-radius: 18px 4px 18px 18px; }
+  .s4 .bubble-meta { font-size: 11px; color: #8A94A6; margin: 0 6px 2px; }
+  .s4 .thought { background: #F0FAFA; border-radius: 14px; padding: 14px 16px; margin-top: 12px; font-size: 13px; color: #5A6678; line-height: 1.7; word-break: keep-all; font-style: italic; }
+  .s4 .foot { background: #F4F6FA; }
+  .s4 .foot .fl { color: #4ECDC4; }
+  .s4 .foot .fr { color: #8A94A6; }
+
+  /* ─── S5 클라이언트 ─── */
+  .s5 { background: #FFF8F0; }
+  .s5 .head { background: #FF6B6B; padding: 26px 32px 22px; flex-shrink: 0; }
+  .s5 .head-tag { font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.65); letter-spacing: 2px; margin-bottom: 6px; }
+  .s5 .head-title { font-size: 24px; font-weight: 900; color: white; line-height: 1.35; }
+  .s5 .body { flex: 1; padding: 22px 32px 0; }
+  .s5 .quote-items { display: flex; flex-direction: column; gap: 10px; }
+  .s5 .q-item { background: white; border-radius: 14px; padding: 14px 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+  .s5 .q-text { font-size: 14px; color: #3D4A5C; font-weight: 500; line-height: 1.6; word-break: keep-all; margin-bottom: 6px; }
+  .s5 .q-inner { font-size: 12px; color: #8A94A6; line-height: 1.6; font-style: italic; }
+  .s5 .q-inner span { color: #FF6B6B; font-style: normal; font-weight: 700; }
+  .s5 .foot { background: rgba(0,0,0,0.04); }
+  .s5 .foot .fl { color: #FF6B6B; }
+  .s5 .foot .fr { color: #8A94A6; }
+
+  /* ─── S6 실제 현실 ─── */
+  .s6 { background: #1B2E4B; }
+  .s6 .top { padding: 28px 32px 0; flex-shrink: 0; }
+  .s6 .s6-tag { font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.4); letter-spacing: 2px; margin-bottom: 10px; }
+  .s6 .s6-title { font-size: 26px; font-weight: 900; color: white; line-height: 1.3; margin-bottom: 20px; }
+  .s6 .body { flex: 1; padding: 0 32px; }
+  .s6 .real-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+  .s6 .rtag { padding: 6px 13px; border-radius: 20px; font-size: 12px; font-weight: 500; }
+  .s6 .rt-normal { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: rgba(255,255,255,0.65); }
+  .s6 .rt-hot { background: rgba(47,111,237,0.2); border: 1px solid rgba(47,111,237,0.35); color: #7EB3FF; }
+  .s6 .punchline { background: rgba(255,209,102,0.08); border: 1px solid rgba(255,209,102,0.18); border-radius: 16px; padding: 18px 20px; }
+  .s6 .pl-text { font-size: 15px; font-weight: 700; color: white; line-height: 1.65; word-break: keep-all; }
+  .s6 .pl-text em { color: #FFD166; font-style: normal; }
+  .s6 .foot { background: rgba(0,0,0,0.2); border-top: 1px solid rgba(255,255,255,0.07); }
+  .s6 .foot .fl { color: rgba(255,255,255,0.35); }
+  .s6 .foot .fr { color: rgba(255,255,255,0.2); }
+
+  /* ─── S7 그래도 이 일 하는 이유 ─── */
+  .s7 { background: #fff; }
+  .s7 .head { background: #1B2E4B; padding: 26px 32px 22px; flex-shrink: 0; }
+  .s7 .head-tag { font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.5); letter-spacing: 2px; margin-bottom: 6px; }
+  .s7 .head-title { font-size: 24px; font-weight: 900; color: white; line-height: 1.35; }
+  .s7 .body { flex: 1; padding: 24px 32px 0; }
+  .s7 .reason-item { display: flex; align-items: flex-start; gap: 12px; padding: 13px 0; border-bottom: 1px solid #F0F2F5; }
+  .s7 .reason-item:last-child { border-bottom: none; }
+  .s7 .r-num { min-width: 28px; height: 28px; border-radius: 8px; background: #EBF2FF; color: #2F6FED; font-size: 12px; font-weight: 900; display: flex; align-items: center; justify-content: center; margin-top: 1px; flex-shrink: 0; }
+  .s7 .r-text { font-size: 14px; color: #3D4A5C; line-height: 1.7; font-weight: 500; word-break: keep-all; }
+  .s7 .r-text strong { color: #1B2E4B; }
+  .s7 .foot { background: #F4F6FA; }
+  .s7 .foot .fl { color: #2F6FED; }
+  .s7 .foot .fr { color: #8A94A6; }
+
+  /* ─── S8 감성 마무리 ─── */
+  .s8 { background: #1B2E4B; }
+  .s8 .body { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 40px 32px 0; }
+  .s8 .qm { font-size: 72px; font-weight: 900; color: rgba(255,255,255,0.05); line-height: 1; margin-bottom: -10px; }
+  .s8 .quote { font-size: 20px; font-weight: 700; color: white; line-height: 1.7; margin-bottom: 28px; word-break: keep-all; }
+  .s8 .quote em { color: #FFD166; font-style: normal; }
+  .s8 .author { font-size: 13px; color: rgba(255,255,255,0.4); padding-left: 2px; line-height: 1.8; }
+  .s8 .heart-row { display: flex; gap: 6px; margin-top: 28px; }
+  .s8 .hchip { padding: 7px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12); color: rgba(255,255,255,0.55); }
+  .s8 .foot { background: rgba(0,0,0,0.2); border-top: 1px solid rgba(255,255,255,0.07); }
+  .s8 .foot .fl { color: rgba(255,255,255,0.35); }
+  .s8 .foot .fr { color: rgba(255,255,255,0.2); }
+
+  /* ─── S9 찐마무리 ─── */
+  .s9 { background: linear-gradient(160deg, #0F1E35 0%, #1B3A6B 100%); }
+  .s9 .inner { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0 36px; text-align: center; }
+  .s9 .big { font-size: 22px; font-weight: 900; color: white; line-height: 1.55; margin-bottom: 20px; word-break: keep-all; }
+  .s9 .big em { color: #FFD166; font-style: normal; }
+  .s9 .divider { width: 40px; height: 2px; background: rgba(255,255,255,0.15); border-radius: 2px; margin: 0 auto 20px; }
+  .s9 .sub { font-size: 14px; color: rgba(255,255,255,0.55); line-height: 1.9; word-break: keep-all; margin-bottom: 28px; }
+  .s9 .save-row { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .s9 .save-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.18); color: rgba(255,255,255,0.8); font-size: 13px; font-weight: 700; padding: 11px 24px; border-radius: 40px; }
+  .s9 .follow { font-size: 12px; color: rgba(255,255,255,0.3); }
+  .s9 .foot { background: rgba(0,0,0,0.15); border-top: 1px solid rgba(255,255,255,0.06); }
+  .s9 .foot .fl { color: rgba(255,255,255,0.3); }
+  .s9 .foot .fr { color: rgba(255,255,255,0.2); }
+
+  /* NAV */
+  .nav { display: flex; align-items: center; gap: 14px; margin-top: 18px; }
+  .nbtn { width: 38px; height: 38px; border-radius: 50%; background: white; border: none; cursor: pointer; font-size: 15px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.12); color: #1B2E4B; transition: all .18s; }
+  .nbtn:hover:not(:disabled) { background: #1B2E4B; color: white; }
+  .nbtn:disabled { opacity: .3; cursor: default; }
+  .dots { display: flex; gap: 5px; }
+  .d { width: 7px; height: 7px; border-radius: 50%; background: #C0C8D4; cursor: pointer; transition: all .18s; }
+  .d.on { background: #1B2E4B; width: 18px; border-radius: 4px; }
+  .ctr { font-size: 11px; color: #8A94A6; margin-top: 6px; text-align: center; }
+</style>
+</head>
+<body>
+
+<div class="top-label">사복노트 · 3번 게시글 · 현실 밈</div>
+
+<div class="card">
+
+  <!-- S1 표지 -->
+  <div class="slide s1 on">
+    <div class="logo-bar">
+      <span class="logo">sano 사복노트</span>
+      <span class="num">1 / 9</span>
+    </div>
+    <div class="body">
+      <div class="pill">😅 현실 공감</div>
+      <div class="title">
+        사회복지사<br>직업 설명하기<br><em>각자의 버전</em>
+      </div>
+      <div class="desc">
+        "그래서 뭐 하는 사람이에요?"<br>
+        이 질문, 몇 번이나 들으셨나요.<br>
+        그리고 매번 달라지는 대답 😅
+      </div>
+    </div>
+    <div class="foot">
+      <span class="fl">사복노트</span>
+      <span class="fr">1 / 9</span>
+    </div>
+  </div>
+
+  <!-- S2 나 스스로 -->
+  <div class="slide s2">
+    <div class="head">
+      <div class="head-tag">버전 1 · 내가 생각하는 내 직업</div>
+      <div class="head-title">스스로 소개할 때는<br>이렇게 말합니다</div>
+    </div>
+    <div class="body">
+      <div class="bubble-label">나의 자기소개</div>
+      <div class="bubble-me">
+        "저는 사회복지사예요.<br>
+        취약계층 분들 상담하고 자원 연계도 하고,<br>
+        위기 상황엔 직접 개입도 해요.<br>
+        지역사회 안전망 역할이라고 보시면 돼요 😊"
+      </div>
+      <div class="desc-box">
+        이때만큼은 <strong>전문가</strong>다.<br>
+        자부심 100%, 설명도 유창하다.<br>
+        근데 상대방 표정이 점점…
+      </div>
+    </div>
+    <div class="foot">
+      <span class="fl">사복노트</span>
+      <span class="fr">2 / 9</span>
+    </div>
+  </div>
+
+  <!-- S3 부모님 -->
+  <div class="slide s3">
+    <div class="head">
+      <div class="head-tag">버전 2 · 부모님이 이해하는 내 직업</div>
+      <div class="head-title">집에 가면<br>이렇게 됩니다</div>
+    </div>
+    <div class="body">
+      <div class="chat">
+        <div class="chat-row">
+          <div class="avatar" style="background:#e9e9eb;">👩</div>
+          <div>
+            <div class="bubble-meta">엄마</div>
+            <div class="bubble bubble-parent">"그래서 너 공무원이야 아니야? 연금은 나와?"</div>
+          </div>
+        </div>
+        <div class="chat-row right">
+          <div class="avatar" style="background:#2F6FED;">😶</div>
+          <div style="align-items:flex-end;display:flex;flex-direction:column;">
+            <div class="bubble-meta">나</div>
+            <div class="bubble bubble-me-r">"아니 그게… 준공무원 같은 느낌인데…"</div>
+          </div>
+        </div>
+        <div class="chat-row">
+          <div class="avatar" style="background:#e9e9eb;">👩</div>
+          <div>
+            <div class="bubble-meta">엄마</div>
+            <div class="bubble bubble-parent">"그럼 월급은 나라에서 줘? 짤리진 않지?"</div>
+          </div>
+        </div>
+        <div class="chat-row right">
+          <div class="avatar" style="background:#2F6FED;">😶</div>
+          <div style="align-items:flex-end;display:flex;flex-direction:column;">
+            <div class="bubble-meta">나</div>
+            <div class="bubble bubble-me-r">"…설명이 좀 길어요 엄마."</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="foot">
+      <span class="fl">사복노트</span>
+      <span class="fr">3 / 9</span>
+    </div>
+  </div>
+
+  <!-- S4 친구 -->
+  <div class="slide s4">
+    <div class="head">
+      <div class="head-tag">버전 3 · 친구들이 이해하는 내 직업</div>
+      <div class="head-title">친구들한테는<br>이렇게 됩니다</div>
+    </div>
+    <div class="body">
+      <div class="chat">
+        <div class="chat-row">
+          <div class="avatar" style="background:#e9e9eb;">🧑</div>
+          <div>
+            <div class="bubble-meta">친구</div>
+            <div class="bubble bubble-friend">"와 너 진짜 착하다~ 나는 못 할 것 같아"</div>
+          </div>
+        </div>
+        <div class="chat-row">
+          <div class="avatar" style="background:#e9e9eb;">🧑</div>
+          <div>
+            <div class="bubble bubble-friend">"봉사활동이랑 비슷한 거 아니야? 보람있겠다"</div>
+          </div>
+        </div>
+        <div class="chat-row right">
+          <div class="avatar" style="background:#4ECDC4;">😮‍💨</div>
+          <div style="align-items:flex-end;display:flex;flex-direction:column;">
+            <div class="bubble-meta">나</div>
+            <div class="bubble bubble-me-r">"어… 뭐 비슷하다고 볼 수도…"</div>
+          </div>
+        </div>
+      </div>
+      <div class="thought">
+        (마음속: 보람은 있는데 봉사는 아니거든요.<br>나 월급 받아요. 야근수당은 없지만…)
+      </div>
+    </div>
+    <div class="foot">
+      <span class="fl">사복노트</span>
+      <span class="fr">4 / 9</span>
+    </div>
+  </div>
+
+  <!-- S5 클라이언트 -->
+  <div class="slide s5">
+    <div class="head">
+      <div class="head-tag">버전 4 · 클라이언트가 이해하는 내 직업</div>
+      <div class="head-title">현장에서는<br>이렇게 됩니다</div>
+    </div>
+    <div class="body">
+      <div class="quote-items">
+        <div class="q-item">
+          <div class="q-text">💸 "선생님이 돈 주는 사람 아닌가요?"</div>
+          <div class="q-inner">→ <span>아닙니다</span>, 신청 도와드리는 거예요…</div>
+        </div>
+        <div class="q-item">
+          <div class="q-text">🔧 "이것도 해주실 수 있죠? 저번엔 해줬잖아요"</div>
+          <div class="q-inner">→ 그건 <span>제 개인 시간</span>을 쓴 거였는데…</div>
+        </div>
+        <div class="q-item">
+          <div class="q-text">📞 "왜 이렇게 연락이 늦어요, 담당이 있는 거 아니에요?"</div>
+          <div class="q-inner">→ 저 담당 <span>케이스가 60개</span>라서요…</div>
+        </div>
+      </div>
+    </div>
+    <div class="foot">
+      <span class="fl">사복노트</span>
+      <span class="fr">5 / 9</span>
+    </div>
+  </div>
+
+  <!-- S6 실제 현실 -->
+  <div class="slide s6">
+    <div class="top">
+      <div class="s6-tag">현실 · 실제 내 직업</div>
+      <div class="s6-title">그래서 실제로는<br>뭘 하냐고요?</div>
+    </div>
+    <div class="body">
+      <div class="real-grid">
+        <span class="rtag rt-hot">📝 기록</span>
+        <span class="rtag rt-hot">📄 공문</span>
+        <span class="rtag rt-normal">📞 상담</span>
+        <span class="rtag rt-normal">🔗 자원연계</span>
+        <span class="rtag rt-normal">🏃 가정방문</span>
+        <span class="rtag rt-hot">🚨 위기대응</span>
+        <span class="rtag rt-normal">🤝 사례회의</span>
+        <span class="rtag rt-hot">😤 민원응대</span>
+        <span class="rtag rt-hot">🌙 야근</span>
+        <span class="rtag rt-normal">💌 자원봉사자 관리</span>
+        <span class="rtag rt-normal">📊 통계 작성</span>
+        <span class="rtag rt-hot">🔥 그래도 출근</span>
+      </div>
+      <div class="punchline">
+        <div class="pl-text">
+          이걸 다 하면서도<br>
+          <em>"그래서 뭐 하는 사람이에요?"</em><br>
+          이 질문에 아직도 버벅입니다.
+        </div>
+      </div>
+    </div>
+    <div class="foot">
+      <span class="fl">사복노트</span>
+      <span class="fr">6 / 9</span>
+    </div>
+  </div>
+
+  <!-- S7 그래도 이 일 하는 이유 -->
+  <div class="slide s7">
+    <div class="head">
+      <div class="head-tag">근데도 · 이 일 하는 이유</div>
+      <div class="head-title">그래도 왜 하냐고<br>물어보신다면</div>
+    </div>
+    <div class="body">
+      <div class="reason-item">
+        <div class="r-num">1</div>
+        <div class="r-text">담당 어르신이 <strong>"선생님 덕에 살았어"</strong> 하실 때</div>
+      </div>
+      <div class="reason-item">
+        <div class="r-num">2</div>
+        <div class="r-text">연계한 서비스가 딱 맞아 떨어졌을 때</div>
+      </div>
+      <div class="reason-item">
+        <div class="r-num">3</div>
+        <div class="r-text">위기 상황에서 내가 <strong>먼저 달려간</strong> 게 맞았을 때</div>
+      </div>
+      <div class="reason-item">
+        <div class="r-num">4</div>
+        <div class="r-text">그냥… <strong>이상하게 못 그만두겠어요</strong> 😅</div>
+      </div>
+    </div>
+    <div class="foot">
+      <span class="fl">사복노트</span>
+      <span class="fr">7 / 9</span>
+    </div>
+  </div>
+
+  <!-- S8 감성 -->
+  <div class="slide s8">
+    <div class="body">
+      <div class="qm">"</div>
+      <div class="quote">
+        설명하기 어렵지만,<br>
+        <em>누군가에게는 꼭 필요한 사람</em>이<br>
+        되고 있다는 걸 알아요.<br><br>
+        그게 사회복지사입니다.
+      </div>
+      <div class="author">
+        화려하지 않아도, 알아주지 않아도<br>
+        오늘도 현장에서 버티는 당신에게
+      </div>
+      <div class="heart-row">
+        <span class="hchip">💙 수고했어요</span>
+        <span class="hchip">오늘도 잘하셨습니다</span>
+      </div>
+    </div>
+    <div class="foot">
+      <span class="fl">사복노트</span>
+      <span class="fr">8 / 9</span>
+    </div>
+  </div>
+
+  <!-- S9 마무리 -->
+  <div class="slide s9">
+    <div class="inner">
+      <div class="big">
+        사회복지사,<br>
+        설명은 어려워도<br>
+        <em>존재는 분명합니다</em>
+      </div>
+      <div class="divider"></div>
+      <div class="sub">
+        공감됐다면 저장해두세요 🔖<br>
+        지치는 날 꺼내보세요.<br>
+        사복노트가 옆에 있을게요 💙
+      </div>
+      <div class="save-row">
+        <div class="save-btn">🔖 저장하고 꺼내보기</div>
+        <div class="follow">사복노트 팔로우 · 매주 공감 콘텐츠</div>
+      </div>
+    </div>
+    <div class="foot">
+      <span class="fl">사복노트</span>
+      <span class="fr">9 / 9</span>
+    </div>
+  </div>
+
+</div>
+
+<div class="nav">
+  <button class="nbtn" id="p" onclick="go(-1)" disabled>←</button>
+  <div class="dots" id="dots"></div>
+  <button class="nbtn" id="n" onclick="go(1)">→</button>
+</div>
+<div class="ctr" id="ctr">1 / 9</div>
+
+<script>
+  let cur = 0;
+  const N = 9;
+  const slides = document.querySelectorAll('.slide');
+  const wrap = document.getElementById('dots');
+  for(let i=0;i<N;i++){
+    const d = document.createElement('div');
+    d.className='d'+(i===0?' on':'');
+    d.onclick=()=>to(i);
+    wrap.appendChild(d);
+  }
+  function to(n){
+    slides[cur].classList.remove('on');
+    wrap.children[cur].classList.remove('on');
+    cur=n;
+    slides[cur].classList.add('on');
+    wrap.children[cur].classList.add('on');
+    document.getElementById('ctr').textContent=`${cur+1} / ${N}`;
+    document.getElementById('p').disabled=cur===0;
+    document.getElementById('n').disabled=cur===N-1;
+  }
+  function go(d){ const nx=cur+d; if(nx>=0&&nx<N) to(nx); }
+  document.addEventListener('keydown',e=>{
+    if(e.key==='ArrowRight') go(1);
+    if(e.key==='ArrowLeft') go(-1);
+  });
+</script>
+</body>
+</html>

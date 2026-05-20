@@ -1,0 +1,1170 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NotebookLM 심화 1편 — 보고서·슬라이드 자동 초안 만들기</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap');
+
+:root {
+  --blue: #1a73e8;
+  --blue-dark: #1557b0;
+  --blue-light: #e8f0fe;
+  --green: #2d6a4f;
+  --green-light: #e6f4ea;
+  --red: #d93025;
+  --red-light: #fce8e6;
+  --yellow: #f9a825;
+  --yellow-light: #fff8e1;
+  --purple: #1a73e8;
+  --purple-light: #e8f0fe;
+  --teal: #0f7173;
+  --teal-light: #e0f4f4;
+  --text: #1a1a2e;
+  --text-sub: #5f6368;
+  --border: #e0e0e0;
+  --bg: #f5f7ff;
+  --radius: 14px;
+  --shadow: 0 2px 12px rgba(26,115,232,0.10);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 15px;
+  line-height: 1.75;
+  -webkit-text-size-adjust: 100%;
+}
+a { color: var(--blue); text-decoration: none; }
+
+/* ── Hero ── */
+.hero {
+  background: linear-gradient(145deg, #1557b0 0%, #1a73e8 55%, #1a73e8 100%);
+  padding: 44px 20px 36px;
+  text-align: center;
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  width: 260px; height: 260px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+  top: -70px; right: -70px;
+}
+.hero-series {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.hero-tag {
+  background: rgba(255,255,255,0.18);
+  border: 1px solid rgba(255,255,255,0.35);
+  padding: 4px 12px;
+  border-radius: 30px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+.hero-tag.new {
+  background: #fbbf24;
+  color: var(--blue-dark);
+  border: none;
+}
+.hero h1 {
+  font-size: 1.55em;
+  font-weight: 900;
+  line-height: 1.35;
+  margin-bottom: 10px;
+}
+.hero p {
+  font-size: 14px;
+  opacity: 0.88;
+  line-height: 1.7;
+  margin-bottom: 22px;
+  max-width: 340px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.hero-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: white;
+  color: var(--blue);
+  font-weight: 700;
+  font-size: 15px;
+  padding: 12px 26px;
+  border-radius: 50px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+}
+
+/* ── 기초편 링크 배너 ── */
+.prev-banner {
+  background: var(--blue-light);
+  border-bottom: 1px solid rgba(26,115,232,0.2);
+  padding: 10px 16px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--blue-dark);
+}
+.prev-banner a { font-weight: 700; color: var(--blue); }
+
+/* ── Sticky TOC ── */
+.toc-sticky {
+  background: white;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  padding: 10px 14px;
+}
+.toc-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 5px;
+}
+.toc-pill {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--purple-light);
+  color: var(--blue);
+  padding: 6px 8px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.3;
+  text-align: left;
+}
+.toc-pill:hover { background: var(--purple); color: white; }
+
+/* ── Main ── */
+.main { padding: 20px 16px 60px; max-width: 680px; margin: 0 auto; }
+
+/* ── Chapter ── */
+.chapter { margin-top: 40px; scroll-margin-top: 56px; }
+.chapter-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.chapter-icon {
+  width: 40px; height: 40px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+  background: var(--purple);
+}
+.chapter-title {
+  font-size: 1.2em;
+  font-weight: 900;
+  color: #1557b0;
+  line-height: 1.3;
+}
+.chapter-divider {
+  height: 3px;
+  background: linear-gradient(90deg, var(--purple) 0%, transparent 100%);
+  border-radius: 3px;
+  margin-bottom: 18px;
+}
+.section-title {
+  font-size: 1.05em;
+  font-weight: 700;
+  color: #1557b0;
+  padding: 4px 0 4px 12px;
+  border-left: 4px solid var(--purple);
+  margin: 24px 0 12px;
+}
+
+/* ── Cards ── */
+.card {
+  border-radius: var(--radius);
+  padding: 18px;
+  margin: 14px 0;
+  box-shadow: var(--shadow);
+}
+.card-blue  { background: var(--blue-light);   border: 1px solid rgba(26,115,232,0.15); }
+.card-purple{ background: var(--purple-light); border: 1px solid rgba(26,115,232,0.2); }
+.card-green { background: var(--green-light);  border: 1px solid rgba(45,106,79,0.15); }
+.card-yellow{ background: var(--yellow-light); border: 1px solid rgba(249,168,37,0.25); }
+.card-teal  { background: var(--teal-light);   border: 1px solid rgba(15,113,115,0.2); }
+.card-red   { background: var(--red-light);    border: 1px solid rgba(217,48,37,0.2); }
+
+.card-title {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.card-title.purple { color: #1557b0; }
+.card-title.blue   { color: var(--blue-dark); }
+.card-title.green  { color: var(--green); }
+.card-title.yellow { color: #e65100; }
+.card-title.teal   { color: var(--teal); }
+.card-title.red    { color: var(--red); }
+
+/* ── Feature list ── */
+.feature-list { display: flex; flex-direction: column; gap: 10px; margin: 12px 0; }
+.feature-item {
+  background: white;
+  border-radius: 12px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+  border: 1px solid var(--border);
+}
+.feature-emo { font-size: 22px; flex-shrink: 0; margin-top: 2px; }
+.feature-text strong { display: block; font-size: 14px; font-weight: 700; margin-bottom: 2px; }
+.feature-text span { font-size: 13px; color: var(--text-sub); line-height: 1.55; }
+
+/* ── Studio mockup ── */
+.studio-panel {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  margin: 14px 0;
+  box-shadow: var(--shadow);
+}
+.studio-header {
+  background: #f8f9fa;
+  border-bottom: 1px solid var(--border);
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-sub);
+}
+.studio-body { padding: 16px; }
+.studio-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+.studio-btn-left { display: flex; align-items: center; gap: 10px; }
+.studio-btn-icon {
+  width: 34px; height: 34px;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+.studio-btn-name { font-size: 13px; font-weight: 700; color: var(--text); }
+.studio-btn-desc { font-size: 11px; color: var(--text-sub); }
+.studio-btn-arrow { font-size: 16px; color: var(--text-sub); }
+.studio-btn.highlight {
+  border: 2px solid var(--purple);
+  background: var(--purple-light);
+}
+.studio-btn.highlight .studio-btn-arrow { color: var(--blue); }
+
+/* ── Before/After ── */
+.before-after { display: flex; flex-direction: column; gap: 10px; margin: 12px 0; }
+.ba-box { border-radius: 12px; padding: 14px 16px; font-size: 13px; line-height: 1.75; }
+.ba-before { background: #f8f9fa; border: 1px solid var(--border); }
+.ba-after  { background: var(--purple-light); border: 1px solid rgba(26,115,232,0.2); }
+.ba-label  { font-size: 11px; font-weight: 700; letter-spacing: 0.5px; margin-bottom: 8px; display: block; }
+.ba-before .ba-label { color: var(--text-sub); }
+.ba-after  .ba-label { color: var(--blue); }
+.ba-arrow  { text-align: center; font-size: 22px; color: var(--blue); }
+
+/* ── Step list ── */
+.step-list { list-style: none; margin: 12px 0; display: flex; flex-direction: column; gap: 10px; }
+.step-list li {
+  display: grid;
+  grid-template-columns: 32px 1fr;
+  gap: 0 12px;
+  align-items: start;
+  background: white;
+  border-radius: 12px;
+  padding: 14px;
+  border: 1px solid var(--border);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+.step-num {
+  width: 32px; height: 32px;
+  background: var(--purple);
+  color: white;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 900; font-size: 14px; flex-shrink: 0;
+}
+.step-content strong { display: block; font-size: 14px; font-weight: 700; margin-bottom: 3px; }
+.step-content span { font-size: 13px; color: var(--text-sub); line-height: 1.6; }
+
+/* ── Prompt box ── */
+.prompt-box {
+  background: #fffde7;
+  border: 1.5px solid #ffe082;
+  border-radius: 12px;
+  padding: 16px;
+  margin: 12px 0;
+  position: relative;
+}
+.prompt-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #f57f17;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+  display: block;
+  padding-right: 68px;
+  text-transform: uppercase;
+}
+.prompt-box div, .prompt-box p {
+  font-size: 14px;
+  line-height: 1.8;
+  color: #333;
+  white-space: pre-line;
+}
+.copy-btn {
+  position: absolute;
+  top: 10px; right: 10px;
+  background: var(--purple);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 5px 11px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: background 0.15s;
+  font-family: 'Noto Sans KR', sans-serif;
+  white-space: nowrap;
+}
+.copy-btn:hover { background: #1557b0; }
+.copy-btn.copied { background: var(--green); }
+
+/* ── Output preview (슬라이드/보고서 미리보기) ── */
+.slide-preview {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  margin: 14px 0;
+  box-shadow: var(--shadow);
+}
+.slide-titlebar {
+  background: #1557b0;
+  color: white;
+  padding: 10px 14px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.slide-body { background: white; padding: 16px; }
+.slide-page {
+  background: #f8f7ff;
+  border: 1px solid rgba(26,115,232,0.15);
+  border-radius: 10px;
+  padding: 14px;
+  margin-bottom: 8px;
+}
+.slide-num {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--blue);
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+.slide-title-text { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.slide-bullets { font-size: 12px; color: var(--text-sub); line-height: 1.7; }
+
+/* ── Output doc (보고서) ── */
+.doc-preview {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px;
+  margin: 14px 0;
+  box-shadow: var(--shadow);
+  font-size: 13px;
+  line-height: 1.8;
+}
+.doc-h1 { font-size: 15px; font-weight: 900; color: var(--text); border-bottom: 2px solid var(--purple); padding-bottom: 6px; margin-bottom: 10px; }
+.doc-h2 { font-size: 13px; font-weight: 700; color: var(--blue); margin: 12px 0 4px; }
+.doc-body { font-size: 12.5px; color: #444; line-height: 1.75; }
+
+/* ── Tag chip ── */
+.tag { display: inline-block; background: var(--purple-light); color: var(--blue); border-radius: 6px; padding: 2px 8px; font-size: 11px; font-weight: 700; margin: 2px; }
+.tag.blue { background: var(--blue-light); color: var(--blue-dark); }
+.tag.green { background: var(--green-light); color: var(--green); }
+
+/* ── Comparison grid ── */
+.compare-box { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 12px 0; }
+.compare-item { border-radius: 10px; padding: 14px; }
+.compare-item.left  { background: #fff3e0; }
+.compare-item.right { background: var(--purple-light); }
+.compare-label { font-size: 11px; font-weight: 700; letter-spacing: 0.5px; margin-bottom: 6px; display: block; }
+.compare-item.left  .compare-label { color: #e65100; }
+.compare-item.right .compare-label { color: var(--blue); }
+.compare-item p { font-size: 13px; line-height: 1.6; }
+
+/* ── Misc ── */
+.text-sm { font-size: 13px; color: var(--text-sub); line-height: 1.7; }
+.mt12 { margin-top: 12px; }
+.link-row {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--purple-light); border-radius: 10px;
+  padding: 12px 14px; margin: 10px 0; font-size: 13.5px;
+}
+.link-row a { font-weight: 700; color: var(--blue); word-break: break-all; }
+
+/* ── Floating buttons ── */
+.float-btns {
+  position: fixed;
+  bottom: 24px; right: 16px;
+  display: flex; flex-direction: column; gap: 10px;
+  z-index: 200;
+}
+.float-btn {
+  width: 46px; height: 46px;
+  background: var(--blue); color: white;
+  border: none; border-radius: 50%; font-size: 18px;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(26,115,232,0.35);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.25s, background 0.15s;
+  font-family: 'Noto Sans KR', sans-serif;
+}
+.float-btn:hover { background: var(--blue-dark); }
+.float-btn.visible { opacity: 1; pointer-events: auto; }
+.float-btn.back-btn { background: white; color: var(--blue); border: 2px solid var(--blue); font-size: 16px; font-weight: 700; }
+.float-btn.back-btn:hover { background: var(--blue-light); }
+
+/* ── Footer ── */
+.footer {
+  background: white;
+  border-top: 1px solid var(--border);
+  padding: 28px 20px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-sub);
+}
+.footer strong { color: var(--blue); }
+
+/* ── Series nav ── */
+.series-nav {
+  background: #1557b0;
+  padding: 16px;
+  margin: 0;
+}
+.series-label { font-size: 11px; color: rgba(255,255,255,0.6); font-weight: 700; letter-spacing: 1px; margin-bottom: 10px; }
+.series-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.series-item {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 11px;
+  color: rgba(255,255,255,0.7);
+  text-align: center;
+  line-height: 1.4;
+}
+.series-item.active {
+  background: var(--purple);
+  border-color: var(--blue);
+  color: white;
+  font-weight: 700;
+}
+
+@media(min-width: 600px) {
+  .hero { padding: 56px 40px 46px; }
+  .hero h1 { font-size: 2em; }
+  .main { padding: 28px 24px 80px; }
+  .compare-box { grid-template-columns: 1fr 1fr; }
+  .before-after { flex-direction: row; }
+  .before-after .ba-box { flex: 1; }
+  .before-after .ba-arrow { display: flex; align-items: center; font-size: 28px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── HERO ── -->
+<div class="hero">
+  <div class="hero-series">
+    <span class="hero-tag">📒 사복쌤 AI 가이드 심화편</span>
+    <span class="hero-tag new">1편</span>
+  </div>
+  <h1>보고서·슬라이드를<br>AI가 대신 써준다고? 🖊️</h1>
+  <p>사업결과보고서, 프로포절, 교육 슬라이드 초안.<br>NotebookLM 스튜디오 기능으로 뼈대를 10분 만에 잡아요.</p>
+  <a href="https://notebooklm.google.com/" target="_blank" class="hero-btn">🚀 NotebookLM 열기</a>
+</div>
+
+<!-- ── 기초편 안내 배너 ── -->
+<div class="prev-banner">
+  📌 기초편을 아직 못 보셨나요? → <a href="https://www.saboknote.com/" target="_blank">기초편 먼저 보기</a>
+</div>
+
+<!-- ── 시리즈 네비게이션 ── -->
+<div class="series-nav">
+  <div class="series-label">📚 심화 시리즈</div>
+  <div class="series-grid">
+    <div class="series-item active">1편<br>보고서·슬라이드</div>
+    <div class="series-item">2편<br>마인드맵·요약</div>
+    <div class="series-item">3편<br>지침서 비교</div>
+    <div class="series-item">4편<br>팀 협업 공유</div>
+    <div class="series-item">5편<br>음성·영상 분석</div>
+    <div class="series-item" style="opacity:0.4;">6편<br>준비 중</div>
+  </div>
+</div>
+
+<!-- ── STICKY TOC ── -->
+<div class="toc-sticky">
+  <div class="toc-grid">
+    <a href="#ch1" class="toc-pill">1장 스튜디오란?</a>
+    <a href="#ch2" class="toc-pill">2장 브리핑 문서</a>
+    <a href="#ch3" class="toc-pill">3장 보고서 초안</a>
+    <a href="#ch4" class="toc-pill">4장 슬라이드 초안</a>
+    <a href="#ch5" class="toc-pill">5장 프로포절</a>
+    <a href="#ch6" class="toc-pill">6장 교육 자료</a>
+    <a href="#appendix" class="toc-pill">🎁 프롬프트 사전</a>
+    <a href="#tip" class="toc-pill">💡 꿀팁 모음</a>
+    <a href="#next" class="toc-pill">➡️ 다음 편</a>
+  </div>
+</div>
+
+<!-- ── MAIN ── -->
+<div class="main">
+
+<!-- ─────────────── 1장 ─────────────── -->
+<div class="chapter" id="ch1">
+  <div class="chapter-label">
+    <div class="chapter-icon">🎛️</div>
+    <div class="chapter-title">제1장. 스튜디오 패널이 뭔가요?<br>오른쪽 패널의 숨겨진 보물창고</div>
+  </div>
+  <div class="chapter-divider"></div>
+
+  <p class="text-sm">기초편에서는 AI와 대화(채팅)하는 법을 배웠다면, 심화편의 핵심은 <strong>오른쪽 스튜디오(Studio) 패널</strong>입니다. 버튼 한 번으로 문서·슬라이드 초안이 자동 생성됩니다.</p>
+
+  <div class="section-title">스튜디오 패널 위치와 버튼 구성</div>
+
+  <div class="studio-panel">
+    <div class="studio-header">
+      🎛️ Studio (스튜디오) — 화면 오른쪽 패널
+    </div>
+    <div class="studio-body">
+
+      <div class="studio-btn highlight">
+        <div class="studio-btn-left">
+          <div class="studio-btn-icon" style="background:#e8f0fe;">📄</div>
+          <div>
+            <div class="studio-btn-name">브리핑 문서 (Briefing Doc)</div>
+            <div class="studio-btn-desc">핵심 내용을 정리한 요약 보고서 자동 생성</div>
+          </div>
+        </div>
+        <div class="studio-btn-arrow">→</div>
+      </div>
+
+      <div class="studio-btn highlight">
+        <div class="studio-btn-left">
+          <div class="studio-btn-icon" style="background:#e8f0fe;">🗺️</div>
+          <div>
+            <div class="studio-btn-name">마인드맵 (Mind Map)</div>
+            <div class="studio-btn-desc">소스 내용을 시각적 구조도로 변환</div>
+          </div>
+        </div>
+        <div class="studio-btn-arrow">→</div>
+      </div>
+
+      <div class="studio-btn">
+        <div class="studio-btn-left">
+          <div class="studio-btn-icon" style="background:#e6f4ea;">📚</div>
+          <div>
+            <div class="studio-btn-name">학습 가이드 (Study Guide)</div>
+            <div class="studio-btn-desc">Q&A 형식의 교육자료 자동 생성</div>
+          </div>
+        </div>
+        <div class="studio-btn-arrow">→</div>
+      </div>
+
+      <div class="studio-btn">
+        <div class="studio-btn-left">
+          <div class="studio-btn-icon" style="background:#fff8e1;">🎙️</div>
+          <div>
+            <div class="studio-btn-name">오디오 개요 (Audio Overview)</div>
+            <div class="studio-btn-desc">팟캐스트 형식 음성 파일 생성</div>
+          </div>
+        </div>
+        <div class="studio-btn-arrow">→</div>
+      </div>
+
+      <div class="studio-btn">
+        <div class="studio-btn-left">
+          <div class="studio-btn-icon" style="background:#fce8e6;">📋</div>
+          <div>
+            <div class="studio-btn-name">FAQ 자동 생성</div>
+            <div class="studio-btn-desc">자주 묻는 질문 10~15개 자동 작성</div>
+          </div>
+        </div>
+        <div class="studio-btn-arrow">→</div>
+      </div>
+
+      <p style="font-size:11px;color:var(--text-sub);margin-top:10px;">🟣 보라색 하이라이트 = 이번 편에서 집중적으로 다루는 기능</p>
+    </div>
+  </div>
+
+  <div class="card card-purple">
+    <div class="card-title purple">💡 이번 편에서 배울 것</div>
+    <div class="feature-list" style="margin-top:8px;">
+      <div class="feature-item">
+        <span class="feature-emo">📄</span>
+        <div class="feature-text">
+          <strong>브리핑 문서 → 사업결과보고서 초안</strong>
+          <span>소스 업로드 후 버튼 하나로 A4 2~3페이지 보고서 뼈대 완성</span>
+        </div>
+      </div>
+      <div class="feature-item">
+        <span class="feature-emo">🖼️</span>
+        <div class="feature-text">
+          <strong>프롬프트로 슬라이드 구성 초안 뽑기</strong>
+          <span>PPT 슬라이드별 제목·내용을 AI가 구성해 복붙만 하면 끝</span>
+        </div>
+      </div>
+      <div class="feature-item">
+        <span class="feature-emo">📝</span>
+        <div class="feature-text">
+          <strong>프로포절 구조 자동 생성</strong>
+          <span>사업계획서 목차와 각 항목 초안을 지침서 기반으로 작성</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────── 2장 ─────────────── -->
+<div class="chapter" id="ch2">
+  <div class="chapter-label">
+    <div class="chapter-icon">📄</div>
+    <div class="chapter-title">제2장. 브리핑 문서(Briefing Doc)<br>버튼 하나로 요약 보고서 뚝딱</div>
+  </div>
+  <div class="chapter-divider"></div>
+
+  <p class="text-sm"><strong>브리핑 문서</strong>는 업로드한 소스를 분석해 핵심 내용, 주요 포인트, 구조적 요약을 자동으로 만들어주는 기능입니다. 사업결과보고서·회의 자료의 첫 초안으로 최적입니다.</p>
+
+  <div class="section-title">생성 방법 (3단계)</div>
+  <ol class="step-list">
+    <li>
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <strong>소스 업로드</strong>
+        <span>만족도 조사 결과, 사업 활동 기록, 참여자 명단 등 관련 자료를 모두 소스로 올립니다</span>
+      </div>
+    </li>
+    <li>
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <strong>오른쪽 스튜디오 패널 → [브리핑 문서] 클릭</strong>
+        <span>Studio 패널 상단 메뉴에서 찾을 수 있어요</span>
+      </div>
+    </li>
+    <li>
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <strong>[생성(Generate)] 클릭 → 1~2분 대기</strong>
+        <span>AI가 소스를 분석해 구조화된 문서를 자동 생성합니다</span>
+      </div>
+    </li>
+    <li>
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <strong>복사해서 한글·워드에 붙여넣기</strong>
+        <span>우측 상단 [복사] 또는 [구글 Docs로 내보내기] 버튼 활용</span>
+      </div>
+    </li>
+  </ol>
+
+  <div class="section-title">브리핑 문서 출력 예시</div>
+  <div class="doc-preview">
+    <div class="doc-h1">2026 아동급식 지원사업 결과 브리핑</div>
+    <div class="doc-h2">📌 사업 개요</div>
+    <div class="doc-body">본 사업은 저소득 가정 아동의 결식 예방을 위한 급식 지원을 목적으로 하며, 2026년 3월부터 12월까지 총 120명의 아동을 대상으로 진행되었습니다.</div>
+    <div class="doc-h2">📊 주요 성과</div>
+    <div class="doc-body">• 목표 대비 달성률: 참여 아동 98.3% 달성<br>• 만족도 평균: 4.7점/5점<br>• 부모 만족도: 92% 이상 긍정 응답</div>
+    <div class="doc-h2">💡 한계점 및 개선 방향</div>
+    <div class="doc-body">지역 내 결식 아동 수요 대비 지원 규모가 부족하여 추가 예산 확보가 필요합니다. 차년도에는 외부 후원 연계를 통한 대상자 확대를 추진할 예정입니다.</div>
+    <p style="font-size:11px;color:#bbb;margin-top:12px;text-align:right;">* AI 자동 생성 초안 — 실제 수치 교차 검증 필요</p>
+  </div>
+
+  <div class="card card-yellow">
+    <div class="card-title yellow">⚠️ 초안은 시작점입니다</div>
+    <p class="text-sm">브리핑 문서는 <strong>골격과 문장 구조</strong>를 잡아주는 용도입니다. 수치·날짜·고유명사는 반드시 원본 자료와 대조해서 수정하세요. AI가 수치를 잘못 읽는 경우가 있습니다.</p>
+  </div>
+</div>
+
+<!-- ─────────────── 3장 ─────────────── -->
+<div class="chapter" id="ch3">
+  <div class="chapter-label">
+    <div class="chapter-icon">📊</div>
+    <div class="chapter-title">제3장. 사업결과보고서 초안<br>프롬프트로 더 정교하게 뽑기</div>
+  </div>
+  <div class="chapter-divider"></div>
+
+  <p class="text-sm">브리핑 문서로 뼈대를 잡은 뒤, 채팅창 프롬프트로 더 구체적인 보고서를 요청할 수 있습니다. 기관마다 쓰는 양식이 다르므로 직접 지시하는 게 더 유용합니다.</p>
+
+  <div class="section-title">소스로 올릴 자료 예시</div>
+  <div class="feature-list">
+    <div class="feature-item">
+      <span class="feature-emo">📋</span>
+      <div class="feature-text">
+        <strong>만족도 조사 결과표</strong>
+        <span>엑셀 or 구글시트를 텍스트로 복사해서 소스로 추가</span>
+      </div>
+    </div>
+    <div class="feature-item">
+      <span class="feature-emo">📅</span>
+      <div class="feature-text">
+        <strong>프로그램 운영 일지</strong>
+        <span>월별 회차, 참여 인원, 주요 활동 기록</span>
+      </div>
+    </div>
+    <div class="feature-item">
+      <span class="feature-emo">🖼️</span>
+      <div class="feature-text">
+        <strong>사업계획서 (이전 계획)</strong>
+        <span>목표 대비 실적 비교를 위해 원래 계획서도 함께 올리기</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">사업결과보고서 프롬프트</div>
+
+  <div class="prompt-box">
+    <span class="prompt-label">📋 기본 결과보고서 초안</span>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+    <div>업로드한 자료를 바탕으로 사업결과보고서 초안을 작성해 줘.
+항목 순서: 사업 목적 → 추진 실적 → 성과 및 효과 → 한계점 → 개선 방향
+문체는 공식 행정 문서 어투(합니다체)로, 각 항목은 3~4문장 이내로 간결하게.
+수치가 있으면 구체적으로 표기해 줘.</div>
+  </div>
+
+  <div class="prompt-box">
+    <span class="prompt-label">📋 지역사회보장계획 연계 보고서</span>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+    <div>이 사업 결과가 우리 지역사회보장계획의 어떤 목표와 연결되는지 분석해 줘.
+특히 '아동·청소년 복지 강화' 전략 목표와 연계하여 성과를 서술해 줘.
+전문적인 복지 용어(역량강화, 사회적 지지망, 자기결정권 등)를 자연스럽게 포함해 줘.</div>
+  </div>
+
+  <div class="prompt-box">
+    <span class="prompt-label">📋 기관장 보고용 1페이지 요약</span>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+    <div>위 결과보고서를 기관장님께 구두 보고하기 위한 1페이지짜리 핵심 요약본을 만들어 줘.
+형식: 한 줄 결론 → 핵심 수치 3개 → 잘된 점 2개 → 개선 필요 사항 1개
+읽는 데 2분 이내로 끝낼 수 있도록 간결하게 작성해 줘.</div>
+  </div>
+</div>
+
+<!-- ─────────────── 4장 ─────────────── -->
+<div class="chapter" id="ch4">
+  <div class="chapter-label">
+    <div class="chapter-icon">🖼️</div>
+    <div class="chapter-title">제4장. 슬라이드(PPT) 초안<br>AI가 슬라이드 구성을 잡아준다</div>
+  </div>
+  <div class="chapter-divider"></div>
+
+  <p class="text-sm">NotebookLM이 PowerPoint 파일을 직접 만들어주지는 않지만, <strong>슬라이드 구성 전체를 텍스트로 뽑아주기 때문에</strong> 복붙해서 PPT에 넣으면 됩니다. 구성 고민 시간이 90% 줄어들어요.</p>
+
+  <div class="section-title">Before → After 예시</div>
+  <div class="before-after">
+    <div class="ba-box ba-before">
+      <span class="ba-label">😩 기존 방식</span>
+      PPT 켜고 → 빈 슬라이드 → 어떻게 구성하지?<br>→ 1시간째 첫 슬라이드 제목만 고민 중…
+    </div>
+    <div class="ba-arrow">↓</div>
+    <div class="ba-box ba-after">
+      <span class="ba-label">✨ NotebookLM 활용</span>
+      소스 업로드 → 프롬프트 입력 → 5분 만에 슬라이드 구성 전체 완성 → PPT에 붙여넣기만!
+    </div>
+  </div>
+
+  <div class="section-title">슬라이드 구성 출력 예시</div>
+  <div class="slide-preview">
+    <div class="slide-titlebar">
+      🖼️ AI가 생성한 슬라이드 구성 초안
+    </div>
+    <div class="slide-body">
+      <div class="slide-page">
+        <div class="slide-num">SLIDE 1 — 표지</div>
+        <div class="slide-title-text">2026 아동급식 지원사업 결과보고</div>
+        <div class="slide-bullets">○○종합사회복지관 | 사업담당자: 홍○○</div>
+      </div>
+      <div class="slide-page">
+        <div class="slide-num">SLIDE 2 — 사업 개요</div>
+        <div class="slide-title-text">사업 목적 및 대상</div>
+        <div class="slide-bullets">• 목적: 저소득 가정 아동 결식 예방<br>• 기간: 2026.03 ~ 12<br>• 대상: 관내 초등학생 120명</div>
+      </div>
+      <div class="slide-page">
+        <div class="slide-num">SLIDE 3 — 추진 실적</div>
+        <div class="slide-title-text">핵심 성과 지표</div>
+        <div class="slide-bullets">• 목표 달성률: 98.3%<br>• 만족도 평균: 4.7 / 5점<br>• 긍정 응답률: 92%</div>
+      </div>
+      <div class="slide-page" style="opacity:0.5;">
+        <div class="slide-num">SLIDE 4~6 — 계속…</div>
+        <div class="slide-title-text">성과·한계점·향후 계획</div>
+        <div class="slide-bullets">AI가 이하 슬라이드도 동일하게 구성해 줍니다</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">슬라이드 초안 프롬프트</div>
+
+  <div class="prompt-box">
+    <span class="prompt-label">📋 발표용 슬라이드 구성</span>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+    <div>업로드한 사업 결과 자료를 바탕으로 기관장 보고용 PPT 슬라이드 구성을 만들어 줘.
+슬라이드 수: 8장 이내
+각 슬라이드마다: [슬라이드 번호 / 제목 / 핵심 내용 3줄 이내] 형식으로 작성해 줘.
+전체 발표 시간은 10분 기준이야.</div>
+  </div>
+
+  <div class="prompt-box">
+    <span class="prompt-label">📋 외부 사업설명회용 슬라이드</span>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+    <div>이 사업 내용을 지역 주민과 후원자들에게 설명하는 슬라이드를 구성해 줘.
+전문 용어 대신 쉬운 말을 써서, 복지를 잘 모르는 분들도 이해할 수 있게 해 줘.
+슬라이드 10장 이내, 각 슬라이드 제목과 핵심 문장 1~2개씩.</div>
+  </div>
+
+  <div class="card card-blue">
+    <div class="card-title blue">💡 PPT로 옮기는 가장 빠른 방법</div>
+    <p class="text-sm">① AI 출력 전체 복사 → ② 구글 슬라이드 또는 파워포인트 새 파일 열기 → ③ 슬라이드별 제목·내용 붙여넣기 → ④ 디자인 테마만 입히면 완성!</p>
+  </div>
+</div>
+
+<!-- ─────────────── 5장 ─────────────── -->
+<div class="chapter" id="ch5">
+  <div class="chapter-label">
+    <div class="chapter-icon">📝</div>
+    <div class="chapter-title">제5장. 프로포절(사업계획서)<br>구조부터 문장까지 AI와 함께</div>
+  </div>
+  <div class="chapter-divider"></div>
+
+  <p class="text-sm">신규 사업을 기획할 때 가장 막막한 게 프로포절 초안입니다. 지침서와 유사 사업 자료를 소스로 올리면 AI가 사업계획서의 뼈대를 잡아줍니다.</p>
+
+  <div class="section-title">소스로 올리면 좋은 자료</div>
+  <div class="feature-list">
+    <div class="feature-item">
+      <span class="feature-emo">📘</span>
+      <div class="feature-text">
+        <strong>지자체 공모사업 지침서</strong>
+        <span>심사 기준, 지원 조건, 작성 양식이 명시된 공고문</span>
+      </div>
+    </div>
+    <div class="feature-item">
+      <span class="feature-emo">🏆</span>
+      <div class="feature-text">
+        <strong>타 기관 우수 사례 자료</strong>
+        <span>유사 사업 결과보고서나 발표 자료 (공개된 것)</span>
+      </div>
+    </div>
+    <div class="feature-item">
+      <span class="feature-emo">📊</span>
+      <div class="feature-text">
+        <strong>지역 욕구 조사 결과</strong>
+        <span>사업의 필요성(근거)을 만들어주는 통계·조사 자료</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">프로포절 작성 프롬프트</div>
+
+  <div class="prompt-box">
+    <span class="prompt-label">📋 신규 사업 프로포절 초안</span>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+    <div>업로드한 공모사업 지침서와 지역 욕구 조사 자료를 바탕으로 사업계획서 초안을 작성해 줘.
+항목: 사업 필요성 → 목적 및 목표 → 대상자 선정 기준 → 추진 내용 → 기대 효과 → 예산 개요
+각 항목은 2~4문장으로 간결하게, 지침서의 심사 기준 키워드를 자연스럽게 포함해 줘.</div>
+  </div>
+
+  <div class="prompt-box">
+    <span class="prompt-label">📋 사업 필요성 근거 문단</span>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+    <div>업로드한 욕구 조사 결과 자료에서 이 사업의 필요성을 뒷받침하는 통계와 사례를 찾아줘.
+'왜 이 사업이 지금 이 지역에 필요한가'를 설득력 있게 서술하는 문단 3개를 써 줘.
+심사위원을 설득하는 톤으로, 구체적 수치를 반드시 포함해 줘.</div>
+  </div>
+
+  <div class="prompt-box">
+    <span class="prompt-label">📋 기대 효과 및 지속가능성 작성</span>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+    <div>이 사업이 종료된 후에도 지속될 수 있는 방안과 지역사회에 미치는 장기적 효과를 서술해 줘.
+지역사회 자원 연계, 자립 역량 강화, 사회적 지지망 구축 관점에서 전문 복지 용어를 활용해 작성해 줘.</div>
+  </div>
+</div>
+
+<!-- ─────────────── 6장 ─────────────── -->
+<div class="chapter" id="ch6">
+  <div class="chapter-label">
+    <div class="chapter-icon">📚</div>
+    <div class="chapter-title">제6장. 신입 직원 교육 자료<br>학습 가이드 기능 활용법</div>
+  </div>
+  <div class="chapter-divider"></div>
+
+  <p class="text-sm">스튜디오의 <strong>학습 가이드(Study Guide)</strong> 기능은 올린 소스를 Q&A 형식으로 자동 변환합니다. 신입 직원 교육 자료, 실습생 오리엔테이션 자료로 바로 쓸 수 있습니다.</p>
+
+  <div class="section-title">학습 가이드 생성 방법</div>
+  <ol class="step-list">
+    <li>
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <strong>소스로 지침서·내규·업무 매뉴얼 업로드</strong>
+        <span>교육 대상자가 꼭 알아야 할 자료를 올려주세요</span>
+      </div>
+    </li>
+    <li>
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <strong>Studio 패널 → [학습 가이드] 클릭</strong>
+        <span>자동으로 핵심 Q&A 10~20개 생성</span>
+      </div>
+    </li>
+    <li>
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <strong>복사 → 출력 또는 카카오톡 공유</strong>
+        <span>신입 직원에게 바로 배포 가능한 형태로 나옵니다</span>
+      </div>
+    </li>
+  </ol>
+
+  <div class="card card-teal">
+    <div class="card-title teal">✅ 이런 자료 만들 때 특히 좋아요</div>
+    <div class="feature-list" style="margin-top:8px;">
+      <div class="feature-item">
+        <span class="feature-emo">🎓</span>
+        <div class="feature-text">
+          <strong>신입 직원·실습생 오리엔테이션 자료</strong>
+          <span>기관 내규·업무 프로세스 Q&A 자동 완성</span>
+        </div>
+      </div>
+      <div class="feature-item">
+        <span class="feature-emo">📖</span>
+        <div class="feature-text">
+          <strong>직원 역량 강화 교육 사전 학습지</strong>
+          <span>교육 전 배포할 핵심 개념 정리 문서</span>
+        </div>
+      </div>
+      <div class="feature-item">
+        <span class="feature-emo">✅</span>
+        <div class="feature-text">
+          <strong>자체 점검용 체크리스트</strong>
+          <span>평가 준비, 인증 심사 전 확인 목록 자동 생성</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">교육 자료 제작 프롬프트</div>
+
+  <div class="prompt-box">
+    <span class="prompt-label">📋 신입 직원 핵심 Q&A 자료</span>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+    <div>업로드한 업무 매뉴얼을 바탕으로, 입사 첫 달 신입 사회복지사가 가장 자주 헷갈리는 상황 10가지를 Q&A 형식으로 정리해 줘.
+각 Q&A는 "상황 → 정답 → 주의사항" 순서로 구성하고, 최대한 쉬운 말로 써 줘.</div>
+  </div>
+
+  <div class="prompt-box">
+    <span class="prompt-label">📋 평가 대비 자체 점검 체크리스트</span>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+    <div>업로드한 평가 매뉴얼에서 '서비스 이용자 권리 보장' 영역의 평가 지표를 모두 추출해 줘.
+각 지표별로 준비해야 할 증빙 서류, 담당자, 완료 여부 체크칸을 포함한 표 형식으로 만들어 줘.</div>
+  </div>
+</div>
+
+<!-- ─────────────── 부록 ─────────────── -->
+<div class="chapter" id="appendix">
+  <div class="chapter-label">
+    <div class="chapter-icon" style="background:var(--green);">🎁</div>
+    <div class="chapter-title">부록. 심화 1편 프롬프트 전체 모음</div>
+  </div>
+  <div class="chapter-divider"></div>
+  <p class="text-sm">이 편에서 나온 프롬프트를 한 곳에 모았습니다. 복사해서 바로 쓰세요!</p>
+
+  <div style="margin:16px 0;">
+    <div style="font-size:13px;font-weight:700;color:var(--purple);margin-bottom:8px;">📊 보고서 관련</div>
+    <div class="prompt-box">
+      <span class="prompt-label">① 기본 결과보고서 초안</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+      <div>업로드한 자료를 바탕으로 사업결과보고서 초안을 작성해 줘.
+항목 순서: 사업 목적 → 추진 실적 → 성과 및 효과 → 한계점 → 개선 방향
+문체는 공식 행정 문서 어투(합니다체)로, 각 항목은 3~4문장 이내로 간결하게. 수치가 있으면 구체적으로 표기해 줘.</div>
+    </div>
+    <div class="prompt-box">
+      <span class="prompt-label">② 기관장 보고용 1페이지 요약</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+      <div>위 결과보고서를 기관장님께 구두 보고하기 위한 1페이지짜리 핵심 요약본을 만들어 줘.
+형식: 한 줄 결론 → 핵심 수치 3개 → 잘된 점 2개 → 개선 필요 사항 1개
+읽는 데 2분 이내로 끝낼 수 있도록 간결하게 작성해 줘.</div>
+    </div>
+  </div>
+
+  <div style="margin:16px 0;">
+    <div style="font-size:13px;font-weight:700;color:var(--purple);margin-bottom:8px;">🖼️ 슬라이드 관련</div>
+    <div class="prompt-box">
+      <span class="prompt-label">③ 발표용 슬라이드 구성</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+      <div>업로드한 사업 결과 자료를 바탕으로 기관장 보고용 PPT 슬라이드 구성을 만들어 줘.
+슬라이드 수: 8장 이내
+각 슬라이드마다: [슬라이드 번호 / 제목 / 핵심 내용 3줄 이내] 형식으로 작성해 줘.
+전체 발표 시간은 10분 기준이야.</div>
+    </div>
+  </div>
+
+  <div style="margin:16px 0;">
+    <div style="font-size:13px;font-weight:700;color:var(--purple);margin-bottom:8px;">📝 프로포절 관련</div>
+    <div class="prompt-box">
+      <span class="prompt-label">④ 신규 사업 프로포절 초안</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+      <div>업로드한 공모사업 지침서와 지역 욕구 조사 자료를 바탕으로 사업계획서 초안을 작성해 줘.
+항목: 사업 필요성 → 목적 및 목표 → 대상자 선정 기준 → 추진 내용 → 기대 효과 → 예산 개요
+각 항목은 2~4문장으로 간결하게, 지침서의 심사 기준 키워드를 자연스럽게 포함해 줘.</div>
+    </div>
+  </div>
+
+  <div style="margin:16px 0;">
+    <div style="font-size:13px;font-weight:700;color:var(--purple);margin-bottom:8px;">📚 교육 자료 관련</div>
+    <div class="prompt-box">
+      <span class="prompt-label">⑤ 신입 직원 핵심 Q&A</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+      <div>업로드한 업무 매뉴얼을 바탕으로, 입사 첫 달 신입 사회복지사가 가장 자주 헷갈리는 상황 10가지를 Q&A 형식으로 정리해 줘.
+각 Q&A는 "상황 → 정답 → 주의사항" 순서로 구성하고, 최대한 쉬운 말로 써 줘.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────── 꿀팁 ─────────────── -->
+<div class="chapter" id="tip">
+  <div class="chapter-label">
+    <div class="chapter-icon" style="background:var(--yellow);color:#1a1a2e;">💡</div>
+    <div class="chapter-title">꿀팁 모음 — 더 잘 쓰는 법</div>
+  </div>
+  <div class="chapter-divider"></div>
+
+  <div class="feature-list">
+    <div class="feature-item">
+      <span class="feature-emo">🔁</span>
+      <div class="feature-text">
+        <strong>"더 짧게" / "더 전문적으로" 후속 요청</strong>
+        <span>초안이 마음에 안 들면 바로 이어서 요청하세요. "방금 쓴 것보다 더 간결하게 다시 써줘"라고 하면 됩니다.</span>
+      </div>
+    </div>
+    <div class="feature-item">
+      <span class="feature-emo">📌</span>
+      <div class="feature-text">
+        <strong>좋은 문단은 바로 노트에 저장</strong>
+        <span>마음에 드는 AI 답변 우측 상단 [노트에 저장] 버튼을 눌러두면, 나중에 통합해서 활용 가능합니다.</span>
+      </div>
+    </div>
+    <div class="feature-item">
+      <span class="feature-emo">📤</span>
+      <div class="feature-text">
+        <strong>구글 Docs로 바로 내보내기</strong>
+        <span>생성된 문서 우측 상단 [구글 Docs로 내보내기]를 클릭하면 바로 구글 문서로 열립니다. 한글 복붙보다 훨씬 빨라요.</span>
+      </div>
+    </div>
+    <div class="feature-item">
+      <span class="feature-emo">🔗</span>
+      <div class="feature-text">
+        <strong>소스를 많이 올릴수록 더 정확해진다</strong>
+        <span>만족도 조사 + 운영 일지 + 사진 설명 텍스트까지 올리면 AI가 훨씬 풍부한 내용으로 작성해 줍니다.</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────── 다음 편 ─────────────── -->
+<div class="chapter" id="next">
+  <div class="chapter-label">
+    <div class="chapter-icon" style="background:#0f7173;">➡️</div>
+    <div class="chapter-title">다음 편 예고</div>
+  </div>
+  <div class="chapter-divider"></div>
+
+  <div class="card card-teal">
+    <div class="card-title teal">🗺️ 심화 2편 — 마인드맵 & 브리핑 문서 완전 정복</div>
+    <p class="text-sm">복잡한 지침서를 한눈에 보는 마인드맵, 핵심만 뽑는 브리핑 문서 심화 활용법을 다룹니다. 평가 준비 시즌에 특히 유용한 편입니다.</p>
+    <p style="margin-top:10px;font-size:13px;color:var(--teal);font-weight:700;">→ saboknote.com에서 업로드 알림 받기</p>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<!-- ── FOOTER ── -->
+<div class="footer">
+  <p style="font-size:22px;margin-bottom:8px;">✨ 📒 🌿</p>
+  <p><strong>심화 1편. 보고서·슬라이드 자동 초안 만들기</strong></p>
+  <p style="margin-top:6px;font-size:12px;">NotebookLM 심화 시리즈 | 사복쌤을 위한 AI 실무 가이드</p>
+  <p style="margin-top:14px;">든든한 실무 파트너: <a href="https://www.saboknote.com/" target="_blank"><strong>사복노트 (saboknote.com)</strong></a></p>
+</div>
+
+
+
+<!-- ── Floating buttons ── -->
+<div class="float-btns">
+  <button class="float-btn back-btn" onclick="goBack()" title="이전 페이지">←</button>
+  <button class="float-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="맨 위로">↑</button>
+</div>
+
+<script>
+document.querySelectorAll('.float-btn').forEach(btn => {
+  window.addEventListener('scroll', () => {
+    btn.classList.toggle('visible', window.scrollY > 300);
+  });
+});
+function goBack() {
+  if (document.referrer) { window.history.back(); }
+  else { window.scrollTo({top: 0, behavior: 'smooth'}); }
+});
+
+function copyPrompt(el) {
+  const text = el.closest('.prompt-box').querySelector('div').innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    el.textContent = '✅ 복사됨!';
+    el.classList.add('copied');
+    setTimeout(() => { el.textContent = '📋 복사'; el.classList.remove('copied'); }, 1800);
+  }).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    el.textContent = '✅ 복사됨!';
+    el.classList.add('copied');
+    setTimeout(() => { el.textContent = '📋 복사'; el.classList.remove('copied'); }, 1800);
+  });
+}
+</script>
+</body>
+</html>

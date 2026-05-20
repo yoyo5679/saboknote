@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>사복노트 8번 게시글</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: #DDE3ED;
+    font-family: 'Noto Sans KR', sans-serif;
+    min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 32px 16px 48px;
+  }
+  .top-label { font-size: 12px; font-weight: 700; color: #8A94A6; letter-spacing: 2px; margin-bottom: 20px; text-transform: uppercase; }
+  .card { width: 480px; height: 600px; border-radius: 22px; overflow: hidden; box-shadow: 0 16px 48px rgba(0,0,0,0.18); position: relative; flex-shrink: 0; }
+  .slide { display: none; width: 100%; height: 100%; position: absolute; top:0; left:0; }
+  .slide.on { display: flex; flex-direction: column; }
+  .foot { height: 48px; flex-shrink: 0; display: flex; align-items: center; padding: 0 32px; justify-content: space-between; }
+  .foot .fl { font-size: 12px; font-weight: 900; }
+  .foot .fr { font-size: 11px; }
+
+  /* ─── S1 표지 ─── */
+  .s1 { background: #1B2E4B; }
+  .s1 .logo-bar { display: flex; justify-content: space-between; align-items: center; padding: 28px 32px 0; flex-shrink: 0; }
+  .s1 .logo { font-size: 13px; font-weight: 900; color: rgba(255,255,255,0.4); }
+  .s1 .num { font-size: 11px; color: rgba(255,255,255,0.25); }
+  .s1 .body { flex: 1; padding: 0 32px; display: flex; flex-direction: column; justify-content: center; }
+  .s1 .pill { display: inline-block; background: rgba(78,205,196,0.15); border: 1px solid rgba(78,205,196,0.28); color: #4ECDC4; font-size: 10px; font-weight: 700; padding: 4px 12px; border-radius: 20px; margin-bottom: 20px; align-self: flex-start; letter-spacing: 1px; }
+  .s1 .from { font-size: 13px; color: rgba(255,255,255,0.4); margin-bottom: 10px; }
+  .s1 .title { font-size: 34px; font-weight: 900; color: white; line-height: 1.3; margin-bottom: 18px; }
+  .s1 .title em { color: #4ECDC4; font-style: normal; }
+  .s1 .desc { font-size: 14px; color: rgba(255,255,255,0.5); line-height: 1.85; word-break: keep-all; }
+  .s1 .foot { background: rgba(255,255,255,0.04); border-top: 1px solid rgba(255,255,255,0.07); }
+  .s1 .foot .fl { color: rgba(255,255,255,0.35); }
+  .s1 .foot .fr { color: rgba(255,255,255,0.2); }
+
+  /* ─── S2 중간관리자의 현실 ─── */
+  .s2 { background: #fff; }
+  .s2 .head { background: #1B2E4B; padding: 24px 32px 20px; flex-shrink: 0; }
+  .s2 .head-tag { font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.5); letter-spacing: 2px; margin-bottom: 6px; }
+  .s2 .head-title { font-size: 24px; font-weight: 900; color: white; line-height: 1.35; }
+  .s2 .body { flex: 1; padding: 22px 32px 0; }
+  .s2 .sandwich { display: flex; flex-direction: column; gap: 0; margin-bottom: 16px; }
+  .s2 .sw-top { background: #FF6B6B; color: white; font-size: 13px; font-weight: 700; padding: 12px 16px; border-radius: 14px 14px 0 0; text-align: center; }
+  .s2 .sw-mid { background: #2F6FED; color: white; font-size: 15px; font-weight: 900; padding: 16px 16px; text-align: center; line-height: 1.5; }
+  .s2 .sw-bot { background: #1B2E4B; color: rgba(255,255,255,0.8); font-size: 13px; font-weight: 700; padding: 12px 16px; border-radius: 0 0 14px 14px; text-align: center; }
+  .s2 .desc { font-size: 13px; color: #5A6678; line-height: 1.75; word-break: keep-all; }
+  .s2 .desc em { color: #2F6FED; font-style: normal; font-weight: 700; }
+  .s2 .foot { background: #F4F6FA; }
+  .s2 .foot .fl { color: #1B2E4B; }
+  .s2 .foot .fr { color: #8A94A6; }
+
+  /* ─── 편지형 슬라이드 공통 ─── */
+  .letter { background: #fff; }
+  .letter .head { padding: 24px 32px 18px; flex-shrink: 0; }
+  .letter .head-num { font-size: 10px; font-weight: 700; letter-spacing: 2px; color: #8A94A6; margin-bottom: 6px; }
+  .letter .head-title { font-size: 21px; font-weight: 900; color: #1B2E4B; line-height: 1.38; }
+  .letter .body { flex: 1; padding: 0 32px; display: flex; flex-direction: column; justify-content: center; }
+  .letter .main-text { font-size: 14px; color: #3D4A5C; line-height: 1.95; word-break: keep-all; margin-bottom: 16px; }
+  .letter .main-text strong { color: #1B2E4B; font-weight: 700; }
+  .letter .main-text em { color: #2F6FED; font-style: normal; font-weight: 700; }
+  .letter .quote-box { border-radius: 14px; padding: 14px 18px; }
+  .letter .q-text { font-size: 14px; font-weight: 600; line-height: 1.7; word-break: keep-all; }
+  .letter .foot { background: #F4F6FA; }
+  .letter .foot .fl { color: #1B2E4B; }
+  .letter .foot .fr { color: #8A94A6; }
+
+  .letter-warm { background: #FFF8F0; }
+  .letter-warm .foot { background: rgba(0,0,0,0.04); }
+  .letter-dark { background: #F4F6FA; }
+
+  .accent-left { border-left: 3px solid #2F6FED; padding-left: 14px; }
+  .accent-left-mint { border-left: 3px solid #4ECDC4; padding-left: 14px; }
+  .accent-left-yellow { border-left: 3px solid #FFD166; padding-left: 14px; }
+  .accent-left-red { border-left: 3px solid #FF6B6B; padding-left: 14px; }
+
+  /* ─── S8 감성 ─── */
+  .s8 { background: #1B2E4B; }
+  .s8 .body { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 36px 32px 0; }
+  .s8 .qm { font-size: 72px; font-weight: 900; color: rgba(255,255,255,0.05); line-height: 1; margin-bottom: -10px; }
+  .s8 .quote { font-size: 18px; font-weight: 700; color: white; line-height: 1.85; word-break: keep-all; margin-bottom: 26px; }
+  .s8 .quote em { color: #4ECDC4; font-style: normal; }
+  .s8 .divider { width: 36px; height: 2px; background: rgba(255,255,255,0.15); border-radius: 2px; margin-bottom: 18px; }
+  .s8 .sub { font-size: 13px; color: rgba(255,255,255,0.45); line-height: 1.85; word-break: keep-all; }
+  .s8 .foot { background: rgba(0,0,0,0.2); border-top: 1px solid rgba(255,255,255,0.07); }
+  .s8 .foot .fl { color: rgba(255,255,255,0.35); }
+  .s8 .foot .fr { color: rgba(255,255,255,0.2); }
+
+  /* ─── S9 마무리 ─── */
+  .s9 { background: linear-gradient(160deg, #0F1E35 0%, #1B4A4A 100%); }
+  .s9 .inner { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0 36px; text-align: center; }
+  .s9 .emoji { font-size: 58px; margin-bottom: 18px; line-height: 1; }
+  .s9 .big { font-size: 21px; font-weight: 900; color: white; line-height: 1.6; margin-bottom: 14px; word-break: keep-all; }
+  .s9 .big em { color: #4ECDC4; font-style: normal; }
+  .s9 .div2 { width: 36px; height: 2px; background: rgba(255,255,255,0.15); border-radius: 2px; margin: 0 auto 14px; }
+  .s9 .sub { font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.9; margin-bottom: 26px; word-break: keep-all; }
+  .s9 .save-btn { background: rgba(78,205,196,0.2); border: 1px solid rgba(78,205,196,0.35); color: #4ECDC4; font-size: 13px; font-weight: 700; padding: 12px 26px; border-radius: 40px; margin-bottom: 10px; }
+  .s9 .follow { font-size: 12px; color: rgba(255,255,255,0.3); }
+  .s9 .foot { background: rgba(0,0,0,0.15); border-top: 1px solid rgba(255,255,255,0.06); }
+  .s9 .foot .fl { color: rgba(255,255,255,0.3); }
+  .s9 .foot .fr { color: rgba(255,255,255,0.2); }
+
+  /* NAV */
+  .nav { display: flex; align-items: center; gap: 14px; margin-top: 18px; }
+  .nbtn { width: 38px; height: 38px; border-radius: 50%; background: white; border: none; cursor: pointer; font-size: 15px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.12); color: #1B2E4B; transition: all .18s; }
+  .nbtn:hover:not(:disabled) { background: #1B2E4B; color: white; }
+  .nbtn:disabled { opacity: .3; cursor: default; }
+  .dots { display: flex; gap: 5px; }
+  .d { width: 7px; height: 7px; border-radius: 50%; background: #C0C8D4; cursor: pointer; transition: all .18s; }
+  .d.on { background: #1B2E4B; width: 18px; border-radius: 4px; }
+  .ctr { font-size: 11px; color: #8A94A6; margin-top: 6px; text-align: center; }
+</style>
+</head>
+<body>
+
+<div class="top-label">사복노트 · 8번 게시글 · 공감</div>
+
+<div class="card">
+
+  <!-- S1 표지 -->
+  <div class="slide s1 on">
+    <div class="logo-bar">
+      <span class="logo">sano 사복노트</span>
+      <span class="num">1 / 9</span>
+    </div>
+    <div class="body">
+      <div class="pill">💌 중간관리자에게</div>
+      <div class="from">현장을 아는 사람이 →</div>
+      <div class="title">중간관리자<br>당신에게<br><em>꼭 하고 싶은 말</em></div>
+      <div class="desc">
+        위에서 눌리고 아래서 치이는<br>
+        그 자리, 정말 쉽지 않죠.
+      </div>
+    </div>
+    <div class="foot">
+      <span class="fl">사복노트</span>
+      <span class="fr">1 / 9</span>
+    </div>
+  </div>
+
+  <!-- S2 현실 -->
+  <div class="slide s2">
+    <div class="head">
+      <div class="head-tag">중간관리자의 현실</div>
+      <div class="head-title">샌드위치가 따로 없어요</div>
+    </div>
+    <div class="body">
+      <div class="sandwich">
+        <div class="sw-top">🔴 위 — 기관장·팀장의 지시와 압박</div>
+        <div class="sw-mid">나<br>중간관리자</div>
+        <div class="sw-bot">🔵 아래 — 직원들의 요구와 감정받이</div>
+      </div>
+      <div class="desc">
+        위 눈치 보면서 아래를 다독이고,<br>
+        아래를 감싸면서 위에 보고하는 자리.<br>
+        <em>그 어느 쪽도 완전히 편을 들 수 없는</em> 자리가<br>
+        중간관리자예요.
+      </div>
+    </div>
+    <div class="foot">
+      <span class="fl">사복노트</span>
+      <span class="fr">2 / 9</span>
+    </div>
+  </div>
+
+  <!-- S3 -->
+  <div class="slide letter">
+    <div class="head">
+      <div class="head-num">첫 번째</div>
+      <div class="head-title">직원의 번아웃은<br>당신 책임이 아니에요</div>
+    </div>
+    <div class="body">
+      <div class="main-text">
+        직원이 힘들어하면<br>
+        "내가 뭘 더 해줄 수 있었을까"<br>
+        자책하는 관리자가 많아요.<br><br>
+        근데 <strong>구조적인 문제를 혼자 막을 수는 없어요.</strong><br>
+        인력 부족, 과도한 업무량은<br>
+        당신이 만든 게 아니에요.<br><br>
+        <em>할 수 있는 걸 하고 있는 것만으로도</em><br>
+        이미 좋은 관리자예요.
+      </div>
+      <div class="quote-box accent-left" style="background:#EBF2FF;">
+        <div class="q-text" style="color:#1B2E4B;">"직원의 모든 감정을 책임질 수 없어요.<br>그 경계를 긋는 것도 관리자의 일이에요."</div>
+      </div>
+    </div>
+    <div class="foot">
+      <span class="fl">사복노트</span>
+      <span class="fr">3 / 9</span>
+    </div>
+  </div>
+
+  <!-- S4 -->
+  <div class="slide letter letter-warm">
+    <div class="head">
+      <div class="head-num">두 번째</div>
+      <div class="head-title">좋은 관리자가<br>다 좋아할 수는 없어요</div>
+    </div>
+    <div class="body">
+      <div class="main-text">
+        직원 모두에게 좋은 사람이 되려다<br>
+        정작 <strong>아무것도 결정 못하는</strong><br>
+        관리자가 되는 경우가 많아요.<br><br>
+        때로는 불편한 말도 해야 하고,<br>
+        인기 없는 결정도 내려야 해요.<br><br>
+        <em>미움받을 용기가 있는 관리자가</em><br>
+        결국 팀을 지켜요.
+      </div>
+      <div class="quote-box accent-left-mint" style="background:rgba(78,205,196,0.08);">
+        <div class="q-text" style="color:#1B2E4B;">"모두에게 좋은 사람이 되려는 순간<br>아무에게도 좋은 관리자가 못 돼요."</div>
+      </div>
+    </div>
+    <div class="foot">
+      <span class="fl">사복노트</span>
+      <span class="fr">4 / 9</span>
+    </div>
+  </div>
+
+  <!-- S5 -->
+  <div class="slide letter">
+    <div class="head">
+      <div class="head-num">세 번째</div>
+      <div class="head-title">위에서 내려온 말을<br>그대로 전달하지 마세요</div>
+    </div>
+    <div class="body">
+      <div class="main-text">
+        "위에서 그렇게 하래요"<br>
+        이 말, 직원들은 제일 힘들어해요.<br><br>
+        중간관리자의 역할은<br>
+        <strong>위의 말을 번역해서 전달하는 것</strong>이에요.<br><br>
+        왜 이 결정이 났는지, 어떤 맥락인지,<br>
+        팀에 맞게 풀어서 전하는 것.<br>
+        <em>그게 중간관리자가 존재하는 이유예요.</em>
+      </div>
+      <div class="quote-box accent-left-yellow" style="background:rgba(255,209,102,0.1);">
+        <div class="q-text" style="color:#1B2E4B;">"위의 말을 그대로 내리는 건 전달자예요.<br>해석해서 내리는 게 관리자예요."</div>
+      </div>
+    </div>
+    <div class="foot">
+      <span class="fl">사복노트</span>
+      <span class="fr">5 / 9</span>
+    </div>
+  </div>
+
+  <!-- S6 -->
+  <div class="slide letter letter-warm">
+    <div class="head">
+      <div class="head-num">네 번째</div>
+      <div class="head-title">당신도 누군가의<br>돌봄이 필요해요</div>
+    </div>
+    <div class="body">
+      <div class="main-text">
+        직원들 감정을 받아주다 보면<br>
+        정작 <strong>내 감정은 어디에도 털어놓지 못해요.</strong><br><br>
+        위에는 약한 모습 보이기 싫고,<br>
+        아래에는 의지가 되고 싶고.<br><br>
+        근데 관리자도 사람이에요.<br>
+        <em>슈퍼바이전을 받고, 동료 관리자와 나누고</em>,<br>
+        혼자 다 안고 가지 않아도 돼요.
+      </div>
+      <div class="quote-box accent-left-red" style="background:rgba(255,107,107,0.07);">
+        <div class="q-text" style="color:#1B2E4B;">"관리자도 관리받아야 해요.<br>당신을 돌봐주는 사람을 꼭 만드세요."</div>
+      </div>
+    </div>
+    <div class="foot">
+      <span class="fl">사복노트</span>
+      <span class="fr">6 / 9</span>
+    </div>
+  </div>
+
+  <!-- S7 -->
+  <div class="slide letter">
+    <div class="head">
+      <div class="head-num">다섯 번째</div>
+      <div class="head-title">직원이 성장하면<br>그게 당신의 성과예요</div>
+    </div>
+    <div class="body">
+      <div class="main-text">
+        중간관리자의 성과는<br>
+        내가 뭘 했느냐가 아니라<br>
+        <strong>팀이 얼마나 잘 돌아가느냐</strong>예요.<br><br>
+        직원이 스스로 판단하고,<br>
+        서로 도우며 움직이는 팀을 만드는 것.<br><br>
+        그 과정이 보이지 않아서 외로울 수 있어요.<br>
+        근데 <em>그 보이지 않는 게 제일 중요한 일이에요.</em>
+      </div>
+      <div class="quote-box accent-left" style="background:#EBF2FF;">
+        <div class="q-text" style="color:#1B2E4B;">"팀이 잘 돌아가서 내가 없어도 되는 것,<br>그게 최고의 관리자예요."</div>
+      </div>
+    </div>
+    <div class="foot">
+      <span class="fl">사복노트</span>
+      <span class="fr">7 / 9</span>
+    </div>
+  </div>
+
+  <!-- S8 감성 -->
+  <div class="slide s8">
+    <div class="body">
+      <div class="qm">"</div>
+      <div class="quote">
+        위에서 눌리고 아래서 치이면서도<br>
+        팀을 지키고 있는 당신,<br><br>
+        그 자리가 얼마나 <em>고독하고 무거운지</em><br>
+        현장을 아는 사람은 알아요.<br><br>
+        그 자리에 있어줘서 고마워요.
+      </div>
+      <div class="divider"></div>
+      <div class="sub">
+        화려하지 않아도, 알아주지 않아도<br>
+        팀을 묵묵히 지키는 당신에게 💙
+      </div>
+    </div>
+    <div class="foot">
+      <span class="fl">사복노트</span>
+      <span class="fr">8 / 9</span>
+    </div>
+  </div>
+
+  <!-- S9 마무리 -->
+  <div class="slide s9">
+    <div class="inner">
+      <div class="emoji">💙</div>
+      <div class="big">같은 자리의<br><em>동료 관리자에게</em><br>보내주세요</div>
+      <div class="div2"></div>
+      <div class="sub">
+        "나만 이런 게 아니구나" 싶을 거예요.<br>
+        말 대신 이 카드 하나로도 충분해요 🙂<br><br>
+        저장해두고 지치는 날 꺼내보세요 🔖
+      </div>
+      <div class="save-btn">🔖 저장하고 동료에게 공유</div>
+      <div class="follow">사복노트 팔로우 · 매주 공감 콘텐츠</div>
+    </div>
+    <div class="foot">
+      <span class="fl">사복노트</span>
+      <span class="fr">9 / 9</span>
+    </div>
+  </div>
+
+</div>
+
+<div class="nav">
+  <button class="nbtn" id="p" onclick="go(-1)" disabled>←</button>
+  <div class="dots" id="dots"></div>
+  <button class="nbtn" id="n" onclick="go(1)">→</button>
+</div>
+<div class="ctr" id="ctr">1 / 9</div>
+
+<script>
+  let cur = 0;
+  const N = 9;
+  const slides = document.querySelectorAll('.slide');
+  const wrap = document.getElementById('dots');
+  for(let i=0;i<N;i++){
+    const d = document.createElement('div');
+    d.className='d'+(i===0?' on':'');
+    d.onclick=()=>to(i);
+    wrap.appendChild(d);
+  }
+  function to(n){
+    slides[cur].classList.remove('on');
+    wrap.children[cur].classList.remove('on');
+    cur=n;
+    slides[cur].classList.add('on');
+    wrap.children[cur].classList.add('on');
+    document.getElementById('ctr').textContent=`${cur+1} / ${N}`;
+    document.getElementById('p').disabled=cur===0;
+    document.getElementById('n').disabled=cur===N-1;
+  }
+  function go(d){ const nx=cur+d; if(nx>=0&&nx<N) to(nx); }
+  document.addEventListener('keydown',e=>{
+    if(e.key==='ArrowRight') go(1);
+    if(e.key==='ArrowLeft') go(-1);
+  });
+</script>
+</body>
+</html>

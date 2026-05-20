@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NotebookLM 심화 4편 — 팀 협업 & 노트북 공유 완전 정복</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap');
+
+:root {
+  --blue: #1a73e8;
+  --blue-dark: #1557b0;
+  --blue-light: #e8f0fe;
+  --blue-mid: #a8c7fa;
+  --green: #2d6a4f;
+  --green-light: #e6f4ea;
+  --red: #d93025;
+  --red-light: #fce8e6;
+  --yellow: #f9a825;
+  --yellow-light: #fff8e1;
+  --purple: #7c3aed;
+  --purple-light: #f3f0ff;
+  --text: #1a1a2e;
+  --text-sub: #5f6368;
+  --border: #e0e0e0;
+  --bg: #f5f7ff;
+  --radius: 14px;
+  --shadow: 0 2px 12px rgba(26,115,232,0.10);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 15px;
+  line-height: 1.75;
+  -webkit-text-size-adjust: 100%;
+}
+a { color: var(--blue); text-decoration: none; }
+
+/* ── Hero ── */
+.hero {
+  background: linear-gradient(145deg, #1557b0 0%, #1a73e8 60%, #0d47a1 100%);
+  padding: 44px 20px 36px;
+  text-align: center;
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  width: 260px; height: 260px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+  top: -70px; right: -70px;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  width: 140px; height: 140px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.04);
+  bottom: -30px; left: 30px;
+}
+.hero-series {
+  display: inline-flex; align-items: center; gap: 8px; margin-bottom: 14px;
+}
+.hero-tag {
+  background: rgba(255,255,255,0.18);
+  border: 1px solid rgba(255,255,255,0.35);
+  padding: 4px 12px; border-radius: 30px;
+  font-size: 12px; font-weight: 700; letter-spacing: 1px;
+}
+.hero-tag.new {
+  background: #fbbf24; color: #1557b0; border: none; font-weight: 900;
+}
+.hero h1 { font-size: 1.55em; font-weight: 900; line-height: 1.35; margin-bottom: 10px; }
+.hero p {
+  font-size: 14px; opacity: 0.9; line-height: 1.7; margin-bottom: 22px;
+  max-width: 340px; margin-left: auto; margin-right: auto;
+}
+.hero-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: white; color: var(--blue-dark);
+  font-weight: 700; font-size: 15px; padding: 12px 26px;
+  border-radius: 50px; box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+}
+
+/* ── 이전편 배너 ── */
+.prev-banner {
+  background: var(--blue-light);
+  border-bottom: 1px solid rgba(26,115,232,0.2);
+  padding: 10px 16px; font-size: 13px;
+  display: flex; align-items: center; gap: 8px; color: var(--blue-dark);
+}
+.prev-banner a { font-weight: 700; color: var(--blue); }
+
+/* ── Series nav ── */
+.series-nav { background: #1557b0; padding: 16px; }
+.series-label { font-size: 11px; color: rgba(255,255,255,0.6); font-weight: 700; letter-spacing: 1px; margin-bottom: 10px; }
+.series-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.series-item {
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 8px; padding: 8px 10px;
+  font-size: 11px; color: rgba(255,255,255,0.65); text-align: center; line-height: 1.4;
+}
+.series-item.done { color: rgba(255,255,255,0.4); text-decoration: line-through; }
+.series-item.active {
+  background: white; color: var(--blue-dark); font-weight: 700;
+}
+
+/* ── Sticky TOC ── */
+.toc-sticky {
+  background: white; border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; z-index: 100; padding: 10px 14px;
+}
+.toc-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; }
+.toc-pill {
+  display: flex; align-items: center; gap: 5px;
+  background: var(--blue-light); color: var(--blue-dark);
+  padding: 6px 8px; border-radius: 8px;
+  font-size: 11px; font-weight: 700; line-height: 1.3; text-align: left;
+}
+.toc-pill:hover { background: var(--blue); color: white; }
+
+/* ── Main ── */
+.main { padding: 20px 16px 60px; max-width: 680px; margin: 0 auto; }
+
+/* ── Chapter ── */
+.chapter { margin-top: 40px; scroll-margin-top: 56px; }
+.chapter-label { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.chapter-icon {
+  width: 40px; height: 40px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0; background: var(--blue);
+}
+.chapter-title { font-size: 1.2em; font-weight: 900; color: var(--blue-dark); line-height: 1.3; }
+.chapter-divider {
+  height: 3px;
+  background: linear-gradient(90deg, var(--blue) 0%, transparent 100%);
+  border-radius: 3px; margin-bottom: 18px;
+}
+.section-title {
+  font-size: 1.05em; font-weight: 700; color: var(--blue-dark);
+  padding: 4px 0 4px 12px; border-left: 4px solid var(--blue);
+  margin: 24px 0 12px;
+}
+
+/* ── Cards ── */
+.card { border-radius: var(--radius); padding: 18px; margin: 14px 0; box-shadow: var(--shadow); }
+.card-blue   { background: var(--blue-light);  border: 1px solid rgba(26,115,232,0.2); }
+.card-green  { background: var(--green-light); border: 1px solid rgba(45,106,79,0.15); }
+.card-yellow { background: var(--yellow-light);border: 1px solid rgba(249,168,37,0.3); }
+.card-red    { background: var(--red-light);   border: 1px solid rgba(217,48,37,0.2); }
+.card-purple { background: var(--purple-light);border: 1px solid rgba(124,58,237,0.2); }
+
+.card-title { font-size: 14px; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+.card-title.blue   { color: var(--blue-dark); }
+.card-title.green  { color: var(--green); }
+.card-title.yellow { color: #e65100; }
+.card-title.red    { color: var(--red); }
+.card-title.purple { color: #4c1d95; }
+
+/* ── Feature list ── */
+.feature-list { display: flex; flex-direction: column; gap: 10px; margin: 12px 0; }
+.feature-item {
+  background: white; border-radius: 12px; padding: 14px 16px;
+  display: flex; align-items: flex-start; gap: 12px;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.07); border: 1px solid var(--border);
+}
+.feature-emo { font-size: 22px; flex-shrink: 0; margin-top: 2px; }
+.feature-text strong { display: block; font-size: 14px; font-weight: 700; margin-bottom: 2px; }
+.feature-text span { font-size: 13px; color: var(--text-sub); line-height: 1.55; }
+
+/* ── Step list ── */
+.step-list { list-style: none; margin: 12px 0; display: flex; flex-direction: column; gap: 10px; }
+.step-list li {
+  display: grid; grid-template-columns: 32px 1fr; gap: 0 12px;
+  align-items: start; background: white; border-radius: 12px;
+  padding: 14px; border: 1px solid var(--border);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+.step-num {
+  width: 32px; height: 32px; background: var(--blue); color: white;
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-weight: 900; font-size: 14px; flex-shrink: 0;
+}
+.step-content strong { display: block; font-size: 14px; font-weight: 700; margin-bottom: 3px; }
+.step-content span { font-size: 13px; color: var(--text-sub); line-height: 1.6; }
+
+/* ── Prompt box ── */
+.prompt-box {
+  background: #fffde7; border: 1.5px solid #ffe082;
+  border-radius: 12px; padding: 16px; margin: 12px 0; position: relative;
+}
+.prompt-label {
+  font-size: 11px; font-weight: 700; color: #f57f17;
+  letter-spacing: 1px; margin-bottom: 8px; display: block;
+  padding-right: 68px; text-transform: uppercase;
+}
+.prompt-box div, .prompt-box p {
+  font-size: 14px; line-height: 1.8; color: #333; white-space: pre-line;
+}
+.copy-btn {
+  position: absolute; top: 10px; right: 10px;
+  background: var(--blue); color: white; border: none;
+  border-radius: 8px; padding: 5px 11px; font-size: 11px; font-weight: 700;
+  cursor: pointer; display: flex; align-items: center; gap: 4px;
+  transition: background 0.15s; font-family: 'Noto Sans KR', sans-serif; white-space: nowrap;
+}
+.copy-btn:hover { background: var(--blue-dark); }
+.copy-btn.copied { background: var(--green); }
+
+/* ── 공유 방식 카드 ── */
+.share-cards { display: flex; flex-direction: column; gap: 10px; margin: 14px 0; }
+.share-card {
+  background: white; border-radius: 14px; padding: 16px;
+  border: 1px solid var(--border); box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+  position: relative; overflow: hidden;
+}
+.share-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0;
+  width: 4px; height: 100%;
+}
+.share-card.full::before  { background: var(--blue); }
+.share-card.chat::before  { background: var(--green); }
+.share-card.link::before  { background: var(--purple); }
+.share-type {
+  font-size: 11px; font-weight: 700; letter-spacing: 1px;
+  margin-bottom: 6px; display: flex; align-items: center; gap: 6px;
+}
+.share-card.full .share-type  { color: var(--blue); }
+.share-card.chat .share-type  { color: var(--green); }
+.share-card.link .share-type  { color: var(--purple); }
+.share-title { font-size: 14px; font-weight: 700; margin-bottom: 6px; color: var(--text); }
+.share-desc  { font-size: 13px; color: var(--text-sub); line-height: 1.6; margin-bottom: 8px; }
+.share-tags  { display: flex; flex-wrap: wrap; gap: 6px; }
+.share-tag {
+  display: inline-block; padding: 2px 9px; border-radius: 20px;
+  font-size: 11px; font-weight: 700;
+}
+.full .share-tag  { background: var(--blue-light); color: var(--blue-dark); }
+.chat .share-tag  { background: var(--green-light); color: var(--green); }
+.link .share-tag  { background: var(--purple-light); color: #4c1d95; }
+
+/* ── 권한 비교표 ── */
+.perm-table { margin: 14px 0; border-radius: 12px; overflow: hidden; box-shadow: var(--shadow); }
+.perm-header {
+  display: grid; grid-template-columns: 1.4fr 1fr 1fr;
+  background: var(--blue-dark); color: white;
+  font-size: 12px; font-weight: 700;
+}
+.perm-header div, .perm-row div { padding: 10px 12px; }
+.perm-row {
+  display: grid; grid-template-columns: 1.4fr 1fr 1fr;
+  background: white; border-bottom: 1px solid var(--border);
+  font-size: 12.5px; align-items: center;
+}
+.perm-row:last-child { border-bottom: none; }
+.perm-row:nth-child(even) { background: var(--bg); }
+.perm-feature { font-weight: 500; color: var(--text); }
+.perm-ok  { color: var(--green); font-weight: 700; text-align: center; }
+.perm-no  { color: #bbb; text-align: center; }
+.perm-partial { color: var(--blue); font-weight: 700; text-align: center; }
+
+/* ── 팀 노트북 구조 시각화 ── */
+.team-structure {
+  background: white; border-radius: 14px; overflow: hidden;
+  border: 1px solid var(--border); box-shadow: var(--shadow); margin: 14px 0;
+}
+.ts-header {
+  background: var(--blue-dark); color: white;
+  padding: 10px 14px; font-size: 12px; font-weight: 700;
+  display: flex; align-items: center; gap: 8px;
+}
+.ts-body { padding: 14px; }
+.ts-row {
+  display: flex; align-items: stretch; gap: 10px; margin-bottom: 8px;
+}
+.ts-owner {
+  width: 70px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; color: var(--blue-dark);
+  background: var(--blue-light); border-radius: 8px;
+  padding: 8px 6px; text-align: center; line-height: 1.4;
+}
+.ts-notebooks { display: flex; flex-direction: column; gap: 5px; flex: 1; }
+.ts-nb {
+  border-radius: 8px; padding: 8px 12px;
+  font-size: 12.5px; display: flex; align-items: center; gap: 8px;
+}
+.ts-nb.private { background: #f8f9fa; border: 1px solid var(--border); }
+.ts-nb.shared  { background: var(--blue-light); border: 1px solid rgba(26,115,232,0.2); }
+.ts-nb.team    { background: var(--green-light); border: 1px solid rgba(45,106,79,0.2); }
+.ts-nb-icon { font-size: 14px; flex-shrink: 0; }
+.ts-nb-name { font-weight: 600; color: var(--text); flex: 1; }
+.ts-nb-badge {
+  font-size: 10px; font-weight: 700; padding: 1px 7px; border-radius: 20px;
+}
+.private .ts-nb-badge { background: #f0f0f0; color: #888; }
+.shared  .ts-nb-badge { background: var(--blue); color: white; }
+.team    .ts-nb-badge { background: var(--green); color: white; }
+
+/* ── 워크플로우 ── */
+.workflow {
+  display: flex; flex-direction: column; gap: 0; margin: 14px 0;
+}
+.wf-item {
+  display: flex; gap: 14px; align-items: flex-start;
+  padding: 14px; background: white; border: 1px solid var(--border);
+  border-radius: 12px; margin-bottom: 6px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+.wf-num {
+  width: 30px; height: 30px; background: var(--blue); color: white;
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-weight: 900; font-size: 13px; flex-shrink: 0;
+}
+.wf-content strong { display: block; font-size: 14px; font-weight: 700; margin-bottom: 2px; }
+.wf-content span { font-size: 13px; color: var(--text-sub); line-height: 1.6; }
+.wf-arrow { text-align: center; color: var(--blue); font-size: 18px; margin: -2px 0; }
+
+/* ── 시나리오 카드 ── */
+.scenario-list { display: flex; flex-direction: column; gap: 10px; margin: 12px 0; }
+.scenario-item {
+  background: white; border-radius: 12px; padding: 14px 16px;
+  border-left: 4px solid var(--blue); box-shadow: 0 1px 5px rgba(0,0,0,0.06);
+}
+.scenario-situation { font-size: 12px; color: var(--blue); font-weight: 700; margin-bottom: 4px; }
+.scenario-action { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.scenario-result { font-size: 12.5px; color: var(--text-sub); }
+
+/* ── Before/After ── */
+.before-after { display: flex; flex-direction: column; gap: 10px; margin: 12px 0; }
+.ba-box { border-radius: 12px; padding: 14px 16px; font-size: 13px; line-height: 1.75; }
+.ba-before { background: #f8f9fa; border: 1px solid var(--border); }
+.ba-after  { background: var(--blue-light); border: 1px solid rgba(26,115,232,0.2); }
+.ba-label  { font-size: 11px; font-weight: 700; letter-spacing: 0.5px; margin-bottom: 8px; display: block; }
+.ba-before .ba-label { color: var(--text-sub); }
+.ba-after  .ba-label { color: var(--blue-dark); }
+.ba-arrow  { text-align: center; font-size: 22px; color: var(--blue); }
+
+/* ── Misc ── */
+.text-sm { font-size: 13px; color: var(--text-sub); line-height: 1.7; }
+.link-row {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--blue-light); border-radius: 10px;
+  padding: 12px 14px; margin: 10px 0; font-size: 13.5px;
+}
+.link-row a { font-weight: 700; color: var(--blue); word-break: break-all; }
+
+/* ── Floating buttons ── */
+.float-btns {
+  position: fixed;
+  bottom: 24px; right: 16px;
+  display: flex; flex-direction: column; gap: 10px;
+  z-index: 200;
+}
+.float-btn {
+  width: 46px; height: 46px;
+  background: var(--blue); color: white;
+  border: none; border-radius: 50%; font-size: 18px;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(26,115,232,0.35);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.25s, background 0.15s;
+  font-family: 'Noto Sans KR', sans-serif;
+}
+.float-btn:hover { background: var(--blue-dark); }
+.float-btn.visible { opacity: 1; pointer-events: auto; }
+.float-btn.back-btn { background: white; color: var(--blue); border: 2px solid var(--blue); font-size: 16px; font-weight: 700; }
+.float-btn.back-btn:hover { background: var(--blue-light); }
+
+/* ── Footer ── */
+.footer {
+  background: white; border-top: 1px solid var(--border);
+  padding: 28px 20px; text-align: center;
+  font-size: 13px; color: var(--text-sub);
+}
+.footer strong { color: var(--blue); }
+
+@media(min-width: 600px) {
+  .hero { padding: 56px 40px 46px; }
+  .hero h1 { font-size: 2em; }
+  .main { padding: 28px 24px 80px; }
+  .before-after { flex-direction: row; }
+  .before-after .ba-box { flex: 1; }
+  .before-after .ba-arrow { display: flex; align-items: center; font-size: 28px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── HERO ── -->
+<div class="hero">
+  <div class="hero-series">
+    <span class="hero-tag">📒 사복쌤 AI 가이드 심화편</span>
+    <span class="hero-tag new">4편</span>
+  </div>
+  <h1>혼자 말고 팀 전체가<br>같이 써봐요! 👥</h1>
+  <p>노트북 공유부터 팀 협업 구조 설계까지.<br>우리 팀 전체의 업무 효율을 올리는 법</p>
+  <a href="https://notebooklm.google.com/" target="_blank" class="hero-btn">🚀 NotebookLM 열기</a>
+</div>
+
+<!-- ── 이전편 배너 ── -->
+<div class="prev-banner">
+  ← <a href="#">3편: 연도별 지침서 비교 분석 완전 정복</a>도 함께 보세요!
+</div>
+
+<!-- ── 시리즈 로드맵 ── -->
+<div class="series-nav">
+  <div class="series-label">📚 심화 시리즈 진행 현황</div>
+  <div class="series-grid">
+    <div class="series-item done">1편<br>보고서·슬라이드</div>
+    <div class="series-item done">2편<br>마인드맵·브리핑</div>
+    <div class="series-item done">3편<br>지침서 비교</div>
+    <div class="series-item active">4편<br>팀 협업 공유</div>
+    <div class="series-item">5편<br>음성·영상 분석</div>
+    <div class="series-item" style="opacity:0.4;">6편<br>준비 중</div>
+  </div>
+</div>
+
+<!-- ── STICKY TOC ── -->
+<div class="toc-sticky">
+  <div class="toc-grid">
+    <a href="#ch1" class="toc-pill">1장 공유 기능이란?</a>
+    <a href="#ch2" class="toc-pill">2장 공유 방법 3가지</a>
+    <a href="#ch3" class="toc-pill">3장 권한 설정</a>
+    <a href="#ch4" class="toc-pill">4장 팀 노트북 설계</a>
+    <a href="#ch5" class="toc-pill">5장 협업 워크플로우</a>
+    <a href="#ch6" class="toc-pill">6장 주의사항</a>
+    <a href="#appendix" class="toc-pill">🎁 프롬프트 사전</a>
+    <a href="#tip" class="toc-pill">💡 꿀팁 모음</a>
+    <a href="#next" class="toc-pill">➡️ 다음 편</a>
+  </div>
+</div>
+
+<!-- ── MAIN ── -->
+<div class="main">
+
+<!-- ─────────────── 1장 ─────────────── -->
+<div class="chapter" id="ch1">
+  <div class="chapter-label">
+    <div class="chapter-icon">👥</div>
+    <div class="chapter-title">제1장. 공유 기능이 뭔가요?<br>혼자 쓰면 절반만 쓰는 겁니다</div>
+  </div>
+  <div class="chapter-divider"></div>
+
+  <p class="text-sm">지금까지는 혼자 NotebookLM을 사용해 왔다면, 이번 편에서는 <strong>팀원 전체와 함께 쓰는 법</strong>을 배웁니다. 팀 전체가 같은 지침서 노트북을 보며 작업하면 "그게 몇 페이지였더라?"가 사라집니다.</p>
+
+  <div class="before-after">
+    <div class="ba-before ba-box">
+      <span class="ba-label">😩 공유 전</span>
+      팀장: "6장 지표 담당자 누구야?"<br>
+      사회복지사A: "잠깐만요 파일 찾고 있어요…"<br>
+      사회복지사B: "저도 지침서 프린트 했는데 어디 뒀지…"<br>
+      → 회의 30분째 자료 찾는 중
+    </div>
+    <div class="ba-arrow">↓</div>
+    <div class="ba-after ba-box">
+      <span class="ba-label">✨ 공유 후</span>
+      팀장이 공유 링크 전송 →<br>
+      팀원 전체가 같은 노트북 접속 →<br>
+      각자 AI에게 담당 영역 질문 →<br>
+      회의 전 10분 만에 모두 파악 완료!
+    </div>
+  </div>
+
+  <div class="section-title">공유 기능으로 할 수 있는 것</div>
+  <div class="feature-list">
+    <div class="feature-item">
+      <span class="feature-emo">📨</span>
+      <div class="feature-text">
+        <strong>지침서 노트북 팀원 전체 공유</strong>
+        <span>링크 하나로 팀원 모두가 같은 노트북에서 AI에게 질문 가능</span>
+      </div>
+    </div>
+    <div class="feature-item">
+      <span class="feature-emo">🔍</span>
+      <div class="feature-text">
+        <strong>열람 전용 공유로 안전하게</strong>
+        <span>소스 파일을 보여주지 않고 채팅만 가능한 형태로 공유 가능</span>
+      </div>
+    </div>
+    <div class="feature-item">
+      <span class="feature-emo">📝</span>
+      <div class="feature-text">
+        <strong>팀 공동 분석 노트 작성</strong>
+        <span>각자 AI와 대화한 결과를 노트에 저장해 팀 공동 자료로 축적</span>
+      </div>
+    </div>
+    <div class="feature-item">
+      <span class="feature-emo">🏢</span>
+      <div class="feature-text">
+        <strong>기관 공용 지식베이스 구축</strong>
+        <span>자주 쓰는 지침서·내규를 팀 공용 노트북에 모아두고 함께 관리</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────── 2장 ─────────────── -->
+<div class="chapter" id="ch2">
+  <div class="chapter-label">
+    <div class="chapter-icon">🔗</div>
+    <div class="chapter-title">제2장. 공유 방법 3가지<br>상황에 맞게 골라 쓰세요</div>
+  </div>
+  <div class="chapter-divider"></div>
+
+  <p class="text-sm">NotebookLM에는 상황에 따라 쓸 수 있는 <strong>세 가지 공유 방식</strong>이 있습니다. 대상과 목적에 맞게 선택하세요.</p>
+
+  <div class="share-cards">
+
+    <div class="share-card full">
+      <div class="share-type">🔵 방법 1 — 전체 공유</div>
+      <div class="share-title">소스 + 채팅 + 노트 모두 공개</div>
+      <div class="share-desc">공유받은 사람이 소스 파일, 대화 기록, 노트까지 모두 볼 수 있습니다. 신뢰할 수 있는 팀원과 협업할 때 적합합니다.</div>
+      <div class="share-tags">
+        <span class="share-tag">✅ 팀원 협업</span>
+        <span class="share-tag">✅ 공동 편집</span>
+        <span class="share-tag">⚠️ 신뢰 필요</span>
+      </div>
+    </div>
+
+    <div class="share-card chat">
+      <div class="share-type">🟢 방법 2 — 채팅 전용 공유 (추천)</div>
+      <div class="share-title">AI 질문만 가능, 소스 파일 비공개</div>
+      <div class="share-desc">공유받은 사람은 AI에게 질문만 할 수 있고, 소스로 올린 원본 파일은 볼 수 없습니다. 외부 기관이나 열람 범위를 제한할 때 적합합니다.</div>
+      <div class="share-tags">
+        <span class="share-tag">✅ 외부 공유</span>
+        <span class="share-tag">✅ 원본 보호</span>
+        <span class="share-tag">✅ 안전</span>
+      </div>
+    </div>
+
+    <div class="share-card link">
+      <div class="share-type">🟣 방법 3 — 링크 공개</div>
+      <div class="share-title">링크 아는 사람 누구나 접근</div>
+      <div class="share-desc">링크만 있으면 구글 계정 없이도 접근 가능합니다. 주민설명회 자료, 외부 배포용 Q&A 노트북에 활용합니다.</div>
+      <div class="share-tags">
+        <span class="share-tag">✅ 계정 불필요</span>
+        <span class="share-tag">✅ 넓은 배포</span>
+        <span class="share-tag">⚠️ 보안 주의</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="section-title">공유 방법 (공통 절차)</div>
+  <ol class="step-list">
+    <li>
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <strong>노트북 오른쪽 상단 [공유] 버튼 클릭</strong>
+        <span>화면 우측 상단 사람 모양 아이콘 또는 "공유(Share)" 텍스트 버튼입니다</span>
+      </div>
+    </li>
+    <li>
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <strong>공유 방식 선택</strong>
+        <span>"전체 공유" 또는 "채팅 전용(Chat-only)" 중 선택합니다</span>
+      </div>
+    </li>
+    <li>
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <strong>링크 복사 → 카카오톡·이메일로 전송</strong>
+        <span>[링크 복사] 버튼을 눌러 팀원에게 공유합니다</span>
+      </div>
+    </li>
+    <li>
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <strong>공유받은 팀원은 링크 클릭 → 구글 계정 로그인 → 바로 사용</strong>
+        <span>채팅 전용 공유는 상대방 계정 없이도 접근 가능합니다</span>
+      </div>
+    </li>
+  </ol>
+</div>
+
+<!-- ─────────────── 3장 ─────────────── -->
+<div class="chapter" id="ch3">
+  <div class="chapter-label">
+    <div class="chapter-icon">🔐</div>
+    <div class="chapter-title">제3장. 공유 권한 설정<br>누가 뭘 볼 수 있나?</div>
+  </div>
+  <div class="chapter-divider"></div>
+
+  <p class="text-sm">공유 방식에 따라 팀원이 할 수 있는 것이 달라집니다. 아래 표를 참고해 적합한 방식을 선택하세요.</p>
+
+  <div class="section-title">공유 방식별 권한 비교표</div>
+
+  <div class="perm-table">
+    <div class="perm-header">
+      <div>기능</div>
+      <div style="text-align:center;">전체 공유</div>
+      <div style="text-align:center;">채팅 전용</div>
+    </div>
+    <div class="perm-row">
+      <div class="perm-feature">AI에게 질문하기</div>
+      <div class="perm-ok">✅</div>
+      <div class="perm-ok">✅</div>
+    </div>
+    <div class="perm-row">
+      <div class="perm-feature">소스 파일 열람</div>
+      <div class="perm-ok">✅</div>
+      <div class="perm-no">❌</div>
+    </div>
+    <div class="perm-row">
+      <div class="perm-feature">노트 열람</div>
+      <div class="perm-ok">✅</div>
+      <div class="perm-no">❌</div>
+    </div>
+    <div class="perm-row">
+      <div class="perm-feature">소스 추가·삭제</div>
+      <div class="perm-no">❌</div>
+      <div class="perm-no">❌</div>
+    </div>
+    <div class="perm-row">
+      <div class="perm-feature">노트 편집</div>
+      <div class="perm-partial">👤 소유자만</div>
+      <div class="perm-no">❌</div>
+    </div>
+    <div class="perm-row">
+      <div class="perm-feature">출처 원본 확인</div>
+      <div class="perm-ok">✅</div>
+      <div class="perm-no">❌</div>
+    </div>
+    <div class="perm-row">
+      <div class="perm-feature">구글 계정 필요 여부</div>
+      <div class="perm-partial">필요</div>
+      <div class="perm-partial">선택</div>
+    </div>
+  </div>
+
+  <div class="card card-blue">
+    <div class="card-title blue">💡 복지관 현장 추천 — 채팅 전용 공유</div>
+    <p class="text-sm">소스에 민감한 내부 자료가 포함될 수 있으므로 <strong>채팅 전용 공유</strong>를 기본으로 사용하세요. 팀원은 AI에게 질문할 수 있지만 원본 파일은 볼 수 없어 안전합니다.</p>
+  </div>
+
+  <div class="card card-red">
+    <div class="card-title red">🚨 공유 전 반드시 확인!</div>
+    <p class="text-sm">공유 링크를 보내면 <strong>소스로 올린 모든 파일이 함께 공유</strong>됩니다(전체 공유 시). 클라이언트 정보가 포함된 파일이 소스에 있다면 공유 전에 반드시 해당 소스를 삭제하거나 별도 노트북을 만드세요.</p>
+  </div>
+</div>
+
+<!-- ─────────────── 4장 ─────────────── -->
+<div class="chapter" id="ch4">
+  <div class="chapter-label">
+    <div class="chapter-icon">🏗️</div>
+    <div class="chapter-title">제4장. 팀 노트북 구조 설계<br>기관 맞춤 공용 지식베이스 만들기</div>
+  </div>
+  <div class="chapter-divider"></div>
+
+  <p class="text-sm">팀 전체가 효율적으로 활용하려면 <strong>노트북 구조를 먼저 설계</strong>해야 합니다. 아무렇게나 만들면 나중에 "이게 어디 있었더라?"가 반복됩니다.</p>
+
+  <div class="section-title">팀 노트북 구조 예시</div>
+
+  <div class="team-structure">
+    <div class="ts-header">🏢 ○○종합사회복지관 — 팀 노트북 구조</div>
+    <div class="ts-body">
+
+      <div class="ts-row">
+        <div class="ts-owner">📢 전체<br>공유용</div>
+        <div class="ts-notebooks">
+          <div class="ts-nb team">
+            <span class="ts-nb-icon">📘</span>
+            <span class="ts-nb-name">아동분야 사업안내 2026</span>
+            <span class="ts-nb-badge">팀 공유</span>
+          </div>
+          <div class="ts-nb team">
+            <span class="ts-nb-icon">📋</span>
+            <span class="ts-nb-name">2026 시설평가 준비 자료</span>
+            <span class="ts-nb-badge">팀 공유</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="ts-row">
+        <div class="ts-owner">📤 팀원<br>공유용</div>
+        <div class="ts-notebooks">
+          <div class="ts-nb shared">
+            <span class="ts-nb-icon">📊</span>
+            <span class="ts-nb-name">2026 사업결과 보고 작업</span>
+            <span class="ts-nb-badge">채팅공유</span>
+          </div>
+          <div class="ts-nb shared">
+            <span class="ts-nb-icon">🗺️</span>
+            <span class="ts-nb-name">지역사회보장계획 비교</span>
+            <span class="ts-nb-badge">채팅공유</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="ts-row">
+        <div class="ts-owner">🔒 개인<br>전용</div>
+        <div class="ts-notebooks">
+          <div class="ts-nb private">
+            <span class="ts-nb-icon">📝</span>
+            <span class="ts-nb-name">사례관리 통합 분석 (비식별)</span>
+            <span class="ts-nb-badge">비공개</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="section-title">팀 노트북 구조 설계 원칙</div>
+  <div class="feature-list">
+    <div class="feature-item">
+      <span class="feature-emo">🟢</span>
+      <div class="feature-text">
+        <strong>공개 지침서·법령 → 팀 전체 공유 노트북</strong>
+        <span>누구나 접근 가능한 공개 자료는 팀 공용으로 운영해 중복 생성 방지</span>
+      </div>
+    </div>
+    <div class="feature-item">
+      <span class="feature-emo">🔵</span>
+      <div class="feature-text">
+        <strong>진행 중인 협업 프로젝트 → 채팅 전용 공유</strong>
+        <span>보고서 작업, 평가 준비 등 팀 작업은 채팅 공유로 함께 활용</span>
+      </div>
+    </div>
+    <div class="feature-item">
+      <span class="feature-emo">🔴</span>
+      <div class="feature-text">
+        <strong>클라이언트 관련 자료 → 절대 비공개</strong>
+        <span>비식별화된 사례 자료도 개인 전용 노트북에서만 관리</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────── 5장 ─────────────── -->
+<div class="chapter" id="ch5">
+  <div class="chapter-label">
+    <div class="chapter-icon">⚙️</div>
+    <div class="chapter-title">제5장. 실전 협업 워크플로우<br>평가 준비부터 팀 회의까지</div>
+  </div>
+  <div class="chapter-divider"></div>
+
+  <div class="section-title">시나리오별 협업 워크플로우</div>
+
+  <div class="scenario-list">
+
+    <div class="scenario-item">
+      <div class="scenario-situation">🏆 시나리오 1 — 시설평가 준비 (D-30)</div>
+      <div class="scenario-action">평가 매뉴얼 노트북 공유 → 담당자별 영역 분배 → 각자 AI 질문 → 결과 노트로 모으기</div>
+      <div class="scenario-result">✅ 효과: 각자 담당 영역만 집중 공부, 전체 공유로 중복 질문 제거</div>
+    </div>
+
+    <div class="scenario-item">
+      <div class="scenario-situation">📊 시나리오 2 — 월간 보고서 공동 작성</div>
+      <div class="scenario-action">사업 자료 공유 노트북 생성 → 팀원 각자 담당 파트 AI로 초안 작성 → 소유자가 통합</div>
+      <div class="scenario-result">✅ 효과: 보고서 작성 시간 50% 단축, 문체 일관성 유지</div>
+    </div>
+
+    <div class="scenario-item">
+      <div class="scenario-situation">🤝 시나리오 3 — 신입 직원 온보딩</div>
+      <div class="scenario-action">업무 매뉴얼 노트북 채팅 공유 → 신입이 스스로 AI에게 질문하며 학습</div>
+      <div class="scenario-result">✅ 효과: 선임 사회복지사의 반복 설명 부담 감소, 신입의 자기주도 학습</div>
+    </div>
+
+    <div class="scenario-item">
+      <div class="scenario-situation">🌐 시나리오 4 — 주민·보호자 대상 Q&A</div>
+      <div class="scenario-action">지침서 기반 Q&A 노트북 링크 공개 → 주민이 직접 AI에게 복지 제도 질문</div>
+      <div class="scenario-result">✅ 효과: 전화 문의 감소, 업무 시간 외 자동 응대 가능</div>
+    </div>
+
+  </div>
+
+  <div class="section-title">평가 준비 팀 협업 워크플로우</div>
+
+  <div class="workflow">
+    <div class="wf-item">
+      <div class="wf-num">1</div>
+      <div class="wf-content">
+        <strong>팀장: 평가 매뉴얼 노트북 생성 & 팀 공유</strong>
+        <span>평가 매뉴얼 + 전년도 지적 사항 소스 업로드 → 채팅 전용 공유 링크 전송</span>
+      </div>
+    </div>
+    <div class="wf-arrow">↓</div>
+    <div class="wf-item">
+      <div class="wf-num">2</div>
+      <div class="wf-content">
+        <strong>팀원 각자: 담당 영역 AI 분석</strong>
+        <span>"내가 담당하는 '지역사회 연계' 지표 준비 사항을 정리해줘"</span>
+      </div>
+    </div>
+    <div class="wf-arrow">↓</div>
+    <div class="wf-item">
+      <div class="wf-num">3</div>
+      <div class="wf-content">
+        <strong>팀장: 각자 분석 결과를 노트에 저장 요청</strong>
+        <span>팀원들이 AI 답변을 노트에 저장 → 소유자(팀장)가 통합 열람</span>
+      </div>
+    </div>
+    <div class="wf-arrow">↓</div>
+    <div class="wf-item">
+      <div class="wf-num">4</div>
+      <div class="wf-content">
+        <strong>팀 회의: 분석 결과 공유 & 역할 분배 확정</strong>
+        <span>AI 분석 기반으로 준비 항목 체크리스트화 → 담당자·기한 배정</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">협업 관련 프롬프트</div>
+
+  <div class="prompt-box">
+    <span class="prompt-label">📋 팀원용 담당 영역 분석 요청</span>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+    <div>이 평가 매뉴얼에서 '지역사회 연계 및 자원 개발' 영역의 평가 지표를 모두 찾아줘.
+각 지표별로 ① 평가 기준 ② 준비해야 할 증빙 서류 ③ 자주 지적되는 실수 순서로 정리해 줘.
+나는 이 영역 담당자야, 실제로 준비할 수 있는 체크리스트 형태로 만들어 줘.</div>
+  </div>
+
+  <div class="prompt-box">
+    <span class="prompt-label">📋 팀원 전달용 변경사항 요약</span>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+    <div>이 지침서에서 올해 새로 생긴 내용과 변경된 내용만 골라줘.
+팀 카카오톡 공지로 보낼 수 있도록 짧고 핵심만 담은 형태로 작성해 줘.
+이모지를 적절히 써서 읽기 쉽게 해주고, 전체 길이는 카카오톡 3~4스크롤 이내로.</div>
+  </div>
+
+  <div class="prompt-box">
+    <span class="prompt-label">📋 신입 직원 자기학습용 Q&A</span>
+    <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+    <div>이 업무 매뉴얼을 처음 보는 신입 사회복지사 입장에서 가장 헷갈릴 만한 질문 10개를 만들어 줘.
+그리고 각 질문에 대한 답변도 함께 써줘.
+"선배한테 물어보기 쑥스러운 기초 질문"도 포함해서 편하게 학습할 수 있게 해줘.</div>
+  </div>
+</div>
+
+<!-- ─────────────── 6장 ─────────────── -->
+<div class="chapter" id="ch6">
+  <div class="chapter-label">
+    <div class="chapter-icon">⚠️</div>
+    <div class="chapter-title">제6장. 협업 시 꼭 알아야 할<br>주의사항과 한계</div>
+  </div>
+  <div class="chapter-divider"></div>
+
+  <div class="section-title">꼭 지켜야 할 보안 수칙</div>
+
+  <div class="feature-list">
+    <div class="feature-item">
+      <span class="feature-emo">🚫</span>
+      <div class="feature-text">
+        <strong>클라이언트 정보 노트북은 절대 공유 금지</strong>
+        <span>비식별화했더라도 사례관리 내용이 담긴 노트북은 개인 전용으로만 사용하세요. 공유 설정을 실수로 누를 수 있어 별도 노트북 관리를 권장합니다.</span>
+      </div>
+    </div>
+    <div class="feature-item">
+      <span class="feature-emo">🔗</span>
+      <div class="feature-text">
+        <strong>공유 링크는 카카오톡 단체방에 뿌리지 마세요</strong>
+        <span>링크를 아는 사람 누구나 접근할 수 있습니다. 팀원에게 개별 전송하거나 업무 메신저의 특정 채널에만 공유하세요.</span>
+      </div>
+    </div>
+    <div class="feature-item">
+      <span class="feature-emo">🔄</span>
+      <div class="feature-text">
+        <strong>소스 수정은 소유자만 가능</strong>
+        <span>공유받은 팀원은 AI 질문만 할 수 있고, 소스 파일 추가·삭제는 노트북 소유자(만든 사람)만 가능합니다.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">협업의 현실적 한계</div>
+
+  <div class="card card-yellow">
+    <div class="card-title yellow">⚠️ 알아두면 당황 안 해요</div>
+    <div class="feature-list" style="margin-top:8px;">
+      <div class="feature-item">
+        <span class="feature-emo">💬</span>
+        <div class="feature-text">
+          <strong>채팅 기록은 개인별로 분리됩니다</strong>
+          <span>팀원 A의 대화 내용을 팀원 B가 볼 수 없습니다. 공유하려면 결과를 노트에 저장 후 소유자에게 전달해야 합니다.</span>
+        </div>
+      </div>
+      <div class="feature-item">
+        <span class="feature-emo">📊</span>
+        <div class="feature-text">
+          <strong>무료 버전 일일 질문 50회는 개인 기준</strong>
+          <span>공유 노트북을 여러 팀원이 써도 각자의 계정 기준으로 50회가 적용됩니다. 팀 전체가 공유해서 쓰는 횟수 제한이 아닙니다.</span>
+        </div>
+      </div>
+      <div class="feature-item">
+        <span class="feature-emo">🔁</span>
+        <div class="feature-text">
+          <strong>소스 업데이트는 수동으로</strong>
+          <span>원본 파일이 바뀌었다고 노트북이 자동 업데이트되지 않습니다. 변경 시 소유자가 수동으로 다시 업로드해야 합니다.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────── 부록 ─────────────── -->
+<div class="chapter" id="appendix">
+  <div class="chapter-label">
+    <div class="chapter-icon" style="background:var(--green);">🎁</div>
+    <div class="chapter-title">부록. 심화 4편 프롬프트 전체 모음</div>
+  </div>
+  <div class="chapter-divider"></div>
+  <p class="text-sm">이번 편에서 나온 프롬프트를 한 곳에 모았습니다. 복사해서 바로 쓰세요!</p>
+
+  <div style="margin:16px 0;">
+    <div style="font-size:13px;font-weight:700;color:var(--blue);margin-bottom:8px;">👥 팀원 협업용</div>
+
+    <div class="prompt-box">
+      <span class="prompt-label">① 담당 영역 분석 요청</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+      <div>이 평가 매뉴얼에서 '지역사회 연계 및 자원 개발' 영역의 평가 지표를 모두 찾아줘.
+각 지표별로 ① 평가 기준 ② 준비해야 할 증빙 서류 ③ 자주 지적되는 실수 순서로 정리해 줘.
+나는 이 영역 담당자야, 실제로 준비할 수 있는 체크리스트 형태로 만들어 줘.</div>
+    </div>
+
+    <div class="prompt-box">
+      <span class="prompt-label">② 팀 공지용 변경사항 요약</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+      <div>이 지침서에서 올해 새로 생긴 내용과 변경된 내용만 골라줘.
+팀 카카오톡 공지로 보낼 수 있도록 짧고 핵심만 담은 형태로 작성해 줘.
+이모지를 적절히 써서 읽기 쉽게 해주고, 전체 길이는 카카오톡 3~4스크롤 이내로.</div>
+    </div>
+
+    <div class="prompt-box">
+      <span class="prompt-label">③ 신입 직원 자기학습용 Q&A</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+      <div>이 업무 매뉴얼을 처음 보는 신입 사회복지사 입장에서 가장 헷갈릴 만한 질문 10개를 만들어 줘.
+그리고 각 질문에 대한 답변도 함께 써줘.
+"선배한테 물어보기 쑥스러운 기초 질문"도 포함해서 편하게 학습할 수 있게 해줘.</div>
+    </div>
+  </div>
+
+  <div style="margin:16px 0;">
+    <div style="font-size:13px;font-weight:700;color:var(--blue);margin-bottom:8px;">🏢 팀 운영용</div>
+
+    <div class="prompt-box">
+      <span class="prompt-label">④ 팀 회의 사전 브리핑 자료</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+      <div>오늘 팀 회의에서 논의할 내용을 이 자료에서 미리 정리해 줘.
+회의 참석자들이 사전에 읽고 오면 좋을 핵심 사항 5가지를 뽑아서 간결하게 정리해 줘.
+각 항목은 2~3문장 이내로, 읽는 데 5분 이내로 끝낼 수 있게 해줘.</div>
+    </div>
+
+    <div class="prompt-box">
+      <span class="prompt-label">⑤ 주민·보호자 대상 안내문</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+      <div>이 지침서의 내용을 복지 제도를 전혀 모르는 일반 주민도 이해할 수 있게 쉬운 안내문으로 바꿔줘.
+어려운 행정 용어는 쉬운 말로, 신청 방법은 단계별로 설명해 줘.
+A4 반 페이지 이내, "이런 분들이 지원받을 수 있어요" 형식으로 시작해 줘.</div>
+    </div>
+
+    <div class="prompt-box">
+      <span class="prompt-label">⑥ 기관 공용 지식베이스 요약 정리</span>
+      <button class="copy-btn" onclick="copyPrompt(this)">📋 복사</button>
+      <div>업로드한 자료들을 바탕으로 우리 기관에서 가장 자주 참조하는 규정과 기준을 한 곳에 정리해 줘.
+항목: 지원 대상 기준 / 신청 서류 / 지원 금액 한도 / 정산 기한 / 주요 금지 사항
+표 형식으로, 담당자가 바뀌어도 바로 쓸 수 있는 인수인계 자료처럼 만들어 줘.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────── 꿀팁 ─────────────── -->
+<div class="chapter" id="tip">
+  <div class="chapter-label">
+    <div class="chapter-icon" style="background:var(--yellow);color:#1a1a2e;">💡</div>
+    <div class="chapter-title">꿀팁 모음 — 4편 핵심 정리</div>
+  </div>
+  <div class="chapter-divider"></div>
+
+  <div class="feature-list">
+    <div class="feature-item">
+      <span class="feature-emo">🟢</span>
+      <div class="feature-text">
+        <strong>팀 공유 기본값은 "채팅 전용"으로</strong>
+        <span>소스 파일이 노출되는 전체 공유보다 채팅 전용 공유를 기본으로 쓰세요. 더 안전하고 대부분의 협업 목적에 충분합니다.</span>
+      </div>
+    </div>
+    <div class="feature-item">
+      <span class="feature-emo">📂</span>
+      <div class="feature-text">
+        <strong>노트북 3분류 원칙 — 공개/공유/비공개</strong>
+        <span>공개 지침서 전용 / 팀 협업 전용 / 사례관리 개인 전용, 이 세 가지로 노트북을 분류하면 관리가 훨씬 쉬워집니다.</span>
+      </div>
+    </div>
+    <div class="feature-item">
+      <span class="feature-emo">📌</span>
+      <div class="feature-text">
+        <strong>AI 답변은 노트에 저장 후 공유</strong>
+        <span>채팅 기록은 팀원끼리 공유되지 않습니다. 팀에 전달할 내용은 [노트에 저장] 후 소유자가 정리해 공유하는 방식으로 운영하세요.</span>
+      </div>
+    </div>
+    <div class="feature-item">
+      <span class="feature-emo">🔄</span>
+      <div class="feature-text">
+        <strong>지침서 업데이트 시 소스 재업로드 알림 필수</strong>
+        <span>소유자가 소스를 업데이트하면 팀원들에게 "노트북 새 버전 올라갔어요" 공지를 해줘야 합니다. 자동 반영이 안 되기 때문입니다.</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─────────────── 다음 편 ─────────────── -->
+<div class="chapter" id="next">
+  <div class="chapter-label">
+    <div class="chapter-icon" style="background:var(--green);">➡️</div>
+    <div class="chapter-title">다음 편 예고</div>
+  </div>
+  <div class="chapter-divider"></div>
+
+  <div class="card card-green">
+    <div class="card-title green">🎙️ 심화 5편 — 음성 녹음 & 유튜브 영상 분석 완전 정복</div>
+    <p class="text-sm">글이 아닌 소리도 NotebookLM이 분석합니다. 사례회의 녹음 파일, 복지 교육 영상, 세미나 강의를 업로드해서 핵심만 뽑아내는 법을 다룹니다.</p>
+    <div class="feature-list" style="margin-top:12px;">
+      <div class="feature-item">
+        <span class="feature-emo">🎤</span>
+        <div class="feature-text">
+          <strong>사례회의 녹음 → 회의록 자동 초안</strong>
+          <span>mp3 파일 업로드 한 번으로 회의록 완성</span>
+        </div>
+      </div>
+      <div class="feature-item">
+        <span class="feature-emo">▶️</span>
+        <div class="feature-text">
+          <strong>복지 교육 유튜브 → 핵심 요약 + 적용 방안</strong>
+          <span>시청 없이 AI가 영상 내용을 요약해 업무 적용까지</span>
+        </div>
+      </div>
+    </div>
+    <p style="margin-top:12px;font-size:13px;color:var(--green);font-weight:700;">→ saboknote.com에서 다음 편 알림 받기</p>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<!-- ── FOOTER ── -->
+<div class="footer">
+  <p style="font-size:22px;margin-bottom:8px;">👥 📒 🌿</p>
+  <p><strong>심화 4편. 팀 협업 & 노트북 공유 완전 정복</strong></p>
+  <p style="margin-top:6px;font-size:12px;">NotebookLM 심화 시리즈 | 사복쌤을 위한 AI 실무 가이드</p>
+  <p style="margin-top:14px;">든든한 실무 파트너: <a href="https://www.saboknote.com/" target="_blank"><strong>사복노트 (saboknote.com)</strong></a></p>
+</div>
+
+
+
+<!-- ── Floating buttons ── -->
+<div class="float-btns">
+  <button class="float-btn back-btn" onclick="goBack()" title="이전 페이지">←</button>
+  <button class="float-btn" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="맨 위로">↑</button>
+</div>
+
+<script>
+document.querySelectorAll('.float-btn').forEach(btn => {
+  window.addEventListener('scroll', () => {
+    btn.classList.toggle('visible', window.scrollY > 300);
+  });
+});
+function goBack() {
+  if (document.referrer) { window.history.back(); }
+  else { window.scrollTo({top: 0, behavior: 'smooth'}); }
+});
+function copyPrompt(el) {
+  const text = el.closest('.prompt-box').querySelector('div').innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    el.textContent = '✅ 복사됨!';
+    el.classList.add('copied');
+    setTimeout(() => { el.textContent = '📋 복사'; el.classList.remove('copied'); }, 1800);
+  }).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    el.textContent = '✅ 복사됨!';
+    el.classList.add('copied');
+    setTimeout(() => { el.textContent = '📋 복사'; el.classList.remove('copied'); }, 1800);
+  });
+}
+</script>
+</body>
+</html>
