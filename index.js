@@ -1645,6 +1645,121 @@ try {
                             </div>
                         </div>
                     </div>
+
+                        <!-- 🤓 신입을 위한 급여 계산 설명 토글 -->
+                        <div style="margin-top:20px; text-align:center;">
+                            <button onclick="togglePayrollGuide()" id="btn-payroll-guide" style="background:linear-gradient(135deg, #f0abfc 0%, #818cf8 100%); color:white; border:none; border-radius:12px; padding:12px 24px; font-size:0.9rem; font-weight:800; cursor:pointer; transition:all 0.3s; box-shadow:0 4px 12px rgba(129,140,248,0.3);">
+                                🤓 이게 뭔 소리야? (설명 보기)
+                            </button>
+                        </div>
+                        <div id="payroll-guide-panel" style="display:none; margin-top:16px; animation: fadeIn 0.3s ease;">
+                            <div style="background:linear-gradient(135deg, #faf5ff 0%, #eff6ff 100%); border-radius:20px; padding:24px; border:1px solid #e9d5ff;">
+                                <div style="font-size:1.1rem; font-weight:900; color:#7c3aed; margin-bottom:16px; display:flex; align-items:center; gap:8px;">
+                                    📚 신입 사복이를 위한 급여명세서 해설서
+                                </div>
+
+                                <div style="display:flex; flex-direction:column; gap:14px;">
+                                    <!-- 기본급 -->
+                                    <div style="background:white; border-radius:14px; padding:14px; border-left:4px solid #f59e0b;">
+                                        <div style="font-weight:800; color:#92400e; font-size:0.9rem; margin-bottom:4px;">💰 기본급</div>
+                                        <div style="font-size:0.8rem; color:#78716c; line-height:1.6;">
+                                            근로계약서에 적힌 그 금액! 매달 고정으로 받는 월급이에요.<br>
+                                            "내 월급이 얼마라고요?" 할 때 그 금액이 바로 이거 😎
+                                        </div>
+                                    </div>
+
+                                    <!-- 통상시급 -->
+                                    <div style="background:white; border-radius:14px; padding:14px; border-left:4px solid #3b82f6;">
+                                        <div style="font-weight:800; color:#1e40af; font-size:0.9rem; margin-bottom:4px;">⏰ 통상시급 = (기본급+식대) ÷ 209</div>
+                                        <div style="font-size:0.8rem; color:#78716c; line-height:1.6;">
+                                            "209가 뭐야?" → 한 달에 일하기로 약속한 시간이에요!<br>
+                                            주 40시간 × 4.345주(12개월÷52주) = <strong>약 209시간</strong><br>
+                                            이 시급이 있어야 연장수당을 계산할 수 있어요 💡
+                                        </div>
+                                    </div>
+
+                                    <!-- 연장수당 -->
+                                    <div style="background:white; border-radius:14px; padding:14px; border-left:4px solid #8b5cf6;">
+                                        <div style="font-weight:800; color:#5b21b6; font-size:0.9rem; margin-bottom:4px;">🌙 연장근무수당 = 통상시급 × 1.5배 × 시간</div>
+                                        <div style="font-size:0.8rem; color:#78716c; line-height:1.6;">
+                                            야근하면 시급의 <strong>1.5배</strong>를 받아요! (50% 가산)<br>
+                                            "야근비가 왜 이것밖에 안 돼?" → 시급 기준이라 그래요… 😢<br>
+                                            야간(밤10시~새벽6시)·휴일도 마찬가지로 1.5배!
+                                        </div>
+                                    </div>
+
+                                    <!-- 정액급식비 -->
+                                    <div style="background:white; border-radius:14px; padding:14px; border-left:4px solid #10b981;">
+                                        <div style="font-weight:800; color:#065f46; font-size:0.9rem; margin-bottom:4px;">🍱 정액급식비 (비과세 20만원)</div>
+                                        <div style="font-size:0.8rem; color:#78716c; line-height:1.6;">
+                                            밥값! 월 20만원까지는 세금을 안 매겨요 (비과세).<br>
+                                            그래서 기본급에서 일부를 급식비로 빼놓으면 세금이 줄어드는 마법 ✨<br>
+                                            "왜 급여가 쪼개져 있지?" → 이런 이유예요!
+                                        </div>
+                                    </div>
+
+                                    <!-- 4대보험 -->
+                                    <div style="background:white; border-radius:14px; padding:14px; border-left:4px solid #ef4444;">
+                                        <div style="font-weight:800; color:#991b1b; font-size:0.9rem; margin-bottom:8px;">🛡️ 4대보험 (내 월급에서 빠지는 것들)</div>
+                                        <div style="font-size:0.8rem; color:#78716c; line-height:1.6;">
+                                            <div style="margin-bottom:8px;">
+                                                <strong style="color:#dc2626;">① 국민연금 (~4.5%)</strong><br>
+                                                나중에 은퇴하면 돌려받는 저축 같은 것! 회사도 반반 내요 🤝
+                                            </div>
+                                            <div style="margin-bottom:8px;">
+                                                <strong style="color:#2563eb;">② 건강보험 (~3.54%)</strong><br>
+                                                병원 갈 때 30%만 내는 이유가 바로 이거! 매달 내는 건보료 덕분이에요 🏥
+                                            </div>
+                                            <div style="margin-bottom:8px;">
+                                                <strong style="color:#16a34a;">③ 장기요양 (건보료의 ~12.95%)</strong><br>
+                                                어르신들 요양 서비스 비용! 건강보험에 덧붙여서 나가요 👴
+                                            </div>
+                                            <div>
+                                                <strong style="color:#9333ea;">④ 고용보험 (~0.9%)</strong><br>
+                                                실직하면 실업급여 받을 수 있는 보험! 미래의 안전망이에요 🪂
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 소득세 -->
+                                    <div style="background:white; border-radius:14px; padding:14px; border-left:4px solid #f97316;">
+                                        <div style="font-weight:800; color:#9a3412; font-size:0.9rem; margin-bottom:4px;">💸 소득세 + 지방소득세</div>
+                                        <div style="font-size:0.8rem; color:#78716c; line-height:1.6;">
+                                            돈 벌면 나라에 내는 세금! 소득세의 10%가 지방소득세예요.<br>
+                                            "왜 두 개야?" → 하나는 국가, 하나는 우리 동네에 내는 거예요 🏛️<br>
+                                            연말정산 때 돌려받을 수도 있으니 영수증 모아두세요! 🧾
+                                        </div>
+                                    </div>
+
+                                    <!-- 실수령액 -->
+                                    <div style="background:linear-gradient(135deg, #1e293b, #0f172a); border-radius:14px; padding:14px; color:white;">
+                                        <div style="font-weight:800; font-size:0.9rem; margin-bottom:4px;">💎 실수령액 = 총 지급액 - 총 공제액</div>
+                                        <div style="font-size:0.8rem; color:#cbd5e1; line-height:1.6;">
+                                            드디어! 내 통장에 꽂히는 금액! 🎉<br>
+                                            "생각보다 적은데…?" → 4대보험이 미래의 나를 지켜주는 거예요.<br>
+                                            세전 대비 약 85~90% 정도가 실수령액이에요 👛
+                                        </div>
+                                    </div>
+
+                                    <!-- 일할 계산 -->
+                                    <div style="background:white; border-radius:14px; padding:14px; border-left:4px solid #06b6d4;">
+                                        <div style="font-weight:800; color:#0e7490; font-size:0.9rem; margin-bottom:4px;">📅 일할 계산 (중도 입사/퇴사)</div>
+                                        <div style="font-size:0.8rem; color:#78716c; line-height:1.6;">
+                                            한 달 중간에 들어왔거나 나갔으면?<br>
+                                            → <strong>월급 × (근무일수 ÷ 그 달 총 일수)</strong> 로 딱 일한 만큼!<br>
+                                            5월 15일 입사면? 월급 × (17일/31일) = 약 54.8% 💪<br>
+                                            4대보험도 이 금액 기준으로 다시 계산돼요!
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div style="margin-top:16px; padding:12px; background:#fef3c7; border-radius:10px; font-size:0.75rem; color:#92400e; line-height:1.5;">
+                                    💬 <strong>선배 사복이의 한마디:</strong> 처음엔 복잡해 보이지만, 한두 번 해보면 금방 익숙해져요! 모르는 건 부끄러운 게 아니라 배우는 중인 거예요 😊
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
 
                 <div id="admin-content-budget" class="tab-content" style="display:none; animation: fadeIn 0.3s ease;">
@@ -2487,6 +2602,21 @@ try {
      * - 일할 미적용: 연장·야간·휴일수당 (실제 근무시간 기반)
      * - 통상시급: 월 전체 급여 기준으로 산정 (일할 미적용)
      * ============================================ */
+
+    // 🤓 급여 계산 설명 패널 토글
+    window.togglePayrollGuide = function() {
+        const panel = document.getElementById('payroll-guide-panel');
+        const btn = document.getElementById('btn-payroll-guide');
+        if (panel.style.display === 'none') {
+            panel.style.display = 'block';
+            btn.innerHTML = '🤓 설명 접기';
+            btn.style.background = 'linear-gradient(135deg, #94a3b8 0%, #64748b 100%)';
+        } else {
+            panel.style.display = 'none';
+            btn.innerHTML = '🤓 이게 뭔 소리야? (설명 보기)';
+            btn.style.background = 'linear-gradient(135deg, #f0abfc 0%, #818cf8 100%)';
+        }
+    };
 
     // toggleProrateInput: 일할 계산 체크박스 토글 시 호출
     // - 체크 해제 시 날짜 초기화 및 결과 숨김
