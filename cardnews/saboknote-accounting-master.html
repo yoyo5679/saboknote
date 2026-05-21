@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>사복노트 행정/회계 마스터</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:#DDE3ED; font-family:'Noto Sans KR',sans-serif; min-height:100vh; display:flex; flex-direction:column; align-items:center; padding:32px 16px 48px; }
+  .top-label { font-size:12px; font-weight:700; color:#8A94A6; letter-spacing:2px; margin-bottom:20px; text-transform:uppercase; }
+  .card { width:480px; height:600px; border-radius:22px; overflow:hidden; box-shadow:0 16px 48px rgba(0,0,0,0.18); position:relative; flex-shrink:0; }
+  .slide { display:none; width:100%; height:100%; position:absolute; top:0; left:0; }
+  .slide.on { display:flex; flex-direction:column; }
+  .foot { height:48px; flex-shrink:0; display:flex; align-items:center; padding:0 32px; justify-content:space-between; }
+  .foot .fl { font-size:12px; font-weight:900; }
+  .foot .fr { font-size:11px; }
+
+  /* 계산 도구 카드 */
+  .tool-card { background:white; border-radius:14px; padding:12px 15px; box-shadow:0 2px 8px rgba(0,0,0,0.05); }
+  .tool-top { display:flex; align-items:center; gap:8px; margin-bottom:5px; }
+  .tool-icon { font-size:18px; line-height:1; }
+  .tool-badge { font-size:10px; font-weight:700; padding:2px 8px; border-radius:10px; background:#EBF2FF; color:#2F6FED; }
+  .tool-badge.green { background:#E6F9F7; color:#2ABFB5; }
+  .tool-badge.orange { background:#FFF4E6; color:#F08030; }
+  .tool-name { font-size:14px; font-weight:900; color:#1B2E4B; margin-bottom:3px; }
+  .tool-real { font-size:12.5px; color:#3D4A5C; font-weight:600; line-height:1.5; margin-bottom:3px; word-break:keep-all; }
+  .tool-sub { font-size:11px; color:#8A94A6; line-height:1.5; padding-left:9px; border-left:2px solid #E0E8F0; word-break:keep-all; }
+
+  /* S1 훅 - 네이비 다크 */
+  .s1 { background:#1B2E4B; }
+  .s1 .logo-bar { display:flex; justify-content:space-between; align-items:center; padding:24px 32px 0; flex-shrink:0; }
+  .s1 .logo { font-size:13px; font-weight:900; color:rgba(255,255,255,0.4); }
+  .s1 .body { flex:1; padding:0 32px; display:flex; flex-direction:column; justify-content:center; }
+  .s1 .pill { display:inline-block; background:rgba(47,111,237,0.2); border:1px solid rgba(47,111,237,0.35); color:#5B99FF; font-size:10px; font-weight:700; padding:4px 12px; border-radius:20px; margin-bottom:16px; align-self:flex-start; letter-spacing:1px; }
+  .s1 .q { font-size:14px; color:rgba(255,255,255,0.5); margin-bottom:14px; }
+  .s1 .calcs { display:flex; flex-direction:column; gap:8px; margin-bottom:20px; }
+  .s1 .crow { display:flex; align-items:baseline; gap:10px; }
+  .s1 .cname { font-size:24px; font-weight:900; color:white; }
+  .s1 .cq { font-size:13px; color:rgba(255,255,255,0.3); }
+  .s1 .hint { font-size:14px; color:rgba(255,255,255,0.5); line-height:1.7; word-break:keep-all; }
+  .s1 .hint em { color:#5B99FF; font-style:normal; font-weight:700; }
+  .s1 .foot { background:rgba(255,255,255,0.04); border-top:1px solid rgba(255,255,255,0.07); }
+  .s1 .foot .fl { color:rgba(255,255,255,0.35); }
+  .s1 .foot .fr { color:rgba(255,255,255,0.2); }
+
+  /* S2 공감 - 흰 배경 + 레드헤더 */
+  .s2 { background:#fff; }
+  .s2 .head { background:#E05A3A; padding:22px 32px 18px; flex-shrink:0; }
+  .s2 .head-tag { font-size:10px; font-weight:700; color:rgba(255,255,255,0.7); letter-spacing:2px; margin-bottom:6px; }
+  .s2 .head-title { font-size:22px; font-weight:900; color:white; line-height:1.35; }
+  .s2 .body { flex:1; padding:18px 32px 0; display:flex; flex-direction:column; gap:8px; }
+  .s2 .scene { background:#F4F6FA; border-radius:13px; padding:12px 15px; }
+  .s2 .scene-top { display:flex; align-items:center; gap:7px; margin-bottom:5px; }
+  .s2 .s-icon { font-size:16px; }
+  .s2 .s-when { font-size:10px; font-weight:700; color:#8A94A6; letter-spacing:1px; }
+  .s2 .s-text { font-size:13px; color:#3D4A5C; font-weight:500; line-height:1.55; word-break:keep-all; }
+  .s2 .s-inner { font-size:11px; color:#8A94A6; margin-top:2px; font-style:italic; }
+  .s2 .foot { background:#F4F6FA; }
+  .s2 .foot .fl { color:#E05A3A; }
+  .s2 .foot .fr { color:#8A94A6; }
+
+  /* S3 반전 - 블루 그라데이션 */
+  .s3 { background:linear-gradient(145deg,#1B4FA0 0%,#2F6FED 100%); }
+  .s3 .body { flex:1; padding:32px 32px 0; display:flex; flex-direction:column; justify-content:center; }
+  .s3 .tag { font-size:10px; font-weight:700; color:rgba(255,255,255,0.65); letter-spacing:2px; margin-bottom:12px; }
+  .s3 .ico { font-size:48px; margin-bottom:10px; line-height:1; }
+  .s3 .title { font-size:26px; font-weight:900; color:white; line-height:1.3; margin-bottom:12px; }
+  .s3 .title em { color:#FFD166; font-style:normal; }
+  .s3 .desc { font-size:14px; color:rgba(255,255,255,0.85); line-height:1.8; margin-bottom:16px; word-break:keep-all; }
+  .s3 .compare { background:rgba(255,255,255,0.12); border-radius:14px; padding:14px 16px; display:flex; flex-direction:column; gap:10px; }
+  .s3 .cr { display:flex; align-items:flex-start; gap:8px; }
+  .s3 .cl { font-size:10px; font-weight:700; min-width:36px; padding-top:2px; }
+  .s3 .ct { font-size:13px; line-height:1.55; word-break:keep-all; }
+  .s3 .foot { background:rgba(0,0,0,0.15); border-top:1px solid rgba(255,255,255,0.12); }
+  .s3 .foot .fl { color:rgba(255,255,255,0.5); }
+  .s3 .foot .fr { color:rgba(255,255,255,0.35); }
+
+  /* S4 계산기 소개 - 민트 배경 */
+  .s4 { background:#F0FAFA; }
+  .s4 .top { padding:20px 32px 0; flex-shrink:0; }
+  .s4 .stag { font-size:10px; font-weight:700; color:#2ABFB5; letter-spacing:2px; margin-bottom:5px; }
+  .s4 .stit { font-size:19px; font-weight:900; color:#1B2E4B; line-height:1.35; margin-bottom:10px; }
+  .s4 .body { flex:1; padding:0 32px; display:flex; flex-direction:column; gap:7px; }
+  .s4 .foot { background:rgba(78,205,196,0.1); }
+  .s4 .foot .fl { color:#2ABFB5; }
+  .s4 .foot .fr { color:#8A94A6; }
+
+  /* S5 계산기 소개 2 - 흰 배경 */
+  .s5 { background:#fff; }
+  .s5 .top { padding:20px 32px 0; flex-shrink:0; }
+  .s5 .stag { font-size:10px; font-weight:700; color:#2F6FED; letter-spacing:2px; margin-bottom:5px; }
+  .s5 .stit { font-size:19px; font-weight:900; color:#1B2E4B; line-height:1.35; margin-bottom:10px; }
+  .s5 .body { flex:1; padding:0 32px; display:flex; flex-direction:column; gap:7px; }
+  .s5 .foot { background:#F4F6FA; }
+  .s5 .foot .fl { color:#2F6FED; }
+  .s5 .foot .fr { color:#8A94A6; }
+
+  /* S6 핵심 기능 박스 - 연한 블루 */
+  .s6 { background:#F4F6FA; }
+  .s6 .top { padding:20px 32px 0; flex-shrink:0; }
+  .s6 .stag { font-size:10px; font-weight:700; color:#2F6FED; letter-spacing:2px; margin-bottom:5px; }
+  .s6 .stit { font-size:19px; font-weight:900; color:#1B2E4B; line-height:1.35; margin-bottom:10px; }
+  .s6 .body { flex:1; padding:0 32px; display:flex; flex-direction:column; gap:7px; }
+  .s6 .grid-tools { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .s6 .gtool { background:white; border-radius:12px; padding:11px 13px; box-shadow:0 2px 8px rgba(0,0,0,0.05); }
+  .s6 .gt-icon { font-size:20px; margin-bottom:4px; }
+  .s6 .gt-name { font-size:12px; font-weight:700; color:#1B2E4B; margin-bottom:2px; }
+  .s6 .gt-desc { font-size:10px; color:#8A94A6; line-height:1.4; word-break:keep-all; }
+  .s6 .feature-box { background:#EBF2FF; border-radius:13px; padding:11px 14px; }
+  .s6 .fb-title { font-size:11px; font-weight:700; color:#2F6FED; margin-bottom:4px; }
+  .s6 .fb-text { font-size:12px; color:#3D4A5C; font-weight:600; line-height:1.55; }
+  .s6 .foot { background:#EBF2FF; }
+  .s6 .foot .fl { color:#2F6FED; }
+  .s6 .foot .fr { color:#8A94A6; }
+
+  /* S7 CTA - 다크 */
+  .s7 { background:linear-gradient(160deg,#0A1828 0%,#162E55 100%); }
+  .s7 .inner { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:0 36px; text-align:center; }
+  .s7 .emo { font-size:50px; margin-bottom:14px; line-height:1; }
+  .s7 .big { font-size:21px; font-weight:900; color:white; line-height:1.6; margin-bottom:12px; word-break:keep-all; }
+  .s7 .big em { color:#5B99FF; font-style:normal; }
+  .s7 .div2 { width:36px; height:2px; background:rgba(255,255,255,0.15); border-radius:2px; margin:0 auto 14px; }
+  .s7 .sub { font-size:13px; color:rgba(255,255,255,0.5); line-height:1.85; margin-bottom:22px; word-break:keep-all; }
+  .s7 .cta { background:#2F6FED; color:white; font-size:14px; font-weight:900; padding:12px 26px; border-radius:40px; margin-bottom:8px; }
+  .s7 .url { font-size:11px; color:rgba(255,255,255,0.3); }
+  .s7 .foot { background:rgba(0,0,0,0.2); border-top:1px solid rgba(255,255,255,0.06); }
+  .s7 .foot .fl { color:rgba(255,255,255,0.3); }
+  .s7 .foot .fr { color:rgba(255,255,255,0.2); }
+
+  .nav { display:flex; align-items:center; gap:14px; margin-top:18px; }
+  .nbtn { width:38px; height:38px; border-radius:50%; background:white; border:none; cursor:pointer; font-size:15px; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 8px rgba(0,0,0,0.12); color:#1B2E4B; transition:all .18s; }
+  .nbtn:hover:not(:disabled) { background:#1B2E4B; color:white; }
+  .nbtn:disabled { opacity:.3; cursor:default; }
+  .dots { display:flex; gap:5px; }
+  .d { width:7px; height:7px; border-radius:50%; background:#C0C8D4; cursor:pointer; transition:all .18s; }
+  .d.on { background:#1B2E4B; width:18px; border-radius:4px; }
+  .ctr { font-size:11px; color:#8A94A6; margin-top:6px; text-align:center; }
+</style>
+</head>
+<body>
+<div class="top-label">사복노트 · 행정/회계 마스터</div>
+<div class="card">
+
+  <!-- S1 훅 -->
+  <div class="slide s1 on">
+    <div class="logo-bar">
+      <span class="logo">사복노트</span>
+      <span style="font-size:11px;color:rgba(255,255,255,0.25);">1 / 7</span>
+    </div>
+    <div class="body">
+      <div class="pill">🧮 행정/회계 마스터</div>
+      <div class="q">이 계산들… 매번 뇌 터지지 않아요? 😵</div>
+      <div class="calcs">
+        <div class="crow"><span class="cname">부가세 역산</span><span class="cq">총액에서 공급가액 따로?</span></div>
+        <div class="crow"><span class="cname">장기요양</span><span class="cq">등급별 한도 또 찾아보는 중?</span></div>
+        <div class="crow"><span class="cname">단가 계산</span><span class="cq">1인당 단가 기준 초과?</span></div>
+        <div class="crow"><span class="cname">사진 압축</span><span class="cq">첨부 용량 초과 또 나왔어?</span></div>
+      </div>
+      <div class="hint">사복노트 행정/회계 마스터에서<br><em>1초 만에</em> 다 해결해드려요 ⚡</div>
+    </div>
+    <div class="foot"><span class="fl">사복노트</span><span class="fr">1 / 7</span></div>
+  </div>
+
+  <!-- S2 공감 -->
+  <div class="slide s2">
+    <div class="head">
+      <div class="head-tag">이 상황 다 겪어봤죠</div>
+      <div class="head-title">회계 실수 한 번에<br>야근 각 나온 그 순간들 😩</div>
+    </div>
+    <div class="body">
+      <div class="scene">
+        <div class="scene-top"><span class="s-icon">😶</span><span class="s-when">결재 직전</span></div>
+        <div class="s-text">부가세 포함 55,000원에서 공급가액 얼마지? → 엑셀 열기</div>
+        <div class="s-inner">(속으로: 10% 나누는 거 맞지…? 아니 1.1로 나누나?)</div>
+      </div>
+      <div class="scene">
+        <div class="scene-top"><span class="s-icon">😰</span><span class="s-when">장기요양 급여 계획 중</span></div>
+        <div class="s-text">3등급 월 한도 얼마더라? → 건강보험공단 사이트 열기</div>
+        <div class="s-inner">(작년이랑 바뀌었나…? 매년 이 삽질 왜 하는 거야)</div>
+      </div>
+      <div class="scene">
+        <div class="scene-top"><span class="s-icon">🥲</span><span class="s-when">결과보고서 작성 중</span></div>
+        <div class="s-text">식대 영수증 130,000원 / 15명 = 1인당 얼마지?</div>
+        <div class="s-inner">(기준 단가 8,000원 넘으면 어떡하지…)</div>
+      </div>
+      <div class="scene">
+        <div class="scene-top"><span class="s-icon">😤</span><span class="s-when">서류 첨부 중</span></div>
+        <div class="s-text">사진 용량 5MB 초과 → 카카오 보내서 다시 저장</div>
+        <div class="s-inner">(이 삽질 몇 번째야… 진짜)</div>
+      </div>
+    </div>
+    <div class="foot"><span class="fl">사복노트</span><span class="fr">2 / 7</span></div>
+  </div>
+
+  <!-- S3 반전 -->
+  <div class="slide s3">
+    <div class="body">
+      <div class="tag">사복노트에 있어요 ✅</div>
+      <div class="ico">🧮</div>
+      <div class="title">행정/회계<br><em>마스터</em></div>
+      <div class="desc">복잡한 계산 공식 외울 필요 없어요<br>숫자만 넣으면 답이 나와요</div>
+      <div class="compare">
+        <div class="cr">
+          <span class="cl" style="color:rgba(255,255,255,0.35);">❌ 전에</span>
+          <span class="ct" style="color:rgba(255,255,255,0.45);">엑셀 켜기 → 공식 검색 → 계산 → 실수 → 다시</span>
+        </div>
+        <div style="height:1px;background:rgba(255,255,255,0.12);"></div>
+        <div class="cr">
+          <span class="cl" style="color:#FFD166;">✅ 지금</span>
+          <span class="ct" style="color:white;font-weight:700;">사복노트 켜기 → 숫자 입력 → 1초 완료 ⚡</span>
+        </div>
+      </div>
+    </div>
+    <div class="foot"><span class="fl" style="color:rgba(255,255,255,0.5);">사복노트</span><span class="fr" style="color:rgba(255,255,255,0.35);">3 / 7</span></div>
+  </div>
+
+  <!-- S4 계산기 1~4 소개 -->
+  <div class="slide s4">
+    <div class="top">
+      <div class="stag">계산기 1·2·4</div>
+      <div class="stit">세금 · 강사료 · 장기요양 😄</div>
+    </div>
+    <div class="body">
+      <div class="tool-card" style="border-left:3px solid #2ABFB5;">
+        <div class="tool-top"><span class="tool-icon">🧾</span><span class="tool-badge green">부가세</span></div>
+        <div class="tool-name">부가세 / 공급가액 역산기</div>
+        <div class="tool-real">총액 넣으면 공급가액·부가세 바로 분리</div>
+        <div class="tool-sub">📌 카드 영수증 55,000원 → 공급가액 50,000 / 부가세 5,000</div>
+      </div>
+      <div class="tool-card" style="border-left:3px solid #2ABFB5;">
+        <div class="tool-top"><span class="tool-icon">🎤</span><span class="tool-badge green">강사료</span></div>
+        <div class="tool-name">강사료 / 기타소득 계산기</div>
+        <div class="tool-real">원천세 8.8% 자동 계산, 실지급액까지 한 번에</div>
+        <div class="tool-sub">📌 강사료 240,000원 → 원천세 21,120 / 실지급 218,880</div>
+      </div>
+      <div class="tool-card" style="border-left:3px solid #2F6FED;">
+        <div class="tool-top"><span class="tool-icon">🏥</span><span class="tool-badge">장기요양</span></div>
+        <div class="tool-name">장기요양 등급별 한도 계산기</div>
+        <div class="tool-real">등급별 월 한도액 · 본인부담금 자동 산출</div>
+        <div class="tool-sub">📌 3등급 입력 → 월 한도액 · 15% 본인부담금 즉시 확인</div>
+      </div>
+    </div>
+    <div class="foot"><span class="fl">사복노트</span><span class="fr">4 / 7</span></div>
+  </div>
+
+  <!-- S5 계산기 5~8 소개 -->
+  <div class="slide s5">
+    <div class="top">
+      <div class="stag">계산기 5·6·7</div>
+      <div class="stit">단가 · 자립청년 · 목표달성 🛠️</div>
+    </div>
+    <div class="body">
+      <div class="tool-card" style="border-left:3px solid #2F6FED;">
+        <div class="tool-top"><span class="tool-icon">🍽️</span><span class="tool-badge">단가계산</span></div>
+        <div class="tool-name">단가 계산기 (식대 등 1인당 단가 검증)</div>
+        <div class="tool-real">총 영수증 ÷ 인원, 기준 한도 초과 여부까지 체크</div>
+        <div class="tool-sub">📌 130,000원 / 15명 → 1인당 8,667원 → ⚠️ 기준초과</div>
+      </div>
+      <div class="tool-card" style="border-left:3px solid #F08030;">
+        <div class="tool-top"><span class="tool-icon">🎒</span><span class="tool-badge orange">자립청년</span></div>
+        <div class="tool-name">자립준비청년 보호종료 연수 계산기</div>
+        <div class="tool-real">보호종료일 기준 5년 이내 여부 자동 판별, 군 복무 기간도 반영</div>
+        <div class="tool-sub">📌 퇴소일 입력 → 자립수당 등 지원 혜택 대상 해당 여부 즉시 확인</div>
+      </div>
+      <div class="tool-card" style="border-left:3px solid #F08030;">
+        <div class="tool-top"><span class="tool-icon">🎯</span><span class="tool-badge orange">목표달성</span></div>
+        <div class="tool-name">목표 달성률 계산기</div>
+        <div class="tool-real">사업 실적 달성률 · 잔여량 한눈에 확인</div>
+        <div class="tool-sub">📌 목표 100명 / 현재 63명 → 달성률 63% / 잔여 37명</div>
+      </div>
+    </div>
+    <div class="foot"><span class="fl">사복노트</span><span class="fr">5 / 7</span></div>
+  </div>
+
+  <!-- S6 사진 압축 + 전체 정리 -->
+  <div class="slide s6">
+    <div class="top">
+      <div class="stag">숨겨진 꿀 기능</div>
+      <div class="stit">이것도 있어요 🎁</div>
+    </div>
+    <div class="body">
+      <div class="tool-card" style="border-left:3px solid #2F6FED; margin-bottom:4px;">
+        <div class="tool-top"><span class="tool-icon">📦</span><span class="tool-badge">용량줄이기</span></div>
+        <div class="tool-name">사진 압축기 (브라우저 전용)</div>
+        <div class="tool-real">여러 장도 OK, 서버 전송 없이 내 브라우저에서만 처리</div>
+        <div class="tool-sub">📌 결과보고서 사진 첨부 용량 초과? 드래그 → 압축 완료</div>
+      </div>
+      <div class="grid-tools">
+        <div class="gtool">
+          <div class="gt-icon">🧾</div>
+          <div class="gt-name">부가세 역산</div>
+          <div class="gt-desc">공급가액 분리</div>
+        </div>
+        <div class="gtool">
+          <div class="gt-icon">🎤</div>
+          <div class="gt-name">강사료 계산</div>
+          <div class="gt-desc">원천세 8.8%</div>
+        </div>
+        <div class="gtool">
+          <div class="gt-icon">🏥</div>
+          <div class="gt-name">장기요양</div>
+          <div class="gt-desc">등급별 한도</div>
+        </div>
+        <div class="gtool">
+          <div class="gt-icon">🍽️</div>
+          <div class="gt-name">단가 검증</div>
+          <div class="gt-desc">1인당 한도 체크</div>
+        </div>
+      </div>
+      <div class="feature-box">
+        <div class="fb-title">💡 총 7가지 계산 도구 무료 제공</div>
+        <div class="fb-text">앱 설치 없이, 사복노트 접속만 하면 바로 사용</div>
+      </div>
+    </div>
+    <div class="foot"><span class="fl">사복노트</span><span class="fr">6 / 7</span></div>
+  </div>
+
+  <!-- S7 CTA -->
+  <div class="slide s7">
+    <div class="inner">
+      <div class="emo">🧮</div>
+      <div class="big">계산하다 야근하기 전에<br><em>사복노트 먼저</em> 켜세요</div>
+      <div class="div2"></div>
+      <div class="sub">부가세부터 사진 압축까지<br>7가지 계산 도구, 전부 무료 🙂<br><br>동료한테도 알려주세요 🔖</div>
+      <div class="cta">🧮 지금 바로 사용하기</div>
+      <div class="url">saboknote.com</div>
+    </div>
+    <div class="foot"><span class="fl">사복노트</span><span class="fr">7 / 7</span></div>
+  </div>
+
+</div>
+
+<div class="nav">
+  <button class="nbtn" id="p" onclick="go(-1)" disabled>←</button>
+  <div class="dots" id="dots"></div>
+  <button class="nbtn" id="n" onclick="go(1)">→</button>
+</div>
+<div class="ctr" id="ctr">1 / 7</div>
+
+<script>
+  let cur=0; const N=7;
+  const slides=document.querySelectorAll('.slide');
+  const wrap=document.getElementById('dots');
+  for(let i=0;i<N;i++){
+    const d=document.createElement('div');
+    d.className='d'+(i===0?' on':'');
+    d.onclick=()=>to(i);
+    wrap.appendChild(d);
+  }
+  function to(n){
+    slides[cur].classList.remove('on'); wrap.children[cur].classList.remove('on');
+    cur=n;
+    slides[cur].classList.add('on'); wrap.children[cur].classList.add('on');
+    document.getElementById('ctr').textContent=`${cur+1} / ${N}`;
+    document.getElementById('p').disabled=cur===0;
+    document.getElementById('n').disabled=cur===N-1;
+  }
+  function go(d){const nx=cur+d;if(nx>=0&&nx<N)to(nx);}
+  document.addEventListener('keydown',e=>{
+    if(e.key==='ArrowRight')go(1);
+    if(e.key==='ArrowLeft')go(-1);
+  });
+</script>
+</body>
+</html>

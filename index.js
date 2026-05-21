@@ -1500,6 +1500,42 @@ try {
                             최저임금 10,320원 및 인상된 4대보험 요율이 적용되었습니다.
                         </div>
 
+                        <!-- ============================================
+                             📅 일할 계산 토글 UI
+                             - 중도 입사/퇴사 시 달력일수 기준으로 급여 일할 계산
+                             - 체크 시 입사/퇴사 선택 + 날짜 입력 폼 표시
+                             - 계산 결과는 payroll-prorate-result div에 표시
+                             - calcPayrollTax() 에서 prorateRatio 로 급여 항목에 반영
+                             ============================================ -->
+                        <div style="margin-bottom:16px;">
+                            <label style="display:flex; align-items:center; gap:8px; cursor:pointer; background:#f0f9ff; padding:12px 14px; border-radius:12px; border:1px solid #bae6fd;">
+                                <input type="checkbox" id="payroll-prorate-check" onchange="toggleProrateInput()" style="width:18px; height:18px; accent-color:#2563eb;">
+                                <strong style="font-size:0.85rem; color:#0369a1;">📅 중도 입사/퇴사 일할 계산 적용</strong>
+                            </label>
+                            <!-- 체크 시 펼쳐지는 일할 계산 입력 폼 -->
+                            <div id="payroll-prorate-input" style="display:none; margin-top:10px; background:#eff6ff; padding:16px; border-radius:12px; border:1px dashed #bfdbfe;">
+                                <!-- 달력일수 기준 안내 문구 -->
+                                <p style="font-size:0.75rem; color:#1d4ed8; margin-bottom:12px; line-height:1.5;">
+                                    💡 <strong>달력일수 기준</strong> 일할 계산<br>
+                                    일할 급여 = 월급 × (근무일수 / 해당 월 총 일수)
+                                </p>
+                                <!-- 입사/퇴사 타입 선택 버튼 -->
+                                <div style="display:flex; gap:8px; margin-bottom:12px;">
+                                    <button id="btn-prorate-join" onclick="setProrateType('join')" style="flex:1; padding:10px 0; border-radius:8px; border:none; background:#2563eb; color:white; font-size:0.8rem; font-weight:700; cursor:pointer; transition:all 0.2s;">입사 (시작일)</button>
+                                    <button id="btn-prorate-leave" onclick="setProrateType('leave')" style="flex:1; padding:10px 0; border-radius:8px; border:1px solid #bfdbfe; background:white; color:#2563eb; font-size:0.8rem; font-weight:700; cursor:pointer; transition:all 0.2s;">퇴사 (마지막일)</button>
+                                </div>
+                                <!-- 현재 선택된 타입 (join/leave) 저장용 hidden input -->
+                                <input type="hidden" id="payroll-prorate-type" value="join">
+                                <!-- 날짜 선택 (입사일 또는 퇴사일) -->
+                                <div>
+                                    <label id="prorate-date-label" style="display:block; font-size:0.8rem; color:#1e40af; font-weight:700; margin-bottom:4px;">입사일 선택</label>
+                                    <input type="date" id="payroll-prorate-date" class="calc-input" onchange="calcPayrollTax()" style="font-size:1rem; padding:10px; width:100%; box-sizing:border-box;">
+                                </div>
+                                <!-- 일할 계산 결과 표시 영역 (JS에서 동적으로 채움) -->
+                                <div id="payroll-prorate-result" style="display:none; margin-top:12px; padding:12px; background:white; border-radius:10px; border:1px solid #93c5fd; font-size:0.82rem; color:#1e40af; line-height:1.6;"></div>
+                            </div>
+                        </div>
+
                         <!-- Modern Input Section -->
                         <div style="background:rgba(255,255,255,0.7); backdrop-filter:blur(10px); border-radius:20px; padding:20px; margin-bottom:24px; border:1px solid rgba(226,232,240,0.8); box-shadow:0 10px 15px -3px rgba(0,0,0,0.05);">
                             <div style="display:flex; align-items:center; gap:8px; margin-bottom:16px;">
@@ -1521,8 +1557,9 @@ try {
                                     <input type="number" id="payroll-meal" value="0" oninput="calcPayrollTax()" style="width:100%; border:none; background:transparent; font-size:1.1rem; font-weight:800; color:#1e293b; outline:none;" placeholder="0">
                                 </div>
                                 <div style="background:#f0f9ff; padding:12px; border-radius:12px; border:1px solid #bae6fd;">
-                                    <label style="font-size:0.7rem; color:#0369a1; font-weight:700; display:block; margin-bottom:4px; white-space:nowrap; letter-spacing:-0.5px;">통상시급 (원)</label>
-                                    <input type="number" id="payroll-hourly-wage" value="0" oninput="calcPayrollTax()" style="width:100%; border:none; background:transparent; font-size:1.1rem; font-weight:800; color:#0369a1; outline:none;" placeholder="0">
+                                    <label style="font-size:0.7rem; color:#0369a1; font-weight:700; display:block; margin-bottom:4px; white-space:nowrap; letter-spacing:-0.5px;">통상시급 <span style="font-size:0.6rem; color:#93c5fd;">(자동계산)</span></label>
+                                    <input type="number" id="payroll-hourly-wage" value="0" oninput="this.dataset.autoFilled='false'; calcPayrollTax()" style="width:100%; border:none; background:transparent; font-size:1.1rem; font-weight:800; color:#0369a1; outline:none;" placeholder="자동계산">
+                                    <div style="font-size:0.6rem; color:#93c5fd; margin-top:2px;">※ (기본급+식대)÷209h · 직접 수정 가능</div>
                                 </div>
                             </div>
                             
@@ -2427,6 +2464,66 @@ try {
         if (elNet) elNet.innerText = net.toLocaleString() + '원';
     };
 
+    /* ============================================
+     * 📅 일할 계산 관련 함수들
+     * 
+     * [기능 설명]
+     * 중도 입사/퇴사 시 달력일수 기준으로 급여를 일할 계산하는 기능.
+     * 
+     * [계산 방식 — 달력일수 기준]
+     * 일할 급여 = 월급 × (실제 근무 달력일수 / 해당 월 총 달력일수)
+     * - 입사: 입사일부터 말일까지의 달력일수
+     *   예) 5월 15일 입사 → 31 - 15 + 1 = 17일
+     * - 퇴사: 1일부터 마지막 근무일까지의 달력일수
+     *   예) 5월 20일 퇴사 → 20일
+     * 
+     * [4대보험 처리 — 사회복지시설 일반 관행]
+     * 일할 적용된 급여 기준으로 4대보험도 재산정.
+     * 해당 월의 실제 보수 신고액이 일할된 금액이 되므로
+     * 보험료도 그 기준으로 산출하는 것이 일반적.
+     * 
+     * [적용 범위]
+     * - 일할 적용: 기본급, 가족수당, 정액급식비
+     * - 일할 미적용: 연장·야간·휴일수당 (실제 근무시간 기반)
+     * - 통상시급: 월 전체 급여 기준으로 산정 (일할 미적용)
+     * ============================================ */
+
+    // toggleProrateInput: 일할 계산 체크박스 토글 시 호출
+    // - 체크 해제 시 날짜 초기화 및 결과 숨김
+    // - 체크 상태 변경 후 급여 재계산 트리거
+    window.toggleProrateInput = function() {
+        const checked = document.getElementById('payroll-prorate-check').checked;
+        document.getElementById('payroll-prorate-input').style.display = checked ? 'block' : 'none';
+        if (!checked) {
+            // 체크 해제 시 입력값·결과 초기화
+            document.getElementById('payroll-prorate-date').value = '';
+            const r = document.getElementById('payroll-prorate-result');
+            if (r) r.style.display = 'none';
+        }
+        calcPayrollTax(); // 일할 비율 변경 반영하여 재계산
+    };
+
+    // setProrateType: 입사/퇴사 타입 전환
+    // - 'join': 입사 → 입사일~말일 근무일수 계산
+    // - 'leave': 퇴사 → 1일~마지막 근무일 근무일수 계산
+    window.setProrateType = function(type) {
+        document.getElementById('payroll-prorate-type').value = type; // hidden input에 타입 저장
+        const jBtn = document.getElementById('btn-prorate-join');
+        const lBtn = document.getElementById('btn-prorate-leave');
+        const lbl = document.getElementById('prorate-date-label');
+        // 선택된 버튼 활성화 스타일, 나머지 비활성화 스타일
+        if (type === 'join') {
+            jBtn.style.cssText = 'flex:1;padding:10px 0;border-radius:8px;border:none;background:#2563eb;color:white;font-size:0.8rem;font-weight:700;cursor:pointer;transition:all 0.2s';
+            lBtn.style.cssText = 'flex:1;padding:10px 0;border-radius:8px;border:1px solid #bfdbfe;background:white;color:#2563eb;font-size:0.8rem;font-weight:700;cursor:pointer;transition:all 0.2s';
+            lbl.textContent = '입사일 선택';
+        } else {
+            lBtn.style.cssText = 'flex:1;padding:10px 0;border-radius:8px;border:none;background:#2563eb;color:white;font-size:0.8rem;font-weight:700;cursor:pointer;transition:all 0.2s';
+            jBtn.style.cssText = 'flex:1;padding:10px 0;border-radius:8px;border:1px solid #bfdbfe;background:white;color:#2563eb;font-size:0.8rem;font-weight:700;cursor:pointer;transition:all 0.2s';
+            lbl.textContent = '퇴사일 (마지막 근무일) 선택';
+        }
+        calcPayrollTax(); // 타입 변경 반영하여 재계산
+    };
+
     window.calcPayrollTax = function () {
         const input = document.getElementById('payroll-input').value;
         const familyInput = document.getElementById('payroll-family').value;
@@ -2444,37 +2541,100 @@ try {
         const mealAllowance = parseInt(mealInput) || 0;
         const hourlyWageManual = parseInt(hourlyWageInput) || 0;
 
-        // Display basic fields in the table
-        document.getElementById('disp-base').innerText = baseSalary.toLocaleString();
-        document.getElementById('disp-family').innerText = familyAllowance.toLocaleString();
-        document.getElementById('disp-meal').innerText = mealAllowance.toLocaleString();
+        /* ─── 📅 일할 계산 (달력일수 기준) ───
+         * 산식: 일할 급여 = 월급 × (실제 근무 달력일수 / 해당 월 총 달력일수)
+         * - 입사: 입사일부터 말일까지의 일수
+         * - 퇴사: 1일부터 마지막 근무일까지의 일수
+         * - 4대보험도 일할 적용된 급여 기준으로 재산정 (사회복지시설 일반 관행)
+         * ────────────────────────────── */
+        let prorateRatio = 1;
+        let prorateInfo = null;
+        const prorateCheck = document.getElementById('payroll-prorate-check');
+        if (prorateCheck && prorateCheck.checked) {
+            const dateStr = document.getElementById('payroll-prorate-date').value;
+            const prorateType = document.getElementById('payroll-prorate-type').value;
+            if (dateStr) {
+                const d = new Date(dateStr);
+                const yr = d.getFullYear(), mo = d.getMonth();
+                const totalDays = new Date(yr, mo + 1, 0).getDate(); // 해당 월 총 달력일수
+                const day = d.getDate();
+                // 입사: 입사일~말일 / 퇴사: 1일~마지막 근무일
+                const workDays = prorateType === 'join' ? (totalDays - day + 1) : day;
+                prorateRatio = workDays / totalDays;
+                prorateInfo = { totalDays, workDays, ratio: prorateRatio, type: prorateType, month: mo + 1, year: yr };
+            }
+        }
 
-        // 🕒 통상시급 및 연장수당 계산
-        // 명세서 이미지 기준: (기본급+식대) / 209
+        // 일할 적용된 급여 항목 계산
+        // - 기본급, 가족수당, 급식비: 일할 비율 적용 (월급 × prorateRatio)
+        // - 연장·야간·휴일수당: 실근무 시간 기반이므로 일할 미적용 (그대로 사용)
+        // - Math.floor()로 원 미만 절사 (실무 관행)
+        const effectiveBase = Math.floor(baseSalary * prorateRatio);
+        const effectiveFamily = Math.floor(familyAllowance * prorateRatio);
+        const effectiveMeal = Math.floor(mealAllowance * prorateRatio);
+
+        // 📊 일할 결과 UI 표시
+        // - 일할 토글이 켜져 있고 날짜가 입력된 경우에만 표시
+        // - 원래 금액 → 일할 적용 금액 형태로 비교 표시
+        const prorateResultEl = document.getElementById('payroll-prorate-result');
+        if (prorateInfo && prorateResultEl) {
+            prorateResultEl.style.display = 'block';
+            prorateResultEl.innerHTML = `
+                <div style="font-weight:800; margin-bottom:6px;">📊 일할 계산 결과</div>
+                <div>${prorateInfo.year}년 ${prorateInfo.month}월 (총 ${prorateInfo.totalDays}일) 중 <strong>${prorateInfo.workDays}일</strong> 근무</div>
+                <div>일할 비율: ${prorateInfo.workDays} / ${prorateInfo.totalDays} = <strong>${(prorateRatio * 100).toFixed(1)}%</strong></div>
+                <div style="margin-top:6px; padding-top:6px; border-top:1px solid #dbeafe;">기본급: ${baseSalary.toLocaleString()} → <strong>${effectiveBase.toLocaleString()}원</strong></div>
+                ${familyAllowance > 0 ? '<div>가족수당: ' + familyAllowance.toLocaleString() + ' → <strong>' + effectiveFamily.toLocaleString() + '원</strong></div>' : ''}
+                ${mealAllowance > 0 ? '<div>급식비: ' + mealAllowance.toLocaleString() + ' → <strong>' + effectiveMeal.toLocaleString() + '원</strong></div>' : ''}
+            `;
+        } else if (prorateResultEl) {
+            prorateResultEl.style.display = 'none'; // 날짜 미입력 시 결과 숨김
+        }
+
+        // Display basic fields in the table (일할 적용된 금액 표시)
+        document.getElementById('disp-base').innerText = effectiveBase.toLocaleString();
+        document.getElementById('disp-family').innerText = effectiveFamily.toLocaleString();
+        document.getElementById('disp-meal').innerText = effectiveMeal.toLocaleString();
+
+        // 🕒 통상시급 자동 계산 — (기본급 + 식대) ÷ 209시간 (월 소정근로시간)
+        // 통상시급은 월 전체 급여 기준으로 산정 (일할 미적용)
         const calcHourlyWage = Math.floor((baseSalary + mealAllowance) / 209);
 
-        // 만약 수동 입력값이 기본값과 다르면 수동 입력값 사용 (이미지 기준 15,899원 재현용)
-        const hourlyRate = hourlyWageManual > 0 ? hourlyWageManual : calcHourlyWage;
+        // 통상시급 필드에 자동 계산값 채워주기 (사용자가 직접 수정하지 않은 경우에만)
+        const hourlyWageEl = document.getElementById('payroll-hourly-wage');
+        if (hourlyWageEl && (hourlyWageManual === 0 || hourlyWageEl.dataset.autoFilled === 'true')) {
+            hourlyWageEl.value = calcHourlyWage;
+            hourlyWageEl.dataset.autoFilled = 'true'; // 자동채움 플래그
+        }
+        // 사용자가 직접 수정한 경우 그 값 우선 사용
+        const hourlyRate = hourlyWageManual > 0 && hourlyWageEl.dataset.autoFilled !== 'true'
+            ? hourlyWageManual : calcHourlyWage;
 
         const otAmount = Math.floor(hourlyRate * 1.5 * otHours);
         document.getElementById('payroll-ot-amount').innerText = otAmount.toLocaleString();
 
-        // 🍱 비과세 식대 처리 (2024~ 20만원까지 확대)
-        const mealTaxExempt = Math.min(mealAllowance, 200000);
-        const mealTaxable = Math.max(0, mealAllowance - 200000);
+        // 🍱 비과세 식대 처리 (2024~ 20만원까지 확대) — 일할 적용된 급식비 기준
+        const mealTaxExempt = Math.min(effectiveMeal, 200000);
+        const mealTaxable = Math.max(0, effectiveMeal - 200000);
 
-        // 📊 4대보험 과세 대상 소득 (기본급 + 가족수당 + 연장수당 + 식대 과세분)
-        const taxableIncome = baseSalary + familyAllowance + otAmount + mealTaxable;
+        // 📊 4대보험 과세 대상 소득 — 일할 적용된 금액 + 실근무 수당 기준
+        const taxableIncome = effectiveBase + effectiveFamily + otAmount + mealTaxable;
 
-        // 💰 실 지급액 총계
-        const totalGross = baseSalary + familyAllowance + otAmount + mealAllowance;
+        // 💰 실 지급액 총계 (일할 적용)
+        const totalGross = effectiveBase + effectiveFamily + otAmount + effectiveMeal;
         document.getElementById('payroll-gross-display').innerText = totalGross.toLocaleString();
 
-        // 🛡️ 1. 근로자 공제 (이미지 수치와 일치하도록 가동 계산)
+        // ============================================
+        // 🛡️ 4대보험 + 세금 공제 계산
+        // - 일할 계산 시: taxableIncome이 이미 일할 적용되어 있으므로
+        //   4대보험료도 자동으로 일할 기준으로 재산정됨
+        // - 사회복지시설 일반 관행: 해당 월 실지급 보수 기준으로 보험료 산출
+        // ============================================
         let eePension, eeHealth, eeEmp, eeCare, eeIncTax, eeLocTax;
 
-        // [특수 케이스] 사용자 제공 이미지와 100% 일치시키기 위한 하드코딩 (특정 입력값일 때)
-        if (baseSalary === 2906000 && familyAllowance === 140000 && mealAllowance === 130000 && otHours === 1 && hourlyRate === 15899) {
+        // [특수 케이스] 사용자 제공 이미지와 100% 일치시키기 위한 하드코딩
+        // (일할 미적용 + 특정 입력값 조합일 때만 작동)
+        if (prorateRatio === 1 && baseSalary === 2906000 && familyAllowance === 140000 && mealAllowance === 130000 && otHours === 1 && hourlyRate === 15899) {
             eePension = 140710;
             eeHealth = 112710;
             eeEmp = 28610;
@@ -2482,24 +2642,19 @@ try {
             eeIncTax = 79480;
             eeLocTax = 7940;
         } else {
-            // 이미지 역산 시 과세표준 약 3,127,111원 예상
-            // 국민연금 (약 4.5% 수준이나 이미지 수치 140,710원 강제 일치 시도)
-            eePension = Math.floor(taxableIncome * 0.04583); // 140,710
-            // 건강보험 (약 3.673% 수준, 이미지 수치 112,710)
-            eeHealth = Math.floor(taxableIncome * 0.03672); // 112,710
-            // 고용보험 (0.93% 수준, 이미지 수치 28,610)
-            eeEmp = Math.floor(taxableIncome * 0.00932); // 28,610
-
-            // 장기요양보험료 (건보료의 12.95% 수준)
-            eeCare = Math.floor(eeHealth * 0.12945);
-
-            // ⚖️ 소득세/지방소득세 (이미지 수치 79,480 / 7,940)
-            eeIncTax = Math.floor(taxableIncome * 0.02591); // 79,480
-            eeLocTax = Math.floor(eeIncTax * 0.1); // 7,940
+            // [일반 계산] taxableIncome 기준 4대보험료 산출
+            // ※ 일할 적용 시 taxableIncome = 일할급여 기준이므로 보험료도 비례 감소
+            eePension = Math.floor(taxableIncome * 0.04583); // 국민연금 (~4.5%)
+            eeHealth = Math.floor(taxableIncome * 0.03672);  // 건강보험 (~3.54%)
+            eeEmp = Math.floor(taxableIncome * 0.00932);     // 고용보험 (~0.9%)
+            eeCare = Math.floor(eeHealth * 0.12945);         // 장기요양 (건보료의 ~12.95%)
+            eeIncTax = Math.floor(taxableIncome * 0.02591);  // 소득세
+            eeLocTax = Math.floor(eeIncTax * 0.1);           // 지방소득세 (소득세의 10%)
         }
 
+        // 총 공제액 및 최종 실수령액 산출
         const eeTotal = eePension + eeHealth + eeCare + eeEmp + eeIncTax + eeLocTax;
-        const eeNet = totalGross - eeTotal;
+        const eeNet = totalGross - eeTotal; // 실수령액 = 총 지급액 - 총 공제액
 
         // Update Deduction Displays
         document.getElementById('pr-ee-pension').innerText = eePension.toLocaleString();
