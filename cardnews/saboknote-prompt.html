@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>사복노트 비밀 프롬프트</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:#DDE3ED; font-family:'Noto Sans KR',sans-serif; min-height:100vh; display:flex; flex-direction:column; align-items:center; padding:32px 16px 48px; }
+  .top-label { font-size:12px; font-weight:700; color:#8A94A6; letter-spacing:2px; margin-bottom:20px; text-transform:uppercase; }
+  .card { width:480px; height:600px; border-radius:22px; overflow:hidden; box-shadow:0 16px 48px rgba(0,0,0,0.18); position:relative; flex-shrink:0; }
+  .slide { display:none; width:100%; height:100%; position:absolute; top:0; left:0; }
+  .slide.on { display:flex; flex-direction:column; }
+  .foot { height:48px; flex-shrink:0; display:flex; align-items:center; padding:0 32px; justify-content:space-between; }
+  .foot .fl { font-size:12px; font-weight:900; }
+  .foot .fr { font-size:11px; }
+
+  /* ─── S1 훅 ─── */
+  .s1 { background: #1a0533; }
+  .s1 .logo-bar { display:flex; justify-content:space-between; align-items:center; padding:24px 32px 0; flex-shrink:0; }
+  .s1 .logo { font-size:13px; font-weight:900; color:rgba(255,255,255,0.4); }
+  .s1 .body { flex:1; padding:0 32px; display:flex; flex-direction:column; justify-content:center; }
+  .s1 .pill { display:inline-block; background:rgba(167,139,250,0.2); border:1px solid rgba(167,139,250,0.35); color:#c4b5fd; font-size:10px; font-weight:700; padding:4px 12px; border-radius:20px; margin-bottom:18px; align-self:flex-start; letter-spacing:1px; }
+  .s1 .q { font-size:14px; color:rgba(255,255,255,0.45); margin-bottom:12px; }
+  .s1 .title { font-size:34px; font-weight:900; color:white; line-height:1.3; margin-bottom:16px; }
+  .s1 .title em { color:#c4b5fd; font-style:normal; }
+  .s1 .reveal { background:rgba(167,139,250,0.12); border:1px solid rgba(167,139,250,0.25); border-radius:14px; padding:14px 18px; }
+  .s1 .rev-text { font-size:13px; color:rgba(255,255,255,0.7); line-height:1.75; word-break:keep-all; }
+  .s1 .rev-text em { color:#c4b5fd; font-style:normal; font-weight:700; }
+  .s1 .foot { background:rgba(255,255,255,0.04); border-top:1px solid rgba(255,255,255,0.07); }
+  .s1 .foot .fl { color:rgba(255,255,255,0.35); }
+  .s1 .foot .fr { color:rgba(255,255,255,0.2); }
+
+  /* ─── S2 공감 ─── */
+  .s2 { background:#fff; }
+  .s2 .head { background:#1a0533; padding:22px 32px 18px; flex-shrink:0; }
+  .s2 .head-tag { font-size:10px; font-weight:700; color:rgba(255,255,255,0.5); letter-spacing:2px; margin-bottom:6px; }
+  .s2 .head-title { font-size:22px; font-weight:900; color:white; line-height:1.38; }
+  .s2 .body { flex:1; padding:18px 32px 0; display:flex; flex-direction:column; gap:9px; }
+  .s2 .pain { background:#F4F6FA; border-radius:13px; padding:12px 15px; }
+  .s2 .pain-top { display:flex; align-items:center; gap:7px; margin-bottom:5px; }
+  .s2 .p-ico { font-size:16px; }
+  .s2 .p-tag { font-size:10px; font-weight:700; color:#8A94A6; letter-spacing:1px; }
+  .s2 .p-text { font-size:13px; color:#3D4A5C; font-weight:500; line-height:1.55; word-break:keep-all; }
+  .s2 .p-inner { font-size:11px; color:#8A94A6; margin-top:3px; font-style:italic; }
+  .s2 .foot { background:#F4F6FA; }
+  .s2 .foot .fl { color:#7C3AED; }
+  .s2 .foot .fr { color:#8A94A6; }
+
+  /* ─── S3 반전 공개 ─── */
+  .s3 { background: linear-gradient(145deg, #1a0533 0%, #3b0764 100%); }
+  .s3 .body { flex:1; padding:32px 32px 0; display:flex; flex-direction:column; justify-content:center; }
+  .s3 .tag { font-size:10px; font-weight:700; color:rgba(255,255,255,0.55); letter-spacing:2px; margin-bottom:12px; }
+  .s3 .ico { font-size:48px; margin-bottom:10px; line-height:1; }
+  .s3 .name { font-size:13px; font-weight:700; color:#c4b5fd; margin-bottom:8px; letter-spacing:1px; }
+  .s3 .title { font-size:28px; font-weight:900; color:white; line-height:1.32; margin-bottom:14px; }
+  .s3 .title em { color:#FFD166; font-style:normal; }
+  .s3 .desc { font-size:14px; color:rgba(255,255,255,0.72); line-height:1.8; margin-bottom:18px; word-break:keep-all; }
+  .s3 .tools { display:flex; gap:7px; flex-wrap:wrap; }
+  .s3 .tool { background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.15); color:rgba(255,255,255,0.8); font-size:11px; font-weight:600; padding:5px 12px; border-radius:20px; }
+  .s3 .foot { background:rgba(0,0,0,0.25); border-top:1px solid rgba(255,255,255,0.08); }
+  .s3 .foot .fl { color:rgba(255,255,255,0.4); }
+  .s3 .foot .fr { color:rgba(255,255,255,0.25); }
+
+  /* ─── S4~S5 프롬프트 미리보기 ─── */
+  .pv-slide { background:#1a0533; }
+  .pv-slide .top { padding:20px 32px 0; flex-shrink:0; }
+  .pv-slide .ptag { font-size:10px; font-weight:700; color:rgba(255,255,255,0.4); letter-spacing:2px; margin-bottom:6px; }
+  .pv-slide .ptit { font-size:19px; font-weight:900; color:white; line-height:1.35; margin-bottom:12px; }
+  .pv-slide .body { flex:1; padding:0 32px; display:flex; flex-direction:column; gap:8px; }
+  .pv-item { background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); border-radius:12px; padding:12px 14px; }
+  .pv-cat { font-size:10px; font-weight:700; letter-spacing:1px; margin-bottom:5px; }
+  .pv-title { font-size:12px; font-weight:700; color:white; margin-bottom:4px; }
+  .pv-text { font-size:11.5px; color:rgba(255,255,255,0.65); line-height:1.6; word-break:keep-all; }
+  .pv-text em { color:#FFD166; font-style:normal; font-weight:700; }
+  .pv-slide .foot { background:rgba(0,0,0,0.2); border-top:1px solid rgba(255,255,255,0.07); }
+  .pv-slide .foot .fl { color:rgba(255,255,255,0.35); }
+  .pv-slide .foot .fr { color:rgba(255,255,255,0.2); }
+
+  /* ─── S6 어떻게 쓰나요 ─── */
+  .s6 { background:#fff; }
+  .s6 .head { background:#7C3AED; padding:22px 32px 18px; flex-shrink:0; }
+  .s6 .head-tag { font-size:10px; font-weight:700; color:rgba(255,255,255,0.65); letter-spacing:2px; margin-bottom:6px; }
+  .s6 .head-title { font-size:22px; font-weight:900; color:white; line-height:1.38; }
+  .s6 .body { flex:1; padding:18px 32px 0; display:flex; flex-direction:column; gap:9px; }
+  .s6 .step { display:flex; align-items:flex-start; gap:12px; background:#F4F6FA; border-radius:13px; padding:13px 15px; }
+  .s6 .snum { min-width:28px; height:28px; background:#7C3AED; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:900; color:white; flex-shrink:0; margin-top:1px; }
+  .s6 .stit { font-size:13px; font-weight:700; color:#1B2E4B; margin-bottom:2px; }
+  .s6 .sdesc { font-size:11px; color:#8A94A6; line-height:1.5; }
+  .s6 .ai-row { display:flex; gap:7px; margin-top:2px; }
+  .s6 .ai-tag { background:rgba(124,58,237,0.1); color:#7C3AED; font-size:10px; font-weight:700; padding:3px 9px; border-radius:10px; }
+  .s6 .foot { background:#F4F6FA; }
+  .s6 .foot .fl { color:#7C3AED; }
+  .s6 .foot .fr { color:#8A94A6; }
+
+  /* ─── S7 마무리 ─── */
+  .s7 { background:linear-gradient(160deg,#1a0533 0%,#4C1D95 100%); }
+  .s7 .inner { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:0 36px; text-align:center; }
+  .s7 .emo { font-size:52px; margin-bottom:14px; line-height:1; }
+  .s7 .big { font-size:21px; font-weight:900; color:white; line-height:1.6; margin-bottom:12px; word-break:keep-all; }
+  .s7 .big em { color:#c4b5fd; font-style:normal; }
+  .s7 .div2 { width:36px; height:2px; background:rgba(255,255,255,0.15); border-radius:2px; margin:0 auto 14px; }
+  .s7 .sub { font-size:13px; color:rgba(255,255,255,0.5); line-height:1.85; margin-bottom:22px; word-break:keep-all; }
+  .s7 .cta { background:#7C3AED; color:white; font-size:14px; font-weight:900; padding:12px 26px; border-radius:40px; margin-bottom:8px; }
+  .s7 .url { font-size:11px; color:rgba(255,255,255,0.3); }
+  .s7 .foot { background:rgba(0,0,0,0.2); border-top:1px solid rgba(255,255,255,0.06); }
+  .s7 .foot .fl { color:rgba(255,255,255,0.3); }
+  .s7 .foot .fr { color:rgba(255,255,255,0.2); }
+
+  .nav { display:flex; align-items:center; gap:14px; margin-top:18px; }
+  .nbtn { width:38px; height:38px; border-radius:50%; background:white; border:none; cursor:pointer; font-size:15px; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 8px rgba(0,0,0,0.12); color:#1B2E4B; transition:all .18s; }
+  .nbtn:hover:not(:disabled) { background:#1B2E4B; color:white; }
+  .nbtn:disabled { opacity:.3; cursor:default; }
+  .dots { display:flex; gap:5px; }
+  .d { width:7px; height:7px; border-radius:50%; background:#C0C8D4; cursor:pointer; transition:all .18s; }
+  .d.on { background:#1B2E4B; width:18px; border-radius:4px; }
+  .ctr { font-size:11px; color:#8A94A6; margin-top:6px; text-align:center; }
+</style>
+</head>
+<body>
+<div class="top-label">사복노트 · 비밀 프롬프트</div>
+<div class="card">
+
+  <!-- S1 훅 -->
+  <div class="slide s1 on">
+    <div class="logo-bar">
+      <span class="logo">sano 사복노트</span>
+      <span style="font-size:11px;color:rgba(255,255,255,0.25);">1 / 7</span>
+    </div>
+    <div class="body">
+      <div class="pill">🪄 비밀 프롬프트</div>
+      <div class="q">AI 쓰는데 왜 아직도 기록이 오래 걸리죠? 🤔</div>
+      <div class="title">문제는<br>AI가 아니라<br><em>프롬프트예요</em></div>
+      <div class="reveal">
+        <div class="rev-text">
+          사회복지 현장 맥락을 모르는 AI한테<br>
+          일반 질문을 하면 엉뚱한 답이 나와요.<br><br>
+          <em>현장 맞춤 프롬프트</em>를 쓰면<br>
+          기록이 30초 만에 끝납니다.
+        </div>
+      </div>
+    </div>
+    <div class="foot"><span class="fl">사복노트</span><span class="fr">1 / 7</span></div>
+  </div>
+
+  <!-- S2 공감 -->
+  <div class="slide s2">
+    <div class="head">
+      <div class="head-tag">이런 경험 있으셨죠?</div>
+      <div class="head-title">ChatGPT 켰는데<br>왜 이렇게 막막하죠</div>
+    </div>
+    <div class="body">
+      <div class="pain">
+        <div class="pain-top"><span class="p-ico">😶</span><span class="p-tag">기록 앞에서</span></div>
+        <div class="p-text">ChatGPT 열었는데 뭘 입력해야 할지 모름</div>
+        <div class="p-inner">(빈 창 앞에서 5분째 멈춰있음…)</div>
+      </div>
+      <div class="pain">
+        <div class="pain-top"><span class="p-ico">😤</span><span class="p-tag">AI 답변 보고서</span></div>
+        <div class="p-text">"기록 작성해줘" 했더니 너무 학술적인 내용이 나옴</div>
+        <div class="p-inner">(현장 맥락이 전혀 없어서 결국 내가 다 씀)</div>
+      </div>
+      <div class="pain">
+        <div class="pain-top"><span class="p-ico">🥲</span><span class="p-tag">공문 작성 중</span></div>
+        <div class="p-text">AI한테 공문 써달라 했더니 형식이 틀림</div>
+        <div class="p-inner">(두문·본문·결문 구조가 아예 없음)</div>
+      </div>
+      <div class="pain">
+        <div class="pain-top"><span class="p-ico">💭</span><span class="p-tag">결국</span></div>
+        <div class="p-text">AI 있는데 결국 직접 다 쓰고 있는 나</div>
+        <div class="p-inner">(프롬프트를 몰라서 AI를 못 쓰는 것)</div>
+      </div>
+    </div>
+    <div class="foot"><span class="fl">사복노트</span><span class="fr">2 / 7</span></div>
+  </div>
+
+  <!-- S3 반전 -->
+  <div class="slide s3">
+    <div class="body">
+      <div class="tag">사복노트에 있어요 ✅</div>
+      <div class="ico">🪄</div>
+      <div class="name">사복천재의 비밀 프롬프트</div>
+      <div class="title">사회복지 전문가<br>AI로 <em>변신하는</em><br>마법의 주문</div>
+      <div class="desc">
+        현장 맥락이 담긴 프롬프트를<br>
+        복붙해서 바로 쓰면<br>
+        AI가 사복사처럼 기록해줘요
+      </div>
+      <div class="tools">
+        <span class="tool">ChatGPT</span>
+        <span class="tool">Claude</span>
+        <span class="tool">Gemini</span>
+        <span class="tool">모두 사용 가능</span>
+      </div>
+    </div>
+    <div class="foot"><span class="fl" style="color:rgba(255,255,255,0.4);">사복노트</span><span class="fr" style="color:rgba(255,255,255,0.25);">3 / 7</span></div>
+  </div>
+
+  <!-- S4 프롬프트 미리보기 1 -->
+  <div class="slide pv-slide">
+    <div class="top">
+      <div class="ptag">프롬프트 미리보기 · 기록</div>
+      <div class="ptit">이런 프롬프트들이 있어요</div>
+    </div>
+    <div class="body">
+      <div class="pv-item">
+        <div class="pv-cat" style="color:#a78bfa;">📝 가정방문 기록</div>
+        <div class="pv-title">30초 만에 기록 초안 완성</div>
+        <div class="pv-text">"10년 경력 사례관리 전문가로서, 아래 메모를 가정방문 기록으로 작성해줘. 형식: 방문목적 / 현황·욕구 / 개입 / 향후계획. 공식 문서 3인칭 어투로. <em>[메모]</em>"</div>
+      </div>
+      <div class="pv-item">
+        <div class="pv-cat" style="color:#4ECDC4;">📞 전화상담 기록</div>
+        <div class="pv-title">통화 끝나고 바로 기록</div>
+        <div class="pv-text">"사회복지사 전문가로서, 아래 전화상담 내용을 공식 상담 기록으로 정리해줘. 상담일시·내용·반응·향후계획 포함. <em>[대화 내용]</em>"</div>
+      </div>
+      <div class="pv-item">
+        <div class="pv-cat" style="color:#FFD166;">📋 사례관리 계획서</div>
+        <div class="pv-title">욕구 사정 → 계획서 자동화</div>
+        <div class="pv-text">"욕구 사정 결과를 바탕으로 개인별 서비스 계획서를 작성해줘. 단기·중기·장기 목표 포함. <em>[욕구 사정 내용]</em>"</div>
+      </div>
+    </div>
+    <div class="foot"><span class="fl">사복노트</span><span class="fr">4 / 7</span></div>
+  </div>
+
+  <!-- S5 프롬프트 미리보기 2 -->
+  <div class="slide pv-slide">
+    <div class="top">
+      <div class="ptag">프롬프트 미리보기 · 공문·위기</div>
+      <div class="ptit">이런 것도 있어요</div>
+    </div>
+    <div class="body">
+      <div class="pv-item">
+        <div class="pv-cat" style="color:#7EB3FF;">📄 공문 작성</div>
+        <div class="pv-title">형식 걱정 없이 공문 완성</div>
+        <div class="pv-text">"수신: <em>[기관명]</em>, 목적: <em>[내용]</em>. 사회복지기관 공문 형식(두문·본문·결문)으로 행정문서 어투로 작성해줘."</div>
+      </div>
+      <div class="pv-item">
+        <div class="pv-cat" style="color:#FF8E8E;">🚨 위기 개입</div>
+        <div class="pv-title">위기 상황 대처 방안 즉시 제안</div>
+        <div class="pv-text">"사회복지 위기개입 전문가로서, 아래 상황의 안전 계획과 즉각 개입 방안을 제시해줘. <em>[상황 설명]</em>"</div>
+      </div>
+      <div class="pv-item">
+        <div class="pv-cat" style="color:#4ECDC4;">🔗 자원 연계 의뢰서</div>
+        <div class="pv-title">연계 기관에 보낼 의뢰서 작성</div>
+        <div class="pv-text">"아래 클라이언트 상황을 바탕으로 <em>[기관명]</em>에 보낼 자원 연계 의뢰서를 공식 문서 형식으로 작성해줘."</div>
+      </div>
+    </div>
+    <div class="foot"><span class="fl">사복노트</span><span class="fr">5 / 7</span></div>
+  </div>
+
+  <!-- S6 사용법 -->
+  <div class="slide s6">
+    <div class="head">
+      <div class="head-tag">사용 방법</div>
+      <div class="head-title">진짜 쉬워요<br>3단계면 끝이에요</div>
+    </div>
+    <div class="body">
+      <div class="step">
+        <div class="snum">1</div>
+        <div>
+          <div class="stit">사복노트에서 프롬프트 복사</div>
+          <div class="sdesc">카테고리별로 원하는 프롬프트 골라서 복사</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="snum">2</div>
+        <div>
+          <div class="stit">[ ] 안에 내 내용 채우기</div>
+          <div class="sdesc">괄호 안 텍스트만 내 상황으로 바꾸면 끝</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="snum">3</div>
+        <div>
+          <div class="stit">AI에 붙여넣고 실행</div>
+          <div class="sdesc">어떤 AI든 OK. 30초 안에 초안 완성</div>
+          <div class="ai-row">
+            <span class="ai-tag">ChatGPT</span>
+            <span class="ai-tag">Claude</span>
+            <span class="ai-tag">Gemini</span>
+          </div>
+        </div>
+      </div>
+      <div style="background:rgba(124,58,237,0.08);border:1px solid rgba(124,58,237,0.18);border-radius:13px;padding:12px 15px;">
+        <div style="font-size:12px;font-weight:700;color:#7C3AED;margin-bottom:4px;">💡 꿀팁</div>
+        <div style="font-size:12px;color:#5A6678;line-height:1.6;">메모앱에 자주 쓰는 프롬프트 저장해두면<br>현장에서 바로 꺼내 쓸 수 있어요</div>
+      </div>
+    </div>
+    <div class="foot"><span class="fl">사복노트</span><span class="fr">6 / 7</span></div>
+  </div>
+
+  <!-- S7 CTA -->
+  <div class="slide s7">
+    <div class="inner">
+      <div class="emo">🪄</div>
+      <div class="big">AI를 제대로 쓰려면<br><em>주문이 필요해요</em></div>
+      <div class="div2"></div>
+      <div class="sub">
+        복붙 한 번으로 기록이 달라져요.<br>
+        오늘 바로 써먹어보세요 🔖<br><br>
+        저장해두고 동료에게도 공유해주세요
+      </div>
+      <div class="cta">🪄 비밀 프롬프트 사용하기</div>
+      <div class="url">saboknote.com</div>
+    </div>
+    <div class="foot"><span class="fl">사복노트</span><span class="fr">7 / 7</span></div>
+  </div>
+
+</div>
+
+<div class="nav">
+  <button class="nbtn" id="p" onclick="go(-1)" disabled>←</button>
+  <div class="dots" id="dots"></div>
+  <button class="nbtn" id="n" onclick="go(1)">→</button>
+</div>
+<div class="ctr" id="ctr">1 / 7</div>
+
+<script>
+  let cur=0; const N=7;
+  const slides=document.querySelectorAll('.slide');
+  const wrap=document.getElementById('dots');
+  for(let i=0;i<N;i++){
+    const d=document.createElement('div');
+    d.className='d'+(i===0?' on':'');
+    d.onclick=()=>to(i);
+    wrap.appendChild(d);
+  }
+  function to(n){
+    slides[cur].classList.remove('on'); wrap.children[cur].classList.remove('on');
+    cur=n;
+    slides[cur].classList.add('on'); wrap.children[cur].classList.add('on');
+    document.getElementById('ctr').textContent=`${cur+1} / ${N}`;
+    document.getElementById('p').disabled=cur===0;
+    document.getElementById('n').disabled=cur===N-1;
+  }
+  function go(d){const nx=cur+d;if(nx>=0&&nx<N)to(nx);}
+  document.addEventListener('keydown',e=>{
+    if(e.key==='ArrowRight')go(1);
+    if(e.key==='ArrowLeft')go(-1);
+  });
+</script>
+</body>
+</html>

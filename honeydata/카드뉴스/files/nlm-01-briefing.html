@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NotebookLM 심화1편</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#DDE3ED;font-family:'Noto Sans KR',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:32px 16px 48px}
+.top-label{font-size:12px;font-weight:700;color:#8A94A6;letter-spacing:2px;margin-bottom:20px;text-transform:uppercase}
+.card{width:480px;height:600px;border-radius:22px;overflow:hidden;box-shadow:0 16px 48px rgba(0,0,0,0.18);position:relative;flex-shrink:0}
+.slide{display:none;width:100%;height:100%;position:absolute;top:0;left:0}
+.slide.on{display:flex;flex-direction:column}
+.foot{height:48px;flex-shrink:0;display:flex;align-items:center;padding:0 32px;justify-content:space-between}
+.foot .fl{font-size:12px;font-weight:900}
+.foot .fr{font-size:11px}
+/* 심화1: 보라 */
+.s1{background:linear-gradient(145deg,#4C1D95,#7C3AED)}
+.s1 .lb{display:flex;justify-content:space-between;align-items:center;padding:24px 32px 0;flex-shrink:0}
+.s1 .lo{font-size:13px;font-weight:900;color:rgba(255,255,255,0.45)}
+.s1 .bd{flex:1;padding:0 32px;display:flex;flex-direction:column;justify-content:center}
+.s1 .badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);color:white;font-size:10px;font-weight:700;padding:4px 12px;border-radius:20px;margin-bottom:14px;align-self:flex-start;letter-spacing:1px}
+.s1 .ep{font-size:12px;color:rgba(255,255,255,0.6);margin-bottom:8px;font-weight:600}
+.s1 .tit{font-size:30px;font-weight:900;color:white;line-height:1.3;margin-bottom:12px}
+.s1 .tit em{color:#FFD166;font-style:normal}
+.s1 .sub{font-size:13px;color:rgba(255,255,255,0.7);line-height:1.8;margin-bottom:18px;word-break:keep-all}
+.s1 .pills{display:flex;flex-wrap:wrap;gap:6px}
+.s1 .pill{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.85);font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px}
+.s1 .foot{background:rgba(0,0,0,0.18);border-top:1px solid rgba(255,255,255,0.1)}
+.s1 .foot .fl{color:rgba(255,255,255,0.45)}
+.s1 .foot .fr{color:rgba(255,255,255,0.25)}
+/* S2 공감 */
+.s2{background:#fff}
+.s2 .hd{background:#4C1D95;padding:22px 32px 18px;flex-shrink:0}
+.s2 .ht{font-size:10px;font-weight:700;color:rgba(255,255,255,0.6);letter-spacing:2px;margin-bottom:6px}
+.s2 .hti{font-size:21px;font-weight:900;color:white;line-height:1.38}
+.s2 .bd{flex:1;padding:18px 32px 0;display:flex;flex-direction:column;gap:8px}
+.s2 .pa{background:#F4F6FA;border-radius:13px;padding:12px 15px}
+.s2 .pt{display:flex;align-items:center;gap:7px;margin-bottom:4px}
+.s2 .pi{font-size:15px}.s2 .pw{font-size:10px;font-weight:700;color:#8A94A6;letter-spacing:1px}
+.s2 .px{font-size:13px;color:#3D4A5C;font-weight:500;line-height:1.55;word-break:keep-all}
+.s2 .psi{font-size:11px;color:#8A94A6;margin-top:2px;font-style:italic}
+.s2 .so{background:#F3E8FF;border:1px solid rgba(124,58,237,0.2);border-radius:13px;padding:12px 15px}
+.s2 .sx{font-size:13px;color:#4C1D95;font-weight:700;line-height:1.6;word-break:keep-all}
+.s2 .foot{background:#F4F6FA}.s2 .foot .fl{color:#7C3AED}.s2 .foot .fr{color:#8A94A6}
+/* S3 기능 소개 */
+.s3{background:linear-gradient(145deg,#4C1D95,#7C3AED)}
+.s3 .bd{flex:1;padding:28px 32px 0;display:flex;flex-direction:column;justify-content:center}
+.s3 .tg{font-size:10px;font-weight:700;color:rgba(255,255,255,0.55);letter-spacing:2px;margin-bottom:12px}
+.s3 .ico{font-size:44px;margin-bottom:10px;line-height:1}
+.s3 .ti{font-size:26px;font-weight:900;color:white;line-height:1.32;margin-bottom:12px}
+.s3 .ti em{color:#FFD166;font-style:normal}
+.s3 .ds{font-size:14px;color:rgba(255,255,255,0.8);line-height:1.8;margin-bottom:16px;word-break:keep-all}
+.s3 .fs{display:flex;flex-direction:column;gap:7px}
+.s3 .ft{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.1);border-radius:10px;padding:10px 14px}
+.s3 .fi{font-size:17px}.s3 .ftt{font-size:13px;color:white;font-weight:500}
+.s3 .foot{background:rgba(0,0,0,0.2);border-top:1px solid rgba(255,255,255,0.1)}
+.s3 .foot .fl{color:rgba(255,255,255,0.45)}.s3 .foot .fr{color:rgba(255,255,255,0.25)}
+/* S4 Before/After */
+.s4{background:#FAF5FF}
+.s4 .tp{padding:20px 32px 0;flex-shrink:0}
+.s4 .stg{font-size:10px;font-weight:700;color:#7C3AED;letter-spacing:2px;margin-bottom:5px}
+.s4 .sti{font-size:19px;font-weight:900;color:#1B2E4B;line-height:1.35;margin-bottom:10px}
+.s4 .bd{flex:1;padding:0 32px;display:flex;flex-direction:column;gap:7px}
+.s4 .bb{border-radius:13px;padding:12px 15px}
+.s4 .bl{font-size:10px;font-weight:700;letter-spacing:1px;margin-bottom:5px;display:block}
+.s4 .bt{font-size:12px;line-height:1.65;word-break:keep-all}
+.s4 .bef{background:#fff3e0;border:1px solid #FFD09B}.s4 .bef .bl{color:#E65100}.s4 .bef .bt{color:#5A4030}
+.s4 .aft{background:#F3E8FF;border:1px solid rgba(124,58,237,0.2)}.s4 .aft .bl{color:#7C3AED}.s4 .aft .bt{color:#1B2E4B}
+.s4 .aft .bt em{color:#7C3AED;font-style:normal;font-weight:700}
+.s4 .ar{text-align:center;font-size:16px;color:#8A94A6}
+.s4 .foot{background:#F3E8FF}.s4 .foot .fl{color:#7C3AED}.s4 .foot .fr{color:#8A94A6}
+/* S5 목차 */
+.s5{background:#fff}
+.s5 .hd{background:#7C3AED;padding:20px 32px 16px;flex-shrink:0}
+.s5 .ht{font-size:10px;font-weight:700;color:rgba(255,255,255,0.65);letter-spacing:2px;margin-bottom:5px}
+.s5 .hti{font-size:20px;font-weight:900;color:white;line-height:1.35}
+.s5 .bd{flex:1;padding:14px 32px 0;display:flex;flex-direction:column;gap:6px}
+.s5 .ch{display:flex;align-items:flex-start;gap:10px;background:#F4F6FA;border-radius:11px;padding:10px 13px}
+.s5 .cn{min-width:22px;height:22px;background:#7C3AED;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;color:white;flex-shrink:0;margin-top:1px}
+.s5 .ct{font-size:13px;font-weight:600;color:#1B2E4B;line-height:1.5;word-break:keep-all}
+.s5 .cs{font-size:11px;color:#8A94A6;margin-top:2px}
+.s5 .foot{background:#F4F6FA}.s5 .foot .fl{color:#7C3AED}.s5 .foot .fr{color:#8A94A6}
+/* S6 CTA */
+.s6{background:linear-gradient(160deg,#2D1B69,#7C3AED)}
+.s6 .in{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 32px;text-align:center}
+.s6 .em{font-size:50px;margin-bottom:12px;line-height:1}
+.s6 .bg{font-size:20px;font-weight:900;color:white;line-height:1.6;margin-bottom:12px;word-break:keep-all}
+.s6 .bg em{color:#FFD166;font-style:normal}
+.s6 .dv{width:36px;height:2px;background:rgba(255,255,255,0.2);border-radius:2px;margin:0 auto 12px}
+.s6 .cb{background:rgba(255,255,255,0.12);border:2px solid rgba(255,255,255,0.28);border-radius:16px;padding:16px 20px;margin-bottom:14px;width:100%}
+.s6 .cl{font-size:10px;color:rgba(255,255,255,0.6);margin-bottom:7px;letter-spacing:1px;font-weight:700}
+.s6 .ct{font-size:17px;font-weight:900;color:white;line-height:1.55}
+.s6 .ct em{color:#FFD166;font-style:normal}
+.s6 .sb{font-size:11px;color:rgba(255,255,255,0.5);line-height:1.7}
+.s6 .foot{background:rgba(0,0,0,0.15);border-top:1px solid rgba(255,255,255,0.08)}
+.s6 .foot .fl{color:rgba(255,255,255,0.35)}.s6 .foot .fr{color:rgba(255,255,255,0.2)}
+.nav{display:flex;align-items:center;gap:14px;margin-top:18px}
+.nbtn{width:38px;height:38px;border-radius:50%;background:white;border:none;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.12);color:#1B2E4B;transition:all .18s}
+.nbtn:hover:not(:disabled){background:#1B2E4B;color:white}
+.nbtn:disabled{opacity:.3;cursor:default}
+.dots{display:flex;gap:5px}
+.d{width:7px;height:7px;border-radius:50%;background:#C0C8D4;cursor:pointer;transition:all .18s}
+.d.on{background:#7C3AED;width:18px;border-radius:4px}
+.ctr{font-size:11px;color:#8A94A6;margin-top:6px;text-align:center}
+</style>
+</head>
+<body>
+<div class="top-label">NotebookLM 사복사 가이드 · 심화 1편</div>
+<div class="card">
+  <div class="slide s1 on">
+    <div class="lb"><span class="lo">sano 사복노트</span><span style="font-size:11px;color:rgba(255,255,255,0.3)">1/6</span></div>
+    <div class="bd">
+      <div class="badge">📚 NotebookLM 심화편</div>
+      <div class="ep">심화 1편 — 스튜디오 패널 완전 정복</div>
+      <div class="tit">보고서 초안을<br><em>버튼 하나로</em><br>뚝딱 만들기</div>
+      <div class="sub">브리핑 문서, 학습 가이드, 목차까지<br>AI가 자동으로 만들어줘요</div>
+      <div class="pills">
+        <span class="pill">📄 브리핑 문서</span>
+        <span class="pill">📋 학습 가이드</span>
+        <span class="pill">📑 목차 자동생성</span>
+        <span class="pill">✅ FAQ 생성</span>
+      </div>
+    </div>
+    <div class="foot"><span class="fl">사복노트</span><span class="fr">1/6</span></div>
+  </div>
+  <div class="slide s2">
+    <div class="hd"><div class="ht">이런 상황에서 쓰세요</div><div class="hti">보고서 쓸 때마다<br>처음부터 시작하고 있죠?</div></div>
+    <div class="bd">
+      <div class="pa"><div class="pt"><span class="pi">😮‍💨</span><span class="pw">사업 결과보고서 작성 중</span></div><div class="px">지침서 읽고 → 요약하고 → 목차 짜고 → 초안 쓰고…</div><div class="psi">(이 과정만 2~3시간 걸림)</div></div>
+      <div class="pa"><div class="pt"><span class="pi">😶</span><span class="pw">회의 전날 자료 준비</span></div><div class="px">브리핑 자료 만들어야 하는데 어디서부터 시작해야 할지</div><div class="psi">(결국 야근…)</div></div>
+      <div class="pa"><div class="pt"><span class="pi">🥲</span><span class="pw">새 직원 온보딩</span></div><div class="px">200페이지 지침서 읽으라고 할 수도 없고, 요약도 만들기 귀찮고</div></div>
+      <div class="so"><div class="sx">💡 NotebookLM 스튜디오 패널이면<br>이 모든 게 <strong>버튼 하나</strong>로 해결돼요</div></div>
+    </div>
+    <div class="foot"><span class="fl">사복노트</span><span class="fr">2/6</span></div>
+  </div>
+  <div class="slide s3">
+    <div class="bd">
+      <div class="tg">스튜디오 패널이 뭐예요?</div>
+      <div class="ico">⚡</div>
+      <div class="ti">문서 올리면<br><em>자동으로 만들어줌</em></div>
+      <div class="ds">NotebookLM 오른쪽 패널의 숨겨진 보물창고예요.<br>클릭 한 번으로 각종 문서를 자동 생성해줘요.</div>
+      <div class="fs">
+        <div class="ft"><span class="fi">📄</span><span class="ftt">브리핑 문서 — 핵심 요약 보고서 자동생성</span></div>
+        <div class="ft"><span class="fi">📋</span><span class="ftt">학습 가이드 — 목차 + 핵심 개념 정리</span></div>
+        <div class="ft"><span class="fi">❓</span><span class="ftt">FAQ — 자주 묻는 질문 자동 생성</span></div>
+        <div class="ft"><span class="fi">📑</span><span class="ftt">목차 — 문서 구조 한눈에 파악</span></div>
+      </div>
+    </div>
+    <div class="foot"><span class="fl">사복노트</span><span class="fr">3/6</span></div>
+  </div>
+  <div class="slide s4">
+    <div class="tp"><div class="stg">실제 활용 예시</div><div class="sti">지침서 올리고 버튼 누르면<br>이렇게 바뀌어요</div></div>
+    <div class="bd">
+      <div class="bb bef"><span class="bl">📁 내가 한 것</span><div class="bt">2025 노인돌봄기본서비스 사업안내 PDF 업로드<br>→ 브리핑 문서 버튼 클릭</div></div>
+      <div class="ar">↓ 30초 후</div>
+      <div class="bb aft"><span class="bl">✨ AI가 만들어준 것</span><div class="bt">• 사업 목적 및 대상 요약<br>• 2025년 주요 변경사항 정리<br>• 서비스 신청 절차 단계별 설명<br>• <em>팀 회의 브리핑 자료로 바로 사용 가능</em></div></div>
+    </div>
+    <div class="foot"><span class="fl">사복노트</span><span class="fr">4/6</span></div>
+  </div>
+  <div class="slide s5">
+    <div class="hd"><div class="ht">설명서 목차</div><div class="hti">이 설명서에서 배우는 것</div></div>
+    <div class="bd">
+      <div class="ch"><div class="cn">1</div><div><div class="ct">스튜디오 패널 위치와 버튼 구성</div><div class="cs">어디 있는지 모르는 분들 많아요</div></div></div>
+      <div class="ch"><div class="cn">2</div><div><div class="ct">브리핑 문서 3단계 생성법</div><div class="cs">팀 회의 전날 5분이면 준비 완료</div></div></div>
+      <div class="ch"><div class="cn">3</div><div><div class="ct">학습 가이드 & 목차 활용법</div><div class="cs">신입 온보딩 자료로 바로 활용</div></div></div>
+      <div class="ch"><div class="cn">4</div><div><div class="ct">FAQ 자동생성 — 민원 응대 준비</div><div class="cs">자주 받는 질문 미리 준비하기</div></div></div>
+      <div class="ch"><div class="cn">5</div><div><div class="ct">복붙 프롬프트 모음</div><div class="cs">바로 쓰는 프롬프트 사전 수록</div></div></div>
+    </div>
+    <div class="foot"><span class="fl">사복노트</span><span class="fr">5/6</span></div>
+  </div>
+  <div class="slide s6">
+    <div class="in">
+      <div class="em">📄</div>
+      <div class="bg">설명서 받고 싶으면<br><em>댓글에 야근싫어요 달아주세요</em></div>
+      <div class="dv"></div>
+      <div class="cb"><div class="cl">이렇게 하시면 돼요</div><div class="ct">댓글에 <em>야근싫어요</em><br>달아주시면<br>DM으로 바로 보내드려요!</div></div>
+      <div class="sb">완전 무료 · PDF 설명서<br>시리즈 팔로우하면 7편 전부 받아요 📚</div>
+    </div>
+    <div class="foot"><span class="fl">사복노트</span><span class="fr">6/6</span></div>
+  </div>
+</div>
+<div class="nav">
+  <button class="nbtn" id="p" onclick="go(-1)" disabled>←</button>
+  <div class="dots" id="dots"></div>
+  <button class="nbtn" id="n" onclick="go(1)">→</button>
+</div>
+<div class="ctr" id="ctr">1 / 6</div>
+<script>
+let cur=0;const N=6;
+const slides=document.querySelectorAll('.slide');
+const wrap=document.getElementById('dots');
+for(let i=0;i<N;i++){const d=document.createElement('div');d.className='d'+(i===0?' on':'');d.onclick=()=>to(i);wrap.appendChild(d);}
+function to(n){slides[cur].classList.remove('on');wrap.children[cur].classList.remove('on');cur=n;slides[cur].classList.add('on');wrap.children[cur].classList.add('on');document.getElementById('ctr').textContent=`${cur+1} / ${N}`;document.getElementById('p').disabled=cur===0;document.getElementById('n').disabled=cur===N-1;}
+function go(d){const nx=cur+d;if(nx>=0&&nx<N)to(nx);}
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')go(1);if(e.key==='ArrowLeft')go(-1);});
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<div id="dl-wrap" style="position:fixed;bottom:20px;right:20px;z-index:9999">
+  <button id="dl-btn" onclick="downloadAll()" style="background:#2F6FED;color:white;border:none;border-radius:40px;padding:12px 22px;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,0.2);font-family:inherit">📥 전체 저장</button>
+  <div id="dl-status" style="text-align:center;font-size:11px;color:#8A94A6;margin-top:6px"></div>
+</div>
+<script>
+async function downloadAll(){
+  const btn=document.getElementById("dl-btn");
+  const status=document.getElementById("dl-status");
+  const card=document.querySelector(".card");
+  const slides=document.querySelectorAll(".slide");
+  const fname=document.title.replace(/[^a-zA-Z0-9가-힣]/g,"_");
+  btn.disabled=true;
+  btn.textContent="저장 중...";
+  for(let i=0;i<slides.length;i++){
+    slides.forEach(s=>s.classList.remove("on"));
+    slides[i].classList.add("on");
+    status.textContent=`${i+1} / ${slides.length} 저장 중...`;
+    await new Promise(r=>setTimeout(r,300));
+    const canvas=await html2canvas(card,{scale:2,useCORS:true,backgroundColor:null});
+    const a=document.createElement("a");
+    a.href=canvas.toDataURL("image/png");
+    a.download=`${fname}_${String(i+1).padStart(2,"0")}.png`;
+    a.click();
+    await new Promise(r=>setTimeout(r,400));
+  }
+  btn.disabled=false;
+  btn.textContent="📥 전체 저장";
+  status.textContent="✅ 저장 완료!";
+  setTimeout(()=>status.textContent="",3000);
+}
+</script>
+</body>
+</html>

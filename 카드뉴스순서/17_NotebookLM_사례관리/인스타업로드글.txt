@@ -1,0 +1,18 @@
+사례관리 기록, AI한테 맡겨봤어요 📁
+
+NotebookLM에 사례 기록들을 쌓으면
+
+"이 클라이언트 최근 3개월 변화 요약해줘"
+"위기 징후 있었던 시점 찾아줘"
+"개입 목표 대비 현재 진행 상황 정리해줘"
+
+직접 뒤지던 시간이 확 줄어요 ⚡
+
+NotebookLM 시리즈 마지막 편이에요.
+처음부터 봤다면 이제 써볼 차례예요 💙
+
+🔗 강의 바로 보기 → https://www.saboknote.com/honeydata/notebooklm_advanced6.html
+💌 댓글에 "야근싫어요" 달면 DM으로도 보내드려요!
+
+─────────────────────
+#사복노트 #사회복지사 #NotebookLM #사례관리 #AI활용 #케이스관리 #복지사그램 #사회복지사AI #기록관리 #GoogleAI #CaseManagement #실무팁

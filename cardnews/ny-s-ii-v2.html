@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>전동침대 NY(S)-II | 이로홈</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Noto Sans KR', sans-serif; background: #fff; color: #1a1a1a; line-height: 1.6; }
+img { max-width: 100%; display: block; }
+
+.wrap { max-width: 800px; margin: 0 auto; }
+
+/* ── 브랜드 상단 띠 ── */
+.topbar {
+  background: #1c3560;
+  color: #fff;
+  text-align: center;
+  font-size: 12px;
+  letter-spacing: 3px;
+  padding: 10px;
+  font-weight: 500;
+}
+
+/* ── 히어로 ── */
+.hero {
+  background: #f8f8f8;
+  padding: 60px 40px 0;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero-eyebrow {
+  display: inline-block;
+  background: #1c3560;
+  color: #fff;
+  font-size: 11px;
+  letter-spacing: 2px;
+  padding: 5px 14px;
+  border-radius: 2px;
+  margin-bottom: 20px;
+  font-weight: 500;
+}
+.hero h1 {
+  font-size: 32px;
+  font-weight: 900;
+  color: #1a1a1a;
+  line-height: 1.3;
+  margin-bottom: 12px;
+}
+.hero-sub {
+  font-size: 16px;
+  color: #555;
+  font-weight: 300;
+  margin-bottom: 40px;
+}
+.hero-img-box {
+  background: #fff;
+  border-radius: 20px 20px 0 0;
+  padding: 40px 40px 0;
+  box-shadow: 0 -4px 40px rgba(0,0,0,0.06);
+  margin: 0 -40px;
+}
+/* 제품 이미지 플레이스홀더 */
+.product-mockup {
+  width: 100%;
+  max-width: 560px;
+  margin: 0 auto;
+  aspect-ratio: 4/3;
+  background: linear-gradient(145deg, #eef2f7 0%, #e4eaf4 100%);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #8a9ab0;
+  font-size: 14px;
+}
+.product-mockup .icon { font-size: 56px; }
+
+/* ── 스펙 배너 ── */
+.spec-banner {
+  display: flex;
+  border-top: 3px solid #1c3560;
+}
+.spec-banner-item {
+  flex: 1;
+  padding: 20px 16px;
+  text-align: center;
+  border-right: 1px solid #e4e4e4;
+  background: #fff;
+}
+.spec-banner-item:last-child { border-right: none; }
+.spec-banner-label { font-size: 10px; color: #999; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
+.spec-banner-val { font-size: 16px; font-weight: 700; color: #1c3560; }
+
+/* ── 인트로 ── */
+.intro {
+  padding: 64px 40px;
+  text-align: center;
+  border-bottom: 1px solid #eee;
+}
+.section-chip {
+  display: inline-block;
+  background: #eef2fb;
+  color: #1c3560;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  padding: 5px 14px;
+  border-radius: 2px;
+  margin-bottom: 16px;
+}
+.section-heading {
+  font-size: 26px;
+  font-weight: 800;
+  color: #111;
+  margin-bottom: 12px;
+  line-height: 1.35;
+}
+.section-body {
+  font-size: 15px;
+  color: #666;
+  font-weight: 300;
+  max-width: 520px;
+  margin: 0 auto;
+  line-height: 1.8;
+}
+
+/* ── 특장점 ── */
+.features { padding: 0 40px 64px; }
+.feature-row {
+  display: flex;
+  gap: 32px;
+  align-items: center;
+  padding: 48px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+.feature-row:last-child { border-bottom: none; }
+.feature-row.reverse { flex-direction: row-reverse; }
+.feature-img {
+  flex: 0 0 280px;
+  height: 200px;
+  background: linear-gradient(145deg, #eef2f7, #dce4f0);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 48px;
+  gap: 8px;
+  color: #8a9ab0;
+}
+.feature-img span { font-size: 12px; font-weight: 500; }
+.feature-text { flex: 1; }
+.feature-num {
+  font-size: 11px;
+  font-weight: 700;
+  color: #1c3560;
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+  opacity: 0.6;
+}
+.feature-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: #111;
+  margin-bottom: 12px;
+  line-height: 1.3;
+}
+.feature-desc {
+  font-size: 14px;
+  color: #666;
+  font-weight: 300;
+  line-height: 1.8;
+}
+.feature-badge {
+  display: inline-block;
+  margin-top: 16px;
+  background: #1c3560;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 5px 12px;
+  border-radius: 20px;
+}
+
+/* ── KPI 수치 ── */
+.kpi-section {
+  background: #1c3560;
+  padding: 60px 40px;
+  text-align: center;
+}
+.kpi-label {
+  font-size: 11px;
+  color: rgba(255,255,255,0.5);
+  letter-spacing: 3px;
+  margin-bottom: 14px;
+}
+.kpi-heading { font-size: 24px; font-weight: 800; color: #fff; margin-bottom: 48px; }
+.kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+.kpi-item {
+  background: rgba(255,255,255,0.06);
+  padding: 36px 20px;
+  border-radius: 4px;
+}
+.kpi-num { font-size: 44px; font-weight: 900; color: #fff; line-height: 1; }
+.kpi-unit { font-size: 18px; color: rgba(255,255,255,0.6); font-weight: 300; }
+.kpi-desc { font-size: 13px; color: rgba(255,255,255,0.5); margin-top: 10px; font-weight: 300; }
+
+/* ── 사양표 ── */
+.spec-section { padding: 64px 40px; }
+.spec-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 36px;
+}
+.spec-table tr { border-bottom: 1px solid #ebebeb; }
+.spec-table tr:first-child { border-top: 2px solid #1c3560; }
+.spec-table th {
+  background: #f7f8fa;
+  color: #444;
+  font-size: 13.5px;
+  font-weight: 600;
+  padding: 16px 20px;
+  text-align: left;
+  width: 32%;
+  border-right: 1px solid #ebebeb;
+}
+.spec-table td {
+  font-size: 14px;
+  color: #333;
+  padding: 16px 20px;
+  font-weight: 400;
+}
+.emph { color: #1c3560; font-weight: 700; }
+
+/* ── 유의사항 ── */
+.notice-section { padding: 0 40px 64px; }
+.notice-box {
+  background: #fafafa;
+  border: 1px solid #e8e8e8;
+  border-left: 4px solid #1c3560;
+  border-radius: 0 8px 8px 0;
+  padding: 28px 28px;
+}
+.notice-head {
+  font-size: 14px; font-weight: 700; color: #333;
+  margin-bottom: 16px; display: flex; align-items: center; gap: 8px;
+}
+.notice-list { list-style: none; }
+.notice-list li {
+  font-size: 13.5px; color: #555; font-weight: 300;
+  padding: 5px 0 5px 16px; position: relative; line-height: 1.7;
+}
+.notice-list li::before { content: '–'; position: absolute; left: 0; color: #aaa; }
+
+/* ── CTA 풋터 ── */
+.footer-cta {
+  background: #111;
+  padding: 60px 40px;
+  text-align: center;
+}
+.footer-brand { font-size: 11px; letter-spacing: 4px; color: rgba(255,255,255,0.4); margin-bottom: 12px; }
+.footer-name { font-size: 28px; font-weight: 900; color: #fff; margin-bottom: 6px; }
+.footer-tagline { font-size: 14px; color: rgba(255,255,255,0.45); font-weight: 300; margin-bottom: 36px; }
+.footer-phone { font-size: 38px; font-weight: 900; color: #fff; letter-spacing: 2px; margin-bottom: 8px; }
+.footer-hours { font-size: 12px; color: rgba(255,255,255,0.35); margin-bottom: 36px; letter-spacing: 0.5px; }
+.footer-btns { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+.footer-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 13px 24px; border-radius: 4px; font-size: 14px; font-weight: 600;
+  text-decoration: none; cursor: pointer; font-family: inherit;
+  border: none;
+}
+.btn-white { background: #fff; color: #111; }
+.btn-outline { background: transparent; border: 1px solid rgba(255,255,255,0.25); color: rgba(255,255,255,0.8); }
+.footer-divider { width: 1px; height: 16px; background: rgba(255,255,255,0.15); margin: auto 0; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+<!-- 브랜드 띠 -->
+<div class="topbar">이로홈 · 복지용구 전문 공급업체</div>
+
+<!-- 히어로 -->
+<div class="hero">
+  <div class="hero-eyebrow">전동침대 시리즈</div>
+  <h1>편안함과 안전을<br>모두 갖춘 전동침대</h1>
+  <p class="hero-sub">NY(S)-II · 인체공학적 설계의 새로운 기준</p>
+  <div class="hero-img-box">
+    <div class="product-mockup">
+      <div class="icon">🛏️</div>
+      <span>전동침대 NY(S)-II 제품 이미지</span>
+    </div>
+  </div>
+</div>
+
+<!-- 스펙 배너 -->
+<div class="spec-banner">
+  <div class="spec-banner-item">
+    <div class="spec-banner-label">Size</div>
+    <div class="spec-banner-val">98×221cm</div>
+  </div>
+  <div class="spec-banner-item">
+    <div class="spec-banner-label">Height</div>
+    <div class="spec-banner-val">31–70cm</div>
+  </div>
+  <div class="spec-banner-item">
+    <div class="spec-banner-label">Material</div>
+    <div class="spec-banner-val">스틸 · PP</div>
+  </div>
+  <div class="spec-banner-item">
+    <div class="spec-banner-label">Motor</div>
+    <div class="spec-banner-val">4모터</div>
+  </div>
+</div>
+
+<!-- 인트로 -->
+<div class="intro">
+  <div class="section-chip">ABOUT NY(S)-II</div>
+  <h2 class="section-heading">하중에 강한 통판넬 구조로<br>침대 변형을 최소화합니다</h2>
+  <p class="section-body">국산 통판넬 구조 채택으로 강한 하중에도 형태를 유지하며, 4모터 독립 제어 시스템으로 이용자에게 최적화된 자세를 제공합니다.</p>
+</div>
+
+<!-- 특장점 -->
+<div class="features">
+
+  <div class="feature-row">
+    <div class="feature-img">🏗️<span>통판넬 구조</span></div>
+    <div class="feature-text">
+      <div class="feature-num">FEATURE 01</div>
+      <div class="feature-title">하중에 강한<br>국산 통판넬 구조</div>
+      <div class="feature-desc">일반 슬랫 구조와 달리, 통판넬 일체형 구조로 제작되어 최대 하중 시에도 침대 판넬의 변형이 최소화됩니다. 장기 사용에도 안정적인 형태를 유지합니다.</div>
+      <span class="feature-badge">최대 하중 110kg</span>
+    </div>
+  </div>
+
+  <div class="feature-row reverse">
+    <div class="feature-img">🔁<span>4방향 레일</span></div>
+    <div class="feature-text">
+      <div class="feature-num">FEATURE 02</div>
+      <div class="feature-title">4방향 이동<br>안전 사이드레일</div>
+      <div class="feature-desc">상하좌우 4방향으로 이동하는 사이드레일로 이용자가 안쪽에서 잡기 편리하고, 취침 시간에도 낙상 사고를 방지하며 안전한 환경을 유지합니다.</div>
+      <span class="feature-badge">낙상 방지 설계</span>
+    </div>
+  </div>
+
+  <div class="feature-row">
+    <div class="feature-img">📐<span>등판 70°</span></div>
+    <div class="feature-text">
+      <div class="feature-num">FEATURE 03</div>
+      <div class="feature-title">최대 70° 등판<br>틸팅 시스템</div>
+      <div class="feature-desc">등판은 최대 70도, 다리판은 최대 20도까지 전동으로 조절됩니다. 식사·독서·재활 등 다양한 활동에 맞는 최적 자세를 즉시 설정할 수 있습니다.</div>
+      <span class="feature-badge">등판 0–70° · 다리판 0–20°</span>
+    </div>
+  </div>
+
+  <div class="feature-row reverse">
+    <div class="feature-img">⚡<span>4모터 제어</span></div>
+    <div class="feature-text">
+      <div class="feature-num">FEATURE 04</div>
+      <div class="feature-title">4모터 독립 구동<br>리모컨 제어</div>
+      <div class="feature-desc">등판·다리판·높이 조절을 각각 독립된 모터로 구동합니다. 리모컨 하나로 모든 기능을 제어할 수 있어 간병인과 이용자 모두 편리하게 사용할 수 있습니다.</div>
+      <span class="feature-badge">4모터 · 리모컨 포함</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- KPI -->
+<div class="kpi-section">
+  <div class="kpi-label">KEY PERFORMANCE</div>
+  <div class="kpi-heading">숫자로 증명하는 NY(S)-II</div>
+  <div class="kpi-grid">
+    <div class="kpi-item">
+      <div class="kpi-num">110<span class="kpi-unit">kg</span></div>
+      <div class="kpi-desc">최대 허용 하중</div>
+    </div>
+    <div class="kpi-item">
+      <div class="kpi-num">70<span class="kpi-unit">°</span></div>
+      <div class="kpi-desc">최대 등판 각도</div>
+    </div>
+    <div class="kpi-item">
+      <div class="kpi-num">4<span class="kpi-unit" style="font-size:16px">모터</span></div>
+      <div class="kpi-desc">독립 구동 시스템</div>
+    </div>
+  </div>
+</div>
+
+<!-- 사양 -->
+<div class="spec-section">
+  <div class="section-chip">SPECIFICATIONS</div>
+  <h2 class="section-heading">제품 사양</h2>
+  <table class="spec-table">
+    <tr><th>품명 / 품번</th><td><span class="emph">전동침대 NY(S)-II</span></td></tr>
+    <tr><th>재질</th><td>스틸(Steel), PP</td></tr>
+    <tr><th>제품 크기</th><td><span class="emph">98 × 221 × 31~70cm</span></td></tr>
+    <tr><th>최대 하중</th><td><span class="emph">110kg</span> &nbsp;<span style="color:#999;font-size:13px">(단순시트 150kg)</span></td></tr>
+    <tr><th>제품 중량</th><td>95kg</td></tr>
+    <tr><th>등판 각도</th><td>0° ~ <span class="emph">70°</span></td></tr>
+    <tr><th>다리판 각도</th><td>0° ~ <span class="emph">20°</span></td></tr>
+    <tr><th>높이 조절</th><td><span class="emph">31 ~ 70cm</span> (전동)</td></tr>
+    <tr><th>구동 방식</th><td>4모터 독립 구동 · 리모컨 제어</td></tr>
+    <tr><th>사이드레일</th><td>4방향 이동형 (탈부착 가능)</td></tr>
+  </table>
+</div>
+
+<!-- 유의사항 -->
+<div class="notice-section">
+  <div class="section-chip">NOTICE</div>
+  <h2 class="section-heading" style="margin-bottom:28px">유의사항</h2>
+  <div class="notice-box">
+    <div class="notice-head">⚠ 안전한 사용을 위해 반드시 확인하세요</div>
+    <ul class="notice-list">
+      <li>설치 후 반드시 수평을 확인하고 바퀴 잠금장치를 체결하세요.</li>
+      <li>최대 허용 하중(110kg)을 초과하여 사용하지 마세요.</li>
+      <li>전원 연결 시 반드시 접지된 콘센트를 사용하세요.</li>
+      <li>침대 이동 시 전원을 끄고 이용자를 내린 후 이동하세요.</li>
+      <li>사이드레일 고정 상태를 정기적으로 점검하세요.</li>
+      <li>임의 분해·수리 금지. 이상 시 고객센터(1533-5088)에 문의하세요.</li>
+      <li>습기·물 환경 사용 금지. 어린이 단독 사용 주의.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- CTA 풋터 -->
+<div class="footer-cta">
+  <div class="footer-brand">IROHOME · 이로홈</div>
+  <div class="footer-name">이로홈</div>
+  <div class="footer-tagline">성장하는 사업소의 비결, 모두 이로홈에 있습니다.</div>
+  <div class="footer-phone">1533-5088</div>
+  <div class="footer-hours">평일 09:00 – 18:00 · 점심 12:00 – 13:00</div>
+  <div class="footer-btns">
+    <button class="footer-btn btn-white">📞 전화 상담</button>
+    <button class="footer-btn btn-outline">💬 카카오톡</button>
+    <button class="footer-btn btn-outline">📝 네이버 블로그</button>
+  </div>
+</div>
+
+</div><!-- /wrap -->
+</body>
+</html>

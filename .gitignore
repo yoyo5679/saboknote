@@ -1,0 +1,16 @@
+.env
+__pycache__/
+*.pyc
+.DS_Store
+node_modules/
+
+# Local Agent & Editor Settings
+.agent/
+.claude/
+
+# Logs & Local Ephemeral Data
+chat_log.json
+live_status.json
+scratch_test.txt
+temp_*.md
+*.log

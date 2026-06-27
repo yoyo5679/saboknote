@@ -1361,16 +1361,31 @@ try {
 
         const openAdminModal = () => {
             const content = `
-            <div class="admin-tabs" style="display:grid; grid-template-columns: repeat(4, 1fr); gap:6px; margin-bottom:24px; padding:4px; background:#f1f5f9; border-radius:12px;" >
-                    <button class="tab-btn active" id="tab-vat" onclick="switchAdminTab('vat')" style="padding:10px 4px; border:none; border-radius:8px; background:white; font-weight:700; color:var(--primary); box-shadow:0 2px 4px rgba(0,0,0,0.05); font-size:0.7rem; transition:all 0.2s; white-space:nowrap;">1.부가세</button>
-                    <button class="tab-btn" id="tab-tax" onclick="switchAdminTab('tax')" style="padding:10px 4px; border:none; border-radius:8px; background:transparent; font-weight:600; color:#64748b; font-size:0.7rem; transition:all 0.2s; white-space:nowrap;">2.강사료</button>
-                    <button class="tab-btn" id="tab-payroll" onclick="switchAdminTab('payroll')" style="padding:10px 4px; border:none; border-radius:8px; background:transparent; font-weight:600; color:#64748b; font-size:0.7rem; transition:all 0.2s; white-space:nowrap;">3.급여정산</button>
-                    <button class="tab-btn" id="tab-ltc" onclick="switchAdminTab('ltc')" style="padding:10px 4px; border:none; border-radius:8px; background:transparent; font-weight:600; color:#64748b; font-size:0.7rem; transition:all 0.2s; white-space:nowrap;">4.장기요양</button>
-                    <button class="tab-btn" id="tab-budget" onclick="switchAdminTab('budget')" style="padding:10px 4px; border:none; border-radius:8px; background:transparent; font-weight:600; color:#64748b; font-size:0.7rem; transition:all 0.2s; white-space:nowrap;">5.단가계산</button>
-                    <button class="tab-btn" id="tab-youth" onclick="switchAdminTab('youth')" style="padding:10px 4px; border:none; border-radius:8px; background:transparent; font-weight:600; color:#64748b; font-size:0.7rem; transition:all 0.2s; white-space:nowrap;">6.자립청년</button>
-                    <button class="tab-btn" id="tab-target" onclick="switchAdminTab('target')" style="padding:10px 4px; border:none; border-radius:8px; background:transparent; font-weight:600; color:#64748b; font-size:0.7rem; transition:all 0.2s; white-space:nowrap;">7.목표달성</button>
-                    <button class="tab-btn" id="tab-compressor" onclick="switchAdminTab('compressor')" style="padding:10px 4px; border:none; border-radius:8px; background:transparent; font-weight:600; color:#64748b; font-size:0.7rem; transition:all 0.2s; white-space:nowrap;">8.용량줄이기</button>
+            <div class="admin-tabs" style="display:flex; flex-direction:column; gap:8px; margin-bottom:24px; padding:12px; background:#f8fafc; border-radius:12px; border:1px solid #e2e8f0;">
+                <div style="font-size:0.75rem; font-weight:700; color:#94a3b8; padding-left:4px; margin-bottom:-4px;">💸 회계 관리 마스터</div>
+                <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:6px; padding:4px; background:#f1f5f9; border-radius:8px;">
+                    <button class="tab-btn active" id="tab-vat" onclick="switchAdminTab('vat')" style="padding:10px 4px; border:none; border-radius:6px; background:white; font-weight:700; color:var(--primary); box-shadow:0 2px 4px rgba(0,0,0,0.05); font-size:0.7rem; transition:all 0.2s; white-space:nowrap;">1.부가세</button>
+                    <button class="tab-btn" id="tab-budget" onclick="switchAdminTab('budget')" style="padding:10px 4px; border:none; border-radius:6px; background:transparent; font-weight:600; color:#64748b; font-size:0.7rem; transition:all 0.2s; white-space:nowrap;">2.단가계산</button>
+                    <button class="tab-btn" id="tab-tax" onclick="switchAdminTab('tax')" style="padding:10px 4px; border:none; border-radius:6px; background:transparent; font-weight:600; color:#64748b; font-size:0.7rem; transition:all 0.2s; white-space:nowrap;">3.강사료</button>
+                    <button class="tab-btn" id="tab-payroll" onclick="switchAdminTab('payroll')" style="padding:10px 4px; border:none; border-radius:6px; background:transparent; font-weight:600; color:#64748b; font-size:0.7rem; transition:all 0.2s; white-space:nowrap;">4.급여정산</button>
                 </div>
+                
+                <div style="font-size:0.75rem; font-weight:700; color:#94a3b8; padding-left:4px; margin-top:4px; margin-bottom:-4px;">📊 사업/실적 마스터</div>
+                <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:6px; padding:4px; background:#f1f5f9; border-radius:8px;">
+                    <button class="tab-btn" id="tab-percent" onclick="switchAdminTab('percent')" style="padding:10px 4px; border:none; border-radius:6px; background:transparent; font-weight:600; color:#64748b; font-size:0.7rem; transition:all 0.2s; white-space:nowrap;">5.퍼센트</button>
+                    <button class="tab-btn" id="tab-target" onclick="switchAdminTab('target')" style="padding:10px 4px; border:none; border-radius:6px; background:transparent; font-weight:600; color:#64748b; font-size:0.7rem; transition:all 0.2s; white-space:nowrap;">6.목표달성</button>
+                    <button class="tab-btn" id="tab-ltc" onclick="switchAdminTab('ltc')" style="padding:10px 4px; border:none; border-radius:6px; background:transparent; font-weight:600; color:#64748b; font-size:0.7rem; transition:all 0.2s; white-space:nowrap;">7.장기요양</button>
+                    <button class="tab-btn" id="tab-youth" onclick="switchAdminTab('youth')" style="padding:10px 4px; border:none; border-radius:6px; background:transparent; font-weight:600; color:#64748b; font-size:0.7rem; transition:all 0.2s; white-space:nowrap;">8.자립청년</button>
+                </div>
+
+                <div style="font-size:0.75rem; font-weight:700; color:#94a3b8; padding-left:4px; margin-top:4px; margin-bottom:-4px;">🗂️ 파일/문서 유틸리티</div>
+                <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:6px; padding:4px; background:#f1f5f9; border-radius:8px;">
+                    <button class="tab-btn" id="tab-mosaic" onclick="switchAdminTab('mosaic')" style="padding:10px 4px; border:none; border-radius:6px; background:transparent; font-weight:600; color:#64748b; font-size:0.7rem; transition:all 0.2s; white-space:nowrap;">9.모자이크</button>
+                    <button class="tab-btn" id="tab-compressor" onclick="switchAdminTab('compressor')" style="padding:10px 4px; border:none; border-radius:6px; background:transparent; font-weight:600; color:#64748b; font-size:0.7rem; transition:all 0.2s; white-space:nowrap;">10.사진압축</button>
+                    <button class="tab-btn" id="tab-converter" onclick="switchAdminTab('converter')" style="padding:10px 4px; border:none; border-radius:6px; background:transparent; font-weight:600; color:#64748b; font-size:0.7rem; transition:all 0.2s; white-space:nowrap;">11.포맷변환</button>
+                    <button class="tab-btn" id="tab-pdf" onclick="switchAdminTab('pdf')" style="padding:10px 4px; border:none; border-radius:6px; background:transparent; font-weight:600; color:#64748b; font-size:0.7rem; transition:all 0.2s; white-space:nowrap;">12.PDF압축</button>
+                </div>
+            </div>
 
                 <div id="admin-content-vat" class="tab-content" style="animation: fadeIn 0.3s ease;">
                     
@@ -2017,6 +2032,221 @@ try {
                     <p class="privacy-note">🔒 <span>사진은 서버로 전송되지 않아요.</span><br>모든 압축은 내 브라우저 안에서만 처리됩니다.</p>
                 </div>
             </div>
+
+            <!-- 퍼센트 계산기 탭 내용 -->
+            <div id="admin-content-percent" class="tab-content" style="display:none; animation: fadeIn 0.3s ease;">
+                <style>
+                    .percent-mode-card { background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:16px; margin-bottom:16px; transition:all 0.2s; }
+                    .percent-mode-card:hover { border-color:#93c5fd; box-shadow:0 4px 12px rgba(59,130,246,0.1); }
+                    .percent-title { font-size:0.95rem; font-weight:800; color:#1e3a8a; margin-bottom:12px; display:flex; align-items:center; gap:6px; }
+                    .percent-inputs { display:flex; gap:8px; align-items:center; }
+                    .percent-inputs input { flex:1; min-width:0; padding:10px; border-radius:8px; border:1px solid #cbd5e1; font-size:1rem; outline:none; text-align:right; color:#1e293b; font-weight:700;}
+                    .percent-inputs input:focus { border-color:#3b82f6; box-shadow:0 0 0 2px rgba(59,130,246,0.2); }
+                    .percent-result { font-weight:900; color:#2563eb; font-size:1.1rem; min-width:80px; text-align:right; }
+                </style>
+                <div class="step-card beautiful-card" style="padding:20px; border-color:#bfdbfe;">
+                    <h4 style="color:#1e40af; font-weight:800; font-size:1.1rem; margin-bottom:8px; text-align:center;">📊 만능 퍼센트 계산기</h4>
+                    <p style="text-align:center; color:#64748b; font-size:0.85rem; margin-bottom:20px;">사업 실적, 예산 집행률을 쉽게 계산하세요 (네이버 스타일)</p>
+                    
+                    <div class="percent-mode-card">
+                        <div class="percent-title"><span style="background:#dbeafe; padding:4px 6px; border-radius:6px; font-size:0.8rem;">1. 비율값</span> A의 B%는 얼마?</div>
+                        <div class="percent-inputs">
+                            <input type="number" id="pc-1-a" placeholder="10000" oninput="calcPercent(1)"> <span style="font-size:0.85rem; color:#64748b; white-space:nowrap;">의</span>
+                            <input type="number" id="pc-1-b" placeholder="20" oninput="calcPercent(1)"> <span style="font-size:0.85rem; color:#64748b; white-space:nowrap;">%는</span>
+                            <div class="percent-result" id="pc-1-res">?</div>
+                        </div>
+                    </div>
+
+                    <div class="percent-mode-card">
+                        <div class="percent-title"><span style="background:#dbeafe; padding:4px 6px; border-radius:6px; font-size:0.8rem;">2. 일부값</span> A의 B는 몇 %?</div>
+                        <div class="percent-inputs">
+                            <input type="number" id="pc-2-a" placeholder="10000" oninput="calcPercent(2)"> <span style="font-size:0.85rem; color:#64748b; white-space:nowrap;">의</span>
+                            <input type="number" id="pc-2-b" placeholder="2000" oninput="calcPercent(2)"> <span style="font-size:0.85rem; color:#64748b; white-space:nowrap;">은(는)</span>
+                            <div class="percent-result" id="pc-2-res">?</div>
+                        </div>
+                    </div>
+
+                    <div class="percent-mode-card">
+                        <div class="percent-title"><span style="background:#dbeafe; padding:4px 6px; border-radius:6px; font-size:0.8rem;">3. 증감률</span> A에서 B로 변하면 몇 % 증감?</div>
+                        <div class="percent-inputs">
+                            <input type="number" id="pc-3-a" placeholder="10000" oninput="calcPercent(3)"> <span style="font-size:0.85rem; color:#64748b; white-space:nowrap;">에서</span>
+                            <input type="number" id="pc-3-b" placeholder="15000" oninput="calcPercent(3)"> <span style="font-size:0.85rem; color:#64748b; white-space:nowrap;">(으)로</span>
+                            <div class="percent-result" id="pc-3-res">?</div>
+                        </div>
+                    </div>
+
+                    <div class="percent-mode-card">
+                        <div class="percent-title"><span style="background:#dbeafe; padding:4px 6px; border-radius:6px; font-size:0.8rem;">4. 증감값</span> A가 B% 증가하면 얼마?</div>
+                        <div class="percent-inputs">
+                            <input type="number" id="pc-4-a" placeholder="10000" oninput="calcPercent(4)"> <span style="font-size:0.85rem; color:#64748b; white-space:nowrap;">이(가)</span>
+                            <input type="number" id="pc-4-b" placeholder="20" oninput="calcPercent(4)"> <span style="font-size:0.85rem; color:#64748b; white-space:nowrap;">% 증가하면</span>
+                            <div class="percent-result" id="pc-4-res">?</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PDF 용량 줄이기 탭 내용 -->
+            <div id="admin-content-pdf" class="tab-content" style="display:none; animation: fadeIn 0.3s ease;">
+                <style>
+                    .pdf-drop-zone { border:2px dashed #cbd5e1; border-radius:16px; padding:30px 20px; text-align:center; background:white; cursor:pointer; transition:all 0.2s; margin-bottom:20px; }
+                    .pdf-drop-zone:hover { border-color:#ef4444; background:#fef2f2; }
+                    .pdf-settings { display:none; background:#f8fafc; padding:16px; border-radius:12px; border:1px solid #e2e8f0; margin-bottom:20px; }
+                    .pdf-settings.visible { display:block; }
+                </style>
+                <div class="compressor-container step-card beautiful-card" style="padding:20px; border-color:#fca5a5;">
+                    <h4 style="color:#b91c1c; font-weight:800; font-size:1.1rem; margin-bottom:8px; text-align:center;">📄 PDF 용량 줄이기</h4>
+                    <p style="text-align:center; color:#64748b; font-size:0.85rem; margin-bottom:20px;">서버 전송 없이 내 기기에서 안전하게 압축</p>
+
+                    <div class="pdf-drop-zone" id="pdfDropZone" onclick="document.getElementById('pdfFileInput').click()">
+                        <span style="font-size:3rem; margin-bottom:1rem; display:block;">📉</span>
+                        <p style="font-size:1rem; font-weight:700; color:#1e293b; margin-bottom:0.4rem;">PDF 파일을 여기에 클릭하여 선택하세요</p>
+                        <p style="font-size:0.78rem; color:#64748b;">텍스트가 캡처 이미지로 변환되며 용량이 대폭 줄어듭니다</p>
+                        <input type="file" id="pdfFileInput" accept="application/pdf" style="display:none;" onchange="handlePdfSelect(event)">
+                    </div>
+
+                    <div class="pdf-settings" id="pdfSettings">
+                        <div style="font-size:0.9rem; font-weight:700; color:#1e293b; margin-bottom:8px;">선택된 파일: <span id="pdfFileName" style="color:#ef4444;"></span> (<span id="pdfFileSize"></span>)</div>
+                        
+                        <div style="margin-top:16px; margin-bottom:8px; font-size:0.85rem; color:#475569; font-weight:700;">압축 품질 선택</div>
+                        <select id="pdfQualitySelect" class="calc-input" style="width:100%; margin-bottom:16px;">
+                            <option value="0.9">고품질 (용량 조금 감소)</option>
+                            <option value="0.7" selected>표준 (권장)</option>
+                            <option value="0.5">저품질 (용량 대폭 감소)</option>
+                        </select>
+
+                        <button class="compress-btn visible" id="pdfCompressBtn" onclick="startPdfCompression()" style="width:100%; padding:14px; background:#ef4444; color:white; border:none; border-radius:12px; font-weight:800; font-size:1.05rem; cursor:pointer;">✨ PDF 압축 시작</button>
+                    </div>
+
+                    <div id="pdfProgressWrap" style="display:none; margin-top:20px;">
+                        <div style="height:6px; background:#e2e8f0; border-radius:99px; overflow:hidden;">
+                            <div id="pdfProgressFill" style="height:100%; width:0%; background:#ef4444; transition:width 0.2s;"></div>
+                        </div>
+                        <p id="pdfProgressText" style="text-align:center; font-size:0.8rem; color:#64748b; margin-top:0.5rem;">압축 준비 중...</p>
+                    </div>
+
+                    <div id="pdfResultWrap" style="display:none; margin-top:20px; background:#ecfdf5; border:1px solid #a7f3d0; padding:16px; border-radius:12px; text-align:center;">
+                        <div style="font-size:1.2rem; font-weight:800; color:#059669; margin-bottom:8px;">🎉 압축 완료!</div>
+                        <div style="font-size:0.9rem; color:#065f46; margin-bottom:16px;">
+                            <span id="pdfResultBefore" style="text-decoration:line-through; color:#9ca3af;"></span> ➡️ 
+                            <span id="pdfResultAfter" style="font-weight:800;"></span>
+                        </div>
+                        <button id="pdfDownloadBtn" onclick="downloadCompressedPdf()" class="btn-primary" style="background:#10b981; width:100%; border:none;">⬇️ 압축된 PDF 다운로드</button>
+                    </div>
+
+                    <p style="text-align:center; font-size:0.75rem; color:#94a3b8; margin-top:20px;">🔒 파일은 절대 외부 서버로 전송되지 않으며 안전하게 기기에서만 처리됩니다.</p>
+                </div>
+            </div>
+
+            <!-- 이미지 포맷 변환기 탭 내용 -->
+            <div id="admin-content-converter" class="tab-content" style="display:none; animation: fadeIn 0.3s ease;">
+                <style>
+                    .conv-drop-zone { border:2px dashed #cbd5e1; border-radius:16px; padding:30px 20px; text-align:center; background:white; cursor:pointer; transition:all 0.2s; margin-bottom:20px; }
+                    .conv-drop-zone:hover, .conv-drop-zone.dragover { border-color:#eab308; background:#fefce8; }
+                    .conv-settings { display:none; background:#f8fafc; padding:16px; border-radius:12px; border:1px solid #e2e8f0; margin-bottom:20px; }
+                    .conv-settings.visible { display:block; }
+                    .conv-file-list { margin-top:12px; max-height:150px; overflow-y:auto; font-size:0.85rem; color:#475569; background:white; border-radius:8px; border:1px solid #e2e8f0; padding:8px; }
+                    .conv-file-item { display:flex; justify-content:space-between; padding:4px 0; border-bottom:1px solid #f1f5f9; }
+                    .conv-file-item:last-child { border-bottom:none; }
+                    .conv-result-wrap { display:none; margin-top:20px; background:#fefce8; border:1px solid #fef08a; padding:16px; border-radius:12px; text-align:center; }
+                </style>
+                <div class="compressor-container step-card beautiful-card" style="padding:20px; border-color:#fde047;">
+                    <h4 style="color:#ca8a04; font-weight:800; font-size:1.1rem; margin-bottom:8px; text-align:center;">🔄 이미지 포맷 변환기</h4>
+                    <p style="text-align:center; color:#64748b; font-size:0.85rem; margin-bottom:20px;">여러 장의 사진을 원하는 포맷(JPG, PNG 등)으로 일괄 변환하세요</p>
+
+                    <div class="conv-drop-zone" id="convDropZone">
+                        <span style="font-size:3rem; margin-bottom:1rem; display:block;">🪄</span>
+                        <p style="font-size:1rem; font-weight:700; color:#1e293b; margin-bottom:0.4rem;">사진을 여기에 드래그하거나 클릭하세요</p>
+                        <p style="font-size:0.78rem; color:#64748b;">WebP, HEIC, PNG 등 모두 변환 가능 · 여러 장 동시 처리</p>
+                        <input type="file" id="convFileInput" accept="image/*" multiple style="display:none;">
+                    </div>
+
+                    <div class="conv-settings" id="convSettings">
+                        <div style="font-size:0.9rem; font-weight:700; color:#1e293b; margin-bottom:4px;">선택된 파일 (<span id="convFileCount" style="color:#ca8a04;">0</span>장)</div>
+                        <div class="conv-file-list" id="convFileList"></div>
+                        
+                        <div style="margin-top:16px; margin-bottom:8px; font-size:0.85rem; color:#475569; font-weight:700;">변환할 포맷 선택</div>
+                        <select id="convFormatSelect" class="calc-input" style="width:100%; margin-bottom:16px;">
+                            <option value="image/jpeg" selected>JPG (가장 호환성 높음, 추천)</option>
+                            <option value="image/png">PNG (투명 배경 유지)</option>
+                            <option value="image/webp">WebP (웹 최적화 용량)</option>
+                        </select>
+
+                        <button class="compress-btn visible" id="convStartBtn" style="width:100%; padding:14px; background:#eab308; color:white; border:none; border-radius:12px; font-weight:800; font-size:1.05rem; cursor:pointer;">✨ 일괄 변환 시작</button>
+                    </div>
+
+                    <div id="convProgressWrap" style="display:none; margin-top:20px;">
+                        <div style="height:6px; background:#e2e8f0; border-radius:99px; overflow:hidden;">
+                            <div id="convProgressFill" style="height:100%; width:0%; background:#eab308; transition:width 0.2s;"></div>
+                        </div>
+                        <p id="convProgressText" style="text-align:center; font-size:0.8rem; color:#64748b; margin-top:0.5rem;">변환 중...</p>
+                    </div>
+
+                    <div id="convResultWrap" class="conv-result-wrap">
+                        <div style="font-size:1.2rem; font-weight:800; color:#a16207; margin-bottom:8px;">🎉 변환 완료!</div>
+                        <p style="font-size:0.85rem; color:#854d0e; margin-bottom:16px;">모든 이미지가 성공적으로 변환되었습니다.</p>
+                        <div id="convDownloadLinks" style="display:flex; flex-direction:column; gap:8px;"></div>
+                        
+                        <button id="convResetBtn" class="btn-primary" style="background:#cbd5e1; color:#334155; width:100%; border:none; margin-top:16px;">새로 변환하기</button>
+                    </div>
+
+                    <p style="text-align:center; font-size:0.75rem; color:#94a3b8; margin-top:20px;">🔒 파일은 절대 외부 서버로 전송되지 않으며 안전하게 기기에서만 처리됩니다.</p>
+                </div>
+            </div>
+
+            <!-- 사진 모자이크 탭 내용 -->
+            <div id="admin-content-mosaic" class="tab-content" style="display:none; animation: fadeIn 0.3s ease;">
+                <style>
+                    .mosaic-drop-zone { border:2px dashed #cbd5e1; border-radius:16px; padding:30px 20px; text-align:center; background:white; cursor:pointer; transition:all 0.2s; margin-bottom:20px; }
+                    .mosaic-drop-zone:hover, .mosaic-drop-zone.dragover { border-color:#8b5cf6; background:#f5f3ff; }
+                    .mosaic-editor { display:none; flex-direction:column; align-items:center; background:#f8fafc; padding:16px; border-radius:12px; border:1px solid #e2e8f0; margin-bottom:20px; }
+                    .mosaic-editor.visible { display:flex; }
+                    .canvas-wrapper { position:relative; max-width:100%; border:1px solid #cbd5e1; border-radius:8px; overflow:hidden; background:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAMUlEQVQ4T2NkYGAQYcAP3hKhf+FIBkYGIg0YvA0YxmgwpIFiNPzRMJqMRsMoGhgAAAD//8oUCPwAAAAASUVORK5CYII=') repeat; cursor:crosshair; touch-action:none; }
+                    .canvas-wrapper canvas { display:block; max-width:100%; height:auto; }
+                    .mosaic-toolbar { display:flex; gap:8px; flex-wrap:wrap; justify-content:center; margin-top:16px; width:100%; }
+                    .mosaic-toolbar button { padding:8px 12px; font-size:0.85rem; font-weight:700; border-radius:8px; border:none; cursor:pointer; transition:all 0.2s; }
+                    .btn-tool-active { background:#8b5cf6; color:white; }
+                    .btn-tool { background:#e2e8f0; color:#475569; }
+                    .btn-tool:hover { background:#cbd5e1; }
+                </style>
+                <div class="compressor-container step-card beautiful-card" style="padding:20px; border-color:#c4b5fd;">
+                    <h4 style="color:#6d28d9; font-weight:800; font-size:1.1rem; margin-bottom:8px; text-align:center;">🔲 사진 모자이크 (개인정보 가리기)</h4>
+                    <p style="text-align:center; color:#64748b; font-size:0.85rem; margin-bottom:20px;">손가락이나 마우스로 쓱쓱 문질러 민감한 정보를 안전하게 가리세요</p>
+
+                    <div class="mosaic-drop-zone" id="mosaicDropZone">
+                        <span style="font-size:3rem; margin-bottom:1rem; display:block;">🤫</span>
+                        <p style="font-size:1rem; font-weight:700; color:#1e293b; margin-bottom:0.4rem;">가릴 사진을 여기에 드래그하거나 클릭하세요</p>
+                        <p style="font-size:0.78rem; color:#64748b;">단일 사진 전용 (JPG, PNG 등)</p>
+                        <input type="file" id="mosaicFileInput" accept="image/*" style="display:none;">
+                    </div>
+
+                    <div class="mosaic-editor" id="mosaicEditor">
+                        <div class="canvas-wrapper" id="mosaicCanvasWrapper">
+                            <canvas id="mosaicCanvas"></canvas>
+                        </div>
+                        
+                        <div class="mosaic-toolbar">
+                            <div style="width:100%; text-align:center; margin-bottom:4px; font-size:0.85rem; font-weight:700; color:#475569;">브러시 설정</div>
+                            <button class="btn-tool" id="btnMosModeBlur" style="background:#8b5cf6; color:white;">블러(흐리게)</button>
+                            <button class="btn-tool" id="btnMosModePixel">모자이크</button>
+                            <div style="width:1px; background:#cbd5e1; margin:0 4px;"></div>
+                            <button class="btn-tool" id="btnMosSizeS">얇게</button>
+                            <button class="btn-tool" id="btnMosSizeM" style="background:#8b5cf6; color:white;">보통</button>
+                            <button class="btn-tool" id="btnMosSizeL">두껍게</button>
+                        </div>
+                        
+                        <div class="mosaic-toolbar" style="margin-top:12px;">
+                            <button class="btn-tool" id="btnMosUndo">↩️ 되돌리기</button>
+                            <button class="btn-tool" id="btnMosClear">🗑️ 전체 초기화</button>
+                            <button class="btn-tool" id="btnMosSave" style="background:#10b981; color:white; width:100%; margin-top:8px; padding:12px; font-size:1rem;">⬇️ 가려진 사진 다운로드</button>
+                        </div>
+                        
+                        <button class="btn-tool" id="btnMosResetFile" style="margin-top:16px; width:100%; background:transparent; border:1px solid #cbd5e1;">다른 사진 불러오기</button>
+                    </div>
+
+                    <p style="text-align:center; font-size:0.75rem; color:#94a3b8; margin-top:20px;">🔒 파일은 절대 외부 서버로 전송되지 않으며 안전하게 기기에서만 처리됩니다.</p>
+                </div>
+            </div>
         `;
             openModal('행정/회계 마스터 💸', content, 'admin');
 
@@ -2028,6 +2258,8 @@ try {
             if (typeof switchAdminTab === 'function') switchAdminTab('vat');
 
             if (typeof initPhotoCompressor === 'function') initPhotoCompressor();
+            if (typeof initImageConverter === 'function') initImageConverter();
+            if (typeof initImageMosaic === 'function') initImageMosaic();
         };
 
         if (btn) btn.onclick = openAdminModal;
@@ -2401,6 +2633,10 @@ try {
         const contentYouth = document.getElementById('admin-content-youth');
         const contentTarget = document.getElementById('admin-content-target');
         const contentCompressor = document.getElementById('admin-content-compressor');
+        const contentPercent = document.getElementById('admin-content-percent');
+        const contentPdf = document.getElementById('admin-content-pdf');
+        const contentConverter = document.getElementById('admin-content-converter');
+        const contentMosaic = document.getElementById('admin-content-mosaic');
 
         if (contentVat) contentVat.style.display = tabName === 'vat' ? 'block' : 'none';
         if (contentTax) contentTax.style.display = tabName === 'tax' ? 'block' : 'none';
@@ -2410,6 +2646,10 @@ try {
         if (contentYouth) contentYouth.style.display = tabName === 'youth' ? 'block' : 'none';
         if (contentTarget) contentTarget.style.display = tabName === 'target' ? 'block' : 'none';
         if (contentCompressor) contentCompressor.style.display = tabName === 'compressor' ? 'block' : 'none';
+        if (contentPercent) contentPercent.style.display = tabName === 'percent' ? 'block' : 'none';
+        if (contentPdf) contentPdf.style.display = tabName === 'pdf' ? 'block' : 'none';
+        if (contentConverter) contentConverter.style.display = tabName === 'converter' ? 'block' : 'none';
+        if (contentMosaic) contentMosaic.style.display = tabName === 'mosaic' ? 'block' : 'none';
 
         const btnVat = document.getElementById('tab-vat');
         const btnTax = document.getElementById('tab-tax');
@@ -2419,6 +2659,10 @@ try {
         const btnYouth = document.getElementById('tab-youth');
         const btnTarget = document.getElementById('tab-target');
         const btnCompressor = document.getElementById('tab-compressor');
+        const btnPercent = document.getElementById('tab-percent');
+        const btnPdf = document.getElementById('tab-pdf');
+        const btnConverter = document.getElementById('tab-converter');
+        const btnMosaic = document.getElementById('tab-mosaic');
 
         const setActive = (btn) => {
             if (!btn) return;
@@ -2436,7 +2680,7 @@ try {
             btn.style.boxShadow = 'none';
         };
 
-        setInactive(btnVat); setInactive(btnTax); setInactive(btnLtc); setInactive(btnPayroll); setInactive(btnBudget); setInactive(btnYouth); setInactive(btnTarget); setInactive(btnCompressor);
+        setInactive(btnVat); setInactive(btnTax); setInactive(btnLtc); setInactive(btnPayroll); setInactive(btnBudget); setInactive(btnYouth); setInactive(btnTarget); setInactive(btnCompressor); setInactive(btnPercent); setInactive(btnPdf); setInactive(btnConverter); setInactive(btnMosaic);
 
         if (tabName === 'vat') setActive(btnVat);
         else if (tabName === 'tax') setActive(btnTax);
@@ -2446,6 +2690,137 @@ try {
         else if (tabName === 'youth') setActive(btnYouth);
         else if (tabName === 'target') setActive(btnTarget);
         else if (tabName === 'compressor') setActive(btnCompressor);
+        else if (tabName === 'percent') setActive(btnPercent);
+        else if (tabName === 'pdf') setActive(btnPdf);
+        else if (tabName === 'converter') setActive(btnConverter);
+        else if (tabName === 'mosaic') setActive(btnMosaic);
+    };
+
+    window.calcPercent = function (mode) {
+        const formatNumber = (num) => Number.isInteger(num) ? num.toLocaleString() : num.toLocaleString(undefined, { maximumFractionDigits: 2 });
+        
+        if (mode === 1) {
+            const a = parseFloat(document.getElementById('pc-1-a').value);
+            const b = parseFloat(document.getElementById('pc-1-b').value);
+            const res = document.getElementById('pc-1-res');
+            if (!isNaN(a) && !isNaN(b)) res.innerText = formatNumber(a * (b / 100));
+            else res.innerText = '?';
+        } else if (mode === 2) {
+            const a = parseFloat(document.getElementById('pc-2-a').value);
+            const b = parseFloat(document.getElementById('pc-2-b').value);
+            const res = document.getElementById('pc-2-res');
+            if (!isNaN(a) && !isNaN(b) && a !== 0) res.innerText = formatNumber((b / a) * 100) + '%';
+            else res.innerText = '?';
+        } else if (mode === 3) {
+            const a = parseFloat(document.getElementById('pc-3-a').value);
+            const b = parseFloat(document.getElementById('pc-3-b').value);
+            const res = document.getElementById('pc-3-res');
+            if (!isNaN(a) && !isNaN(b) && a !== 0) {
+                const diff = b - a;
+                const percent = (diff / a) * 100;
+                res.innerText = (percent > 0 ? '▲ ' : (percent < 0 ? '▼ ' : '')) + formatNumber(Math.abs(percent)) + '%';
+            }
+            else res.innerText = '?';
+        } else if (mode === 4) {
+            const a = parseFloat(document.getElementById('pc-4-a').value);
+            const b = parseFloat(document.getElementById('pc-4-b').value);
+            const res = document.getElementById('pc-4-res');
+            if (!isNaN(a) && !isNaN(b)) res.innerText = formatNumber(a * (1 + b / 100));
+            else res.innerText = '?';
+        }
+    };
+
+    let selectedPdfFile = null;
+    let compressedPdfBlobUrl = null;
+
+    window.handlePdfSelect = function (event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        if (file.type !== 'application/pdf') {
+            alert('PDF 파일만 선택해주세요.');
+            return;
+        }
+        selectedPdfFile = file;
+        document.getElementById('pdfFileName').innerText = file.name;
+        document.getElementById('pdfFileSize').innerText = (file.size / 1024 / 1024).toFixed(2) + ' MB';
+        document.getElementById('pdfSettings').classList.add('visible');
+        document.getElementById('pdfResultWrap').style.display = 'none';
+        document.getElementById('pdfProgressWrap').style.display = 'none';
+        compressedPdfBlobUrl = null;
+    };
+
+    window.startPdfCompression = async function () {
+        if (!selectedPdfFile) return;
+        if (typeof window.pdfjsLib === 'undefined' || typeof window.jspdf === 'undefined') {
+            alert('PDF 압축 라이브러리를 불러오지 못했습니다. 페이지 새로고침 후 다시 시도해주세요.');
+            return;
+        }
+        
+        window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+        
+        const quality = parseFloat(document.getElementById('pdfQualitySelect').value);
+        document.getElementById('pdfProgressWrap').style.display = 'block';
+        document.getElementById('pdfCompressBtn').style.display = 'none';
+        const progressFill = document.getElementById('pdfProgressFill');
+        const progressText = document.getElementById('pdfProgressText');
+        
+        try {
+            const arrayBuffer = await selectedPdfFile.arrayBuffer();
+            const pdfDocument = await window.pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+            const numPages = pdfDocument.numPages;
+            
+            const jsPdf = new window.jspdf.jsPDF();
+            
+            for (let i = 1; i <= numPages; i++) {
+                progressText.innerText = '압축 중... (' + i + ' / ' + numPages + ' 페이지)';
+                progressFill.style.width = ((i / numPages) * 100) + '%';
+                
+                const page = await pdfDocument.getPage(i);
+                // 스케일을 1.5로 렌더링 (해상도 유지)
+                const viewport = page.getViewport({ scale: 1.5 });
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = viewport.width;
+                canvas.height = viewport.height;
+                
+                await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+                
+                // JPEG 압축 (quality 조절)
+                const imgData = canvas.toDataURL('image/jpeg', quality);
+                
+                const imgProps = jsPdf.getImageProperties(imgData);
+                const pdfWidth = jsPdf.internal.pageSize.getWidth();
+                const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+                
+                if (i > 1) jsPdf.addPage();
+                jsPdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
+            }
+            
+            progressText.innerText = '압축 마무리 중...';
+            const pdfBlob = jsPdf.output('blob');
+            compressedPdfBlobUrl = URL.createObjectURL(pdfBlob);
+            
+            document.getElementById('pdfResultBefore').innerText = (selectedPdfFile.size / 1024 / 1024).toFixed(2) + ' MB';
+            document.getElementById('pdfResultAfter').innerText = (pdfBlob.size / 1024 / 1024).toFixed(2) + ' MB';
+            document.getElementById('pdfResultWrap').style.display = 'block';
+            
+        } catch (err) {
+            console.error(err);
+            alert('PDF 압축 중 오류가 발생했습니다. 암호가 걸린 문서이거나 너무 큰 파일일 수 있습니다.');
+        } finally {
+            document.getElementById('pdfCompressBtn').style.display = 'block';
+            document.getElementById('pdfProgressWrap').style.display = 'none';
+        }
+    };
+
+    window.downloadCompressedPdf = function () {
+        if (!compressedPdfBlobUrl) return;
+        const a = document.createElement('a');
+        a.href = compressedPdfBlobUrl;
+        a.download = selectedPdfFile.name.replace('.pdf', '_compressed.pdf');
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
     };
 
     window.calcTargetRate = function () {
@@ -5572,6 +5947,343 @@ try {
         });
     }
 
+    /* --- Image Mosaic Logic --- */
+    window.initImageMosaic = function () {
+        const dropZone = document.getElementById('mosaicDropZone');
+        const fileInput = document.getElementById('mosaicFileInput');
+        const editor = document.getElementById('mosaicEditor');
+        const canvasWrapper = document.getElementById('mosaicCanvasWrapper');
+        const canvas = document.getElementById('mosaicCanvas');
+        
+        const btnBlur = document.getElementById('btnMosModeBlur');
+        const btnPixel = document.getElementById('btnMosModePixel');
+        const btnSizeS = document.getElementById('btnMosSizeS');
+        const btnSizeM = document.getElementById('btnMosSizeM');
+        const btnSizeL = document.getElementById('btnMosSizeL');
+        const btnUndo = document.getElementById('btnMosUndo');
+        const btnClear = document.getElementById('btnMosClear');
+        const btnSave = document.getElementById('btnMosSave');
+        const btnResetFile = document.getElementById('btnMosResetFile');
+
+        if (!dropZone || !canvas) return;
+
+        let ctx = canvas.getContext('2d');
+        let originalImg = new Image();
+        let isDrawing = false;
+        let lastX = 0, lastY = 0;
+        let mode = 'blur'; // 'blur' or 'pixel'
+        let brushSize = 25;
+        let history = [];
+
+        dropZone.addEventListener('click', () => fileInput.click());
+        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
+        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault(); dropZone.classList.remove('dragover');
+            handleFile(e.dataTransfer.files[0]);
+        });
+        fileInput.addEventListener('change', () => {
+            if (fileInput.files[0]) handleFile(fileInput.files[0]);
+        });
+
+        function handleFile(file) {
+            if (!file || !file.type.startsWith('image/')) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                originalImg.onload = () => {
+                    initCanvas();
+                    dropZone.style.display = 'none';
+                    editor.classList.add('visible');
+                };
+                originalImg.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function initCanvas() {
+            const MAX_WIDTH = 800;
+            let width = originalImg.width;
+            let height = originalImg.height;
+
+            if (width > MAX_WIDTH) {
+                height = Math.floor(height * (MAX_WIDTH / width));
+                width = MAX_WIDTH;
+            }
+
+            canvas.width = width;
+            canvas.height = height;
+            
+            ctx.drawImage(originalImg, 0, 0, width, height);
+            saveHistory();
+        }
+
+        function saveHistory() {
+            history.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
+            if (history.length > 10) history.shift();
+        }
+
+        function getMousePos(evt) {
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            let clientX = evt.clientX;
+            let clientY = evt.clientY;
+            
+            if (evt.touches && evt.touches.length > 0) {
+                clientX = evt.touches[0].clientX;
+                clientY = evt.touches[0].clientY;
+            }
+            
+            return {
+                x: (clientX - rect.left) * scaleX,
+                y: (clientY - rect.top) * scaleY
+            };
+        }
+
+        function startDrawing(e) {
+            e.preventDefault();
+            isDrawing = true;
+            const pos = getMousePos(e);
+            lastX = pos.x;
+            lastY = pos.y;
+            applyEffect(pos.x, pos.y);
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+            e.preventDefault();
+            const pos = getMousePos(e);
+            
+            const dx = pos.x - lastX;
+            const dy = pos.y - lastY;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            const steps = Math.max(Math.floor(distance / (brushSize / 2)), 1);
+
+            for (let i = 0; i < steps; i++) {
+                const x = lastX + (dx * i) / steps;
+                const y = lastY + (dy * i) / steps;
+                applyEffect(x, y);
+            }
+
+            lastX = pos.x;
+            lastY = pos.y;
+        }
+
+        function stopDrawing(e) {
+            if (isDrawing) {
+                isDrawing = false;
+                saveHistory();
+            }
+        }
+
+        function applyEffect(x, y) {
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(x, y, brushSize, 0, Math.PI * 2);
+            ctx.clip();
+
+            if (mode === 'blur') {
+                ctx.filter = 'blur(8px)';
+                ctx.drawImage(originalImg, 0, 0, canvas.width, canvas.height);
+                ctx.drawImage(originalImg, 0, 0, canvas.width, canvas.height);
+            } else {
+                ctx.imageSmoothingEnabled = false;
+                const srcX = Math.max(0, x - brushSize);
+                const srcY = Math.max(0, y - brushSize);
+                const size = brushSize * 2;
+                
+                const off = document.createElement('canvas');
+                off.width = size / 10;
+                off.height = size / 10;
+                const octx = off.getContext('2d');
+                octx.drawImage(originalImg, srcX * (originalImg.width / canvas.width), srcY * (originalImg.height / canvas.height), size * (originalImg.width / canvas.width), size * (originalImg.height / canvas.height), 0, 0, off.width, off.height);
+                
+                ctx.filter = 'none';
+                ctx.drawImage(off, 0, 0, off.width, off.height, srcX, srcY, size, size);
+            }
+            ctx.restore();
+        }
+
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mousemove', draw);
+        window.addEventListener('mouseup', stopDrawing);
+        
+        canvas.addEventListener('touchstart', startDrawing, {passive: false});
+        canvas.addEventListener('touchmove', draw, {passive: false});
+        window.addEventListener('touchend', stopDrawing);
+
+        const setToolActive = (btn, group) => {
+            group.forEach(b => {
+                b.style.background = '#e2e8f0';
+                b.style.color = '#475569';
+            });
+            btn.style.background = '#8b5cf6';
+            btn.style.color = 'white';
+        };
+
+        btnBlur.onclick = () => { mode = 'blur'; setToolActive(btnBlur, [btnBlur, btnPixel]); };
+        btnPixel.onclick = () => { mode = 'pixel'; setToolActive(btnPixel, [btnBlur, btnPixel]); };
+
+        btnSizeS.onclick = () => { brushSize = 10; setToolActive(btnSizeS, [btnSizeS, btnSizeM, btnSizeL]); };
+        btnSizeM.onclick = () => { brushSize = 25; setToolActive(btnSizeM, [btnSizeS, btnSizeM, btnSizeL]); };
+        btnSizeL.onclick = () => { brushSize = 45; setToolActive(btnSizeL, [btnSizeS, btnSizeM, btnSizeL]); };
+
+        btnUndo.onclick = () => {
+            if (history.length > 1) {
+                history.pop();
+                const prev = history[history.length - 1];
+                ctx.putImageData(prev, 0, 0);
+            }
+        };
+
+        btnClear.onclick = () => {
+            history = [];
+            initCanvas();
+        };
+
+        btnSave.onclick = () => {
+            const url = canvas.toDataURL('image/jpeg', 0.95);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'mosaic_image.jpg';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        };
+
+        btnResetFile.onclick = () => {
+            fileInput.value = '';
+            editor.classList.remove('visible');
+            dropZone.style.display = 'block';
+            history = [];
+        };
+    };
+
+    /* --- Image Converter Logic --- */
+    window.initImageConverter = function () {
+        const dropZone = document.getElementById('convDropZone');
+        const fileInput = document.getElementById('convFileInput');
+        const settings = document.getElementById('convSettings');
+        const fileCount = document.getElementById('convFileCount');
+        const fileList = document.getElementById('convFileList');
+        const startBtn = document.getElementById('convStartBtn');
+        const formatSelect = document.getElementById('convFormatSelect');
+        const progressWrap = document.getElementById('convProgressWrap');
+        const progressFill = document.getElementById('convProgressFill');
+        const progressText = document.getElementById('convProgressText');
+        const resultWrap = document.getElementById('convResultWrap');
+        const downloadLinks = document.getElementById('convDownloadLinks');
+        const resetBtn = document.getElementById('convResetBtn');
+
+        if (!dropZone) return;
+
+        let selectedFiles = [];
+
+        dropZone.addEventListener('click', () => fileInput.click());
+        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
+        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault(); dropZone.classList.remove('dragover');
+            handleFiles([...e.dataTransfer.files].filter(f => f.type.startsWith('image/')));
+        });
+        fileInput.addEventListener('change', () => handleFiles([...fileInput.files]));
+
+        function handleFiles(files) {
+            if (!files.length) return;
+            selectedFiles = files;
+            fileCount.textContent = files.length;
+            
+            fileList.innerHTML = '';
+            files.forEach(f => {
+                const item = document.createElement('div');
+                item.className = 'conv-file-item';
+                item.innerHTML = `<span>${f.name}</span> <span style="color:#94a3b8;">${(f.size/1024).toFixed(1)}KB</span>`;
+                fileList.appendChild(item);
+            });
+            
+            settings.classList.add('visible');
+            resultWrap.style.display = 'none';
+        }
+
+        startBtn.addEventListener('click', async () => {
+            if (!selectedFiles.length) return;
+            startBtn.style.display = 'none';
+            progressWrap.style.display = 'block';
+            downloadLinks.innerHTML = '';
+            
+            const targetFormat = formatSelect.value;
+            const ext = targetFormat === 'image/jpeg' ? '.jpg' : targetFormat === 'image/png' ? '.png' : '.webp';
+            
+            for (let i = 0; i < selectedFiles.length; i++) {
+                progressFill.style.width = Math.round((i / selectedFiles.length) * 100) + '%';
+                progressText.textContent = '변환 중... (' + (i + 1) + '/' + selectedFiles.length + ')';
+                
+                try {
+                    const blob = await convertImage(selectedFiles[i], targetFormat);
+                    const url = URL.createObjectURL(blob);
+                    const newName = selectedFiles[i].name.replace(/\\.[^/.]+$/, "") + ext;
+                    
+                    const btn = document.createElement('button');
+                    btn.className = 'btn-primary';
+                    btn.style.background = '#eab308';
+                    btn.style.border = 'none';
+                    btn.style.padding = '10px';
+                    btn.innerHTML = '⬇️ ' + newName + ' 다운로드';
+                    btn.onclick = () => {
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = newName;
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                    };
+                    downloadLinks.appendChild(btn);
+                } catch(e) {
+                    console.error('변환 오류:', e);
+                }
+            }
+            
+            progressFill.style.width = '100%';
+            progressText.textContent = '변환 완료!';
+            setTimeout(() => {
+                progressWrap.style.display = 'none';
+                resultWrap.style.display = 'block';
+            }, 500);
+        });
+
+        resetBtn.addEventListener('click', () => {
+            selectedFiles = [];
+            fileInput.value = '';
+            settings.classList.remove('visible');
+            resultWrap.style.display = 'none';
+            startBtn.style.display = 'block';
+        });
+
+        function convertImage(file, targetFormat) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    const ctx = canvas.getContext('2d');
+                    
+                    if (targetFormat === 'image/jpeg') {
+                        ctx.fillStyle = '#FFFFFF';
+                        ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    }
+                    
+                    ctx.drawImage(img, 0, 0);
+                    canvas.toBlob((blob) => {
+                        if (blob) resolve(blob);
+                        else reject(new Error('Canvas toBlob failed'));
+                    }, targetFormat, targetFormat === 'image/jpeg' ? 0.9 : undefined);
+                };
+                img.onerror = reject;
+                img.src = URL.createObjectURL(file);
+            });
+        }
+    };
 
     /* --- Photo Compressor Logic --- */
     window.initPhotoCompressor = function () {
