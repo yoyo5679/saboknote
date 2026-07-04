@@ -14,3 +14,8 @@ live_status.json
 scratch_test.txt
 temp_*.md
 *.log
+
+# Ignore generated cardnews PNGs
+카드뉴스순서/**/*.png
+cardnews/**/*.png
+honeydata/카드뉴스/files/**/*.png
