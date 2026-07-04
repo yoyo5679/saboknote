@@ -5837,7 +5837,7 @@ try {
     }
 
     window.pgHandleCopyLink = function () {
-        navigator.clipboard.writeText("나는 어떤 복지사 유형? 테스트 해봐! → https://saboksnote.vercel.app/");
+        navigator.clipboard.writeText("나는 어떤 복지사 유형? 테스트 해봐! → https://saboknote.com/");
         const btn = document.getElementById('pg-btn-link-copy');
         if (btn) {
             btn.innerHTML = "✅ 링크 복사됨!";
@@ -5929,7 +5929,7 @@ try {
         ctx.fillText(t.message, cx, 741);
 
         ctx.font = "18px Arial"; ctx.fillStyle = "rgba(255,255,255,0.38)";
-        ctx.fillText("saboksnote.vercel.app", cx, H - 16);
+        ctx.fillText("saboknote.com", cx, H - 16);
 
         return new Promise((resolve, reject) => {
             try {
