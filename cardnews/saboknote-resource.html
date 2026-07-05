@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>사복노트 자원 연계 노하우</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:#DDE3ED; font-family:'Noto Sans KR',sans-serif; min-height:100vh; display:flex; flex-direction:column; align-items:center; padding:32px 16px 48px; }
+  .top-label { font-size:12px; font-weight:700; color:#8A94A6; letter-spacing:2px; margin-bottom:20px; text-transform:uppercase; }
+  .card { width:480px; height:600px; border-radius:22px; overflow:hidden; box-shadow:0 16px 48px rgba(0,0,0,0.18); position:relative; flex-shrink:0; }
+  .slide { display:none; width:100%; height:100%; position:absolute; top:0; left:0; }
+  .slide.on { display:flex; flex-direction:column; }
+  .foot { height:48px; flex-shrink:0; display:flex; align-items:center; padding:0 32px; justify-content:space-between; }
+  .foot .fl { font-size:12px; font-weight:900; }
+  .foot .fr { font-size:11px; }
+  .voca-card { background:white; border-radius:14px; padding:12px 15px; box-shadow:0 2px 8px rgba(0,0,0,0.05); }
+  .voca-top { display:flex; align-items:center; gap:7px; margin-bottom:4px; }
+  .voca-cat { font-size:10px; font-weight:700; padding:2px 8px; border-radius:10px; }
+  .cat-mint { background:rgba(78,205,196,0.12); color:#2ABFB5; }
+  .cat-blue { background:#EBF2FF; color:#2F6FED; }
+  .voca-name { font-size:14px; font-weight:900; color:#1B2E4B; margin-bottom:4px; }
+  .voca-real { font-size:12.5px; color:#3D4A5C; font-weight:600; line-height:1.5; margin-bottom:4px; word-break:keep-all; }
+  .voca-admin { font-size:11px; color:#8A94A6; line-height:1.5; padding-left:9px; border-left:2px solid #E0E8F0; word-break:keep-all; }
+
+  /* S1 훅 — 화이트 톤 */
+  .s1 { background:#ffffff; }
+  .s1 .logo-bar { display:flex; justify-content:space-between; align-items:center; padding:24px 32px 0; flex-shrink:0; }
+  .s1 .logo { font-size:13px; font-weight:900; color:#94A3B8; }
+  .s1 .body { flex:1; padding:0 32px; display:flex; flex-direction:column; justify-content:center; }
+  .s1 .pill { display:inline-block; background:#0D9488; border:1px solid #0D9488; color:#ffffff; font-size:10px; font-weight:700; padding:4px 12px; border-radius:20px; margin-bottom:16px; align-self:flex-start; letter-spacing:1px; }
+  .s1 .q { font-size:14px; color:#64748B; margin-bottom:14px; }
+  .s1 .words { display:flex; flex-direction:column; gap:8px; margin-bottom:20px; }
+  .s1 .wrow { display:flex; align-items:baseline; gap:10px; }
+  .s1 .wname { font-size:26px; font-weight:900; color:#1B2E4B; }
+  .s1 .wq { font-size:13px; color:#94A3B8; }
+  .s1 .hint { font-size:14px; color:#475569; line-height:1.7; word-break:keep-all; }
+  .s1 .hint em { color:#0D9488; font-style:normal; font-weight:700; }
+  .s1 .foot { background:#F8FAFC; border-top:1px solid #E2E8F0; }
+  .s1 .foot .fl { color:#64748B; }
+  .s1 .foot .fr { color:#94A3B8; }
+
+  /* S2 공감 */
+  .s2 { background:#fff; }
+  .s2 .head { background:#FF6B6B; padding:22px 32px 18px; flex-shrink:0; }
+  .s2 .head-tag { font-size:10px; font-weight:700; color:rgba(255,255,255,0.7); letter-spacing:2px; margin-bottom:6px; }
+  .s2 .head-title { font-size:22px; font-weight:900; color:white; line-height:1.35; }
+  .s2 .body { flex:1; padding:18px 32px 0; display:flex; flex-direction:column; gap:8px; }
+  .s2 .scene { background:#F4F6FA; border-radius:13px; padding:12px 15px; }
+  .s2 .scene-top { display:flex; align-items:center; gap:7px; margin-bottom:5px; }
+  .s2 .s-icon { font-size:16px; }
+  .s2 .s-when { font-size:10px; font-weight:700; color:#8A94A6; letter-spacing:1px; }
+  .s2 .s-text { font-size:13px; color:#3D4A5C; font-weight:500; line-height:1.55; word-break:keep-all; }
+  .s2 .s-inner { font-size:11px; color:#8A94A6; margin-top:2px; font-style:italic; }
+  .s2 .foot { background:#F4F6FA; }
+  .s2 .foot .fl { color:#FF6B6B; }
+  .s2 .foot .fr { color:#8A94A6; }
+
+  /* S3 반전 */
+  .s3 { background:#4ECDC4; }
+  .s3 .body { flex:1; padding:32px 32px 0; display:flex; flex-direction:column; justify-content:center; }
+  .s3 .tag { font-size:10px; font-weight:700; color:rgba(255,255,255,0.65); letter-spacing:2px; margin-bottom:12px; }
+  .s3 .ico { font-size:48px; margin-bottom:10px; line-height:1; }
+  .s3 .title { font-size:28px; font-weight:900; color:white; line-height:1.3; margin-bottom:12px; }
+  .s3 .title em { color:#FFD166; font-style:normal; }
+  .s3 .desc { font-size:14px; color:rgba(255,255,255,0.85); line-height:1.8; margin-bottom:16px; word-break:keep-all; }
+  .s3 .compare { background:rgba(255,255,255,0.15); border-radius:14px; padding:14px 16px; display:flex; flex-direction:column; gap:10px; }
+  .s3 .cr { display:flex; align-items:flex-start; gap:8px; }
+  .s3 .cl { font-size:10px; font-weight:700; min-width:32px; padding-top:2px; }
+  .s3 .ct { font-size:13px; line-height:1.55; word-break:keep-all; }
+  .s3 .foot { background:rgba(0,0,0,0.12); border-top:1px solid rgba(255,255,255,0.15); }
+  .s3 .foot .fl { color:rgba(255,255,255,0.5); }
+  .s3 .foot .fr { color:rgba(255,255,255,0.35); }
+
+  /* S4 */
+  .s4 { background:#F0FAFA; }
+  .s4 .top { padding:20px 32px 0; flex-shrink:0; }
+  .s4 .stag { font-size:10px; font-weight:700; color:#2ABFB5; letter-spacing:2px; margin-bottom:5px; }
+  .s4 .stit { font-size:19px; font-weight:900; color:#1B2E4B; line-height:1.35; margin-bottom:10px; }
+  .s4 .body { flex:1; padding:0 32px; display:flex; flex-direction:column; gap:7px; }
+  .s4 .foot { background:rgba(78,205,196,0.1); }
+  .s4 .foot .fl { color:#2ABFB5; }
+  .s4 .foot .fr { color:#8A94A6; }
+
+  /* S5 */
+  .s5 { background:#fff; }
+  .s5 .top { padding:20px 32px 0; flex-shrink:0; }
+  .s5 .stag { font-size:10px; font-weight:700; color:#2ABFB5; letter-spacing:2px; margin-bottom:5px; }
+  .s5 .stit { font-size:19px; font-weight:900; color:#1B2E4B; line-height:1.35; margin-bottom:10px; }
+  .s5 .body { flex:1; padding:0 32px; display:flex; flex-direction:column; gap:7px; }
+  .s5 .foot { background:#F4F6FA; }
+  .s5 .foot .fl { color:#2F6FED; }
+  .s5 .foot .fr { color:#8A94A6; }
+
+  /* S6 */
+  .s6 { background:#F4F6FA; }
+  .s6 .top { padding:20px 32px 0; flex-shrink:0; }
+  .s6 .stag { font-size:10px; font-weight:700; color:#2F6FED; letter-spacing:2px; margin-bottom:5px; }
+  .s6 .stit { font-size:19px; font-weight:900; color:#1B2E4B; line-height:1.35; margin-bottom:10px; }
+  .s6 .body { flex:1; padding:0 32px; display:flex; flex-direction:column; gap:7px; }
+  .s6 .order-box { background:#EBF2FF; border-radius:13px; padding:12px 15px; }
+  .s6 .ob-title { font-size:11px; font-weight:700; color:#2F6FED; margin-bottom:5px; }
+  .s6 .ob-text { font-size:13px; color:#3D4A5C; font-weight:600; line-height:1.55; }
+  .s6 .ob-sub { font-size:11px; color:#8A94A6; margin-top:3px; }
+  .s6 .foot { background:#EBF2FF; }
+  .s6 .foot .fl { color:#2F6FED; }
+  .s6 .foot .fr { color:#8A94A6; }
+
+  /* S7 CTA */
+  .s7 { background:linear-gradient(160deg,#0A2A2A 0%,#1B4A4A 100%); }
+  .s7 .inner { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:0 36px; text-align:center; }
+  .s7 .emo { font-size:50px; margin-bottom:14px; line-height:1; }
+  .s7 .big { font-size:21px; font-weight:900; color:white; line-height:1.6; margin-bottom:12px; word-break:keep-all; }
+  .s7 .big em { color:#4ECDC4; font-style:normal; }
+  .s7 .div2 { width:36px; height:2px; background:rgba(255,255,255,0.15); border-radius:2px; margin:0 auto 14px; }
+  .s7 .sub { font-size:13px; color:rgba(255,255,255,0.5); line-height:1.85; margin-bottom:22px; word-break:keep-all; }
+  .s7 .cta { background:#4ECDC4; color:white; font-size:14px; font-weight:900; padding:12px 26px; border-radius:40px; margin-bottom:8px; }
+  .s7 .url { font-size:11px; color:rgba(255,255,255,0.3); }
+  .s7 .foot { background:rgba(0,0,0,0.15); border-top:1px solid rgba(255,255,255,0.06); }
+  .s7 .foot .fl { color:rgba(255,255,255,0.3); }
+  .s7 .foot .fr { color:rgba(255,255,255,0.2); }
+
+  .nav { display:flex; align-items:center; gap:14px; margin-top:18px; }
+  .nbtn { width:38px; height:38px; border-radius:50%; background:white; border:none; cursor:pointer; font-size:15px; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 8px rgba(0,0,0,0.12); color:#1B2E4B; transition:all .18s; }
+  .nbtn:hover:not(:disabled) { background:#1B2E4B; color:white; }
+  .nbtn:disabled { opacity:.3; cursor:default; }
+  .dots { display:flex; gap:5px; }
+  .d { width:7px; height:7px; border-radius:50%; background:#C0C8D4; cursor:pointer; transition:all .18s; }
+  .d.on { background:#1B2E4B; width:18px; border-radius:4px; }
+  .ctr { font-size:11px; color:#8A94A6; margin-top:6px; text-align:center; }
+</style>
+</head>
+<body>
+<div class="top-label">사복노트 · 자원 연계 노하우</div>
+<div class="card">
+
+  <!-- S1 훅 -->
+  <div class="slide s1 on">
+    <div class="logo-bar">
+      <span class="logo">sano 사복노트</span>
+      <span style="font-size:11px;color:#CBD5E1;">1 / 7</span>
+    </div>
+    <div class="body">
+      <div class="pill">📖 네트워크 팁</div>
+      <div class="q">우리 동네 자원, 어디 숨어있을까? 🗺️</div>
+      <div class="words">
+        
+        <div class="wrow"><span class="wname">후원발굴</span><span class="wq">맨땅에 헤딩하기?</span></div>
+        <div class="wrow"><span class="wname">타기관 연계</span><span class="wq">전화하기 뻘쭘할 때</span></div>
+        <div class="wrow"><span class="wname">자원지도</span><span class="wq">어디서부터 그려야 할지</span></div>
+    
+      </div>
+      <div class="hint">사복노트에서<br><em>지역사회 자원 찾는 법</em>을 알려드려요</div>
+    </div>
+    <div class="foot"><span class="fl">사복노트</span><span class="fr">1 / 7</span></div>
+  </div>
+
+  <!-- S2 공감 -->
+  <div class="slide s2">
+    <div class="head">
+      <div class="head-tag">자원 빈곤의 늪</div>
+      <div class="head-title">도와드릴 분은 많은데<br>줄 수 있는 게 없어요</div>
+    </div>
+    <div class="body">
+      
+      <div class="scene">
+        <div class="scene-top"><span class="s-icon">💸</span><span class="s-when">긴급 지원 필요시</span></div>
+        <div class="s-text">"당장 생계비가 필요하신데 우리 기관 예산은 바닥..."</div>
+        <div class="s-inner">(포털 사이트에 후원재단 폭풍 검색)</div>
+      </div>
+      <div class="scene">
+        <div class="scene-top"><span class="s-icon">☎️</span><span class="s-when">타 기관 문의할 때</span></div>
+        <div class="s-text">"안녕하세요 OOO복지관인데요..."</div>
+        <div class="s-inner">(거절당할까봐 덜덜 떨리는 목소리)</div>
+      </div>
+    
+    </div>
+    <div class="foot"><span class="fl">사복노트</span><span class="fr">2 / 7</span></div>
+  </div>
+
+  <!-- S3 반전 -->
+  <div class="slide s3">
+    <div class="body">
+      <div class="tag">사복노트 네트워크 ✅</div>
+      <div class="ico">🤝</div>
+      <div class="title">맨땅에 헤딩 끝!<br><em>스마트한 자원 발굴</em></div>
+      <div class="desc">혼자 다 하려고 하지 마세요</div>
+      <div class="compare">
+        
+        <div class="cr">
+          <span class="cl" style="color:rgba(255,255,255,0.35);">❌ 기존</span>
+          <span class="ct" style="color:rgba(255,255,255,0.45);">무작정 발품 팔고 전화 돌리기</span>
+        </div>
+        <div style="height:1px;background:rgba(255,255,255,0.12);"></div>
+        <div class="cr">
+          <span class="cl" style="color:#FFD166;">✅ 사복</span>
+          <span class="ct" style="color:white;font-weight:700;">기존 네트워크 활용하고<br>서로 윈윈(Win-Win)하는 구조 만들기!</span>
+        </div>
+    
+      </div>
+    </div>
+    <div class="foot"><span class="fl" style="color:rgba(255,255,255,0.5);">사복노트</span><span class="fr" style="color:rgba(255,255,255,0.35);">3 / 7</span></div>
+  </div>
+
+  <!-- S4 -->
+  <div class="slide s4">
+    <div class="top">
+      <div class="stag">STEP 1. 숨은 자원 찾기</div>
+      <div class="stit">멀리 있지 않아요</div>
+    </div>
+    <div class="body">
+      
+      <div class="voca-card" style="border-left:3px solid #4ECDC4;">
+        <div class="voca-top"><span style="font-size:18px;">🏢</span><span class="voca-cat cat-mint">행정복지센터</span></div>
+        <div class="voca-name">맞춤형 복지팀 활용</div>
+        <div class="voca-real">동 행정복지센터 주무관님들과 친해지세요. 지역 사정에 가장 밝습니다.</div>
+      </div>
+      <div class="voca-card" style="border-left:3px solid #4ECDC4;">
+        <div class="voca-top"><span style="font-size:18px;">🌐</span><span class="voca-cat cat-mint">온라인 플랫폼</span></div>
+        <div class="voca-name">복지로 & 민간재단</div>
+        <div class="voca-real">카카오같이가치, 네이버해피빈, 지역 맘카페 등을 주기적으로 모니터링하세요.</div>
+      </div>
+    
+    </div>
+    <div class="foot"><span class="fl">사복노트</span><span class="fr">4 / 7</span></div>
+  </div>
+
+  <!-- S5 -->
+  <div class="slide s5">
+    <div class="top">
+      <div class="stag">STEP 2. 관계 맺기</div>
+      <div class="stit">거절을 두려워 마세요</div>
+    </div>
+    <div class="body">
+      
+      <div class="voca-card" style="border-left:3px solid #2F6FED;">
+        <div class="voca-top"><span style="font-size:18px;">📝</span><span class="voca-cat cat-blue">명분 만들기</span></div>
+        <div class="voca-name">왜 당신의 도움이 필요한가</div>
+        <div class="voca-real">기관의 필요가 아닌, '이웃의 변화'에 초점을 맞춰 제안하세요.</div>
+      </div>
+      <div class="voca-card" style="border-left:3px solid #2F6FED;">
+        <div class="voca-top"><span style="font-size:18px;">☕</span><span class="voca-cat cat-blue">작은 교류</span></div>
+        <div class="voca-name">자원 회의 참석</div>
+        <div class="voca-real">사례관리 네트워크 회의나 실무자 모임에 적극 참여해 얼굴을 트세요.</div>
+      </div>
+    
+    </div>
+    <div class="foot"><span class="fl">사복노트</span><span class="fr">5 / 7</span></div>
+  </div>
+
+  <!-- S6 -->
+  <div class="slide s6">
+    <div class="top">
+      <div class="stag">STEP 3. 자원 유지관리</div>
+      <div class="stit">한 번 맺은 인연, 평생 가도록</div>
+    </div>
+    <div class="body">
+      
+      <div class="voca-card" style="border-left:3px solid #2F6FED;">
+        <div class="voca-top"><span style="font-size:18px;">💌</span><span class="voca-cat cat-blue">피드백</span></div>
+        <div class="voca-name">결과 공유하기</div>
+        <div class="voca-real">도움이 어떻게 쓰였는지, 어떤 변화가 있었는지 반드시 알려주세요. (최고의 유지 비결!)</div>
+      </div>
+    
+      
+      <div class="order-box">
+        <div class="ob-title">💡 자원지도 그리기</div>
+        <div class="ob-text">의료/주거/생계/교육 등 영역별로<br>우리 기관이 연락할 수 있는 핫라인 목록을 엑셀로 정리해두세요.</div>
+      </div>
+    
+    </div>
+    <div class="foot"><span class="fl">사복노트</span><span class="fr">6 / 7</span></div>
+  </div>
+
+  <!-- S7 CTA -->
+  <div class="slide s7">
+    <div class="inner">
+      <div class="emo">📖</div>
+      <div class="big">든든한 지역사회 만들기,<br><em>사복노트와</em> 함께해요</div>
+      <div class="div2"></div>
+      <div class="sub">최신 공모사업 정보부터<br>협력기관 리스트업 노하우까지! 🙂<br><br>자원 발굴에 고민하는 동료에게 🔖</div>
+      <div class="cta">📖 지금 바로 사용하기</div>
+      <div class="url">saboknote.com</div>
+    </div>
+    <div class="foot"><span class="fl">사복노트</span><span class="fr">7 / 7</span></div>
+  </div>
+
+</div>
+
+<div class="nav">
+  <button class="nbtn" id="p" onclick="go(-1)" disabled>←</button>
+  <div class="dots" id="dots"></div>
+  <button class="nbtn" id="n" onclick="go(1)">→</button>
+</div>
+<div class="ctr" id="ctr">1 / 7</div>
+
+<script>
+  let cur=0; const N=7;
+  const slides=document.querySelectorAll('.slide');
+  const wrap=document.getElementById('dots');
+  for(let i=0;i<N;i++){
+    const d=document.createElement('div');
+    d.className='d'+(i===0?' on':'');
+    d.onclick=()=>to(i);
+    wrap.appendChild(d);
+  }
+  function to(n){
+    slides[cur].classList.remove('on'); wrap.children[cur].classList.remove('on');
+    cur=n;
+    slides[cur].classList.add('on'); wrap.children[cur].classList.add('on');
+    document.getElementById('ctr').textContent=`${cur+1} / ${N}`;
+    document.getElementById('p').disabled=cur===0;
+    document.getElementById('n').disabled=cur===N-1;
+  }
+  function go(d){const nx=cur+d;if(nx>=0&&nx<N)to(nx);}
+  document.addEventListener('keydown',e=>{
+    if(e.key==='ArrowRight')go(1);
+    if(e.key==='ArrowLeft')go(-1);
+  });
+</script>
+</body>
+</html>

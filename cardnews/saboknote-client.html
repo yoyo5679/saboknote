@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>사복노트 악성 민원 응대</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:#DDE3ED; font-family:'Noto Sans KR',sans-serif; min-height:100vh; display:flex; flex-direction:column; align-items:center; padding:32px 16px 48px; }
+  .top-label { font-size:12px; font-weight:700; color:#8A94A6; letter-spacing:2px; margin-bottom:20px; text-transform:uppercase; }
+  .card { width:480px; height:600px; border-radius:22px; overflow:hidden; box-shadow:0 16px 48px rgba(0,0,0,0.18); position:relative; flex-shrink:0; }
+  .slide { display:none; width:100%; height:100%; position:absolute; top:0; left:0; }
+  .slide.on { display:flex; flex-direction:column; }
+  .foot { height:48px; flex-shrink:0; display:flex; align-items:center; padding:0 32px; justify-content:space-between; }
+  .foot .fl { font-size:12px; font-weight:900; }
+  .foot .fr { font-size:11px; }
+  .voca-card { background:white; border-radius:14px; padding:12px 15px; box-shadow:0 2px 8px rgba(0,0,0,0.05); }
+  .voca-top { display:flex; align-items:center; gap:7px; margin-bottom:4px; }
+  .voca-cat { font-size:10px; font-weight:700; padding:2px 8px; border-radius:10px; }
+  .cat-mint { background:rgba(78,205,196,0.12); color:#2ABFB5; }
+  .cat-blue { background:#EBF2FF; color:#2F6FED; }
+  .voca-name { font-size:14px; font-weight:900; color:#1B2E4B; margin-bottom:4px; }
+  .voca-real { font-size:12.5px; color:#3D4A5C; font-weight:600; line-height:1.5; margin-bottom:4px; word-break:keep-all; }
+  .voca-admin { font-size:11px; color:#8A94A6; line-height:1.5; padding-left:9px; border-left:2px solid #E0E8F0; word-break:keep-all; }
+
+  /* S1 훅 — 화이트 톤 */
+  .s1 { background:#ffffff; }
+  .s1 .logo-bar { display:flex; justify-content:space-between; align-items:center; padding:24px 32px 0; flex-shrink:0; }
+  .s1 .logo { font-size:13px; font-weight:900; color:#94A3B8; }
+  .s1 .body { flex:1; padding:0 32px; display:flex; flex-direction:column; justify-content:center; }
+  .s1 .pill { display:inline-block; background:#0D9488; border:1px solid #0D9488; color:#ffffff; font-size:10px; font-weight:700; padding:4px 12px; border-radius:20px; margin-bottom:16px; align-self:flex-start; letter-spacing:1px; }
+  .s1 .q { font-size:14px; color:#64748B; margin-bottom:14px; }
+  .s1 .words { display:flex; flex-direction:column; gap:8px; margin-bottom:20px; }
+  .s1 .wrow { display:flex; align-items:baseline; gap:10px; }
+  .s1 .wname { font-size:26px; font-weight:900; color:#1B2E4B; }
+  .s1 .wq { font-size:13px; color:#94A3B8; }
+  .s1 .hint { font-size:14px; color:#475569; line-height:1.7; word-break:keep-all; }
+  .s1 .hint em { color:#0D9488; font-style:normal; font-weight:700; }
+  .s1 .foot { background:#F8FAFC; border-top:1px solid #E2E8F0; }
+  .s1 .foot .fl { color:#64748B; }
+  .s1 .foot .fr { color:#94A3B8; }
+
+  /* S2 공감 */
+  .s2 { background:#fff; }
+  .s2 .head { background:#FF6B6B; padding:22px 32px 18px; flex-shrink:0; }
+  .s2 .head-tag { font-size:10px; font-weight:700; color:rgba(255,255,255,0.7); letter-spacing:2px; margin-bottom:6px; }
+  .s2 .head-title { font-size:22px; font-weight:900; color:white; line-height:1.35; }
+  .s2 .body { flex:1; padding:18px 32px 0; display:flex; flex-direction:column; gap:8px; }
+  .s2 .scene { background:#F4F6FA; border-radius:13px; padding:12px 15px; }
+  .s2 .scene-top { display:flex; align-items:center; gap:7px; margin-bottom:5px; }
+  .s2 .s-icon { font-size:16px; }
+  .s2 .s-when { font-size:10px; font-weight:700; color:#8A94A6; letter-spacing:1px; }
+  .s2 .s-text { font-size:13px; color:#3D4A5C; font-weight:500; line-height:1.55; word-break:keep-all; }
+  .s2 .s-inner { font-size:11px; color:#8A94A6; margin-top:2px; font-style:italic; }
+  .s2 .foot { background:#F4F6FA; }
+  .s2 .foot .fl { color:#FF6B6B; }
+  .s2 .foot .fr { color:#8A94A6; }
+
+  /* S3 반전 */
+  .s3 { background:#4ECDC4; }
+  .s3 .body { flex:1; padding:32px 32px 0; display:flex; flex-direction:column; justify-content:center; }
+  .s3 .tag { font-size:10px; font-weight:700; color:rgba(255,255,255,0.65); letter-spacing:2px; margin-bottom:12px; }
+  .s3 .ico { font-size:48px; margin-bottom:10px; line-height:1; }
+  .s3 .title { font-size:28px; font-weight:900; color:white; line-height:1.3; margin-bottom:12px; }
+  .s3 .title em { color:#FFD166; font-style:normal; }
+  .s3 .desc { font-size:14px; color:rgba(255,255,255,0.85); line-height:1.8; margin-bottom:16px; word-break:keep-all; }
+  .s3 .compare { background:rgba(255,255,255,0.15); border-radius:14px; padding:14px 16px; display:flex; flex-direction:column; gap:10px; }
+  .s3 .cr { display:flex; align-items:flex-start; gap:8px; }
+  .s3 .cl { font-size:10px; font-weight:700; min-width:32px; padding-top:2px; }
+  .s3 .ct { font-size:13px; line-height:1.55; word-break:keep-all; }
+  .s3 .foot { background:rgba(0,0,0,0.12); border-top:1px solid rgba(255,255,255,0.15); }
+  .s3 .foot .fl { color:rgba(255,255,255,0.5); }
+  .s3 .foot .fr { color:rgba(255,255,255,0.35); }
+
+  /* S4 */
+  .s4 { background:#F0FAFA; }
+  .s4 .top { padding:20px 32px 0; flex-shrink:0; }
+  .s4 .stag { font-size:10px; font-weight:700; color:#2ABFB5; letter-spacing:2px; margin-bottom:5px; }
+  .s4 .stit { font-size:19px; font-weight:900; color:#1B2E4B; line-height:1.35; margin-bottom:10px; }
+  .s4 .body { flex:1; padding:0 32px; display:flex; flex-direction:column; gap:7px; }
+  .s4 .foot { background:rgba(78,205,196,0.1); }
+  .s4 .foot .fl { color:#2ABFB5; }
+  .s4 .foot .fr { color:#8A94A6; }
+
+  /* S5 */
+  .s5 { background:#fff; }
+  .s5 .top { padding:20px 32px 0; flex-shrink:0; }
+  .s5 .stag { font-size:10px; font-weight:700; color:#2ABFB5; letter-spacing:2px; margin-bottom:5px; }
+  .s5 .stit { font-size:19px; font-weight:900; color:#1B2E4B; line-height:1.35; margin-bottom:10px; }
+  .s5 .body { flex:1; padding:0 32px; display:flex; flex-direction:column; gap:7px; }
+  .s5 .foot { background:#F4F6FA; }
+  .s5 .foot .fl { color:#2F6FED; }
+  .s5 .foot .fr { color:#8A94A6; }
+
+  /* S6 */
+  .s6 { background:#F4F6FA; }
+  .s6 .top { padding:20px 32px 0; flex-shrink:0; }
+  .s6 .stag { font-size:10px; font-weight:700; color:#2F6FED; letter-spacing:2px; margin-bottom:5px; }
+  .s6 .stit { font-size:19px; font-weight:900; color:#1B2E4B; line-height:1.35; margin-bottom:10px; }
+  .s6 .body { flex:1; padding:0 32px; display:flex; flex-direction:column; gap:7px; }
+  .s6 .order-box { background:#EBF2FF; border-radius:13px; padding:12px 15px; }
+  .s6 .ob-title { font-size:11px; font-weight:700; color:#2F6FED; margin-bottom:5px; }
+  .s6 .ob-text { font-size:13px; color:#3D4A5C; font-weight:600; line-height:1.55; }
+  .s6 .ob-sub { font-size:11px; color:#8A94A6; margin-top:3px; }
+  .s6 .foot { background:#EBF2FF; }
+  .s6 .foot .fl { color:#2F6FED; }
+  .s6 .foot .fr { color:#8A94A6; }
+
+  /* S7 CTA */
+  .s7 { background:linear-gradient(160deg,#0A2A2A 0%,#1B4A4A 100%); }
+  .s7 .inner { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:0 36px; text-align:center; }
+  .s7 .emo { font-size:50px; margin-bottom:14px; line-height:1; }
+  .s7 .big { font-size:21px; font-weight:900; color:white; line-height:1.6; margin-bottom:12px; word-break:keep-all; }
+  .s7 .big em { color:#4ECDC4; font-style:normal; }
+  .s7 .div2 { width:36px; height:2px; background:rgba(255,255,255,0.15); border-radius:2px; margin:0 auto 14px; }
+  .s7 .sub { font-size:13px; color:rgba(255,255,255,0.5); line-height:1.85; margin-bottom:22px; word-break:keep-all; }
+  .s7 .cta { background:#4ECDC4; color:white; font-size:14px; font-weight:900; padding:12px 26px; border-radius:40px; margin-bottom:8px; }
+  .s7 .url { font-size:11px; color:rgba(255,255,255,0.3); }
+  .s7 .foot { background:rgba(0,0,0,0.15); border-top:1px solid rgba(255,255,255,0.06); }
+  .s7 .foot .fl { color:rgba(255,255,255,0.3); }
+  .s7 .foot .fr { color:rgba(255,255,255,0.2); }
+
+  .nav { display:flex; align-items:center; gap:14px; margin-top:18px; }
+  .nbtn { width:38px; height:38px; border-radius:50%; background:white; border:none; cursor:pointer; font-size:15px; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 8px rgba(0,0,0,0.12); color:#1B2E4B; transition:all .18s; }
+  .nbtn:hover:not(:disabled) { background:#1B2E4B; color:white; }
+  .nbtn:disabled { opacity:.3; cursor:default; }
+  .dots { display:flex; gap:5px; }
+  .d { width:7px; height:7px; border-radius:50%; background:#C0C8D4; cursor:pointer; transition:all .18s; }
+  .d.on { background:#1B2E4B; width:18px; border-radius:4px; }
+  .ctr { font-size:11px; color:#8A94A6; margin-top:6px; text-align:center; }
+</style>
+</head>
+<body>
+<div class="top-label">사복노트 · 악성 민원 응대</div>
+<div class="card">
+
+  <!-- S1 훅 -->
+  <div class="slide s1 on">
+    <div class="logo-bar">
+      <span class="logo">sano 사복노트</span>
+      <span style="font-size:11px;color:#CBD5E1;">1 / 7</span>
+    </div>
+    <div class="body">
+      <div class="pill">📖 생존 매뉴얼</div>
+      <div class="q">갑자기 소리지르는 클라이언트 🗣️</div>
+      <div class="words">
+        
+        <div class="wrow"><span class="wname">막무가내</span><span class="wq">다 해달라고 할 때?</span></div>
+        <div class="wrow"><span class="wname">폭언/욕설</span><span class="wq">당황해서 얼어붙었다면?</span></div>
+        <div class="wrow"><span class="wname">부당한 요구</span><span class="wq">거절하기 힘들다면?</span></div>
+    
+      </div>
+      <div class="hint">사복노트에서<br><em>당황하지 않는 대처법</em>을 알려드려요</div>
+    </div>
+    <div class="foot"><span class="fl">사복노트</span><span class="fr">1 / 7</span></div>
+  </div>
+
+  <!-- S2 공감 -->
+  <div class="slide s2">
+    <div class="head">
+      <div class="head-tag">누구나 겪는 위기</div>
+      <div class="head-title">머릿속이 하얘지고<br>심장만 쿵쾅쿵쾅...</div>
+    </div>
+    <div class="body">
+      
+      <div class="scene">
+        <div class="scene-top"><span class="s-icon">🤬</span><span class="s-when">사무실 방문</span></div>
+        <div class="s-text">"당장 내놔! 내가 누군지 알아?"</div>
+        <div class="s-inner">(주변 선생님들 눈치만 보임...)</div>
+      </div>
+      <div class="scene">
+        <div class="scene-top"><span class="s-icon">📞</span><span class="s-when">전화 상담 중</span></div>
+        <div class="s-text">다짜고짜 쌍욕부터 하시는 어르신</div>
+        <div class="s-inner">(끊지도 못하고 30분째 듣는 중)</div>
+      </div>
+    
+    </div>
+    <div class="foot"><span class="fl">사복노트</span><span class="fr">2 / 7</span></div>
+  </div>
+
+  <!-- S3 반전 -->
+  <div class="slide s3">
+    <div class="body">
+      <div class="tag">사복노트 매뉴얼 ✅</div>
+      <div class="ico">🛡️</div>
+      <div class="title">감정노동으로부터<br><em>나를 지키는 법</em></div>
+      <div class="desc">무조건 참는 것이 정답은 아닙니다</div>
+      <div class="compare">
+        
+        <div class="cr">
+          <span class="cl" style="color:rgba(255,255,255,0.35);">❌ 오해</span>
+          <span class="ct" style="color:rgba(255,255,255,0.45);">사회복지사니까 무조건 친절해야 해</span>
+        </div>
+        <div style="height:1px;background:rgba(255,255,255,0.12);"></div>
+        <div class="cr">
+          <span class="cl" style="color:#FFD166;">✅ 정답</span>
+          <span class="ct" style="color:white;font-weight:700;">부당한 폭력과 욕설에는<br>단호하고 안전하게 대처하기!</span>
+        </div>
+    
+      </div>
+    </div>
+    <div class="foot"><span class="fl" style="color:rgba(255,255,255,0.5);">사복노트</span><span class="fr" style="color:rgba(255,255,255,0.35);">3 / 7</span></div>
+  </div>
+
+  <!-- S4 -->
+  <div class="slide s4">
+    <div class="top">
+      <div class="stag">STEP 1. 안전 확보</div>
+      <div class="stit">가장 중요한 건 선생님의 안전</div>
+    </div>
+    <div class="body">
+      
+      <div class="voca-card" style="border-left:3px solid #4ECDC4;">
+        <div class="voca-top"><span style="font-size:18px;">🏃</span><span class="voca-cat cat-mint">물리적 거리</span></div>
+        <div class="voca-name">책상 너머로 대화하기</div>
+        <div class="voca-real">흥분한 클라이언트와는 반드시 1m 이상의 거리를 유지하세요.</div>
+      </div>
+      <div class="voca-card" style="border-left:3px solid #4ECDC4;">
+        <div class="voca-top"><span style="font-size:18px;">👥</span><span class="voca-cat cat-mint">동료 지원</span></div>
+        <div class="voca-name">절대 혼자 대응하지 않기</div>
+        <div class="voca-real">위험 상황 시 즉시 주변 동료나 중간관리자에게 도움을 요청하세요.</div>
+      </div>
+    
+    </div>
+    <div class="foot"><span class="fl">사복노트</span><span class="fr">4 / 7</span></div>
+  </div>
+
+  <!-- S5 -->
+  <div class="slide s5">
+    <div class="top">
+      <div class="stag">STEP 2. 경청과 공감</div>
+      <div class="stit">감정 누그러뜨리기</div>
+    </div>
+    <div class="body">
+      
+      <div class="voca-card" style="border-left:3px solid #2F6FED;">
+        <div class="voca-top"><span style="font-size:18px;">👂</span><span class="voca-cat cat-blue">초기 대응</span></div>
+        <div class="voca-name">일단 끝까지 듣기</div>
+        <div class="voca-real">"많이 속상하셨군요" 공감만 해줘도 분노의 절반은 가라앉습니다.</div>
+      </div>
+      <div class="voca-card" style="border-left:3px solid #2F6FED;">
+        <div class="voca-top"><span style="font-size:18px;">🧊</span><span class="voca-cat cat-blue">쿨다운</span></div>
+        <div class="voca-name">따뜻한 물 한 잔의 마법</div>
+        <div class="voca-real">자리를 권하고 물을 드리며 감정이 진정될 시간을 벌어주세요.</div>
+      </div>
+    
+    </div>
+    <div class="foot"><span class="fl">사복노트</span><span class="fr">5 / 7</span></div>
+  </div>
+
+  <!-- S6 -->
+  <div class="slide s6">
+    <div class="top">
+      <div class="stag">STEP 3. 단호한 대처</div>
+      <div class="stit">안 되는 건 안 된다고 명확히</div>
+    </div>
+    <div class="body">
+      
+      <div class="voca-card" style="border-left:3px solid #2F6FED;">
+        <div class="voca-top"><span style="font-size:18px;">🚫</span><span class="voca-cat cat-blue">규정 안내</span></div>
+        <div class="voca-name">정확한 한계선 긋기</div>
+        <div class="voca-real">기관의 규정과 원칙을 차분하고 단호한 목소리로 설명하세요.</div>
+      </div>
+    
+      
+      <div class="order-box">
+        <div class="ob-title">💡 전화 폭언 대처법</div>
+        <div class="ob-text">"선생님, 계속 욕설을 하시면 상담을 진행할 수 없습니다."<br>3회 경고 후 단호하게 통화를 종료하세요.</div>
+      </div>
+    
+    </div>
+    <div class="foot"><span class="fl">사복노트</span><span class="fr">6 / 7</span></div>
+  </div>
+
+  <!-- S7 CTA -->
+  <div class="slide s7">
+    <div class="inner">
+      <div class="emo">📖</div>
+      <div class="big">현장의 위기 상황,<br><em>사복노트가</em> 지켜드릴게요</div>
+      <div class="div2"></div>
+      <div class="sub">악성 민원 응대 매뉴얼부터<br>법적 대처 가이드까지! 🙂<br><br>상처받은 동료에게 힘이 되어주세요 🔖</div>
+      <div class="cta">📖 지금 바로 사용하기</div>
+      <div class="url">saboknote.com</div>
+    </div>
+    <div class="foot"><span class="fl">사복노트</span><span class="fr">7 / 7</span></div>
+  </div>
+
+</div>
+
+<div class="nav">
+  <button class="nbtn" id="p" onclick="go(-1)" disabled>←</button>
+  <div class="dots" id="dots"></div>
+  <button class="nbtn" id="n" onclick="go(1)">→</button>
+</div>
+<div class="ctr" id="ctr">1 / 7</div>
+
+<script>
+  let cur=0; const N=7;
+  const slides=document.querySelectorAll('.slide');
+  const wrap=document.getElementById('dots');
+  for(let i=0;i<N;i++){
+    const d=document.createElement('div');
+    d.className='d'+(i===0?' on':'');
+    d.onclick=()=>to(i);
+    wrap.appendChild(d);
+  }
+  function to(n){
+    slides[cur].classList.remove('on'); wrap.children[cur].classList.remove('on');
+    cur=n;
+    slides[cur].classList.add('on'); wrap.children[cur].classList.add('on');
+    document.getElementById('ctr').textContent=`${cur+1} / ${N}`;
+    document.getElementById('p').disabled=cur===0;
+    document.getElementById('n').disabled=cur===N-1;
+  }
+  function go(d){const nx=cur+d;if(nx>=0&&nx<N)to(nx);}
+  document.addEventListener('keydown',e=>{
+    if(e.key==='ArrowRight')go(1);
+    if(e.key==='ArrowLeft')go(-1);
+  });
+</script>
+</body>
+</html>

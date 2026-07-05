@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>사복노트 번아웃 극복</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:#DDE3ED; font-family:'Noto Sans KR',sans-serif; min-height:100vh; display:flex; flex-direction:column; align-items:center; padding:32px 16px 48px; }
+  .top-label { font-size:12px; font-weight:700; color:#8A94A6; letter-spacing:2px; margin-bottom:20px; text-transform:uppercase; }
+  .card { width:480px; height:600px; border-radius:22px; overflow:hidden; box-shadow:0 16px 48px rgba(0,0,0,0.18); position:relative; flex-shrink:0; }
+  .slide { display:none; width:100%; height:100%; position:absolute; top:0; left:0; }
+  .slide.on { display:flex; flex-direction:column; }
+  .foot { height:48px; flex-shrink:0; display:flex; align-items:center; padding:0 32px; justify-content:space-between; }
+  .foot .fl { font-size:12px; font-weight:900; }
+  .foot .fr { font-size:11px; }
+  .voca-card { background:white; border-radius:14px; padding:12px 15px; box-shadow:0 2px 8px rgba(0,0,0,0.05); }
+  .voca-top { display:flex; align-items:center; gap:7px; margin-bottom:4px; }
+  .voca-cat { font-size:10px; font-weight:700; padding:2px 8px; border-radius:10px; }
+  .cat-mint { background:rgba(78,205,196,0.12); color:#2ABFB5; }
+  .cat-blue { background:#EBF2FF; color:#2F6FED; }
+  .voca-name { font-size:14px; font-weight:900; color:#1B2E4B; margin-bottom:4px; }
+  .voca-real { font-size:12.5px; color:#3D4A5C; font-weight:600; line-height:1.5; margin-bottom:4px; word-break:keep-all; }
+  .voca-admin { font-size:11px; color:#8A94A6; line-height:1.5; padding-left:9px; border-left:2px solid #E0E8F0; word-break:keep-all; }
+
+  /* S1 훅 — 화이트 톤 */
+  .s1 { background:#ffffff; }
+  .s1 .logo-bar { display:flex; justify-content:space-between; align-items:center; padding:24px 32px 0; flex-shrink:0; }
+  .s1 .logo { font-size:13px; font-weight:900; color:#94A3B8; }
+  .s1 .body { flex:1; padding:0 32px; display:flex; flex-direction:column; justify-content:center; }
+  .s1 .pill { display:inline-block; background:#0D9488; border:1px solid #0D9488; color:#ffffff; font-size:10px; font-weight:700; padding:4px 12px; border-radius:20px; margin-bottom:16px; align-self:flex-start; letter-spacing:1px; }
+  .s1 .q { font-size:14px; color:#64748B; margin-bottom:14px; }
+  .s1 .words { display:flex; flex-direction:column; gap:8px; margin-bottom:20px; }
+  .s1 .wrow { display:flex; align-items:baseline; gap:10px; }
+  .s1 .wname { font-size:26px; font-weight:900; color:#1B2E4B; }
+  .s1 .wq { font-size:13px; color:#94A3B8; }
+  .s1 .hint { font-size:14px; color:#475569; line-height:1.7; word-break:keep-all; }
+  .s1 .hint em { color:#0D9488; font-style:normal; font-weight:700; }
+  .s1 .foot { background:#F8FAFC; border-top:1px solid #E2E8F0; }
+  .s1 .foot .fl { color:#64748B; }
+  .s1 .foot .fr { color:#94A3B8; }
+
+  /* S2 공감 */
+  .s2 { background:#fff; }
+  .s2 .head { background:#FF6B6B; padding:22px 32px 18px; flex-shrink:0; }
+  .s2 .head-tag { font-size:10px; font-weight:700; color:rgba(255,255,255,0.7); letter-spacing:2px; margin-bottom:6px; }
+  .s2 .head-title { font-size:22px; font-weight:900; color:white; line-height:1.35; }
+  .s2 .body { flex:1; padding:18px 32px 0; display:flex; flex-direction:column; gap:8px; }
+  .s2 .scene { background:#F4F6FA; border-radius:13px; padding:12px 15px; }
+  .s2 .scene-top { display:flex; align-items:center; gap:7px; margin-bottom:5px; }
+  .s2 .s-icon { font-size:16px; }
+  .s2 .s-when { font-size:10px; font-weight:700; color:#8A94A6; letter-spacing:1px; }
+  .s2 .s-text { font-size:13px; color:#3D4A5C; font-weight:500; line-height:1.55; word-break:keep-all; }
+  .s2 .s-inner { font-size:11px; color:#8A94A6; margin-top:2px; font-style:italic; }
+  .s2 .foot { background:#F4F6FA; }
+  .s2 .foot .fl { color:#FF6B6B; }
+  .s2 .foot .fr { color:#8A94A6; }
+
+  /* S3 반전 */
+  .s3 { background:#4ECDC4; }
+  .s3 .body { flex:1; padding:32px 32px 0; display:flex; flex-direction:column; justify-content:center; }
+  .s3 .tag { font-size:10px; font-weight:700; color:rgba(255,255,255,0.65); letter-spacing:2px; margin-bottom:12px; }
+  .s3 .ico { font-size:48px; margin-bottom:10px; line-height:1; }
+  .s3 .title { font-size:28px; font-weight:900; color:white; line-height:1.3; margin-bottom:12px; }
+  .s3 .title em { color:#FFD166; font-style:normal; }
+  .s3 .desc { font-size:14px; color:rgba(255,255,255,0.85); line-height:1.8; margin-bottom:16px; word-break:keep-all; }
+  .s3 .compare { background:rgba(255,255,255,0.15); border-radius:14px; padding:14px 16px; display:flex; flex-direction:column; gap:10px; }
+  .s3 .cr { display:flex; align-items:flex-start; gap:8px; }
+  .s3 .cl { font-size:10px; font-weight:700; min-width:32px; padding-top:2px; }
+  .s3 .ct { font-size:13px; line-height:1.55; word-break:keep-all; }
+  .s3 .foot { background:rgba(0,0,0,0.12); border-top:1px solid rgba(255,255,255,0.15); }
+  .s3 .foot .fl { color:rgba(255,255,255,0.5); }
+  .s3 .foot .fr { color:rgba(255,255,255,0.35); }
+
+  /* S4 */
+  .s4 { background:#F0FAFA; }
+  .s4 .top { padding:20px 32px 0; flex-shrink:0; }
+  .s4 .stag { font-size:10px; font-weight:700; color:#2ABFB5; letter-spacing:2px; margin-bottom:5px; }
+  .s4 .stit { font-size:19px; font-weight:900; color:#1B2E4B; line-height:1.35; margin-bottom:10px; }
+  .s4 .body { flex:1; padding:0 32px; display:flex; flex-direction:column; gap:7px; }
+  .s4 .foot { background:rgba(78,205,196,0.1); }
+  .s4 .foot .fl { color:#2ABFB5; }
+  .s4 .foot .fr { color:#8A94A6; }
+
+  /* S5 */
+  .s5 { background:#fff; }
+  .s5 .top { padding:20px 32px 0; flex-shrink:0; }
+  .s5 .stag { font-size:10px; font-weight:700; color:#2ABFB5; letter-spacing:2px; margin-bottom:5px; }
+  .s5 .stit { font-size:19px; font-weight:900; color:#1B2E4B; line-height:1.35; margin-bottom:10px; }
+  .s5 .body { flex:1; padding:0 32px; display:flex; flex-direction:column; gap:7px; }
+  .s5 .foot { background:#F4F6FA; }
+  .s5 .foot .fl { color:#2F6FED; }
+  .s5 .foot .fr { color:#8A94A6; }
+
+  /* S6 */
+  .s6 { background:#F4F6FA; }
+  .s6 .top { padding:20px 32px 0; flex-shrink:0; }
+  .s6 .stag { font-size:10px; font-weight:700; color:#2F6FED; letter-spacing:2px; margin-bottom:5px; }
+  .s6 .stit { font-size:19px; font-weight:900; color:#1B2E4B; line-height:1.35; margin-bottom:10px; }
+  .s6 .body { flex:1; padding:0 32px; display:flex; flex-direction:column; gap:7px; }
+  .s6 .order-box { background:#EBF2FF; border-radius:13px; padding:12px 15px; }
+  .s6 .ob-title { font-size:11px; font-weight:700; color:#2F6FED; margin-bottom:5px; }
+  .s6 .ob-text { font-size:13px; color:#3D4A5C; font-weight:600; line-height:1.55; }
+  .s6 .ob-sub { font-size:11px; color:#8A94A6; margin-top:3px; }
+  .s6 .foot { background:#EBF2FF; }
+  .s6 .foot .fl { color:#2F6FED; }
+  .s6 .foot .fr { color:#8A94A6; }
+
+  /* S7 CTA */
+  .s7 { background:linear-gradient(160deg,#0A2A2A 0%,#1B4A4A 100%); }
+  .s7 .inner { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:0 36px; text-align:center; }
+  .s7 .emo { font-size:50px; margin-bottom:14px; line-height:1; }
+  .s7 .big { font-size:21px; font-weight:900; color:white; line-height:1.6; margin-bottom:12px; word-break:keep-all; }
+  .s7 .big em { color:#4ECDC4; font-style:normal; }
+  .s7 .div2 { width:36px; height:2px; background:rgba(255,255,255,0.15); border-radius:2px; margin:0 auto 14px; }
+  .s7 .sub { font-size:13px; color:rgba(255,255,255,0.5); line-height:1.85; margin-bottom:22px; word-break:keep-all; }
+  .s7 .cta { background:#4ECDC4; color:white; font-size:14px; font-weight:900; padding:12px 26px; border-radius:40px; margin-bottom:8px; }
+  .s7 .url { font-size:11px; color:rgba(255,255,255,0.3); }
+  .s7 .foot { background:rgba(0,0,0,0.15); border-top:1px solid rgba(255,255,255,0.06); }
+  .s7 .foot .fl { color:rgba(255,255,255,0.3); }
+  .s7 .foot .fr { color:rgba(255,255,255,0.2); }
+
+  .nav { display:flex; align-items:center; gap:14px; margin-top:18px; }
+  .nbtn { width:38px; height:38px; border-radius:50%; background:white; border:none; cursor:pointer; font-size:15px; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 8px rgba(0,0,0,0.12); color:#1B2E4B; transition:all .18s; }
+  .nbtn:hover:not(:disabled) { background:#1B2E4B; color:white; }
+  .nbtn:disabled { opacity:.3; cursor:default; }
+  .dots { display:flex; gap:5px; }
+  .d { width:7px; height:7px; border-radius:50%; background:#C0C8D4; cursor:pointer; transition:all .18s; }
+  .d.on { background:#1B2E4B; width:18px; border-radius:4px; }
+  .ctr { font-size:11px; color:#8A94A6; margin-top:6px; text-align:center; }
+</style>
+</head>
+<body>
+<div class="top-label">사복노트 · 번아웃 극복</div>
+<div class="card">
+
+  <!-- S1 훅 -->
+  <div class="slide s1 on">
+    <div class="logo-bar">
+      <span class="logo">sano 사복노트</span>
+      <span style="font-size:11px;color:#CBD5E1;">1 / 7</span>
+    </div>
+    <div class="body">
+      <div class="pill">📖 마음 처방전</div>
+      <div class="q">출근길이 너무 무거우신가요? 😥</div>
+      <div class="words">
+        
+        <div class="wrow"><span class="wname">서류폭탄</span><span class="wq">끝이 없는 업무들</span></div>
+        <div class="wrow"><span class="wname">감정소진</span><span class="wq">내 마음 돌볼 틈이 없다면</span></div>
+        <div class="wrow"><span class="wname">무기력증</span><span class="wq">다 그만두고 싶을 때</span></div>
+    
+      </div>
+      <div class="hint">사복노트에서<br><em>번아웃을 이겨내는 법</em>을 알려드려요</div>
+    </div>
+    <div class="foot"><span class="fl">사복노트</span><span class="fr">1 / 7</span></div>
+  </div>
+
+  <!-- S2 공감 -->
+  <div class="slide s2">
+    <div class="head">
+      <div class="head-tag">열정의 배터리 방전</div>
+      <div class="head-title">좋아서 시작한 일인데<br>왜 이렇게 힘들까요</div>
+    </div>
+    <div class="body">
+      
+      <div class="scene">
+        <div class="scene-top"><span class="s-icon">🔋</span><span class="s-when">퇴근길 버스 안</span></div>
+        <div class="s-text">창밖만 멍하니 바라보는 내 모습</div>
+        <div class="s-inner">(집에 가면 씻지도 못하고 기절)</div>
+      </div>
+      <div class="scene">
+        <div class="scene-top"><span class="s-icon">🥺</span><span class="s-when">클라이언트 상담 후</span></div>
+        <div class="s-text">그 분의 아픔이 내 아픔처럼 느껴짐</div>
+        <div class="s-inner">(대리 외상, 감정의 스폰지가 되어버렸다)</div>
+      </div>
+    
+    </div>
+    <div class="foot"><span class="fl">사복노트</span><span class="fr">2 / 7</span></div>
+  </div>
+
+  <!-- S3 반전 -->
+  <div class="slide s3">
+    <div class="body">
+      <div class="tag">사복노트 힐링 ✅</div>
+      <div class="ico">🌱</div>
+      <div class="title">소진된 나를 위한<br><em>셀프 케어 가이드</em></div>
+      <div class="desc">선생님이 건강해야 세상도 건강해집니다</div>
+      <div class="compare">
+        
+        <div class="cr">
+          <span class="cl" style="color:rgba(255,255,255,0.35);">❌ 오해</span>
+          <span class="ct" style="color:rgba(255,255,255,0.45);">내가 부족해서 힘든 거야, 더 노력해야지</span>
+        </div>
+        <div style="height:1px;background:rgba(255,255,255,0.12);"></div>
+        <div class="cr">
+          <span class="cl" style="color:#FFD166;">✅ 정답</span>
+          <span class="ct" style="color:white;font-weight:700;">번아웃은 너무 열심히 했다는 훈장!<br>지금은 잠시 멈추고 쉬어야 할 때</span>
+        </div>
+    
+      </div>
+    </div>
+    <div class="foot"><span class="fl" style="color:rgba(255,255,255,0.5);">사복노트</span><span class="fr" style="color:rgba(255,255,255,0.35);">3 / 7</span></div>
+  </div>
+
+  <!-- S4 -->
+  <div class="slide s4">
+    <div class="top">
+      <div class="stag">STEP 1. 일과 삶의 분리</div>
+      <div class="stit">퇴근 후엔 스위치 OFF</div>
+    </div>
+    <div class="body">
+      
+      <div class="voca-card" style="border-left:3px solid #4ECDC4;">
+        <div class="voca-top"><span style="font-size:18px;">📴</span><span class="voca-cat cat-mint">디지털 디톡스</span></div>
+        <div class="voca-name">업무 연락차단</div>
+        <div class="voca-real">퇴근 후 단톡방 알림은 끄세요. 내일의 나에게 맡기세요.</div>
+      </div>
+      <div class="voca-card" style="border-left:3px solid #4ECDC4;">
+        <div class="voca-top"><span style="font-size:18px;">🧘</span><span class="voca-cat cat-mint">나만의 의식</span></div>
+        <div class="voca-name">퇴근길 리추얼</div>
+        <div class="voca-real">좋아하는 음악 듣기, 산책하기 등 업무 모드를 끄는 행동을 만드세요.</div>
+      </div>
+    
+    </div>
+    <div class="foot"><span class="fl">사복노트</span><span class="fr">4 / 7</span></div>
+  </div>
+
+  <!-- S5 -->
+  <div class="slide s5">
+    <div class="top">
+      <div class="stag">STEP 2. 감정의 환기</div>
+      <div class="stit">내 마음의 쓰레기통 비우기</div>
+    </div>
+    <div class="body">
+      
+      <div class="voca-card" style="border-left:3px solid #2F6FED;">
+        <div class="voca-top"><span style="font-size:18px;">☕</span><span class="voca-cat cat-blue">동료 지지</span></div>
+        <div class="voca-name">슈퍼비전과 티타임</div>
+        <div class="voca-real">혼자 끙끙 앓지 말고 믿을 수 있는 동료나 슈퍼바이저와 나누세요.</div>
+      </div>
+      <div class="voca-card" style="border-left:3px solid #2F6FED;">
+        <div class="voca-top"><span style="font-size:18px;">📝</span><span class="voca-cat cat-blue">감정 일기</span></div>
+        <div class="voca-name">내 감정 기록하기</div>
+        <div class="voca-real">오늘 느낀 부정적 감정을 종이에 쓰고 찢어버리세요. 생각보다 후련합니다.</div>
+      </div>
+    
+    </div>
+    <div class="foot"><span class="fl">사복노트</span><span class="fr">5 / 7</span></div>
+  </div>
+
+  <!-- S6 -->
+  <div class="slide s6">
+    <div class="top">
+      <div class="stag">STEP 3. 작은 성취 경험</div>
+      <div class="stit">복지가 아닌 다른 곳에서</div>
+    </div>
+    <div class="body">
+      
+      <div class="voca-card" style="border-left:3px solid #2F6FED;">
+        <div class="voca-top"><span style="font-size:18px;">🎨</span><span class="voca-cat cat-blue">취미 생활</span></div>
+        <div class="voca-name">나만을 위한 시간</div>
+        <div class="voca-real">운동, 베이킹, 드로잉 등 업무와 전혀 무관한 취미를 가져보세요.</div>
+      </div>
+    
+      
+      <div class="order-box">
+        <div class="ob-title">💡 무료 심리상담 지원</div>
+        <div class="ob-text">한국사회복지사협회나 각 지자체에서 제공하는<br>사회복지사 심리지원 프로그램을 적극 활용하세요!</div>
+      </div>
+    
+    </div>
+    <div class="foot"><span class="fl">사복노트</span><span class="fr">6 / 7</span></div>
+  </div>
+
+  <!-- S7 CTA -->
+  <div class="slide s7">
+    <div class="inner">
+      <div class="emo">📖</div>
+      <div class="big">지친 선생님의 마음,<br><em>사복노트가</em> 안아드릴게요</div>
+      <div class="div2"></div>
+      <div class="sub">선생님은 충분히 잘하고 계십니다.<br>오늘 하루도 고생 많으셨어요 🙂<br><br>위로가 필요한 동료에게 건네주세요 🔖</div>
+      <div class="cta">📖 지금 바로 사용하기</div>
+      <div class="url">saboknote.com</div>
+    </div>
+    <div class="foot"><span class="fl">사복노트</span><span class="fr">7 / 7</span></div>
+  </div>
+
+</div>
+
+<div class="nav">
+  <button class="nbtn" id="p" onclick="go(-1)" disabled>←</button>
+  <div class="dots" id="dots"></div>
+  <button class="nbtn" id="n" onclick="go(1)">→</button>
+</div>
+<div class="ctr" id="ctr">1 / 7</div>
+
+<script>
+  let cur=0; const N=7;
+  const slides=document.querySelectorAll('.slide');
+  const wrap=document.getElementById('dots');
+  for(let i=0;i<N;i++){
+    const d=document.createElement('div');
+    d.className='d'+(i===0?' on':'');
+    d.onclick=()=>to(i);
+    wrap.appendChild(d);
+  }
+  function to(n){
+    slides[cur].classList.remove('on'); wrap.children[cur].classList.remove('on');
+    cur=n;
+    slides[cur].classList.add('on'); wrap.children[cur].classList.add('on');
+    document.getElementById('ctr').textContent=`${cur+1} / ${N}`;
+    document.getElementById('p').disabled=cur===0;
+    document.getElementById('n').disabled=cur===N-1;
+  }
+  function go(d){const nx=cur+d;if(nx>=0&&nx<N)to(nx);}
+  document.addEventListener('keydown',e=>{
+    if(e.key==='ArrowRight')go(1);
+    if(e.key==='ArrowLeft')go(-1);
+  });
+</script>
+</body>
+</html>

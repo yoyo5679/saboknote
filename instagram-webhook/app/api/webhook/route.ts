@@ -1,19 +1,23 @@
 import { NextResponse } from 'next/server';
+import { findMatchingTrigger } from '@/lib/store';
+import { addLog } from '@/lib/logger';
 
 // ─────────────────────────────────────────────────────────────
-// 사복노트 인스타그램 댓글 자동 DM 웹훅
-// 동작: 게시물에 '측정' 댓글이 달리면 → 댓글 작성자에게 DM 자동 발송
+// 사복노트 인스타그램 자동 DM 웹훅 (ManyChat 대체 무료 버전)
 //
-// 필요한 환경변수 (.env.local):
-//   VERIFY_TOKEN       — 메타 웹훅 설정 시 내가 직접 정한 비밀 토큰
-//   META_ACCESS_TOKEN  — Meta 개발자 콘솔에서 발급한 Page Access Token
-//   IG_ACCOUNT_ID      — 사복노트 인스타그램 비즈니스 계정 ID (숫자)
+// 지원 이벤트:
+//   1. comments  — 게시물 댓글에 키워드 → 댓글 작성자에게 DM
+//   2. messages  — DM 수신 시 키워드 → 자동 답장
+//
+// 환경변수 (.env.local):
+//   VERIFY_TOKEN      — 메타 웹훅 인증 토큰 (직접 설정)
+//   META_ACCESS_TOKEN — Page Access Token (Meta 개발자 콘솔)
+//   IG_ACCOUNT_ID     — 인스타 비즈니스 계정 ID
+//   TRIGGERS_JSON     — JSON 배열로 키워드 설정 (선택, 없으면 기본값)
 // ─────────────────────────────────────────────────────────────
 
 // ──────────────────────────────────────────
-// GET: 메타 웹훅 '연결 확인' 요청 처리
-// 메타가 서버를 처음 등록할 때 이 엔드포인트를 호출합니다.
-// hub.verify_token이 일치하면 hub.challenge 값을 그대로 돌려줘야 합니다.
+// GET: 메타 웹훅 연결 인증
 // ──────────────────────────────────────────
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -21,26 +25,22 @@ export async function GET(request: Request) {
   const token     = searchParams.get('hub.verify_token');
   const challenge = searchParams.get('hub.challenge');
 
-  const VERIFY_TOKEN = process.env.VERIFY_TOKEN;
-
-  if (mode === 'subscribe' && token === VERIFY_TOKEN) {
-    console.log('✅ 웹훅 연결 확인 성공');
+  if (mode === 'subscribe' && token === process.env.VERIFY_TOKEN) {
+    console.log('✅ 웹훅 연결 인증 성공');
     return new NextResponse(challenge, { status: 200 });
   }
 
-  console.warn('⛔ 웹훅 연결 실패: 토큰 불일치', { mode, token });
+  console.warn('⛔ 웹훅 인증 실패: 토큰 불일치', { mode, token });
   return new NextResponse('Forbidden', { status: 403 });
 }
 
 // ──────────────────────────────────────────
-// POST: 실제 인스타그램 이벤트(댓글 등) 수신 처리
-// 댓글 텍스트에 '측정'이 포함되면 해당 사용자에게 DM을 발송합니다.
+// POST: 인스타그램 이벤트 수신 및 처리
 // ──────────────────────────────────────────
 export async function POST(request: Request) {
   try {
     const body = await request.json();
 
-    // 인스타그램 플랫폼 이벤트인지 확인
     if (body.object !== 'instagram') {
       return new NextResponse('Not Found', { status: 404 });
     }
@@ -48,37 +48,67 @@ export async function POST(request: Request) {
     for (const entry of body.entry ?? []) {
       for (const change of entry.changes ?? []) {
 
-        // 이벤트 필드가 'comments'(댓글)인지 확인
-        if (change.field !== 'comments') continue;
+        // ── 1. 댓글 이벤트 처리 ──────────────────────
+        if (change.field === 'comments') {
+          const commentText: string = change.value?.text ?? '';
+          const fromUserId: string  = change.value?.from?.id ?? '';
+          const commentId: string   = change.value?.id ?? '';
 
-        const commentText: string = change.value?.text ?? '';
-        const fromUserId: string  = change.value?.from?.id ?? '';
+          console.log(`💬 댓글 수신 | ${fromUserId} | "${commentText}"`);
 
-        console.log(`📩 댓글 수신 | 작성자: ${fromUserId} | 내용: "${commentText}"`);
+          const trigger = findMatchingTrigger(commentText);
+          if (trigger && commentId) {
+            // 댓글 작성자에게 비공개 답장(Private Reply) — comment_id 필수
+            const result = await sendDM({ comment_id: commentId }, trigger.message);
+            addLog({
+              userId: fromUserId,
+              keyword: trigger.keyword,
+              trigger: 'comment',
+              success: result.success,
+              error: result.success ? undefined : JSON.stringify(result.error),
+            });
 
-        // ★ 트리거 키워드 체크 — 필요에 따라 배열로 확장 가능
-        const TRIGGER_KEYWORDS = ['측정'];
-        const isTriggered = TRIGGER_KEYWORDS.some((kw) => commentText.includes(kw));
+            if (result.success) {
+              console.log(`✅ DM 발송 성공 (댓글) → ${fromUserId} | 키워드: "${trigger.keyword}"`);
+            } else {
+              console.error(`❌ DM 발송 실패 (댓글) → ${fromUserId}:`, result.error);
+            }
+          }
+        }
 
-        if (isTriggered && fromUserId) {
-          const dmMessage =
-            '안녕하세요! 사복노트입니다 😊\n' +
-            '요청하신 측정 자료 링크를 보내드립니다:\n' +
-            '👉 https://saboknote.com\n\n' +
-            '궁금한 점이 있으시면 언제든지 댓글 남겨주세요!';
+        // ── 2. DM 수신 이벤트 처리 ───────────────────
+        if (change.field === 'messages') {
+          const messageText: string = change.value?.message?.text ?? '';
+          const fromUserId: string  = change.value?.sender?.id ?? '';
+          const myAccountId = process.env.IG_ACCOUNT_ID;
 
-          const result = await sendDM(fromUserId, dmMessage);
+          // 내가 보낸 DM은 무시 (무한 루프 방지)
+          if (!fromUserId || fromUserId === myAccountId) continue;
 
-          if (result.success) {
-            console.log(`✅ DM 발송 성공 → ${fromUserId}`);
-          } else {
-            console.error(`❌ DM 발송 실패 → ${fromUserId}:`, result.error);
+          console.log(`📩 DM 수신 | ${fromUserId} | "${messageText}"`);
+
+          const trigger = findMatchingTrigger(messageText);
+          if (trigger) {
+            const result = await sendDM({ id: fromUserId }, trigger.message);
+            addLog({
+              userId: fromUserId,
+              keyword: trigger.keyword,
+              trigger: 'dm',
+              success: result.success,
+              error: result.success ? undefined : JSON.stringify(result.error),
+            });
+
+            if (result.success) {
+              console.log(`✅ DM 답장 성공 | 키워드: "${trigger.keyword}"`);
+            } else {
+              console.error(`❌ DM 답장 실패:`, result.error);
+            }
           }
         }
       }
     }
 
-    // 메타는 200 OK + 'EVENT_RECEIVED' 응답을 기대합니다 (필수)
+    // Meta는 항상 200 OK + 'EVENT_RECEIVED' 를 기대함
     return new NextResponse('EVENT_RECEIVED', { status: 200 });
 
   } catch (error) {
@@ -88,15 +118,17 @@ export async function POST(request: Request) {
 }
 
 // ──────────────────────────────────────────
-// 헬퍼: 인스타그램 DM 발송
-// Meta Graph API v19.0 사용
+// 헬퍼: Instagram DM 발송
 // ──────────────────────────────────────────
 interface DMResult {
   success: boolean;
   error?: unknown;
 }
 
-async function sendDM(recipientId: string, messageText: string): Promise<DMResult> {
+// 댓글 비공개 답장이면 { comment_id }, DM 답장이면 { id }
+type Recipient = { comment_id: string } | { id: string };
+
+async function sendDM(recipient: Recipient, messageText: string): Promise<DMResult> {
   const PAGE_ACCESS_TOKEN = process.env.META_ACCESS_TOKEN;
   const IG_ACCOUNT_ID     = process.env.IG_ACCOUNT_ID;
 
@@ -105,7 +137,16 @@ async function sendDM(recipientId: string, messageText: string): Promise<DMResul
     return { success: false, error: 'Missing env vars' };
   }
 
-  const url = `https://graph.facebook.com/v19.0/${IG_ACCOUNT_ID}/messages`;
+  const url = `https://graph.facebook.com/v21.0/${IG_ACCOUNT_ID}/messages`;
+
+  // 댓글 비공개 답장(comment_id)에는 messaging_type을 넣지 않음
+  const payload: Record<string, unknown> = {
+    recipient,
+    message: { text: messageText },
+  };
+  if ('id' in recipient) {
+    payload.messaging_type = 'RESPONSE';
+  }
 
   try {
     const res = await fetch(url, {
@@ -114,10 +155,7 @@ async function sendDM(recipientId: string, messageText: string): Promise<DMResul
         'Content-Type': 'application/json',
         Authorization: `Bearer ${PAGE_ACCESS_TOKEN}`,
       },
-      body: JSON.stringify({
-        recipient: { id: recipientId },
-        message:   { text: messageText },
-      }),
+      body: JSON.stringify(payload),
     });
 
     if (!res.ok) {
