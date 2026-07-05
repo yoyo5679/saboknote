@@ -5974,6 +5974,7 @@ try {
         let mode = 'blur'; // 'blur' or 'pixel'
         let brushSize = 25;
         let history = [];
+        let blurredCanvas = null;
 
         dropZone.addEventListener('click', () => fileInput.click());
         dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
@@ -6014,6 +6015,16 @@ try {
             canvas.height = height;
             
             ctx.drawImage(originalImg, 0, 0, width, height);
+            
+            blurredCanvas = document.createElement('canvas');
+            blurredCanvas.width = width;
+            blurredCanvas.height = height;
+            const bctx = blurredCanvas.getContext('2d');
+            bctx.filter = 'blur(8px)';
+            bctx.drawImage(originalImg, 0, 0, width, height);
+            bctx.drawImage(originalImg, 0, 0, width, height);
+            bctx.filter = 'none';
+
             saveHistory();
         }
 
@@ -6085,10 +6096,11 @@ try {
             ctx.arc(x, y, brushSize, 0, Math.PI * 2);
             ctx.clip();
 
+            ctx.filter = 'none';
             if (mode === 'blur') {
-                ctx.filter = 'blur(8px)';
-                ctx.drawImage(originalImg, 0, 0, canvas.width, canvas.height);
-                ctx.drawImage(originalImg, 0, 0, canvas.width, canvas.height);
+                if (blurredCanvas) {
+                    ctx.drawImage(blurredCanvas, 0, 0, canvas.width, canvas.height);
+                }
             } else {
                 ctx.imageSmoothingEnabled = false;
                 const srcX = Math.max(0, x - brushSize);
