@@ -17,6 +17,11 @@ try {
         return div.innerHTML;
     }
 
+    // HTML 속성값(value="...")용 이스케이프 — 따옴표까지 처리
+    function escapeAttr(text) {
+        return escapeHtml(text).replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
     /* --- Anonymous User ID (localStorage) --- */
     function getOrCreateUserId() {
         let userId = localStorage.getItem('sabok_user_id');
@@ -2569,8 +2574,8 @@ try {
 
         if (diffDays < 0) {
             diffMonths--;
-            // approximate days in previous month
-            diffDays += 30;
+            // 기준일 이전 달의 실제 일수 사용
+            diffDays += new Date(baseDate.getFullYear(), baseDate.getMonth(), 0).getDate();
         }
         if (diffMonths < 0) {
             diffYears--;
@@ -2834,7 +2839,7 @@ try {
         if (!compressedPdfBlobUrl) return;
         const a = document.createElement('a');
         a.href = compressedPdfBlobUrl;
-        a.download = selectedPdfFile.name.replace('.pdf', '_compressed.pdf');
+        a.download = selectedPdfFile.name.replace(/\.pdf$/i, '') + '_compressed.pdf';
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -3152,27 +3157,14 @@ try {
         //   4대보험료도 자동으로 일할 기준으로 재산정됨
         // - 사회복지시설 일반 관행: 해당 월 실지급 보수 기준으로 보험료 산출
         // ============================================
-        let eePension, eeHealth, eeEmp, eeCare, eeIncTax, eeLocTax;
-
-        // [특수 케이스] 사용자 제공 이미지와 100% 일치시키기 위한 하드코딩
-        // (일할 미적용 + 특정 입력값 조합일 때만 작동)
-        if (prorateRatio === 1 && baseSalary === 2906000 && familyAllowance === 140000 && mealAllowance === 130000 && otHours === 1 && hourlyRate === 15899) {
-            eePension = 140710;
-            eeHealth = 112710;
-            eeEmp = 28610;
-            eeCare = 14590;
-            eeIncTax = 79480;
-            eeLocTax = 7940;
-        } else {
-            // [일반 계산] taxableIncome 기준 4대보험료 산출
-            // ※ 일할 적용 시 taxableIncome = 일할급여 기준이므로 보험료도 비례 감소
-            eePension = Math.floor(taxableIncome * 0.04583); // 국민연금 (~4.5%)
-            eeHealth = Math.floor(taxableIncome * 0.03672);  // 건강보험 (~3.54%)
-            eeEmp = Math.floor(taxableIncome * 0.00932);     // 고용보험 (~0.9%)
-            eeCare = Math.floor(eeHealth * 0.12945);         // 장기요양 (건보료의 ~12.95%)
-            eeIncTax = Math.floor(taxableIncome * 0.02591);  // 소득세
-            eeLocTax = Math.floor(eeIncTax * 0.1);           // 지방소득세 (소득세의 10%)
-        }
+        // taxableIncome 기준 4대보험료 산출
+        // ※ 일할 적용 시 taxableIncome = 일할급여 기준이므로 보험료도 비례 감소
+        const eePension = Math.floor(taxableIncome * 0.04583); // 국민연금 (~4.5%)
+        const eeHealth = Math.floor(taxableIncome * 0.03672);  // 건강보험 (~3.54%)
+        const eeEmp = Math.floor(taxableIncome * 0.00932);     // 고용보험 (~0.9%)
+        const eeCare = Math.floor(eeHealth * 0.12945);         // 장기요양 (건보료의 ~12.95%)
+        const eeIncTax = Math.floor(taxableIncome * 0.02591);  // 소득세
+        const eeLocTax = Math.floor(eeIncTax * 0.1);           // 지방소득세 (소득세의 10%)
 
         // 총 공제액 및 최종 실수령액 산출
         const eeTotal = eePension + eeHealth + eeCare + eeEmp + eeIncTax + eeLocTax;
@@ -3306,7 +3298,6 @@ try {
         { category: "사례관리", icon: "🍃", word: "종결", meaning: "이별의 시간. 다 나아서 자립했거나 이사 가셔서 그만 만나요", desc: "목표 달성·이관·사망·거부 등 사유로 사례 마무리" },
         { category: "사례관리", icon: "🗺️", word: "욕구 (Need)", meaning: "이 분이 진짜 원하고 필요로 하는 것 (본인도 모를 때 있음)", desc: "표현 욕구·규범적 욕구·비교 욕구·잠재 욕구로 구분" },
         { category: "사례관리", icon: "🍀", word: "강점 관점", meaning: "문제만 보지 말고, 이 분이 가진 강점을 먼저 보기", desc: "역량강화(Empowerment) 실천의 핵심 철학" },
-        { category: "사례관리", icon: "💪", word: "강점 관점", meaning: "문제만 보지 말고, 이 분이 가진 강점을 먼저 보기", desc: "역량강화(Empowerment) 실천의 핵심 철학" },
         { category: "사례관리", icon: "🎯", word: "개입 목표", meaning: "우리가 이 사례를 통해 달성하려는 구체적인 목표", desc: "SMART 원칙(구체적·측정가능·달성가능·현실적·기한)으로 설정" },
         { category: "사례관리", icon: "📋", word: "서비스 계획서", meaning: "누가, 언제, 뭘, 어떻게 도와줄지 적어 두는 약속 문서", desc: "클라이언트 동의 서명 필수 — 주기적으로 재검토" },
         { category: "사례관리", icon: "⚠️", word: "위기 개입", meaning: "갑자기 상황이 심각해졌을 때 빠르게 투입!", desc: "자해·학대·화재 등 긴급 상황 — 72시간 내 집중 개입 원칙" },
@@ -3917,11 +3908,11 @@ try {
                 </div>
                 <div class="form-group">
                     <label>질문 제목</label>
-                    <input type="text" id="edit-ask-title" class="calc-input" value="${post.title.replace(/"/g, '&quot;')}">
+                    <input type="text" id="edit-ask-title" class="calc-input" value="${escapeAttr(post.title)}">
                 </div>
                 <div class="form-group">
                     <label>상세 내용</label>
-                    <textarea id="edit-ask-content" class="calc-input" style="height:150px; resize:none; padding:12px;">${post.content}</textarea>
+                    <textarea id="edit-ask-content" class="calc-input" style="height:150px; resize:none; padding:12px;">${escapeHtml(post.content)}</textarea>
                 </div>
                 <button class="btn-primary" id="btn-update-helpme" onclick="updateHelpMePost('${postId}')">💾 수정 완료</button>
             </div>
@@ -4339,11 +4330,11 @@ try {
                 </div>
                 <div class="form-group">
                     <label>글 제목</label>
-                    <input type="text" id="edit-comm-title" class="calc-input" value="${post.title.replace(/"/g, '&quot;')}">
+                    <input type="text" id="edit-comm-title" class="calc-input" value="${escapeAttr(post.title)}">
                 </div>
                 <div class="form-group">
                     <label>상세 내용</label>
-                    <textarea id="edit-comm-content" class="calc-input" style="height:150px; resize:none; padding:12px;">${post.content}</textarea>
+                    <textarea id="edit-comm-content" class="calc-input" style="height:150px; resize:none; padding:12px;">${escapeHtml(post.content)}</textarea>
                 </div>
                 <button class="btn-primary" id="btn-update-comm" onclick="updateCommunityPost('${postId}')">💾 수정 완료</button>
             </div>
@@ -4422,7 +4413,7 @@ try {
             <div style="display:flex; flex-direction:column; gap:16px;">
                 <div class="form-group">
                     <label>답변 내용</label>
-                    <textarea id="edit-reply-content" class="calc-input" style="height:140px; resize:none; padding:12px;">${reply.content}</textarea>
+                    <textarea id="edit-reply-content" class="calc-input" style="height:140px; resize:none; padding:12px;">${escapeHtml(reply.content)}</textarea>
                 </div>
                 <button class="btn-primary" id="btn-update-reply" onclick="updateReply('${replyId}', '${postId}')">💾 수정 완료</button>
             </div>`;
@@ -4486,7 +4477,7 @@ try {
             <div style="display:flex; flex-direction:column; gap:16px;">
                 <div class="form-group">
                     <label>댓글 내용</label>
-                    <textarea id="edit-comm-reply-content" class="calc-input" style="height:140px; resize:none; padding:12px;">${reply.content}</textarea>
+                    <textarea id="edit-comm-reply-content" class="calc-input" style="height:140px; resize:none; padding:12px;">${escapeHtml(reply.content)}</textarea>
                 </div>
                 <button class="btn-primary" id="btn-update-comm-reply" onclick="updateCommReply('${replyId}', '${postId}')">💾 수정 완료</button>
             </div>`;
@@ -6295,7 +6286,7 @@ try {
                 try {
                     const blob = await convertImage(selectedFiles[i], targetFormat);
                     const url = URL.createObjectURL(blob);
-                    const newName = selectedFiles[i].name.replace(/\\.[^/.]+$/, "") + ext;
+                    const newName = selectedFiles[i].name.replace(/\.[^/.]+$/, "") + ext;
                     
                     const btn = document.createElement('button');
                     btn.className = 'btn-primary';
