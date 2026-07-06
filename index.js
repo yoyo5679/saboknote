@@ -55,12 +55,12 @@ try {
     ];
 
     const LTC_THRESHOLDS_2026 = {
-        1: 2712900,
-        2: 2531200,
-        3: 1628200,
-        4: 1539700,
-        5: 1408900,
-        6: 726320 // 인지지원
+        1: 2512900,
+        2: 2331200,
+        3: 1528200,
+        4: 1409700,
+        5: 1208900,
+        6: 676320 // 인지지원
     };
 
     const LTC_HOURLY_RATES_2026 = {
@@ -2312,10 +2312,31 @@ try {
                 </div>
             </div>
 
-            <button class="btn-primary" style="background:var(--accent); margin-top:20px" onclick="alert('결과가 전송되었습니다!')">📄 전문가용 결과 전송</button>
+            <button class="btn-primary" style="background:var(--accent); margin-top:20px" onclick="copyLTCResult()">📋 계산 결과 복사</button>
         </div>
         `;
     }
+
+    window.copyLTCResult = function () {
+        const resultDiv = document.getElementById('ltc-result');
+        if (!resultDiv) return;
+        const items = resultDiv.querySelectorAll('.result-item');
+        let text = '[방문요양 모의계산 결과]\n';
+        items.forEach(item => {
+            const label = item.querySelector('.result-label');
+            const value = label ? label.nextElementSibling : null;
+            if (label && value) text += `${label.innerText}: ${value.innerText}\n`;
+        });
+        text += '※ 참고용 추정치입니다. 정확한 금액은 국민건강보험공단에서 확인하세요.';
+        const done = () => alert('📋 계산 결과가 복사되었습니다! (Ctrl+V)');
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(done).catch(() => alert('복사에 실패했습니다.'));
+        } else {
+            const ta = document.createElement('textarea');
+            ta.value = text; document.body.appendChild(ta); ta.select();
+            document.execCommand('copy'); document.body.removeChild(ta); done();
+        }
+    };
 
     /* --- Main Tab Navigation --- */
     window.switchMainTab = function (tabId, el) {
@@ -2396,15 +2417,11 @@ try {
             return;
         }
 
-        // Simulate API call and simple mock logic
+        // AI 자동 변환은 아직 미구현 — 가짜 결과 대신 '비밀 프롬프트' 안내로 연결
         const outDiv = document.getElementById('purifier-result');
         const outText = document.getElementById('purifier-output');
-        outDiv.style.display = 'none';
-
-        setTimeout(() => {
-            outText.innerText = "클라이언트의 주관적 호소 및 경제적 어려움에 대한 불안도가 관찰됨. 주거 환경 내 전반적인 정돈 및 위생 관리가 미흡한 상태로 평가되며, 즉각적인 환경 개선 개입이 요구됨.";
-            outDiv.style.display = 'block';
-        }, 600);
+        outText.innerText = "🛠️ 자동 변환 기능은 준비 중이에요! 지금은 홈 탭의 'AI 비밀 프롬프트' > '상담 기록 요약(PIE)' 프롬프트를 복사해 ChatGPT/Claude에 붙여넣으면 같은 결과를 얻을 수 있어요.";
+        outDiv.style.display = 'block';
     };
 
     /* --- Community / Emotion Trash Can --- */
@@ -2523,6 +2540,9 @@ try {
         endDate.setHours(0, 0, 0, 0);
         baseDate.setHours(0, 0, 0, 0);
 
+        // 날짜 포매터 (전역 formatDate(상대시간)와 이름 충돌 방지)
+        const fmtYmd = (d) => `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
+
         // Military logic
         let milDays = 0;
         let adjustedEndDate = new Date(endDate);
@@ -2576,9 +2596,6 @@ try {
             `;
 
         if (hasMilitary && milDays > 0) {
-            // 날짜 포매팅 헬퍼
-            const formatDate = (d) => `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')} `;
-
             html += `
             <div style = "background:#f0fdf4; border:1px solid #bbf7d0; border-radius:12px; padding:16px; margin-bottom:16px;" >
                     <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
@@ -2586,8 +2603,8 @@ try {
                         <span style="color:#166534; font-size:0.85rem; font-weight:800;">+${milDays}일 연장</span>
                     </div>
                     <div style="color:#15803d; font-size:0.8rem; line-height:1.5;">
-                        실제 보호종료일(${formatDate(endDate)})에 복무 일수를 환산하여,<br>
-                        <strong>보정된 만료 기산일은 ${formatDate(adjustedEndDate)}</strong>로 계산되었습니다.
+                        실제 보호종료일(${fmtYmd(endDate)})에 복무 일수를 환산하여,<br>
+                        <strong>보정된 만료 기산일은 ${fmtYmd(adjustedEndDate)}</strong>로 계산되었습니다.
                     </div>
                 </div>
             `;
@@ -2601,7 +2618,7 @@ try {
                         <div style="flex:1;">
                             <div style="color:#1e40af; font-weight:800; font-size:1.0rem; margin-bottom:4px;">보호종료 5년 이내 해당</div>
                             <div style="color:#1d4ed8; font-size:0.8rem; line-height:1.4; word-break:keep-all;">
-                                자립수당 등 '5년 이내' 기준의 혜택 대상입니다. <br>(기한: ${formatDate(new Date(adjustedEndDate.getFullYear() + 5, adjustedEndDate.getMonth(), adjustedEndDate.getDate()))})
+                                자립수당 등 '5년 이내' 기준의 혜택 대상입니다. <br>(기한: ${fmtYmd(new Date(adjustedEndDate.getFullYear() + 5, adjustedEndDate.getMonth(), adjustedEndDate.getDate()))})
                             </div>
                         </div>
                     </div>
@@ -4956,18 +4973,18 @@ try {
         // 모달 ID → 오프너 함수 매핑 레지스트리
         window._modalRegistry = {
             'newsletter':   () => window.openNewsletterSubModal && window.openNewsletterSubModal(),
-            'request':      () => { const b = document.getElementById('open-request'); if (b) b.click(); },
+            'request':      () => { const b = document.getElementById('open-request-modal'); if (b) b.click(); },
             'eligibility':  () => { const b = document.getElementById('calc-eligibility'); if (b) b.click(); },
-            'ltc':          () => { const b = document.getElementById('calc-ltc'); if (b) b.click(); },
+            'ltc':          () => { const b = document.getElementById('open-dashboard'); if (b) b.click(); },
             'prompt':       () => { const b = document.getElementById('open-ai-prompter'); if (b) b.click(); },
-            'voca':         () => { const b = document.getElementById('open-voca'); if (b) b.click(); },
+            'voca':         () => { const b = document.getElementById('open-voca-dict'); if (b) b.click(); },
             'admin':        () => { const b = document.getElementById('open-admin-calc'); if (b) b.click(); },
-            'helpme':       () => { const b = document.getElementById('open-helpme'); if (b) b.click(); },
-            'write-post':   () => { const b = document.getElementById('open-write-post'); if (b) b.click(); },
+            'helpme':       () => window.openAskModal && window.openAskModal(),
+            'write-post':   () => window.openCommunityPostModal && window.openCommunityPostModal(),
             'xp-guide':     () => { const b = document.getElementById('open-xp-guide'); if (b) b.click(); },
-            'tos':          () => { const b = document.getElementById('open-tos'); if (b) b.click(); },
-            'privacy':      () => { const b = document.getElementById('open-privacy'); if (b) b.click(); },
-            'install':      () => { const b = document.getElementById('open-install'); if (b) b.click(); },
+            'tos':          () => window.openTOSModal && window.openTOSModal(),
+            'privacy':      () => window.openPrivacyModal && window.openPrivacyModal(),
+            'install':      () => window.showPWAInstallGuide && window.showPWAInstallGuide(),
         };
 
         function dispatchHash(hash) {
@@ -6016,16 +6033,55 @@ try {
             
             ctx.drawImage(originalImg, 0, 0, width, height);
             
-            blurredCanvas = document.createElement('canvas');
-            blurredCanvas.width = width;
-            blurredCanvas.height = height;
-            const bctx = blurredCanvas.getContext('2d');
-            bctx.filter = 'blur(8px)';
-            bctx.drawImage(originalImg, 0, 0, width, height);
-            bctx.drawImage(originalImg, 0, 0, width, height);
-            bctx.filter = 'none';
+            blurredCanvas = createBlurredCanvas(width, height);
 
             saveHistory();
+        }
+
+        function supportsCanvasFilter() {
+            const t = document.createElement('canvas').getContext('2d');
+            if (typeof t.filter === 'undefined') return false;
+            t.filter = 'blur(2px)';
+            return t.filter === 'blur(2px)';
+        }
+
+        function createBlurredCanvas(width, height) {
+            const c = document.createElement('canvas');
+            c.width = width;
+            c.height = height;
+            const bctx = c.getContext('2d');
+
+            if (supportsCanvasFilter()) {
+                bctx.filter = 'blur(8px)';
+                bctx.drawImage(originalImg, 0, 0, width, height);
+                bctx.drawImage(originalImg, 0, 0, width, height);
+                bctx.filter = 'none';
+                return c;
+            }
+
+            // Fallback: iOS Safari 등 ctx.filter 미지원 브라우저 → 축소-확대 방식 블러
+            let tmp = document.createElement('canvas');
+            tmp.width = width;
+            tmp.height = height;
+            tmp.getContext('2d').drawImage(originalImg, 0, 0, width, height);
+            let w = width, h = height;
+
+            for (let i = 0; i < 3; i++) { // 반씩 3회 축소 (≈ 1/8)
+                const nw = Math.max(1, Math.floor(w / 2));
+                const nh = Math.max(1, Math.floor(h / 2));
+                const next = document.createElement('canvas');
+                next.width = nw;
+                next.height = nh;
+                const nctx = next.getContext('2d');
+                nctx.imageSmoothingEnabled = true;
+                nctx.drawImage(tmp, 0, 0, w, h, 0, 0, nw, nh);
+                tmp = next; w = nw; h = nh;
+            }
+
+            bctx.imageSmoothingEnabled = true;
+            if ('imageSmoothingQuality' in bctx) bctx.imageSmoothingQuality = 'high';
+            bctx.drawImage(tmp, 0, 0, w, h, 0, 0, width, height);
+            return c;
         }
 
         function saveHistory() {
