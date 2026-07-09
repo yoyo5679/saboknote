@@ -257,6 +257,19 @@ try {
     window.startComfort = async function () {
         const text = validateShredInput();
         if (!text) return;
+
+        // 프론트엔드 일일 사용량 제한 (API 비용 절감)
+        const now = new Date();
+        const kstTime = new Date(now.getTime() + (9 * 60 * 60 * 1000));
+        const todayStr = kstTime.toISOString().split('T')[0];
+        const limitKey = 'comfort_usage_' + todayStr;
+        let usageCount = parseInt(localStorage.getItem(limitKey) || '0', 10);
+        
+        if (usageCount >= 3) {
+            alert('오늘은 선배와 충분히 이야기했어요. 🌙\n내일 다시 찾아와 주세요. (하루 3회 제한)\n지금은 바로 파쇄만 할 수 있어요.');
+            return;
+        }
+
         const btn = document.getElementById('comfort-btn');
         if (btn) { btn.disabled = true; btn.innerHTML = '🌿 선배가 읽고 있어요...'; }
 
@@ -293,6 +306,10 @@ try {
             alert('지금은 선배와 연결이 어려워요. 😢\n아래 "위로 없이 바로 파쇄하기"는 언제든 가능해요.');
             return;
         }
+
+        // 성공적으로 응답을 받았을 때만 카운트 증가
+        usageCount++;
+        localStorage.setItem(limitKey, usageCount.toString());
 
         runShredAnimation((successArea) => {
             const saved = payload.saved || {};
