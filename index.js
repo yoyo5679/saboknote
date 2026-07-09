@@ -4890,6 +4890,33 @@ try {
         const syncCodeEl = document.getElementById('my-sync-code');
         if (syncCodeEl) syncCodeEl.innerText = myUserId;
 
+        // 소셜 연동 상태 표시
+        const linkedList = document.getElementById('my-linked-accounts-list');
+        if (linkedList) {
+            linkedList.innerHTML = '<span style="font-size:0.75rem; color:#94a3b8;">확인 중...</span>';
+            ensureAnonSession().then(session => {
+                const u = session && session.user;
+                if (!u || !u.identities) {
+                    linkedList.innerHTML = '<span style="font-size:0.75rem; color:#94a3b8;">현재 연동된 소셜 계정이 없습니다. (성장 궤적에서 연동 가능)</span>';
+                    return;
+                }
+                const providers = u.identities.map(i => i.provider);
+                let html = '';
+                if (providers.includes('kakao')) {
+                    html += '<span style="background:#FEE500; color:#191919; padding:4px 8px; border-radius:6px; font-size:0.75rem; font-weight:800; margin-right:4px;">💬 카카오 연동됨</span>';
+                }
+                if (providers.includes('google')) {
+                    html += '<span style="background:#ffffff; border:1px solid #d1d5db; color:#191919; padding:4px 8px; border-radius:6px; font-size:0.75rem; font-weight:800;">🌐 구글 연동됨</span>';
+                }
+                if (!html) {
+                    html = '<span style="font-size:0.75rem; color:#94a3b8;">현재 연동된 소셜 계정이 없습니다. (성장 궤적에서 연동 가능)</span>';
+                }
+                linkedList.innerHTML = html;
+            }).catch(e => {
+                linkedList.innerHTML = '<span style="font-size:0.75rem; color:#ef4444;">상태를 불러오지 못했습니다.</span>';
+            });
+        }
+
         // 이름이 있으면 Supabase에 백그라운드 동기화 (최초 1회 보장용)
         if (currentNickname) saveProfileToSupabase(myUserId, currentNickname);
 
