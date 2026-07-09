@@ -445,14 +445,14 @@ try {
     function renderGrowthView(entries, auth = {}) {
         const linkBanner = auth.linked
             ? `<p style="text-align:center; font-size:0.8rem; color:#ca8a04; font-weight:700; margin-bottom:14px;">💛 계정 연결됨 — 폰을 바꿔도 이 궤적 그대로예요</p>`
-            : (auth.anonymous ? `
+            : `
             <div style="background:#fffbeb; border:1.5px solid #fde68a; border-radius:16px; padding:16px; margin-bottom:16px; text-align:left;">
                 <p style="font-size:0.9rem; font-weight:900; color:#92400e; margin-bottom:6px;">☁️ 이 궤적, 지금은 이 기기에만 있어요</p>
                 <p style="font-size:0.83rem; color:#78716c; line-height:1.6; margin-bottom:12px;">폰 바꾸는 순간 사르르 증발… 여기까지 걸어온 기록인데, 그러기엔 아깝잖아요?</p>
                 <button onclick="linkKakao()" style="width:100%; padding:13px; background:#FEE500; color:#191919; border:none; border-radius:12px; font-size:0.92rem; font-weight:800; cursor:pointer; margin-bottom:8px;">💬 카카오 3초 연결로 궤적 지키기</button>
                 <button onclick="linkGoogle()" style="width:100%; padding:13px; background:#ffffff; color:#191919; border:1px solid #d1d5db; border-radius:12px; font-size:0.92rem; font-weight:800; cursor:pointer;">🌐 구글 3초 연결로 궤적 지키기</button>
                 <p style="font-size:0.72rem; color:#a8a29e; margin-top:8px; text-align:center;">익명은 그대로. 아무에게도 공개되지 않아요.</p>
-            </div>` : '');
+            </div>`;
         const back = `<button onclick="closeGrowthView()" style="background:none; border:none; font-size:0.9rem; font-weight:700; color:#64748b; cursor:pointer; padding:8px 0;">← 파쇄기로 돌아가기</button>`;
         const head = `
             <div style="text-align:center; margin:8px 0 20px;">
