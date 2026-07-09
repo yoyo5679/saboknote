@@ -276,6 +276,15 @@ try {
 
         if (btn) { btn.disabled = false; btn.innerHTML = '💬 선배에게 털어놓고 파쇄하기'; }
 
+        if (errCode === 'unauthorized' && !window.__comfortRetried) {
+            // 세션이 깨진 경우(예: 서버측 계정 정리) — 새 익명 세션으로 1회 자동 재시도
+            window.__comfortRetried = true;
+            try { await supabase.auth.signOut(); } catch (_) { /* noop */ }
+            sabokAuthPromise = null;
+            return window.startComfort();
+        }
+        if (payload && payload.comfort) window.__comfortRetried = false;
+
         if (errCode === 'daily_limit') {
             alert('오늘은 선배와 충분히 이야기했어요. 🌙\n내일 다시 찾아와 주세요. 지금은 바로 파쇄만 할 수 있어요.');
             return;
