@@ -13,14 +13,32 @@ try {
     function ensureAnonSession() {
         if (!supabase) return Promise.resolve(null);
         if (!sabokAuthPromise) {
-            sabokAuthPromise = supabase.auth.getSession()
-                .then(async ({ data: { session } }) => {
+            const authTask = supabase.auth.getSession()
+                .then(async ({ data, error }) => {
+                    const session = data ? data.session : null;
                     if (session) return session;
-                    const { data, error } = await supabase.auth.signInAnonymously();
-                    if (error) { console.warn('anon auth:', error.message); sabokAuthPromise = null; return null; }
-                    return data.session;
+                    const { data: anonData, error: anonError } = await supabase.auth.signInAnonymously();
+                    if (anonError) { console.warn('anon auth:', anonError.message); return null; }
+                    return anonData ? anonData.session : null;
                 })
-                .catch(() => { sabokAuthPromise = null; return null; });
+                .catch(err => { console.warn('session error:', err); return null; });
+
+            const timeoutTask = new Promise(resolve => {
+                setTimeout(() => {
+                    console.warn('ensureAnonSession timed out, clearing storage');
+                    try {
+                        Object.keys(localStorage).forEach(key => {
+                            if (key.startsWith('sb-') && key.endsWith('-auth-token')) localStorage.removeItem(key);
+                        });
+                    } catch(e) {}
+                    resolve(null);
+                }, 3000);
+            });
+
+            sabokAuthPromise = Promise.race([authTask, timeoutTask]).then(res => {
+                if (!res) sabokAuthPromise = null;
+                return res;
+            });
         }
         return sabokAuthPromise;
     }
