@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sabok-note-cache-v12';
+const CACHE_NAME = 'sabok-note-cache-v13';
 const urlsToCache = [
   '/',
   '/index.html',
