@@ -8,6 +8,24 @@ try {
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNlbGRybnBvaGRrZ2dlbm5qaWVvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIyMzI3MjksImV4cCI6MjA4NzgwODcyOX0.PyzWPa-kwYgh-HmuDELD642TCVn7Ajri54FsR7Ik2Gs';
     const supabase = window.supabase ? window.supabase.createClient(supabaseUrl, supabaseKey) : null;
 
+    /* --- 익명 로그인 (정서 동반자) — 앱 여는 순간 자동 발급, 사용자 입력 0 --- */
+    let sabokAuthPromise = null;
+    function ensureAnonSession() {
+        if (!supabase) return Promise.resolve(null);
+        if (!sabokAuthPromise) {
+            sabokAuthPromise = supabase.auth.getSession()
+                .then(async ({ data: { session } }) => {
+                    if (session) return session;
+                    const { data, error } = await supabase.auth.signInAnonymously();
+                    if (error) { console.warn('anon auth:', error.message); sabokAuthPromise = null; return null; }
+                    return data.session;
+                })
+                .catch(() => { sabokAuthPromise = null; return null; });
+        }
+        return sabokAuthPromise;
+    }
+    ensureAnonSession();
+
     /* --- Anonymous User ID (localStorage) --- */
     /* --- Utility: HTML Escape --- */
     function escapeHtml(text) {
@@ -151,25 +169,14 @@ try {
         { emoji: '🌈', msg: '당신의 고통은 이제 세상 어디에도 없습니다. 내일은 당신을 위한 하루가 될 거예요.' }
     ];
 
-    window.doShred = function () {
+    /* ===== 정서 동반자: 파쇄 애니메이션 공통 ===== */
+    function runShredAnimation(renderSuccess) {
         const ta = document.getElementById('shredder-textarea');
-        if (!ta || !ta.value.trim()) {
-            ta.style.borderColor = '#ef4444';
-            ta.placeholder = '먼저 힘든 일을 적어주세요!';
-            ta.focus();
-            setTimeout(() => { ta.style.borderColor = '#fca5a5'; }, 1500);
-            return;
-        }
-
-        // 파쇄 애니메이션
         const stripped = document.getElementById('shredder-strips');
         const writeArea = document.getElementById('shredder-write-area');
         const successArea = document.getElementById('shredder-success');
 
-        // 텍스트 슬라이드 아웃
         ta.style.animation = 'shredSlide 0.6s ease-in forwards';
-
-        // 파쇄 조각 생성
         const colors = ['#ef4444', '#f97316', '#dc2626', '#fb923c', '#b91c1c', '#fca5a5', '#fed7aa'];
         stripped.style.display = 'flex';
         stripped.innerHTML = Array.from({ length: 22 }, (_, i) => {
@@ -180,34 +187,258 @@ try {
 
         setTimeout(() => {
             writeArea.style.display = 'none';
-
-            // 위로 메시지 표시
-            const pick = SHRED_MESSAGES[Math.floor(Math.random() * SHRED_MESSAGES.length)];
             successArea.style.display = 'block';
+            renderSuccess(successArea);
+        }, 800);
+    }
+
+    window.resetShredder = function () {
+        const ta = document.getElementById('shredder-textarea');
+        const stripped = document.getElementById('shredder-strips');
+        const writeArea = document.getElementById('shredder-write-area');
+        const successArea = document.getElementById('shredder-success');
+        if (ta) { ta.value = ''; ta.style.animation = 'none'; }
+        if (stripped) { stripped.style.display = 'none'; stripped.innerHTML = ''; }
+        if (writeArea) writeArea.style.display = 'block';
+        if (successArea) { successArea.style.display = 'none'; successArea.innerHTML = ''; }
+        const btn = document.getElementById('comfort-btn');
+        if (btn) { btn.disabled = false; btn.innerHTML = '💬 선배에게 털어놓고 파쇄하기'; }
+    };
+
+    function validateShredInput() {
+        const ta = document.getElementById('shredder-textarea');
+        if (!ta || !ta.value.trim()) {
+            if (ta) {
+                ta.style.borderColor = '#ef4444';
+                ta.placeholder = '먼저 힘든 일을 적어주세요!';
+                ta.focus();
+                setTimeout(() => { ta.style.borderColor = '#fca5a5'; }, 1500);
+            }
+            return null;
+        }
+        return ta.value.trim();
+    }
+
+    /* --- 그냥 파쇄 (AI 없이) --- */
+    window.doShred = function () {
+        if (!validateShredInput()) return;
+        runShredAnimation((successArea) => {
+            const pick = SHRED_MESSAGES[Math.floor(Math.random() * SHRED_MESSAGES.length)];
             successArea.innerHTML = `
                 <div style="font-size:4rem; margin-bottom:16px;">${pick.emoji}</div>
                 <h3 style="font-size:1.15rem; font-weight:900; color:#1e293b; margin-bottom:10px; white-space:pre-line;">${pick.msg}</h3>
                 <p style="font-size:0.85rem; color:#94a3b8; margin-top:16px;">3초 후 자동으로 닫힙니다</p>`;
-
-            // 3초 후 UI 복구
             let countdown = 3;
             const timer = setInterval(() => {
                 countdown--;
                 const p = successArea.querySelector('p');
                 if (p) p.textContent = `${countdown}초 후 파쇄기가 다시 준비됩니다...`;
-                if (countdown <= 0) {
-                    clearInterval(timer);
-                    // 폼 초기화
-                    ta.value = '';
-                    ta.style.animation = 'none';
-                    stripped.style.display = 'none';
-                    stripped.innerHTML = '';
-                    writeArea.style.display = 'block';
-                    successArea.style.display = 'none';
-                }
+                if (countdown <= 0) { clearInterval(timer); window.resetShredder(); }
             }, 1000);
-        }, 800);
+        });
     };
+
+    /* ===== 정서 동반자: 선배에게 털어놓기 =====
+       원칙: 원본 텍스트는 Edge Function이 위로 생성에만 쓰고 폐기.
+             DB에는 힘듦 정도·주제 태그·위로 한 줄, 세 조각만 남는다. */
+    const SAFETY_RESOURCES_HTML = `
+        <div style="margin-top:16px; background:#fef2f2; border:1.5px solid #fecaca; border-radius:14px; padding:16px; text-align:left;">
+            <p style="font-size:0.9rem; font-weight:800; color:#b91c1c; margin-bottom:8px;">🫶 지금 마음이 많이 무거워 보여요</p>
+            <p style="font-size:0.85rem; color:#475569; line-height:1.6; margin-bottom:10px;">
+                여기서 다 풀어내려 하지 않아도 괜찮아요. 전문가와 이야기하면 훨씬 든든합니다.</p>
+            <p style="font-size:0.88rem; color:#334155; line-height:1.8; margin:0;">
+                📞 <strong>자살예방 상담전화 109</strong> (24시간)<br>
+                📞 <strong>정신건강 위기상담 1577-0199</strong> (24시간)<br>
+                📞 <strong>보건복지상담센터 129</strong></p>
+        </div>`;
+
+    const COMFORT_DISCLAIMER = '<p style="font-size:0.75rem; color:#94a3b8; margin-top:14px; text-align:center;">이 기능은 전문 심리상담을 대체하지 않습니다 · 적은 글은 저장되지 않아요</p>';
+
+    window.startComfort = async function () {
+        const text = validateShredInput();
+        if (!text) return;
+        const btn = document.getElementById('comfort-btn');
+        if (btn) { btn.disabled = true; btn.innerHTML = '🌿 선배가 읽고 있어요...'; }
+
+        let payload = null, errCode = null;
+        try {
+            const session = await ensureAnonSession();
+            if (!session) throw new Error('no_session');
+            const { data, error } = await supabase.functions.invoke('comfort', { body: { text } });
+            if (error) {
+                try { errCode = (await error.context.json()).error; } catch (_) { errCode = 'network'; }
+            } else {
+                payload = data;
+            }
+        } catch (_) {
+            errCode = errCode || 'network';
+        }
+
+        if (btn) { btn.disabled = false; btn.innerHTML = '💬 선배에게 털어놓고 파쇄하기'; }
+
+        if (errCode === 'daily_limit') {
+            alert('오늘은 선배와 충분히 이야기했어요. 🌙\n내일 다시 찾아와 주세요. 지금은 바로 파쇄만 할 수 있어요.');
+            return;
+        }
+        if (!payload || !payload.comfort) {
+            alert('지금은 선배와 연결이 어려워요. 😢\n아래 "위로 없이 바로 파쇄하기"는 언제든 가능해요.');
+            return;
+        }
+
+        runShredAnimation((successArea) => {
+            const saved = payload.saved || {};
+            const hd = Math.min(5, Math.max(0, saved.hardness || 0));
+            const dots = '●'.repeat(hd) + '○'.repeat(5 - hd);
+            const tags = (saved.topic_tags || []).map(t =>
+                `<span style="display:inline-block; background:#f0fdf4; color:#16a34a; border-radius:999px; padding:3px 10px; font-size:0.78rem; font-weight:700; margin:2px;">${escapeHtml(t)}</span>`).join('');
+            successArea.innerHTML = `
+                <div style="font-size:3rem; margin-bottom:10px;">🌿</div>
+                <p style="font-size:0.8rem; font-weight:800; color:#16a34a; letter-spacing:0.05em; margin-bottom:12px;">선배의 답장</p>
+                <div style="background:#f8fafc; border:1.5px solid #e2e8f0; border-radius:16px; padding:20px; text-align:left;">
+                    <p style="font-size:0.98rem; color:#1e293b; line-height:1.75; margin:0; white-space:pre-line;">${escapeHtml(payload.comfort)}</p>
+                </div>
+                ${payload.safety_flag ? SAFETY_RESOURCES_HTML : ''}
+                <div style="margin-top:14px; font-size:0.82rem; color:#64748b;">
+                    오늘의 흔적 — 힘듦 <span style="color:#f97316; letter-spacing:2px;">${dots}</span><br>
+                    <span style="display:inline-block; margin-top:6px;">${tags}</span>
+                </div>
+                <button onclick="resetShredder()" style="width:100%; margin-top:18px; padding:15px; background:linear-gradient(135deg,#16a34a,#15803d); color:#fff; border:none; border-radius:14px; font-size:1rem; font-weight:800; cursor:pointer;">확인 — 오늘도 수고했어요</button>
+                <button onclick="openGrowthView()" style="width:100%; margin-top:10px; padding:12px; background:#f1f5f9; color:#334155; border:none; border-radius:12px; font-size:0.9rem; font-weight:700; cursor:pointer;">🌱 나의 성장 궤적 보기</button>
+                ${COMFORT_DISCLAIMER}`;
+        });
+    };
+
+    /* ===== 성장 궤적 (회고) — 추세 우선, 개별 날짜 파고들기 지양 ===== */
+    window.openGrowthView = async function () {
+        const body = document.getElementById('shredder-body');
+        const view = document.getElementById('growth-view');
+        if (!body || !view) return;
+        body.style.display = 'none';
+        view.style.display = 'block';
+        view.innerHTML = '<p style="text-align:center; color:#94a3b8; padding:60px 0;">궤적을 불러오는 중... 🌱</p>';
+
+        let entries = [];
+        try {
+            const session = await ensureAnonSession();
+            if (session) {
+                const { data, error } = await supabase
+                    .from('growth_entries')
+                    .select('created_at, hardness, topic_tags, comfort_line')
+                    .order('created_at', { ascending: true })
+                    .limit(500);
+                if (!error && data) entries = data;
+            }
+        } catch (_) { /* noop */ }
+
+        view.innerHTML = renderGrowthView(entries);
+    };
+
+    window.closeGrowthView = function () {
+        const body = document.getElementById('shredder-body');
+        const view = document.getElementById('growth-view');
+        if (view) { view.style.display = 'none'; view.innerHTML = ''; }
+        if (body) body.style.display = 'flex';
+        window.resetShredder();
+    };
+
+    window.deleteAllGrowth = async function () {
+        if (!confirm('지금까지 쌓인 성장 궤적을 전부 삭제할까요?\n삭제하면 되돌릴 수 없어요.')) return;
+        try {
+            const session = await ensureAnonSession();
+            if (session) {
+                await supabase.from('growth_entries').delete().gte('created_at', '1970-01-01');
+            }
+            alert('모든 궤적을 삭제했어요.');
+            window.openGrowthView();
+        } catch (_) {
+            alert('삭제 중 문제가 발생했어요. 잠시 후 다시 시도해 주세요.');
+        }
+    };
+
+    function fmtMD(iso) {
+        const d = new Date(iso);
+        return `${d.getMonth() + 1}월 ${d.getDate()}일`;
+    }
+
+    function buildHardnessSvg(entries) {
+        const W = 340, H = 140, PAD = 18;
+        const n = entries.length;
+        const x = i => n === 1 ? W / 2 : PAD + (W - PAD * 2) * (i / (n - 1));
+        const y = h => H - PAD - (H - PAD * 2) * ((h - 1) / 4);
+        const pts = entries.map((e, i) => `${x(i).toFixed(1)},${y(e.hardness).toFixed(1)}`);
+        const line = pts.join(' ');
+        const area = `${PAD},${H - PAD} ${line} ${W - PAD},${H - PAD}`;
+        const dots = entries.map((e, i) =>
+            `<circle cx="${x(i).toFixed(1)}" cy="${y(e.hardness).toFixed(1)}" r="3.5" fill="#f97316"/>`).join('');
+        const grid = [1, 2, 3, 4, 5].map(h =>
+            `<line x1="${PAD}" y1="${y(h)}" x2="${W - PAD}" y2="${y(h)}" stroke="#f1f5f9" stroke-width="1"/>`).join('');
+        return `
+            <svg viewBox="0 0 ${W} ${H}" style="width:100%; height:auto; display:block;">
+                ${grid}
+                <polygon points="${area}" fill="rgba(249,115,22,0.10)"/>
+                <polyline points="${line}" fill="none" stroke="#f97316" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+                ${dots}
+                <text x="${PAD}" y="${H - 4}" font-size="10" fill="#94a3b8">${fmtMD(entries[0].created_at)}</text>
+                <text x="${W - PAD}" y="${H - 4}" font-size="10" fill="#94a3b8" text-anchor="end">${fmtMD(entries[n - 1].created_at)}</text>
+            </svg>`;
+    }
+
+    function topTags(entries) {
+        const cnt = {};
+        entries.forEach(e => (e.topic_tags || []).forEach(t => { cnt[t] = (cnt[t] || 0) + 1; }));
+        return Object.entries(cnt).sort((a, b) => b[1] - a[1]).slice(0, 3).map(x => x[0]);
+    }
+
+    function renderGrowthView(entries) {
+        const back = `<button onclick="closeGrowthView()" style="background:none; border:none; font-size:0.9rem; font-weight:700; color:#64748b; cursor:pointer; padding:8px 0;">← 파쇄기로 돌아가기</button>`;
+        const head = `
+            <div style="text-align:center; margin:8px 0 20px;">
+                <div style="font-size:3rem; margin-bottom:8px;">🌱</div>
+                <h2 style="font-size:1.3rem; font-weight:900; color:#1e293b;">나의 성장 궤적</h2>
+                <p style="font-size:0.85rem; color:#64748b; margin-top:6px;">그날의 아픔이 아니라, 걸어온 흐름을 봐요.</p>
+            </div>`;
+
+        if (entries.length < 3) {
+            return `${back}${head}
+                <div style="text-align:center; padding:30px 20px; background:#f8fafc; border-radius:16px;">
+                    <p style="font-size:0.95rem; color:#475569; line-height:1.7;">
+                        아직 궤적이 쌓이는 중이에요. (지금 ${entries.length}개)<br>
+                        선배에게 세 번쯤 털어놓으면<br>여기서 흐름이 보이기 시작해요. 🌿</p>
+                </div>
+                ${COMFORT_DISCLAIMER}`;
+        }
+
+        const half = Math.floor(entries.length / 2);
+        const earlyTags = topTags(entries.slice(0, half));
+        const recentTags = topTags(entries.slice(half));
+        const tagChip = (t, css) => `<span style="display:inline-block; background:${css}; border-radius:999px; padding:4px 12px; font-size:0.8rem; font-weight:700; margin:3px;">${escapeHtml(t)}</span>`;
+
+        const lines = entries.slice(-10).reverse().map(e => `
+            <div style="padding:12px 14px; background:#f8fafc; border-radius:12px; margin-bottom:8px;">
+                <p style="font-size:0.72rem; color:#94a3b8; margin-bottom:4px;">${fmtMD(e.created_at)}의 선배</p>
+                <p style="font-size:0.88rem; color:#334155; line-height:1.6; margin:0;">"${escapeHtml(e.comfort_line)}"</p>
+            </div>`).join('');
+
+        return `${back}${head}
+            <div style="background:#fff; border:1.5px solid #e2e8f0; border-radius:16px; padding:16px; margin-bottom:16px;">
+                <p style="font-size:0.85rem; font-weight:800; color:#334155; margin-bottom:10px;">힘듦의 흐름 <span style="font-weight:400; color:#94a3b8;">(위로 갈수록 힘든 날)</span></p>
+                ${buildHardnessSvg(entries)}
+            </div>
+            <div style="background:#fff; border:1.5px solid #e2e8f0; border-radius:16px; padding:16px; margin-bottom:16px;">
+                <p style="font-size:0.85rem; font-weight:800; color:#334155; margin-bottom:10px;">이야기 주제의 변화</p>
+                <p style="font-size:0.78rem; color:#94a3b8; margin-bottom:4px;">처음엔</p>
+                <div>${earlyTags.map(t => tagChip(t, '#fff7ed; color:#ea580c')).join('') || '<span style="font-size:0.8rem; color:#cbd5e1;">기록 없음</span>'}</div>
+                <p style="font-size:0.78rem; color:#94a3b8; margin:10px 0 4px;">요즘은</p>
+                <div>${recentTags.map(t => tagChip(t, '#f0fdf4; color:#16a34a')).join('') || '<span style="font-size:0.8rem; color:#cbd5e1;">기록 없음</span>'}</div>
+            </div>
+            <div style="margin-bottom:16px;">
+                <p style="font-size:0.85rem; font-weight:800; color:#334155; margin-bottom:10px;">그때 들었던 말들</p>
+                ${lines}
+            </div>
+            <p style="font-size:0.8rem; color:#64748b; text-align:center; line-height:1.6;">${entries.length}개의 흔적이 쌓였어요.<br>여기까지 걸어온 건 다른 누구도 아닌 당신이에요. 👏</p>
+            <button onclick="deleteAllGrowth()" style="width:100%; margin-top:20px; padding:12px; background:none; border:1.5px solid #fecaca; color:#ef4444; border-radius:12px; font-size:0.85rem; font-weight:700; cursor:pointer;">궤적 전체 삭제</button>
+            ${COMFORT_DISCLAIMER}`;
+    }
 
     /* --- User Request Modal (무엇이든 물어보살) --- */
     function initRequestModal() {

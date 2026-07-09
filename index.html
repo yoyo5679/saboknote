@@ -935,14 +935,15 @@
 
             <!-- ===== SHREDDER VIEW ===== -->
             <div id="view-shredder" class="view-content hidden">
-                <div
+                <div id="shredder-body"
                     style="padding: 20px 16px; min-height: 80vh; display: flex; flex-direction: column; justify-content: center; align-items: center;">
                     <div style="text-align:center; margin-bottom:24px;">
                         <div style="font-size:3.5rem; margin-bottom:12px;">🗑️</div>
                         <h2 style="font-size:1.4rem; font-weight:900; color:#1e293b; margin-bottom:8px;">감정 파쇄기</h2>
                         <p style="font-size:0.95rem; color:#64748b; line-height:1.5;">
                             오늘 겪은 힘든 일, 다 적어보세요.<br>
-                            <strong style="color:#ef4444;">파쇄</strong>하면 영원히 사라져요. (서버 저장 안 됨)
+                            현장을 지나온 <strong style="color:#16a34a;">선배가 먼저 읽고</strong>,
+                            <strong style="color:#ef4444;">파쇄</strong>하면 영원히 사라져요. (쓴 글은 서버 저장 안 됨)
                         </p>
                     </div>
                     <div id="shredder-write-area" style="width: 100%; max-width: 400px;">
@@ -951,9 +952,16 @@
                             style="width: 100%; height: 180px; border: 2px dashed #fca5a5; border-radius: 16px; padding: 20px; font-size: 1rem; color: #334155; background: #fff5f5; resize: none; transition: all 0.3s; outline: none; line-height: 1.6;"></textarea>
                         <div id="shredder-strips"
                             style="display: none; gap: 4px; justify-content: center; margin: 16px 0;"></div>
+                        <button id="comfort-btn" onclick="startComfort()"
+                            style="width: 100%; padding: 18px; background: linear-gradient(135deg, #16a34a, #15803d); color: white; border: none; border-radius: 16px; font-size: 1.1rem; font-weight: 800; cursor: pointer; margin-top: 16px; transition: transform 0.1s, box-shadow 0.2s; box-shadow: 0 4px 14px rgba(22,163,74,0.3);">💬 선배에게 털어놓고 파쇄하기</button>
                         <button id="shredder-btn" onclick="doShred()"
-                            style="width: 100%; padding: 18px; background: linear-gradient(135deg, #ef4444, #b91c1c); color: white; border: none; border-radius: 16px; font-size: 1.15rem; font-weight: 800; cursor: pointer; margin-top: 16px; transition: transform 0.1s, box-shadow 0.2s; box-shadow: 0 4px 14px rgba(239,68,68,0.35);">🗑️
-                            시원하게 파쇄하기!</button>
+                            style="width: 100%; padding: 13px; background: none; color: #b91c1c; border: 1.5px solid #fca5a5; border-radius: 14px; font-size: 0.95rem; font-weight: 700; cursor: pointer; margin-top: 10px;">🗑️ 위로 없이 바로 파쇄하기</button>
+                        <div style="text-align:center; margin-top:12px;">
+                            <button onclick="openGrowthView()"
+                                style="background:none; border:none; color:#64748b; font-size:0.85rem; font-weight:700; cursor:pointer; text-decoration:underline;">🌱 나의 성장 궤적 보기</button>
+                        </div>
+                        <p style="text-align:center; font-size:0.72rem; color:#94a3b8; margin-top:12px; line-height:1.5;">
+                            이 기능은 전문 심리상담을 대체하지 않습니다.<br>쓴 글은 저장되지 않고, 그날의 흔적(힘듦 정도·주제·위로 한 줄)만 남아요.</p>
                     </div>
                     <div id="shredder-success"
                         style="display: none; text-align: center; padding: 20px 0; width: 100%; max-width: 400px;">
@@ -981,6 +989,7 @@
 
                     <div style="height:100px;"></div>
                 </div>
+                <div id="growth-view" style="display:none; padding: 20px 16px 120px; max-width: 440px; margin: 0 auto;"></div>
             </div>
 
             <!-- ===== PLAYGROUND VIEW ===== -->
