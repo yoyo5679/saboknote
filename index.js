@@ -332,7 +332,7 @@ try {
             const session = await ensureAnonSession();
             if (session) {
                 const u = session.user || {};
-                authFlags.linked = (u.identities || []).some(i => i.provider === 'kakao');
+                authFlags.linked = (u.identities || []).some(i => i.provider === 'kakao' || i.provider === 'google');
                 authFlags.anonymous = !!u.is_anonymous && !authFlags.linked;
                 const { data, error } = await supabase
                     .from('growth_entries')
@@ -414,7 +414,8 @@ try {
             <div style="background:#fffbeb; border:1.5px solid #fde68a; border-radius:16px; padding:16px; margin-bottom:16px; text-align:left;">
                 <p style="font-size:0.9rem; font-weight:900; color:#92400e; margin-bottom:6px;">☁️ 이 궤적, 지금은 이 기기에만 있어요</p>
                 <p style="font-size:0.83rem; color:#78716c; line-height:1.6; margin-bottom:12px;">폰 바꾸는 순간 사르르 증발… 여기까지 걸어온 기록인데, 그러기엔 아깝잖아요?</p>
-                <button onclick="linkKakao()" style="width:100%; padding:13px; background:#FEE500; color:#191919; border:none; border-radius:12px; font-size:0.92rem; font-weight:800; cursor:pointer;">💬 카카오 3초 연결로 궤적 지키기</button>
+                <button onclick="linkKakao()" style="width:100%; padding:13px; background:#FEE500; color:#191919; border:none; border-radius:12px; font-size:0.92rem; font-weight:800; cursor:pointer; margin-bottom:8px;">💬 카카오 3초 연결로 궤적 지키기</button>
+                <button onclick="linkGoogle()" style="width:100%; padding:13px; background:#ffffff; color:#191919; border:1px solid #d1d5db; border-radius:12px; font-size:0.92rem; font-weight:800; cursor:pointer;">🌐 구글 3초 연결로 궤적 지키기</button>
                 <p style="font-size:0.72rem; color:#a8a29e; margin-top:8px; text-align:center;">익명은 그대로. 아무에게도 공개되지 않아요.</p>
             </div>` : '');
         const back = `<button onclick="closeGrowthView()" style="background:none; border:none; font-size:0.9rem; font-weight:700; color:#64748b; cursor:pointer; padding:8px 0;">← 파쇄기로 돌아가기</button>`;
@@ -495,6 +496,28 @@ try {
         }
     };
 
+    window.linkGoogle = async function () {
+        try {
+            const session = await ensureAnonSession();
+            if (!session) throw new Error('no_session');
+            const { error } = await supabase.auth.linkIdentity({
+                provider: 'google',
+                options: { redirectTo: window.location.origin + window.location.pathname }
+            });
+            if (error) throw error;
+            // 성공 시 구글 로그인 페이지로 이동됨
+        } catch (e) {
+            const msg = String((e && e.message) || e);
+            if (msg.indexOf('already') !== -1) {
+                alert('이 구글 계정, 이미 다른 궤적과 연결돼 있어요. 🤔\n원래 쓰던 기기(브라우저)에서 열면 그 궤적을 만날 수 있어요.');
+            } else if (msg.indexOf('linking') !== -1 || msg.indexOf('disabled') !== -1) {
+                alert('앗, 연결 기능이 아직 준비 중이에요. 조금만 기다려주세요! 🙏');
+            } else {
+                alert('연결에 실패했어요. 잠시 후 다시 시도해 주세요. 😢');
+            }
+        }
+    };
+
     function showLinkOfferModal(count) {
         if (document.getElementById('link-offer-modal')) return;
         const wrap = document.createElement('div');
@@ -510,7 +533,9 @@ try {
                 <p style="font-size:0.82rem; color:#94a3b8; line-height:1.6; margin-bottom:16px;">
                     카카오 3초 연결이면 어느 기기에서든 그대로.<br>익명은 그대로 유지 — 아무에게도 공개 안 돼요.</p>
                 <button onclick="document.getElementById('link-offer-modal').remove(); linkKakao();"
-                    style="width:100%; padding:15px; background:#FEE500; color:#191919; border:none; border-radius:14px; font-size:1rem; font-weight:800; cursor:pointer;">💬 카카오로 내 궤적 지키기</button>
+                    style="width:100%; padding:15px; background:#FEE500; color:#191919; border:none; border-radius:14px; font-size:1rem; font-weight:800; cursor:pointer; margin-bottom:8px;">💬 카카오로 내 궤적 지키기</button>
+                <button onclick="document.getElementById('link-offer-modal').remove(); linkGoogle();"
+                    style="width:100%; padding:15px; background:#ffffff; color:#191919; border:1px solid #d1d5db; border-radius:14px; font-size:1rem; font-weight:800; cursor:pointer;">🌐 구글로 내 궤적 지키기</button>
                 <button onclick="document.getElementById('link-offer-modal').remove();"
                     style="width:100%; margin-top:10px; padding:12px; background:none; border:none; color:#94a3b8; font-size:0.85rem; font-weight:700; cursor:pointer;">나중에 할게요 (제 기억력을 믿어볼게요)</button>
             </div>`;
@@ -522,7 +547,7 @@ try {
             if (localStorage.getItem(LINK_DONE_KEY)) return;
             const session = await ensureAnonSession();
             const u = session && session.user;
-            if (!u || !(u.identities || []).some(i => i.provider === 'kakao')) return;
+            if (!u || !(u.identities || []).some(i => i.provider === 'kakao' || i.provider === 'google')) return;
             localStorage.setItem(LINK_DONE_KEY, '1');
             const t = document.createElement('div');
             t.style.cssText = 'position:fixed; left:50%; bottom:90px; transform:translateX(-50%); background:#1e293b; color:#fff; padding:14px 20px; border-radius:14px; z-index:9999; font-size:0.9rem; font-weight:700; box-shadow:0 8px 24px rgba(0,0,0,0.25); max-width:90%; text-align:center; line-height:1.5;';
