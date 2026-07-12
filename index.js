@@ -372,6 +372,7 @@ try {
                 const { data, error } = await supabase
                     .from('growth_entries')
                     .select('created_at, hardness, topic_tags, comfort_line')
+                    .eq('user_id', u.id)
                     .order('created_at', { ascending: true })
                     .limit(500);
                 if (!error && data) entries = data;
@@ -399,7 +400,7 @@ try {
         try {
             const session = await ensureAnonSession();
             if (session) {
-                await supabase.from('growth_entries').delete().gte('created_at', '1970-01-01');
+                await supabase.from('growth_entries').delete().eq('user_id', session.user.id);
             }
             alert('모든 궤적을 삭제했어요.');
             window.openGrowthView();
@@ -462,7 +463,7 @@ try {
             </div>`;
 
         if (entries.length < 3) {
-            return `${back}${head}
+            return `${back}${head}${linkBanner}
                 <div style="text-align:center; padding:30px 20px; background:#f8fafc; border-radius:16px;">
                     <p style="font-size:0.95rem; color:#475569; line-height:1.7;">
                         아직 궤적이 쌓이는 중이에요. (지금 ${entries.length}개)<br>
