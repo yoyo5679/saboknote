@@ -5140,17 +5140,23 @@ try {
             ensureAnonSession().then(session => {
                 const u = session && session.user;
                 const providers = (u && u.identities ? u.identities : []).map(i => i.provider);
+                const providerRow = function (icon, iconBg, iconBorder, name) {
+                    return '<div style="display:flex; align-items:center; gap:10px; background:#fff; border:1px solid #e2e8f0; border-radius:12px; padding:10px 12px; margin-bottom:8px;">' +
+                        '<div style="width:34px; height:34px; border-radius:10px; background:' + iconBg + '; border:' + iconBorder + '; display:flex; align-items:center; justify-content:center; font-size:1rem; flex-shrink:0;">' + icon + '</div>' +
+                        '<div style="flex:1; min-width:0;">' +
+                        '<div style="font-size:0.85rem; font-weight:800; color:#1e293b;">' + name + '</div>' +
+                        '<div style="font-size:0.7rem; color:#16a34a; font-weight:700; margin-top:2px;"><span style="font-size:0.55rem; vertical-align:1px;">●</span> 연결됨 · 기기 간 자동 동기화 중</div>' +
+                        '</div></div>';
+                };
                 let html = '';
-                if (providers.includes('kakao')) {
-                    html += '<span style="background:#FEE500; color:#191919; padding:4px 8px; border-radius:6px; font-size:0.75rem; font-weight:800; margin-right:4px;">💬 카카오 연동됨</span>';
-                }
-                if (providers.includes('google')) {
-                    html += '<span style="background:#ffffff; border:1px solid #d1d5db; color:#191919; padding:4px 8px; border-radius:6px; font-size:0.75rem; font-weight:800;">🌐 구글 연동됨</span>';
-                }
+                if (providers.includes('kakao')) html += providerRow('💬', '#FEE500', 'none', '카카오 계정');
+                if (providers.includes('google')) html += providerRow('🌐', '#ffffff', '1px solid #e2e8f0', '구글 계정');
                 if (!html) {
                     html = loginButtonsHtml;
                 } else {
-                    html += '<button onclick="logout()" style="display:block; width:100%; margin-top:10px; padding:10px 14px; background:none; border:1px solid #cbd5e1; color:#64748b; border-radius:10px; font-size:0.82rem; font-weight:700; cursor:pointer;">로그아웃</button>';
+                    html = '<div style="width:100%;">' + html +
+                        '<button onclick="logout()" style="width:100%; padding:11px; background:none; border:1px solid #e2e8f0; color:#94a3b8; border-radius:10px; font-size:0.8rem; font-weight:700; cursor:pointer;">로그아웃</button>' +
+                        '</div>';
                 }
                 linkedList.innerHTML = html;
             }).catch(() => {
