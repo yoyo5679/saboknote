@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>사복노트 감정 파쇄기 & 사복놀이터</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:#DDE3ED; font-family:'Noto Sans KR',sans-serif; min-height:100vh; display:flex; flex-direction:column; align-items:center; padding:32px 16px 48px; }
+  .top-label { font-size:12px; font-weight:700; color:#8A94A6; letter-spacing:2px; margin-bottom:20px; text-transform:uppercase; }
+  .card { width:480px; height:600px; border-radius:22px; overflow:hidden; box-shadow:0 16px 48px rgba(0,0,0,0.18); position:relative; flex-shrink:0; }
+  .slide { display:none; width:100%; height:100%; position:absolute; top:0; left:0; }
+  .slide.on { display:flex; flex-direction:column; }
+  .foot { height:48px; flex-shrink:0; display:flex; align-items:center; padding:0 32px; justify-content:space-between; }
+  .foot .fl { font-size:12px; font-weight:900; }
+  .foot .fr { font-size:11px; }
+
+  /* S1 표지 - 레드/그린 그라데이션 */
+  .s1 { background:linear-gradient(160deg, #1C1C1C 0%, #2D1212 40%, #1A2E1A 100%); }
+  .s1 .logo-bar { display:flex; justify-content:space-between; align-items:center; padding:24px 32px 0; flex-shrink:0; }
+  .s1 .logo { font-size:13px; font-weight:900; color:rgba(255,255,255,0.4); }
+  .s1 .body { flex:1; padding:0 32px; display:flex; flex-direction:column; justify-content:center; }
+  .s1 .pill { display:inline-block; background:rgba(248,113,113,0.2); border:1px solid rgba(248,113,113,0.35); color:#FCA5A5; font-size:10px; font-weight:700; padding:4px 12px; border-radius:20px; margin-bottom:16px; align-self:flex-start; letter-spacing:1px; }
+  .s1 .main-title { font-size:36px; font-weight:900; color:white; line-height:1.25; margin-bottom:12px; }
+  .s1 .main-title em { color:#FCA5A5; font-style:normal; }
+  .s1 .sub-title { font-size:14px; color:rgba(255,255,255,0.5); margin-bottom:20px; line-height:1.7; }
+  .s1 .duo { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .s1 .duo-card { background:rgba(255,255,255,0.06); border-radius:14px; padding:14px; border:1px solid rgba(255,255,255,0.09); }
+  .s1 .duo-emoji { font-size:24px; margin-bottom:6px; }
+  .s1 .duo-name { font-size:13px; font-weight:700; color:white; margin-bottom:3px; }
+  .s1 .duo-desc { font-size:10px; color:rgba(255,255,255,0.4); line-height:1.5; }
+  .s1 .foot { background:rgba(255,255,255,0.04); border-top:1px solid rgba(255,255,255,0.07); }
+  .s1 .foot .fl { color:rgba(255,255,255,0.35); }
+  .s1 .foot .fr { color:rgba(255,255,255,0.2); }
+
+  /* S2 공감 - 흰 배경 + 레드헤더 */
+  .s2 { background:#fff; }
+  .s2 .head { background:linear-gradient(135deg,#DC2626,#EF4444); padding:22px 32px 18px; flex-shrink:0; }
+  .s2 .head-tag { font-size:10px; font-weight:700; color:rgba(255,255,255,0.7); letter-spacing:2px; margin-bottom:6px; }
+  .s2 .head-title { font-size:22px; font-weight:900; color:white; line-height:1.35; }
+  .s2 .body { flex:1; padding:18px 32px 0; display:flex; flex-direction:column; gap:9px; }
+  .s2 .feeling { background:#FFF5F5; border-radius:13px; padding:12px 15px; border-left:3px solid #EF4444; }
+  .s2 .f-top { display:flex; align-items:center; gap:7px; margin-bottom:5px; }
+  .s2 .f-icon { font-size:16px; }
+  .s2 .f-when { font-size:10px; font-weight:700; color:#DC2626; letter-spacing:1px; }
+  .s2 .f-text { font-size:13px; color:#3D4A5C; font-weight:500; line-height:1.6; word-break:keep-all; }
+  .s2 .f-inner { font-size:11px; color:#EF4444; margin-top:4px; font-weight:600; }
+  .s2 .foot { background:#FFF5F5; }
+  .s2 .foot .fl { color:#DC2626; }
+  .s2 .foot .fr { color:#8A94A6; }
+
+  /* S3 파쇄기 소개 - 초록 그라데이션 */
+  .s3 { background:linear-gradient(145deg,#14532D 0%,#16A34A 100%); }
+  .s3 .body { flex:1; padding:28px 32px 0; display:flex; flex-direction:column; justify-content:center; }
+  .s3 .tag { font-size:10px; font-weight:700; color:rgba(255,255,255,0.6); letter-spacing:2px; margin-bottom:12px; }
+  .s3 .ico { font-size:48px; margin-bottom:10px; line-height:1; }
+  .s3 .title { font-size:26px; font-weight:900; color:white; line-height:1.3; margin-bottom:12px; }
+  .s3 .title em { color:#FCD34D; font-style:normal; }
+  .s3 .desc { font-size:14px; color:rgba(255,255,255,0.8); line-height:1.8; margin-bottom:16px; word-break:keep-all; }
+  .s3 .feature-list { display:flex; flex-direction:column; gap:8px; }
+  .s3 .f-item { background:rgba(255,255,255,0.1); border-radius:12px; padding:10px 14px; display:flex; align-items:center; gap:10px; border:1px solid rgba(255,255,255,0.12); }
+  .s3 .f-icon { font-size:18px; flex-shrink:0; }
+  .s3 .f-text { font-size:13px; color:white; font-weight:600; }
+  .s3 .f-sub { font-size:11px; color:rgba(255,255,255,0.5); margin-top:1px; }
+  .s3 .foot { background:rgba(0,0,0,0.15); border-top:1px solid rgba(255,255,255,0.1); }
+  .s3 .foot .fl { color:rgba(255,255,255,0.45); }
+  .s3 .foot .fr { color:rgba(255,255,255,0.3); }
+
+  /* S4 파쇄기 흐름 소개 - 흰 배경 */
+  .s4 { background:#F0FDF4; }
+  .s4 .top { padding:20px 32px 0; flex-shrink:0; }
+  .s4 .stag { font-size:10px; font-weight:700; color:#16A34A; letter-spacing:2px; margin-bottom:5px; }
+  .s4 .stit { font-size:19px; font-weight:900; color:#1B2E4B; line-height:1.35; margin-bottom:14px; }
+  .s4 .body { flex:1; padding:0 32px; display:flex; flex-direction:column; gap:0; }
+  .s4 .step { display:flex; gap:14px; padding:12px 0; border-bottom:1px dashed #BBF7D0; }
+  .s4 .step:last-child { border-bottom:none; }
+  .s4 .step-num { width:28px; height:28px; border-radius:50%; background:#16A34A; color:white; font-size:12px; font-weight:900; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px; }
+  .s4 .step-content { flex:1; }
+  .s4 .step-title { font-size:14px; font-weight:900; color:#1B2E4B; margin-bottom:3px; }
+  .s4 .step-desc { font-size:12px; color:#3D4A5C; line-height:1.55; word-break:keep-all; }
+  .s4 .safety-box { background:#DCFCE7; border-radius:13px; padding:11px 14px; border:1px solid #BBF7D0; margin-top:8px; }
+  .s4 .safety-title { font-size:11px; font-weight:700; color:#15803D; margin-bottom:4px; }
+  .s4 .safety-text { font-size:12px; color:#166534; line-height:1.55; }
+  .s4 .foot { background:#DCFCE7; }
+  .s4 .foot .fl { color:#16A34A; }
+  .s4 .foot .fr { color:#8A94A6; }
+
+  /* S5 사복놀이터 소개 */
+  .s5 { background:#fff; }
+  .s5 .top { padding:20px 32px 0; flex-shrink:0; }
+  .s5 .stag { font-size:10px; font-weight:700; color:#F97316; letter-spacing:2px; margin-bottom:5px; }
+  .s5 .stit { font-size:19px; font-weight:900; color:#1B2E4B; line-height:1.35; margin-bottom:12px; }
+  .s5 .body { flex:1; padding:0 32px; display:flex; flex-direction:column; gap:8px; }
+  .s5 .play-card { background:white; border-radius:14px; padding:14px 15px; box-shadow:0 2px 10px rgba(0,0,0,0.06); border:1.5px solid #FED7AA; }
+  .s5 .play-top { display:flex; align-items:center; gap:10px; margin-bottom:6px; }
+  .s5 .play-emoji { font-size:26px; }
+  .s5 .play-info { flex:1; }
+  .s5 .play-name { font-size:14px; font-weight:900; color:#1B2E4B; }
+  .s5 .play-badge { display:inline-block; font-size:9px; font-weight:700; padding:2px 8px; border-radius:10px; background:#FFEDD5; color:#EA580C; margin-top:2px; }
+  .s5 .play-desc { font-size:12px; color:#3D4A5C; line-height:1.55; word-break:keep-all; }
+  .s5 .level-box { background:linear-gradient(135deg,#FFF7ED,#FFEDD5); border-radius:13px; padding:11px 14px; border:1px solid #FED7AA; }
+  .s5 .level-title { font-size:11px; font-weight:700; color:#EA580C; margin-bottom:4px; }
+  .s5 .level-text { font-size:12px; color:#7C2D12; line-height:1.55; }
+  .s5 .foot { background:#FFF7ED; }
+  .s5 .foot .fl { color:#EA580C; }
+  .s5 .foot .fr { color:#8A94A6; }
+
+  /* S6 CTA - 다크 */
+  .s6 { background:linear-gradient(160deg,#0A1A0A 0%,#1A1A1A 40%,#1A0A0A 100%); }
+  .s6 .inner { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:0 36px; text-align:center; }
+  .s6 .emo { font-size:52px; margin-bottom:14px; line-height:1; }
+  .s6 .big { font-size:22px; font-weight:900; color:white; line-height:1.55; margin-bottom:12px; word-break:keep-all; }
+  .s6 .big em { color:#FCA5A5; font-style:normal; }
+  .s6 .big em2 { color:#86EFAC; font-style:normal; }
+  .s6 .div2 { width:36px; height:2px; background:rgba(255,255,255,0.15); border-radius:2px; margin:0 auto 14px; }
+  .s6 .sub { font-size:13px; color:rgba(255,255,255,0.5); line-height:1.85; margin-bottom:22px; word-break:keep-all; }
+  .s6 .cta-row { display:flex; flex-direction:column; gap:8px; align-items:center; }
+  .s6 .cta1 { background:linear-gradient(135deg,#DC2626,#EF4444); color:white; font-size:13px; font-weight:900; padding:11px 24px; border-radius:40px; }
+  .s6 .cta2 { background:linear-gradient(135deg,#16A34A,#22C55E); color:white; font-size:13px; font-weight:900; padding:11px 24px; border-radius:40px; }
+  .s6 .url { font-size:11px; color:rgba(255,255,255,0.3); margin-top:8px; }
+  .s6 .foot { background:rgba(0,0,0,0.2); border-top:1px solid rgba(255,255,255,0.06); }
+  .s6 .foot .fl { color:rgba(255,255,255,0.3); }
+  .s6 .foot .fr { color:rgba(255,255,255,0.2); }
+
+  .nav { display:flex; align-items:center; gap:14px; margin-top:18px; }
+  .nbtn { width:38px; height:38px; border-radius:50%; background:white; border:none; cursor:pointer; font-size:15px; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 8px rgba(0,0,0,0.12); color:#1B2E4B; transition:all .18s; }
+  .nbtn:hover:not(:disabled) { background:#1B2E4B; color:white; }
+  .nbtn:disabled { opacity:.3; cursor:default; }
+  .dots { display:flex; gap:5px; }
+  .d { width:7px; height:7px; border-radius:50%; background:#C0C8D4; cursor:pointer; transition:all .18s; }
+  .d.on { background:#DC2626; width:18px; border-radius:4px; }
+  .ctr { font-size:11px; color:#8A94A6; margin-top:6px; text-align:center; }
+</style>
+</head>
+<body>
+<div class="top-label">사복노트 · 감정 파쇄기 & 사복놀이터</div>
+<div class="card">
+
+  <!-- S1 표지 -->
+  <div class="slide s1 on">
+    <div class="logo-bar">
+      <span class="logo">사복노트</span>
+      <span style="font-size:11px;color:rgba(255,255,255,0.25);">1 / 6</span>
+    </div>
+    <div class="body">
+      <div class="pill">🗑️ 감정 파쇄기 & 사복놀이터</div>
+      <div class="main-title">지친 마음,<br><em>여기 두고 가요</em></div>
+      <div class="sub-title">현장의 번아웃을 막아주는<br>사복노트만의 힐링 코너 💚</div>
+      <div class="duo">
+        <div class="duo-card">
+          <div class="duo-emoji">🗑️</div>
+          <div class="duo-name">감정 파쇄기</div>
+          <div class="duo-desc">쓰면 영원히 사라지는 감정 쓰레기통</div>
+        </div>
+        <div class="duo-card">
+          <div class="duo-emoji">🎪</div>
+          <div class="duo-name">사복놀이터</div>
+          <div class="duo-desc">심리테스트 & 힐링 게임</div>
+        </div>
+      </div>
+    </div>
+    <div class="foot"><span class="fl">사복노트</span><span class="fr">1 / 6</span></div>
+  </div>
+
+  <!-- S2 공감 -->
+  <div class="slide s2">
+    <div class="head">
+      <div class="head-tag">오늘도 이런 하루였나요</div>
+      <div class="head-title">현장에서 삼켜온<br>그 감정들 😔</div>
+    </div>
+    <div class="body">
+      <div class="feeling">
+        <div class="f-top"><span class="f-icon">😤</span><span class="f-when">클라이언트 상담 후</span></div>
+        <div class="f-text">또 막말 들었다... 아무한테도 말 못하고 혼자 삭이는 중</div>
+        <div class="f-inner">→ 파쇄하면 영원히 사라져요</div>
+      </div>
+      <div class="feeling">
+        <div class="f-top"><span class="f-icon">😭</span><span class="f-when">퇴근길에</span></div>
+        <div class="f-text">팀장이 내 탓이라고 했는데 억울해서 눈물이 날 것 같음. 이 감정 어디다 쏟지?</div>
+        <div class="f-inner">→ 선배가 먼저 읽고 위로해줘요</div>
+      </div>
+      <div class="feeling">
+        <div class="f-top"><span class="f-icon">🥱</span><span class="f-when">번아웃 직전</span></div>
+        <div class="f-text">그냥 다 힘들다. 오늘 하루도 잘 버텼는데 아무도 몰라줌</div>
+        <div class="f-inner">→ 성장 궤적으로 나를 칭찬해줘요</div>
+      </div>
+    </div>
+    <div class="foot"><span class="fl">사복노트</span><span class="fr">2 / 6</span></div>
+  </div>
+
+  <!-- S3 파쇄기 소개 -->
+  <div class="slide s3">
+    <div class="body">
+      <div class="tag">번아웃 방지 기능 ✅</div>
+      <div class="ico">🗑️</div>
+      <div class="title">감정을<br><em>파쇄해버려요</em></div>
+      <div class="desc">쓴 글은 서버에 저장되지 않아요<br>파쇄 버튼 누르면 영원히 사라져요</div>
+      <div class="feature-list">
+        <div class="f-item">
+          <span class="f-icon">💬</span>
+          <div>
+            <div class="f-text">선배의 위로 먼저 받기</div>
+            <div class="f-sub">현장을 지나온 선배가 먼저 읽어줘요</div>
+          </div>
+        </div>
+        <div class="f-item">
+          <span class="f-icon">🗑️</span>
+          <div>
+            <div class="f-text">위로 없이 바로 파쇄</div>
+            <div class="f-sub">시원하게 쏟아내고 날려버려요</div>
+          </div>
+        </div>
+        <div class="f-item">
+          <span class="f-icon">🌱</span>
+          <div>
+            <div class="f-text">나의 성장 궤적 보기</div>
+            <div class="f-sub">오늘 버텐 나를 데이터로 기록해요</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="foot"><span class="fl" style="color:rgba(255,255,255,0.45);">사복노트</span><span class="fr" style="color:rgba(255,255,255,0.3);">3 / 6</span></div>
+  </div>
+
+  <!-- S4 파쇄기 흐름 -->
+  <div class="slide s4">
+    <div class="top">
+      <div class="stag">이렇게 쓰면 돼요</div>
+      <div class="stit">감정 파쇄기 사용법 🗑️</div>
+    </div>
+    <div class="body">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">오늘 힘든 일 솔직하게 적기</div>
+          <div class="step-desc">클라이언트 폭언, 야근, 억울함... 뭐든 다 OK</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">선배의 위로 받기 (선택)</div>
+          <div class="step-desc">현장 경험자의 따뜻한 한 줄 위로가 도착해요</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">파쇄 버튼 누르기</div>
+          <div class="step-desc">조각조각 사라지는 시각 효과로 카타르시스!</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <div class="step-title">성장 궤적 쌓이기</div>
+          <div class="step-desc">힘듦 정도 · 주제 · 위로 한 줄만 기록으로 남아요</div>
+        </div>
+      </div>
+      <div class="safety-box">
+        <div class="safety-title">🔒 100% 프라이버시 보장</div>
+        <div class="safety-text">쓴 내용은 서버에 전혀 전송되지 않아요<br>내 기기 안에서만 처리 후 즉시 삭제됩니다</div>
+      </div>
+    </div>
+    <div class="foot"><span class="fl">사복노트</span><span class="fr">4 / 6</span></div>
+  </div>
+
+  <!-- S5 사복놀이터 -->
+  <div class="slide s5">
+    <div class="top">
+      <div class="stag">힐링 콘텐츠</div>
+      <div class="stit">사복놀이터에서 쉬어가요 🎪</div>
+    </div>
+    <div class="body">
+      <div class="play-card">
+        <div class="play-top">
+          <span class="play-emoji">🧩</span>
+          <div class="play-info">
+            <div class="play-name">내 안의 사복캐 찾기</div>
+            <div class="play-badge">12문항 심리테스트</div>
+          </div>
+        </div>
+        <div class="play-desc">나는 어떤 유형의 사회복지사? 과몰입 주의 🔥<br>결과 공유하고 동료들과 비교해봐요</div>
+      </div>
+      <div class="play-card" style="border-color:#BBF7D0;">
+        <div class="play-top">
+          <span class="play-emoji">🏃</span>
+          <div class="play-info">
+            <div class="play-name">칼퇴 탈출 대작전</div>
+            <div class="play-badge" style="background:#DCFCE7;color:#16A34A;">힐링 게임</div>
+          </div>
+        </div>
+        <div class="play-desc">야근 없이 퇴근할 수 있을까? 두뇌 풀가동 🧠<br>스트레스 날리는 미니게임</div>
+      </div>
+      <div class="level-box">
+        <div class="level-title">⚡ XP & 레벨 시스템</div>
+        <div class="level-text">Q&A 답변 · 감사 · 놀이터 참여로 XP 적립<br>🌱 인턴요원 → 🌿 베테랑 → 🔥 고수 레벨업!</div>
+      </div>
+    </div>
+    <div class="foot"><span class="fl">사복노트</span><span class="fr">5 / 6</span></div>
+  </div>
+
+  <!-- S6 CTA -->
+  <div class="slide s6">
+    <div class="inner">
+      <div class="emo">🌿</div>
+      <div class="big">지친 감정은 <em>파쇄</em>하고<br>재충전은 <em2>놀이터</em2>에서</div>
+      <div class="div2"></div>
+      <div class="sub">사회복지사가 행복해야<br>현장이 행복합니다 💚<br><br>동료한테도 알려주세요 🔖</div>
+      <div class="cta-row">
+        <div class="cta1">🗑️ 감정 파쇄하러 가기</div>
+        <div class="cta2">🎪 사복놀이터 입장</div>
+      </div>
+      <div class="url">saboknote.com</div>
+    </div>
+    <div class="foot"><span class="fl">사복노트</span><span class="fr">6 / 6</span></div>
+  </div>
+
+</div>
+
+<div class="nav">
+  <button class="nbtn" id="p" onclick="go(-1)" disabled>←</button>
+  <div class="dots" id="dots"></div>
+  <button class="nbtn" id="n" onclick="go(1)">→</button>
+</div>
+<div class="ctr" id="ctr">1 / 6</div>
+
+<script>
+  let cur=0; const N=6;
+  const slides=document.querySelectorAll('.slide');
+  const wrap=document.getElementById('dots');
+  for(let i=0;i<N;i++){
+    const d=document.createElement('div');
+    d.className='d'+(i===0?' on':'');
+    d.onclick=()=>to(i);
+    wrap.appendChild(d);
+  }
+  function to(n){
+    slides[cur].classList.remove('on'); wrap.children[cur].classList.remove('on');
+    cur=n;
+    slides[cur].classList.add('on'); wrap.children[cur].classList.add('on');
+    document.getElementById('ctr').textContent=`${cur+1} / ${N}`;
+    document.getElementById('p').disabled=cur===0;
+    document.getElementById('n').disabled=cur===N-1;
+  }
+  function go(d){const nx=cur+d;if(nx>=0&&nx<N)to(nx);}
+  document.addEventListener('keydown',e=>{
+    if(e.key==='ArrowRight')go(1);
+    if(e.key==='ArrowLeft')go(-1);
+  });
+</script>
+</body>
+</html>
