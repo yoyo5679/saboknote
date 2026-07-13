@@ -594,6 +594,55 @@ try {
     }
     celebrateLinkIfNeeded();
 
+    /* ===== 계정 통합 다리: 동기화 코드(sabok_user_id) ↔ 카카오/구글 계정 =====
+       원리: 성장 궤적은 auth UUID에 묶여 카카오 연동만으로 따라오지만,
+             닉네임·게시글·게임(sabok_user_id 체계)은 별개라 안 따라온다.
+             그래서 이 동기화 코드를 auth 계정 메타데이터에 심어둔다.
+             → 다른 기기에서 카카오 로그인만 하면 성장 궤적 + 동기화 코드까지 한 번에 복원. */
+    const SABOK_RESTORE_DECLINED_KEY = 'sabok_restore_declined_for';
+
+    async function applySabokId(sabokId) {
+        // 계정에 저장돼 있던 동기화 코드를 이 기기에 적용 (닉네임·게임 데이터까지 복원)
+        localStorage.setItem('sabok_user_id', sabokId);
+        try {
+            const { data } = await supabase.from('profiles').select('nickname').eq('user_id', sabokId).single();
+            if (data && data.nickname) localStorage.setItem('saboks_anonymous_name', data.nickname);
+        } catch (_) { /* noop */ }
+        try {
+            const { data: rankData } = await supabase.from('rankings').select('game_data').eq('user_id', sabokId).single();
+            if (rankData && rankData.game_data) localStorage.setItem('gameData_' + sabokId, JSON.stringify(rankData.game_data));
+        } catch (_) { /* noop */ }
+        alert('연결된 계정에 저장돼 있던 기록을 불러왔어요.\n앱을 다시 시작합니다. 🌱');
+        location.reload();
+    }
+
+    async function syncSabokAccount() {
+        try {
+            const session = await ensureAnonSession();
+            const u = session && session.user;
+            if (!u || !supabase) return;
+            const linked = (u.identities || []).some(i => i.provider === 'kakao' || i.provider === 'google');
+            const meta = u.user_metadata || {};
+            const localId = getOrCreateUserId();
+            const storedId = meta.sabok_user_id;
+
+            // 다른 기기에서 카카오/구글로 로그인 → 계정에 다른 동기화 코드가 저장돼 있음 → 복원 권유(1회)
+            if (linked && storedId && storedId !== localId) {
+                if (localStorage.getItem(SABOK_RESTORE_DECLINED_KEY) === storedId) return;
+                const ok = confirm('이 계정에 저장돼 있던 기존 기록(닉네임·게시글·사복키우기)을\n이 기기로 불러올까요?\n\n(지금 이 기기의 임시 기록은 사라져요)');
+                if (ok) { await applySabokId(storedId); return; }
+                localStorage.setItem(SABOK_RESTORE_DECLINED_KEY, storedId);
+                return;
+            }
+
+            // 그 외(익명이거나, 저장된 코드가 없거나 같음) → 현재 동기화 코드를 계정에 심어둔다
+            if (storedId !== localId) {
+                await supabase.auth.updateUser({ data: { sabok_user_id: localId } });
+            }
+        } catch (_) { /* noop */ }
+    }
+    syncSabokAccount();
+
     /* --- User Request Modal (무엇이든 물어보살) --- */
     function initRequestModal() {
         const btn = document.getElementById('open-request-modal');
