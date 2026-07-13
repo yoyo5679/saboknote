@@ -44,6 +44,36 @@ try {
     }
     ensureAnonSession();
 
+    /* --- OAuth 콜백 에러 처리 ---
+       [버그 원인] 다른 기기에서 linkIdentity()로 이미 연결된 카카오/구글을 시도하면
+       클라이언트가 아닌 콜백(redirect) 단계에서 422(Identity is already linked)로 실패하고,
+       에러가 URL 해시(#error_description=...)에 담겨 돌아온다.
+       기존에는 이걸 아무도 읽지 않아 "로그인이 안 되는" 것처럼 보였다.
+       → 여기서 잡아 기존 계정 로그인(signInWithOAuth)으로 이어준다. */
+    (function handleOAuthCallbackError() {
+        try {
+            const hashParams = new URLSearchParams((window.location.hash || '').replace(/^#/, ''));
+            const queryParams = new URLSearchParams(window.location.search);
+            const desc = hashParams.get('error_description') || queryParams.get('error_description');
+            const errCode = hashParams.get('error_code') || queryParams.get('error_code');
+            if (!desc && !errCode) return;
+            history.replaceState(null, '', window.location.pathname);
+            const provider = localStorage.getItem('sabok_pending_provider') || 'kakao';
+            const providerName = provider === 'google' ? '구글' : '카카오';
+            const already = (desc && desc.toLowerCase().indexOf('already linked') !== -1) || errCode === 'identity_already_exists';
+            if (already) {
+                if (confirm('이 ' + providerName + ' 계정은 예전에 이미 연결한 적이 있어요. 🙌\n그 계정으로 로그인해서 기존 기록(성장 궤적·닉네임·게임)을 불러올까요?\n\n(지금 이 기기의 임시 기록은 사라져요)')) {
+                    if (supabase) supabase.auth.signInWithOAuth({
+                        provider: provider,
+                        options: { redirectTo: window.location.origin + window.location.pathname }
+                    });
+                }
+            } else if (desc) {
+                alert('소셜 로그인 중 문제가 발생했어요. 😢\n잠시 후 다시 시도해 주세요.\n(' + desc + ')');
+            }
+        } catch (_) { /* noop */ }
+    })();
+
     /* --- Anonymous User ID (localStorage) --- */
     /* --- Utility: HTML Escape --- */
     function escapeHtml(text) {
@@ -512,6 +542,7 @@ try {
 
     window.linkKakao = async function () {
         try {
+            localStorage.setItem('sabok_pending_provider', 'kakao');
             const session = await ensureAnonSession();
             if (!session) throw new Error('no_session');
             const { error } = await supabase.auth.linkIdentity({
@@ -538,6 +569,7 @@ try {
     // 이미 카카오에 연결된 계정으로 되돌아가는 로그인 (기기 변경·재방문 시 복원 경로)
     window.signInKakao = async function () {
         try {
+            localStorage.setItem('sabok_pending_provider', 'kakao');
             const { error } = await supabase.auth.signInWithOAuth({
                 provider: 'kakao',
                 options: { redirectTo: window.location.origin + window.location.pathname }
@@ -550,6 +582,7 @@ try {
 
     window.linkGoogle = async function () {
         try {
+            localStorage.setItem('sabok_pending_provider', 'google');
             const session = await ensureAnonSession();
             if (!session) throw new Error('no_session');
             const { error } = await supabase.auth.linkIdentity({
@@ -574,6 +607,7 @@ try {
 
     window.signInGoogle = async function () {
         try {
+            localStorage.setItem('sabok_pending_provider', 'google');
             const { error } = await supabase.auth.signInWithOAuth({
                 provider: 'google',
                 options: { redirectTo: window.location.origin + window.location.pathname }
@@ -581,6 +615,50 @@ try {
             if (error) throw error;
         } catch (e) {
             alert('로그인에 실패했어요. 잠시 후 다시 시도해 주세요. 😢');
+        }
+    };
+
+    /* ===== 내 정보 탭 소셜 로그인 진입점 =====
+       처음 연결이면 익명 계정 승격(linkIdentity),
+       예전에 연결한 적 있으면 그 계정으로 로그인(signInWithOAuth).
+       동기화 코드(sabok_user_id)는 연결 직전에 계정 메타데이터에 바인딩해
+       다른 기기에서 로그인만 해도 닉네임·게시글·게임 기록까지 복원되게 한다. */
+    window.socialLogin = async function (provider) {
+        if (!supabase) { alert('네트워크 연결을 확인한 뒤 다시 시도해 주세요.'); return; }
+        const providerName = provider === 'google' ? '구글' : '카카오';
+        try {
+            localStorage.setItem('sabok_pending_provider', provider);
+            const session = await ensureAnonSession();
+            const u = session && session.user;
+            if (u && (u.identities || []).some(i => i.provider === 'kakao' || i.provider === 'google')) {
+                alert('이미 소셜 계정으로 로그인돼 있어요. 😊');
+                if (typeof initMypage === 'function') initMypage();
+                return;
+            }
+            const hasAccount = confirm('예전에 ' + providerName + ' 계정을 연결한 적이 있나요?\n\n[확인] 네 — 그 계정으로 로그인해서 기존 기록을 불러올게요\n[취소] 아니요, 처음이에요 — 지금 이 기기의 기록을 계정에 묶을게요');
+            const redirectTo = window.location.origin + window.location.pathname;
+            if (hasAccount || !session) {
+                // 기존 계정 로그인 (다른 기기에서 재로그인하는 경로)
+                const { error } = await supabase.auth.signInWithOAuth({ provider: provider, options: { redirectTo: redirectTo } });
+                if (error) throw error;
+                return;
+            }
+            // 처음 연결: 동기화 코드를 계정에 먼저 심고 익명 → 소셜 승격
+            try { await supabase.auth.updateUser({ data: { sabok_user_id: getOrCreateUserId() } }); } catch (_) { /* noop */ }
+            const { error } = await supabase.auth.linkIdentity({ provider: provider, options: { redirectTo: redirectTo } });
+            if (error) throw error;
+        } catch (e) {
+            const msg = String((e && e.message) || e);
+            if (msg.indexOf('already') !== -1) {
+                if (confirm('이 ' + providerName + ' 계정은 이미 연결돼 있어요. 🙌\n그 계정으로 로그인해서 기존 기록을 불러올까요?')) {
+                    return provider === 'google' ? window.signInGoogle() : window.signInKakao();
+                }
+            } else if (msg.indexOf('linking') !== -1 || msg.indexOf('disabled') !== -1) {
+                // 수동 연결 기능이 꺼져 있으면 로그인으로 대체
+                return provider === 'google' ? window.signInGoogle() : window.signInKakao();
+            } else {
+                alert('로그인에 실패했어요. 잠시 후 다시 시도해 주세요. 😢');
+            }
         }
     };
 
@@ -603,6 +681,7 @@ try {
                 localStorage.removeItem(LINK_OFFER_KEY);
                 localStorage.removeItem(LINK_DONE_KEY);
                 localStorage.removeItem(SABOK_RESTORE_DECLINED_KEY);
+                localStorage.removeItem('sabok_pending_provider');
                 Object.keys(localStorage).forEach(k => {
                     if (k.startsWith('sb-') && k.endsWith('-auth-token')) localStorage.removeItem(k);
                 });
@@ -5051,14 +5130,16 @@ try {
         // 소셜 연동 상태 표시
         const linkedList = document.getElementById('my-linked-accounts-list');
         if (linkedList) {
+            const loginButtonsHtml =
+                '<div style="width:100%;">' +
+                '<p style="font-size:0.78rem; color:#64748b; line-height:1.55; margin:0 0 10px;">소셜 계정을 연결하면 동기화 코드 없이도<br>어느 기기에서든 내 기록이 그대로 이어져요.</p>' +
+                '<button onclick="socialLogin(\'kakao\')" style="width:100%; padding:12px; background:#FEE500; color:#191919; border:none; border-radius:10px; font-size:0.88rem; font-weight:800; cursor:pointer; margin-bottom:8px;">💬 카카오로 로그인 / 연결</button>' +
+                '<button onclick="socialLogin(\'google\')" style="width:100%; padding:12px; background:#ffffff; color:#191919; border:1px solid #d1d5db; border-radius:10px; font-size:0.88rem; font-weight:800; cursor:pointer;">🌐 구글로 로그인 / 연결</button>' +
+                '</div>';
             linkedList.innerHTML = '<span style="font-size:0.75rem; color:#94a3b8;">확인 중...</span>';
             ensureAnonSession().then(session => {
                 const u = session && session.user;
-                if (!u || !u.identities) {
-                    linkedList.innerHTML = '<span style="font-size:0.75rem; color:#94a3b8;">현재 연동된 소셜 계정이 없습니다. (성장 궤적에서 연동 가능)</span>';
-                    return;
-                }
-                const providers = u.identities.map(i => i.provider);
+                const providers = (u && u.identities ? u.identities : []).map(i => i.provider);
                 let html = '';
                 if (providers.includes('kakao')) {
                     html += '<span style="background:#FEE500; color:#191919; padding:4px 8px; border-radius:6px; font-size:0.75rem; font-weight:800; margin-right:4px;">💬 카카오 연동됨</span>';
@@ -5067,13 +5148,13 @@ try {
                     html += '<span style="background:#ffffff; border:1px solid #d1d5db; color:#191919; padding:4px 8px; border-radius:6px; font-size:0.75rem; font-weight:800;">🌐 구글 연동됨</span>';
                 }
                 if (!html) {
-                    html = '<span style="font-size:0.75rem; color:#94a3b8;">현재 연동된 소셜 계정이 없습니다. (성장 궤적에서 연동 가능)</span>';
+                    html = loginButtonsHtml;
                 } else {
-                    html += '<button onclick="logout()" style="display:block; margin-top:10px; padding:8px 14px; background:none; border:1px solid #cbd5e1; color:#64748b; border-radius:10px; font-size:0.8rem; font-weight:700; cursor:pointer;">로그아웃</button>';
+                    html += '<button onclick="logout()" style="display:block; width:100%; margin-top:10px; padding:10px 14px; background:none; border:1px solid #cbd5e1; color:#64748b; border-radius:10px; font-size:0.82rem; font-weight:700; cursor:pointer;">로그아웃</button>';
                 }
                 linkedList.innerHTML = html;
-            }).catch(e => {
-                linkedList.innerHTML = '<span style="font-size:0.75rem; color:#ef4444;">상태를 불러오지 못했습니다.</span>';
+            }).catch(() => {
+                linkedList.innerHTML = loginButtonsHtml;
             });
         }
 
