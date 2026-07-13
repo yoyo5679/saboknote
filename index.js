@@ -23,19 +23,19 @@ try {
                 })
                 .catch(err => { console.warn('session error:', err); return null; });
 
+            // 주의: localStorage의 sb-*-auth-token을 지우지 말 것.
+            // (이전 버그: 타임아웃 콜백이 race 결과와 무관하게 3초 뒤 무조건 실행되며
+            //  토큰을 삭제 → 방문마다 새 익명 유저 발급 → 성장 궤적이 매번 초기화됨)
+            let timeoutId = null;
             const timeoutTask = new Promise(resolve => {
-                setTimeout(() => {
-                    console.warn('ensureAnonSession timed out, clearing storage');
-                    try {
-                        Object.keys(localStorage).forEach(key => {
-                            if (key.startsWith('sb-') && key.endsWith('-auth-token')) localStorage.removeItem(key);
-                        });
-                    } catch(e) {}
+                timeoutId = setTimeout(() => {
+                    console.warn('ensureAnonSession timed out');
                     resolve(null);
-                }, 3000);
+                }, 8000);
             });
 
             sabokAuthPromise = Promise.race([authTask, timeoutTask]).then(res => {
+                clearTimeout(timeoutId);
                 if (!res) sabokAuthPromise = null;
                 return res;
             });
