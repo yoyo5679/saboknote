@@ -584,6 +584,37 @@ try {
         }
     };
 
+    // 로그아웃 — 소셜 세션 종료 + 이 기기 신원 초기화(재로그인 시 원래 기록으로 복원)
+    window.logout = async function () {
+        try {
+            const session = await ensureAnonSession();
+            const u = session && session.user;
+            const linked = u && (u.identities || []).some(i => i.provider === 'kakao' || i.provider === 'google');
+            if (!linked) {
+                alert('지금은 소셜 계정으로 로그인돼 있지 않아요. (익명 사용 중)');
+                return;
+            }
+            if (!confirm('로그아웃할까요?\n이 기기의 임시 기록은 비워지고,\n다시 카카오/구글로 로그인하면 원래 기록으로 돌아와요. 🌱')) return;
+            try { await supabase.auth.signOut(); } catch (_) { /* noop */ }
+            // 로컬 신원 초기화 → 완전한 "새 기기" 상태
+            try {
+                localStorage.removeItem('sabok_user_id');
+                localStorage.removeItem('saboks_anonymous_name');
+                localStorage.removeItem(LINK_OFFER_KEY);
+                localStorage.removeItem(LINK_DONE_KEY);
+                localStorage.removeItem(SABOK_RESTORE_DECLINED_KEY);
+                Object.keys(localStorage).forEach(k => {
+                    if (k.startsWith('sb-') && k.endsWith('-auth-token')) localStorage.removeItem(k);
+                });
+            } catch (_) { /* noop */ }
+            sabokAuthPromise = null;
+            alert('로그아웃됐어요. 다시 로그인하면 기록이 돌아와요. 👋');
+            location.reload();
+        } catch (_) {
+            alert('로그아웃 중 문제가 생겼어요. 잠시 후 다시 시도해 주세요.');
+        }
+    };
+
     function showLinkOfferModal(count) {
         if (document.getElementById('link-offer-modal')) return;
         const wrap = document.createElement('div');
@@ -5037,6 +5068,8 @@ try {
                 }
                 if (!html) {
                     html = '<span style="font-size:0.75rem; color:#94a3b8;">현재 연동된 소셜 계정이 없습니다. (성장 궤적에서 연동 가능)</span>';
+                } else {
+                    html += '<button onclick="logout()" style="display:block; margin-top:10px; padding:8px 14px; background:none; border:1px solid #cbd5e1; color:#64748b; border-radius:10px; font-size:0.8rem; font-weight:700; cursor:pointer;">로그아웃</button>';
                 }
                 linkedList.innerHTML = html;
             }).catch(e => {
