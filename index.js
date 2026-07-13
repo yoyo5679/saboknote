@@ -656,16 +656,28 @@ try {
             const localId = getOrCreateUserId();
             const storedId = meta.sabok_user_id;
 
-            // 다른 기기에서 카카오/구글로 로그인 → 계정에 다른 동기화 코드가 저장돼 있음 → 복원 권유(1회)
-            if (linked && storedId && storedId !== localId) {
-                if (localStorage.getItem(SABOK_RESTORE_DECLINED_KEY) === storedId) return;
-                const ok = confirm('이 계정에 저장돼 있던 기존 기록(닉네임·게시글·사복키우기)을\n이 기기로 불러올까요?\n\n(지금 이 기기의 임시 기록은 사라져요)');
-                if (ok) { await applySabokId(storedId); return; }
-                localStorage.setItem(SABOK_RESTORE_DECLINED_KEY, storedId);
+            if (linked) {
+                // 다른 기기에서 로그인 → 계정에 저장된 코드가 있고 이 기기와 다르면 복원 권유(1회)
+                if (storedId && storedId !== localId) {
+                    if (localStorage.getItem(SABOK_RESTORE_DECLINED_KEY) === storedId) return;
+                    const ok = confirm('이 계정에 저장돼 있던 기존 기록(닉네임·게시글·사복키우기)을\n이 기기로 불러올까요?\n\n(지금 이 기기의 임시 기록은 사라져요)');
+                    if (ok) { await applySabokId(storedId); return; }
+                    localStorage.setItem(SABOK_RESTORE_DECLINED_KEY, storedId);
+                    return;
+                }
+                // 계정에 코드가 아직 안 묶임(레거시 연결) → 이 기기에 실제 데이터가 있을 때만 바인딩
+                if (!storedId) {
+                    try {
+                        const { data: prof } = await supabase.from('profiles').select('user_id').eq('user_id', localId).limit(1);
+                        if (prof && prof.length) {
+                            await supabase.auth.updateUser({ data: { sabok_user_id: localId } });
+                        }
+                    } catch (_) { /* noop */ }
+                }
                 return;
             }
 
-            // 그 외(익명이거나, 저장된 코드가 없거나 같음) → 현재 동기화 코드를 계정에 심어둔다
+            // 익명 상태 → 연결에 대비해 현재 동기화 코드를 계정 메타데이터에 저장해둔다
             if (storedId !== localId) {
                 await supabase.auth.updateUser({ data: { sabok_user_id: localId } });
             }
