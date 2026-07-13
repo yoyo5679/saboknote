@@ -7141,4 +7141,83 @@ try {
     document.addEventListener('DOMContentLoaded', checkPWAStatus);
     window.addEventListener('load', checkPWAStatus);
 
+
+    /* ===== 당겨서 새로고침 (Pull-to-Refresh) — .app-main 스크롤 최상단에서 아래로 당기면 reload ===== */
+    (function initPullToRefresh() {
+        function setup() {
+            const container = document.querySelector('.app-main');
+            if (!container || container.dataset.ptrReady) return;
+            container.dataset.ptrReady = '1';
+
+            const THRESHOLD = 72;   // 이만큼 당기면 새로고침
+            const MAX = 110;        // 최대 당김 거리
+            let startY = 0, pulling = false, dist = 0;
+
+            // 당김 표시기
+            const ind = document.createElement('div');
+            ind.style.cssText = 'position:fixed; top:0; left:0; right:0; display:flex; align-items:flex-end; justify-content:center; pointer-events:none; z-index:9997; height:0; overflow:hidden; transition:none;';
+            ind.innerHTML = '<div id="ptr-spinner" style="margin-bottom:10px; width:30px; height:30px; border-radius:50%; border:3px solid #e2e8f0; border-top-color:#16a34a; transform:rotate(0deg);"></div>';
+            document.body.appendChild(ind);
+            const spinner = ind.querySelector('#ptr-spinner');
+
+            function reset(animate) {
+                ind.style.transition = animate ? 'height 0.2s ease' : 'none';
+                ind.style.height = '0px';
+                dist = 0; pulling = false;
+            }
+
+            container.addEventListener('touchstart', function (e) {
+                if (container.scrollTop <= 0 && e.touches.length === 1) {
+                    startY = e.touches[0].clientY;
+                    pulling = true;
+                    dist = 0;
+                } else {
+                    pulling = false;
+                }
+            }, { passive: true });
+
+            container.addEventListener('touchmove', function (e) {
+                if (!pulling) return;
+                const dy = e.touches[0].clientY - startY;
+                if (dy <= 0 || container.scrollTop > 0) { reset(false); return; }
+                // 저항감(고무줄) 적용
+                dist = Math.min(MAX, dy * 0.5);
+                if (dist > 4) {
+                    e.preventDefault(); // 네이티브 스크롤/바운스 억제
+                    ind.style.transition = 'none';
+                    ind.style.height = dist + 'px';
+                    spinner.style.transform = 'rotate(' + (dist * 3) + 'deg)';
+                    spinner.style.opacity = Math.min(1, dist / THRESHOLD);
+                }
+            }, { passive: false });
+
+            container.addEventListener('touchend', function () {
+                if (!pulling) return;
+                if (dist >= THRESHOLD) {
+                    // 새로고침 확정 — 스피너 회전시키며 리로드
+                    ind.style.transition = 'height 0.2s ease';
+                    ind.style.height = THRESHOLD + 'px';
+                    spinner.style.animation = 'ptrSpin 0.6s linear infinite';
+                    setTimeout(function () { location.reload(); }, 150);
+                } else {
+                    reset(true);
+                }
+            }, { passive: true });
+
+            // 스피너 회전 keyframe 주입(중복 방지)
+            if (!document.getElementById('ptr-style')) {
+                const st = document.createElement('style');
+                st.id = 'ptr-style';
+                st.textContent = '@keyframes ptrSpin{to{transform:rotate(360deg)}}';
+                document.head.appendChild(st);
+            }
+        }
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', setup);
+        } else {
+            setup();
+        }
+        window.addEventListener('load', setup);
+    })();
+
 } catch (e) { console.error('Global JS Error:', e); }
