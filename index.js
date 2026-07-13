@@ -523,12 +523,28 @@ try {
         } catch (e) {
             const msg = String((e && e.message) || e);
             if (msg.indexOf('already') !== -1) {
-                alert('이 카카오 계정, 이미 다른 궤적과 연결돼 있어요. 🤔\n원래 쓰던 기기(브라우저)에서 열면 그 궤적을 만날 수 있어요.');
+                // 이 카카오는 이미 예전에 연결한 계정이 있음 → 승격(link) 대신 그 계정으로 로그인
+                if (confirm('이 카카오는 예전에 이미 연결한 적이 있어요. 🙌\n그 계정으로 로그인해서 예전 기록(성장 궤적·게임·게시글)을 불러올까요?')) {
+                    return window.signInKakao();
+                }
             } else if (msg.indexOf('linking') !== -1 || msg.indexOf('disabled') !== -1) {
                 alert('앗, 연결 기능이 아직 준비 중이에요. 조금만 기다려주세요! 🙏');
             } else {
                 alert('연결에 실패했어요. 잠시 후 다시 시도해 주세요. 😢');
             }
+        }
+    };
+
+    // 이미 카카오에 연결된 계정으로 되돌아가는 로그인 (기기 변경·재방문 시 복원 경로)
+    window.signInKakao = async function () {
+        try {
+            const { error } = await supabase.auth.signInWithOAuth({
+                provider: 'kakao',
+                options: { redirectTo: window.location.origin + window.location.pathname }
+            });
+            if (error) throw error;
+        } catch (e) {
+            alert('로그인에 실패했어요. 잠시 후 다시 시도해 주세요. 😢');
         }
     };
 
@@ -545,12 +561,26 @@ try {
         } catch (e) {
             const msg = String((e && e.message) || e);
             if (msg.indexOf('already') !== -1) {
-                alert('이 구글 계정, 이미 다른 궤적과 연결돼 있어요. 🤔\n원래 쓰던 기기(브라우저)에서 열면 그 궤적을 만날 수 있어요.');
+                if (confirm('이 구글은 예전에 이미 연결한 적이 있어요. 🙌\n그 계정으로 로그인해서 예전 기록(성장 궤적·게임·게시글)을 불러올까요?')) {
+                    return window.signInGoogle();
+                }
             } else if (msg.indexOf('linking') !== -1 || msg.indexOf('disabled') !== -1) {
                 alert('앗, 연결 기능이 아직 준비 중이에요. 조금만 기다려주세요! 🙏');
             } else {
                 alert('연결에 실패했어요. 잠시 후 다시 시도해 주세요. 😢');
             }
+        }
+    };
+
+    window.signInGoogle = async function () {
+        try {
+            const { error } = await supabase.auth.signInWithOAuth({
+                provider: 'google',
+                options: { redirectTo: window.location.origin + window.location.pathname }
+            });
+            if (error) throw error;
+        } catch (e) {
+            alert('로그인에 실패했어요. 잠시 후 다시 시도해 주세요. 😢');
         }
     };
 
