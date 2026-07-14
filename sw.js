@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sabok-note-cache-v21';
+const CACHE_NAME = 'sabok-note-cache-v22';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -22,8 +22,14 @@ self.addEventListener('fetch', (event) => {
   const isNavigation = event.request.mode === 'navigate' ||
     (event.request.headers.get('accept') || '').includes('text/html');
 
-  if (isNavigation) {
-    // HTML: 네트워크 우선 → 항상 최신 배포 반영, 오프라인 시 캐시 폴백
+  // 핵심 코드(index.js/css)는 모바일에서 로그인 버그 픽스가 한 방문 늦게 반영되던
+  // stale-while-revalidate 문제가 있어 HTML과 같이 네트워크 우선으로 처리
+  const reqUrl = new URL(event.request.url);
+  const isCoreAsset = reqUrl.origin === self.location.origin &&
+    (reqUrl.pathname === '/index.js' || reqUrl.pathname === '/index.css');
+
+  if (isNavigation || isCoreAsset) {
+    // HTML·핵심 JS/CSS: 네트워크 우선 → 항상 최신 배포 반영, 오프라인 시 캐시 폴백
     event.respondWith(
       fetch(event.request)
         .then((response) => {
