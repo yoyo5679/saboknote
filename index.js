@@ -5784,7 +5784,10 @@ try {
                     <div style="font-size:0.9rem; color:#334155; line-height:1.8;">
                         <div style="padding:14px 0; border-bottom:1px solid #f1f5f9; display:flex; justify-content:space-between; align-items:center;">
                             <span style="font-weight:700;">🌙 다크 모드</span>
-                            <span style="font-size:0.8rem; color:#94a3b8; background:#f1f5f9; padding:4px 10px; border-radius:20px;">준비 중</span>
+                            <label class="dm-switch">
+                                <input type="checkbox" id="dark-mode-toggle-header" ${document.documentElement.classList.contains('dark-mode') ? 'checked' : ''} onchange="toggleDarkMode(this.checked)">
+                                <span class="dm-switch-slider"></span>
+                            </label>
                         </div>
                         <div style="padding:14px 0; border-bottom:1px solid #f1f5f9; display:flex; justify-content:space-between; align-items:center;">
                             <span style="font-weight:700;">🔔 알림 설정</span>

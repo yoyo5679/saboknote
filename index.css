@@ -6,14 +6,31 @@
 /* ============================================
    DARK MODE (필터 기반 간이 다크모드)
    전체 인라인 스타일을 일일이 다크 팔레트로 바꾸는 대신,
-   화면 전체를 반전(invert)시키고 이미지·영상·아이프레임·캔버스만
+   화면을 반전(invert)시키고 이미지·영상·아이프레임·캔버스만
    다시 반전해서 원래 색으로 되돌리는 방식입니다.
    완벽하진 않지만(이모지 색감이 살짝 달라짐) 적은 코드로
    전체 화면에 일관되게 적용됩니다.
-   ============================================ */
-html.dark-mode {
-  filter: invert(1) hue-rotate(180deg);
+
+   [주의] filter는 이 속성이 걸린 요소를 그 아래 position:fixed
+   자손들의 새 컨테이닝 블록으로 만들어 버립니다. html이나 body에
+   filter를 걸면 하단 네비게이션(.bottom-nav)과 모달(#modal-overlay)의
+   fixed 기준점이 뷰포트가 아니라 html/body 박스로 바뀌면서, 모바일
+   브라우저(특히 iOS Safari)에서 네비가 화면에 안 붙거나 모달이
+   화면을 못 덮는 등 다크모드를 켜면 앱이 먹통처럼 보이는 문제가
+   생깁니다. 그래서 filter는 html/body가 아니라 #app의 개별 자식
+   4개(header-inner·app-main·bottom-nav·modal-overlay)에 각각
+   따로 걸어서, 이들 자신의 fixed 포지셔닝은 그대로 뷰포트 기준으로
+   남도록 합니다. */
+html.dark-mode body,
+html.dark-mode #app {
   background: #0f172a;
+}
+
+html.dark-mode .header-inner,
+html.dark-mode .app-main,
+html.dark-mode .bottom-nav,
+html.dark-mode #modal-overlay {
+  filter: invert(1) hue-rotate(180deg);
 }
 
 html.dark-mode img,
