@@ -4,22 +4,40 @@
 */
 
 /* ============================================
-   DARK MODE (토큰 기반 진짜 다크모드)
-   화면 반전(invert) 방식 대신, 모든 중립 색상을 역할별 CSS 변수
-   (--surface·--border·--text-N 등)로 통일하고, html.dark-mode에서
-   변수 값만 슬레이트 다크 팔레트로 갈아끼우는 방식입니다.
-   이미지·이모지·브랜드 컬러는 원래 색 그대로 유지됩니다.
-   변수 정의는 아래 TOKENS 섹션 참고. */
+   DARK MODE (필터 기반 간이 다크모드)
+   전체 인라인 스타일을 일일이 다크 팔레트로 바꾸는 대신,
+   화면을 반전(invert)시키고 이미지·영상·아이프레임·캔버스만
+   다시 반전해서 원래 색으로 되돌리는 방식입니다.
+   완벽하진 않지만(이모지 색감이 살짝 달라짐) 적은 코드로
+   전체 화면에 일관되게 적용됩니다.
 
-/* 다크모드에서 이미지·영상 살짝 톤다운 (눈부심 방지) */
-html.dark-mode img,
-html.dark-mode video {
-  filter: brightness(0.88);
+   [주의] filter는 이 속성이 걸린 요소를 그 아래 position:fixed
+   자손들의 새 컨테이닝 블록으로 만들어 버립니다. html이나 body에
+   filter를 걸면 하단 네비게이션(.bottom-nav)과 모달(#modal-overlay)의
+   fixed 기준점이 뷰포트가 아니라 html/body 박스로 바뀌면서, 모바일
+   브라우저(특히 iOS Safari)에서 네비가 화면에 안 붙거나 모달이
+   화면을 못 덮는 등 다크모드를 켜면 앱이 먹통처럼 보이는 문제가
+   생깁니다. 그래서 filter는 html/body가 아니라 #app의 개별 자식
+   4개(header-inner·app-main·bottom-nav·modal-overlay)에 각각
+   따로 걸어서, 이들 자신의 fixed 포지셔닝은 그대로 뷰포트 기준으로
+   남도록 합니다. */
+html.dark-mode body,
+html.dark-mode #app {
+  background: #0f172a;
 }
 
-/* 브라우저 기본 UI(스크롤바·폼 요소)도 다크 팔레트를 따르도록 */
-html.dark-mode {
-  color-scheme: dark;
+html.dark-mode .header-inner,
+html.dark-mode .app-main,
+html.dark-mode .bottom-nav,
+html.dark-mode #modal-overlay {
+  filter: invert(1) hue-rotate(180deg);
+}
+
+html.dark-mode img,
+html.dark-mode video,
+html.dark-mode iframe,
+html.dark-mode canvas {
+  filter: invert(1) hue-rotate(180deg);
 }
 
 /* 설정 메뉴의 다크모드 토글 스위치 */
@@ -41,7 +59,7 @@ html.dark-mode {
   position: absolute;
   cursor: pointer;
   inset: 0;
-  background-color: var(--surface-4);
+  background-color: #e2e8f0;
   transition: 0.2s;
   border-radius: 26px;
 }
@@ -53,7 +71,7 @@ html.dark-mode {
   width: 20px;
   left: 3px;
   bottom: 3px;
-  background-color: var(--surface);
+  background-color: #fff;
   transition: 0.2s;
   border-radius: 50%;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
@@ -84,88 +102,6 @@ html.dark-mode {
   --radius-md: 12px;
   --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.07);
   --shadow-lift: 0 8px 24px rgba(0, 0, 0, 0.11);
-
-  /* 중립 색상 롤 토큰 (라이트) */
-  --surface: #ffffff;      /* 카드·모달·헤더 등 기본 표면 */
-  --surface-2: #f8fafc;    /* 표면 위 옅은 배경 */
-  --surface-3: #f1f5f9;    /* 더 진한 배경·호버 */
-  --surface-4: #e2e8f0;    /* 트랙·비활성 버튼 */
-  --border: #e2e8f0;
-  --border-strong: #cbd5e1;
-  --tint-primary: #eff6ff; /* 파랑 강조 배경 */
-  --text-1: #0f172a;       /* 가장 진한 텍스트 */
-  --text-2: #1e293b;
-  --text-3: #334155;
-  --text-4: #475569;
-  --text-5: #64748b;
-  --text-6: #94a3b8;       /* 가장 옅은 텍스트 */
-  --text-dark: #111827;
-}
-
-/* ============================================
-   DARK PALETTE — html.dark-mode에서 토큰만 교체
-   ============================================ */
-html.dark-mode {
-  --primary: #3b82f6;
-  --primary-dark: #2563eb;
-  --text-900: #f1f5f9;
-  --text-600: #c3cede;
-  --text-400: #8496ad;
-  --bg-page: #0b1120;
-  --bg-white: #1a2436;
-  --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.4);
-  --shadow-lift: 0 8px 24px rgba(0, 0, 0, 0.55);
-
-  --surface: #1a2436;
-  --surface-2: #212d42;
-  --surface-3: #293850;
-  --surface-4: #33425c;
-  --border: #2e3c54;
-  --border-strong: #45566f;
-  --tint-primary: rgba(59, 130, 246, 0.16);
-  --text-1: #f8fafc;
-  --text-2: #eef2f7;
-  --text-3: #dbe3ee;
-  --text-4: #c3cede;
-  --text-5: #9fb0c6;
-  --text-6: #7e91a9;
-  --text-dark: #f1f5f9;
-}
-
-/* 다크모드 개별 컴포넌트 보정 (rgba 하드코딩분) */
-html.dark-mode .app-header {
-  border-bottom-color: rgba(255, 255, 255, 0.07);
-}
-
-html.dark-mode .bottom-nav {
-  background: rgba(26, 36, 54, 0.97);
-  border-top-color: rgba(255, 255, 255, 0.07);
-}
-
-html.dark-mode #app {
-  box-shadow: 0 0 60px rgba(0, 0, 0, 0.6);
-}
-
-/* 홈 파스텔 서비스 카드 — 다크에서는 같은 색조의 딥 톤으로 */
-html.dark-mode #open-ai-prompter-2 {
-  background: linear-gradient(135deg, #252c52 0%, #2b3260 100%) !important;
-  border-color: #414d8f !important;
-}
-
-html.dark-mode #open-admin-calc-2 {
-  background: linear-gradient(135deg, #16301f 0%, #1c3a27 100%) !important;
-  border-color: #2f5c40 !important;
-}
-
-html.dark-mode #open-request-modal {
-  background: linear-gradient(135deg, #3a2f14 0%, #453917 100%) !important;
-  border-color: #6b5423 !important;
-}
-
-/* 그 외 인라인 밝은 그라데이션 카드 안전망 */
-html.dark-mode .svc-card[style*="linear-gradient"]:not(#open-ai-prompter-2):not(#open-admin-calc-2):not(#open-request-modal) {
-  background: var(--surface) !important;
-  border-color: var(--border) !important;
 }
 
 /* ============================================
@@ -277,7 +213,7 @@ body {
 }
 
 .icon-btn:hover {
-  background: var(--surface-3);
+  background: #f3f4f6;
 }
 
 /* ============================================
@@ -357,7 +293,7 @@ body {
 
 .hero-eyebrow {
   display: inline-block;
-  background: var(--surface);
+  background: #ffffff;
   color: #1e3a8a;
   padding: 8px 16px;
   border-radius: 20px;
@@ -459,7 +395,7 @@ body {
   align-items: center;
   gap: 9px;
   background: var(--bg-white);
-  border: 1.5px solid var(--border);
+  border: 1.5px solid #e5e7eb;
   border-radius: 50px;
   padding: 11px 16px;
   cursor: pointer;
@@ -485,7 +421,7 @@ body {
 
 .action-chip {
   background: var(--bg-white);
-  border: 1.5px solid var(--border);
+  border: 1.5px solid #e5e7eb;
   border-radius: 50px;
   padding: 9px 13px;
   font-size: 0.78rem;
@@ -499,7 +435,7 @@ body {
 }
 
 .action-chip:hover {
-  background: var(--tint-primary);
+  background: #f0f7ff;
   border-color: #93c5fd;
   color: var(--primary);
 }
@@ -712,7 +648,7 @@ body {
   border-radius: var(--radius-md);
   padding: 12px 16px;
   box-shadow: var(--shadow-card);
-  border: 1px solid var(--border);
+  border: 1px solid #f3f4f6;
 }
 
 .notice-dot {
@@ -785,7 +721,7 @@ body {
   gap: 2px;
   font-size: 0.65rem;
   font-family: inherit;
-  color: var(--text-6);
+  color: #94a3b8;
   cursor: pointer;
   padding: 4px 8px;
   border-radius: 14px;
@@ -799,7 +735,7 @@ body {
 }
 
 .nav-item:hover {
-  color: var(--text-5);
+  color: #64748b;
 }
 
 .nav-icon {
@@ -816,7 +752,7 @@ body {
 }
 
 .nav-item.active .nav-icon {
-  background: var(--tint-primary);
+  background: #eff6ff;
   transform: scale(1.08);
 }
 
@@ -838,7 +774,7 @@ body {
 .loading-spinner {
   width: 36px;
   height: 36px;
-  border: 3px solid var(--border);
+  border: 3px solid #e5e7eb;
   border-top-color: var(--primary);
   border-radius: 50%;
   animation: spin 0.75s linear infinite;
@@ -863,7 +799,7 @@ body {
   font-size: 0.88rem;
   font-weight: 700;
   margin-bottom: 8px;
-  color: var(--text-3);
+  color: #374151;
 }
 
 input[type="number"],
@@ -871,10 +807,10 @@ select {
   width: 100%;
   padding: 13px 15px;
   border-radius: var(--radius-md);
-  border: 2px solid var(--border);
+  border: 2px solid #e5e7eb;
   font-size: 0.95rem;
   font-family: inherit;
-  background: var(--surface-2);
+  background: #f9fafb;
   transition: all 0.2s;
 }
 
@@ -882,7 +818,7 @@ input[type="number"]:focus,
 select:focus {
   outline: none;
   border-color: var(--primary);
-  background: var(--surface);
+  background: #fff;
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.10);
 }
 
@@ -914,11 +850,11 @@ select:focus {
 }
 
 .result-box {
-  background: var(--surface-2);
+  background: #f8fafc;
   padding: 22px;
   border-radius: 18px;
   margin-top: 24px;
-  border: 1px solid var(--border);
+  border: 1px solid #e5e7eb;
 }
 
 .result-box h3 {
@@ -944,7 +880,7 @@ select:focus {
 .result-label {
   font-size: 0.88rem;
   font-weight: 600;
-  color: var(--text-4);
+  color: #475569;
   word-break: keep-all;
   flex: 1;
 }
@@ -979,11 +915,11 @@ select:focus {
 }
 
 .log-card {
-  background: var(--surface);
+  background: #fff;
   border-radius: 12px;
   padding: 13px;
   margin-bottom: 10px;
-  border: 1px solid var(--border);
+  border: 1px solid #f1f5f9;
   box-shadow: 0 1px 6px rgba(0, 0, 0, 0.04);
 }
 
@@ -994,13 +930,13 @@ select:focus {
   padding: 3px 9px;
   border-radius: 20px;
   margin-bottom: 7px;
-  background: var(--tint-primary);
+  background: #eff6ff;
   color: var(--primary);
 }
 
 .log-content {
   font-size: 0.86rem;
-  color: var(--text-3);
+  color: #334155;
   line-height: 1.6;
 }
 
@@ -1009,10 +945,10 @@ select:focus {
   width: 100%;
   padding: 12px 14px;
   border-radius: var(--radius-md);
-  border: 2px solid var(--border);
+  border: 2px solid #e5e7eb;
   font-size: 0.93rem;
   font-family: inherit;
-  background: var(--surface-2);
+  background: #f9fafb;
   transition: all 0.2s;
   box-sizing: border-box;
 }
@@ -1020,23 +956,23 @@ select:focus {
 .calc-input:focus {
   outline: none;
   border-color: var(--primary);
-  background: var(--surface);
+  background: #fff;
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.10);
 }
 
 .kpi-section {
-  background: var(--surface);
+  background: #fff;
   border-radius: var(--radius-lg);
   padding: 16px;
   margin-bottom: 12px;
-  border: 1px solid var(--border);
+  border: 1px solid #f1f5f9;
 }
 
 .step-card {
-  background: var(--surface);
+  background: #fff;
   border-radius: 18px;
   padding: 20px;
-  border: 1px solid var(--border);
+  border: 1px solid #e5e7eb;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
 }
 
@@ -1048,21 +984,21 @@ select:focus {
   width: 100%;
   padding: 13px;
   border-radius: var(--radius-md);
-  border: 2px solid var(--border);
+  border: 2px solid #e5e7eb;
   font-size: 0.88rem;
   font-family: inherit;
-  background: var(--surface-2);
+  background: #f9fafb;
   transition: border-color 0.2s;
   resize: none;
   box-sizing: border-box;
   line-height: 1.6;
-  color: var(--text-3);
+  color: #374151;
 }
 
 .beautiful-textarea:focus {
   outline: none;
   border-color: var(--primary);
-  background: var(--surface);
+  background: #fff;
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.10);
 }
 
@@ -1187,8 +1123,8 @@ select:focus {
   display: flex;
   align-items: center;
   padding: 16px;
-  background: var(--surface);
-  border: 1px solid var(--border);
+  background: white;
+  border: 1px solid #e2e8f0;
   border-radius: 16px;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -1196,13 +1132,13 @@ select:focus {
 
 .prompt-option-card:active {
   transform: scale(0.98);
-  background: var(--surface-2);
+  background: #f8fafc;
 }
 
 .prompt-option-icon {
   width: 48px;
   height: 48px;
-  background: var(--surface-3);
+  background: #f1f5f9;
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -1218,34 +1154,34 @@ select:focus {
 .prompt-option-title {
   font-weight: 800;
   font-size: 1.05rem;
-  color: var(--text-2);
+  color: #1e293b;
   margin-bottom: 20px;
 }
 
 .prompt-option-desc {
   font-size: 0.8rem;
-  color: var(--text-5);
+  color: #64748b;
   line-height: 1.4;
 }
 
 .prompt-option-arrow {
   font-size: 1.2rem;
-  color: var(--text-6);
+  color: #cbd5e1;
   margin-left: 8px;
 }
 
 .prompt-header-box {
   text-align: center;
-  background: var(--surface-2);
+  background: #f8fafc;
   padding: 24px;
   border-radius: 20px;
   margin-bottom: 24px;
-  border: 1px solid var(--border);
+  border: 1px solid #e2e8f0;
 }
 
 .prompt-content-box {
-  background: var(--surface);
-  border: 2px solid var(--border);
+  background: #ffffff;
+  border: 2px solid #e2e8f0;
   border-radius: 16px;
   padding: 16px;
   margin-bottom: 24px;
@@ -1254,17 +1190,17 @@ select:focus {
 .prompt-content-label {
   font-size: 0.85rem;
   font-weight: 800;
-  color: var(--text-5);
+  color: #64748b;
   margin-bottom: 12px;
 }
 
 .prompt-text-area {
-  background: var(--surface-3);
+  background: #f1f5f9;
   padding: 14px;
   border-radius: 10px;
   font-size: 0.9rem;
   line-height: 1.6;
-  color: var(--text-3);
+  color: #334155;
   white-space: pre-wrap;
   max-height: 200px;
   overflow-y: auto;
@@ -1273,7 +1209,7 @@ select:focus {
 }
 
 .prompt-guide-box {
-  background: var(--tint-primary);
+  background: #eff6ff;
   padding: 16px;
   border-radius: 16px;
   border: 1px solid #dbeafe;
@@ -1308,7 +1244,7 @@ select:focus {
 }
 
 .modal-container {
-  background: var(--surface);
+  background: #ffffff;
   width: 100%;
   max-width: 600px;
   max-height: 90vh;
@@ -1334,14 +1270,14 @@ select:focus {
   justify-content: space-between;
   align-items: center;
   padding: 24px 24px 16px;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid #f1f5f9;
   flex-shrink: 0;
 }
 
 .modal-title {
   font-size: 1.15rem;
   font-weight: 800;
-  color: var(--text-1);
+  color: #0f172a;
   margin: 0;
   letter-spacing: -0.01em;
   white-space: nowrap;
@@ -1353,13 +1289,13 @@ select:focus {
 }
 
 .modal-close {
-  background: var(--surface-3);
+  background: #f1f5f9;
   border: none;
   width: 36px;
   height: 36px;
   border-radius: 50%;
   font-size: 1.1rem;
-  color: var(--text-5);
+  color: #64748b;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -1368,8 +1304,8 @@ select:focus {
 }
 
 .modal-close:hover {
-  background: var(--surface-4);
-  color: var(--text-1);
+  background: #e2e8f0;
+  color: #0f172a;
 }
 
 .modal-body {

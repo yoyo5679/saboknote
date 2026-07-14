@@ -10,13 +10,6 @@
                 }
             } catch (_) { /* noop */ }
         })();
-        // 다크모드에 맞춰 브라우저 상단바(theme-color) 색도 동기화
-        function syncThemeColor() {
-            var dark = document.documentElement.classList.contains('dark-mode');
-            var meta = document.querySelector('meta[name="theme-color"]');
-            if (meta) meta.setAttribute('content', dark ? '#0b1120' : '#2563eb');
-        }
-        window.addEventListener('DOMContentLoaded', syncThemeColor);
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -67,7 +60,7 @@
 <body>
     <!-- SEO 정적 콘텐츠 (구글 크롤러 및 JS 미지원 환경용) -->
     <noscript>
-        <div style="padding:20px; font-family:sans-serif; max-width:800px; margin:0 auto; color:var(--text-3);">
+        <div style="padding:20px; font-family:sans-serif; max-width:800px; margin:0 auto; color:#334155;">
             <h1 style="font-size:1.8rem; font-weight:900; margin-bottom:12px;">사회복지사 비밀노트 🌿</h1>
             <p style="font-size:1rem; line-height:1.7; margin-bottom:16px;">
                 사회복지사를 위한 실무 AI 도우미 서비스입니다. AI 프롬프트, 복지 용어 단어장, 행정/회계 계산기, 익명 Q&A, 커뮤니티 등 다양한 기능을 한 곳에서 제공합니다.
@@ -88,7 +81,7 @@
                 별도 회원가입 없이 익명으로 이용할 수 있습니다. 시스템이 자동으로 유쾌한 익명 닉네임을 생성해 드립니다.
                 동기화 코드를 통해 기기를 변경해도 내 정보를 그대로 이어갈 수 있습니다.
             </p>
-            <p style="margin-top:16px; font-size:0.9rem; color:var(--text-5);">
+            <p style="margin-top:16px; font-size:0.9rem; color:#64748b;">
                 사회복지사 | 사례관리 | 기초생활수급 | 노인장기요양 | 장애인복지 | 행정/회계 | 복지 실무
             </p>
         </div>
@@ -285,7 +278,7 @@
                 <!-- PWA 홍보 배너 (하단 배치 - 한 줄 버전) -->
                 <section id="pwa-promo-banner" class="sec" style="padding-bottom: 0; display: none;">
                     <div onclick="showPWAInstallGuide()"
-                        style="cursor:pointer; background:var(--tint-primary); border:1.5px solid #e0f2fe; padding:10px 14px; border-radius:14px; display:flex; align-items:center; justify-content:space-between; gap:10px;">
+                        style="cursor:pointer; background:#f0f9ff; border:1.5px solid #e0f2fe; padding:10px 14px; border-radius:14px; display:flex; align-items:center; justify-content:space-between; gap:10px;">
                         <div style="display:flex; align-items:center; gap:8px;">
                             <span style="font-size:1.15rem;">📱</span>
                             <span style="font-size:0.82rem; font-weight:800; color:#0369a1; white-space:nowrap;">실무 2배
@@ -318,12 +311,12 @@
                         </button>
                     </div>
 
-                    <p style="font-size:0.85rem; color:var(--text-5); line-height:1.5; margin-bottom:24px;">실무하다 멘붕 온 순간? 혼자
+                    <p style="font-size:0.85rem; color:#64748b; line-height:1.5; margin-bottom:24px;">실무하다 멘붕 온 순간? 혼자
                         끙끙대지 말고 냅다 익명으로 털어놔요! 🦊<br>전국구 고인물 사복샘들이 영혼을 갈아 넣은 미친 꿀팁을 떠먹여 드립니다 ✨</p>
 
                     <!-- Dummy Q&A List -->
                     <div id="qa-list" style="display:flex; flex-direction:column; gap:16px;">
-                        <div style="text-align:center; padding:40px 20px; color:var(--text-6);">
+                        <div style="text-align:center; padding:40px 20px; color:#94a3b8;">
                             <div class="loading-spinner" style="margin: 0 auto 12px auto;"></div>
                             <p style="font-size:0.9rem;">질문을 불러오는 중...</p>
                         </div>
@@ -332,8 +325,8 @@
 
                     <!-- 게시판 면책 문구 -->
                     <div
-                        style="margin-top:10px; padding:20px; background:var(--surface-2); border-radius:16px; border:1px solid var(--border); text-align:center;">
-                        <p style="font-size:0.75rem; color:var(--text-6); line-height:1.7; margin:0;">
+                        style="margin-top:10px; padding:20px; background:#f8fafc; border-radius:16px; border:1px solid #e2e8f0; text-align:center;">
+                        <p style="font-size:0.75rem; color:#94a3b8; line-height:1.7; margin:0;">
                             🌿 <strong>따뜻한 사복인들의 약속:</strong> 사복노트는 현장의 지혜가 모이는 소중한 공간이에요. 다만, 동료들의 조언이나 정보를 활용하실 때는
                             선생님의 멋진 판단력을 한 번 더 믿어주세요! 개인적인 선택으로 생기는 결과들에 대해 사복노트는 마음으로만 함께할 수 있답니다. 우리 서로를 아끼며 슬기롭게
                             소통해요! ✨
@@ -373,31 +366,31 @@
                         <button id="cat-all" onclick="loadCommunityPosts('all')"
                             style="flex:1 0 calc(33% - 6px); padding:8px 0; border-radius:20px; border:none; background:var(--primary); color:#fff; font-size:0.75rem; font-weight:700; cursor:pointer;">전체</button>
                         <button id="cat-free" onclick="loadCommunityPosts('자유게시판')"
-                            style="flex:1 0 calc(33% - 6px); padding:8px 0; border-radius:20px; border:1px solid var(--border); background:var(--surface-2); color:var(--text-4); font-size:0.75rem; font-weight:700; cursor:pointer;">자유</button>
+                            style="flex:1 0 calc(33% - 6px); padding:8px 0; border-radius:20px; border:1px solid #e2e8f0; background:#f8fafc; color:#475569; font-size:0.75rem; font-weight:700; cursor:pointer;">자유</button>
                         <button id="cat-info" onclick="loadCommunityPosts('정보 공유방')"
-                            style="flex:1 0 calc(33% - 6px); padding:8px 0; border-radius:20px; border:1px solid var(--border); background:var(--surface-2); color:var(--text-4); font-size:0.75rem; font-weight:700; cursor:pointer;">정보</button>
+                            style="flex:1 0 calc(33% - 6px); padding:8px 0; border-radius:20px; border:1px solid #e2e8f0; background:#f8fafc; color:#475569; font-size:0.75rem; font-weight:700; cursor:pointer;">정보</button>
                         <button id="cat-job" onclick="loadCommunityPosts('취업/이직')"
-                            style="flex:1 0 calc(33% - 6px); padding:8px 0; border-radius:20px; border:1px solid var(--border); background:var(--surface-2); color:var(--text-4); font-size:0.75rem; font-weight:700; cursor:pointer;">취업</button>
+                            style="flex:1 0 calc(33% - 6px); padding:8px 0; border-radius:20px; border:1px solid #e2e8f0; background:#f8fafc; color:#475569; font-size:0.75rem; font-weight:700; cursor:pointer;">취업</button>
                         <button id="cat-diary" onclick="loadCommunityPosts('하루일기')"
-                            style="flex:1 0 calc(33% - 6px); padding:8px 0; border-radius:20px; border:1px solid var(--border); background:var(--surface-2); color:var(--text-4); font-size:0.75rem; font-weight:700; cursor:pointer;">하루일기</button>
+                            style="flex:1 0 calc(33% - 6px); padding:8px 0; border-radius:20px; border:1px solid #e2e8f0; background:#f8fafc; color:#475569; font-size:0.75rem; font-weight:700; cursor:pointer;">하루일기</button>
                     </div>
 
                     <!-- 카테고리 설명 영역 -->
                     <div id="community-desc"
-                        style="background:var(--surface-3); padding:14px 16px; border-radius:14px; margin-bottom:16px; font-size:0.85rem; color:var(--text-4); line-height:1.5; display:none; border:1px dashed var(--border-strong);">
+                        style="background:#f1f5f9; padding:14px 16px; border-radius:14px; margin-bottom:16px; font-size:0.85rem; color:#475569; line-height:1.5; display:none; border:1px dashed #cbd5e1;">
                     </div>
 
                     <!-- 게시글 리스트 -->
                     <div id="community-list" style="display:flex; flex-direction:column; gap:12px;">
-                        <div style="text-align:center; padding:40px 20px; color:var(--text-6);">
+                        <div style="text-align:center; padding:40px 20px; color:#94a3b8;">
                             <div class="loading-spinner" style="margin: 0 auto 12px auto;"></div>
                             <p style="font-size:0.9rem;">게시글을 불러오는 중...</p>
                         </div>
                     </div>
                     <!-- 게시판 면책 문구 -->
                     <div
-                        style="margin-top:10px; padding:20px; background:var(--surface-2); border-radius:16px; border:1px solid var(--border); text-align:center;">
-                        <p style="font-size:0.75rem; color:var(--text-6); line-height:1.7; margin:0;">
+                        style="margin-top:10px; padding:20px; background:#f8fafc; border-radius:16px; border:1px solid #e2e8f0; text-align:center;">
+                        <p style="font-size:0.75rem; color:#94a3b8; line-height:1.7; margin:0;">
                             🤝 <strong>우리들의 소중한 쉼터:</strong> 여기서 나누는 모든 이야기와 만남이 선생님께 힘이 되길 바라요. 혹시 모를 개인적인 거래나 깊은 조언은
                             조금 더 신중하게 살펴주시길 부탁드려요. 사복노트는 선생님이 상처받지 않고 즐겁게 소통하는 곳이길 꿈꿉니다! 우리 어른스럽고 따뜻하게 함께해요! ☀️
                         </p>
@@ -447,36 +440,36 @@
                     <div style="display:flex; flex-direction:column; gap:12px;">
                         <!-- 내 활동 카드 -->
                         <div
-                            style="background:var(--surface); border-radius:16px; padding:18px; border:1px solid var(--border); box-shadow:var(--shadow-card);">
+                            style="background:#fff; border-radius:16px; padding:18px; border:1px solid #e2e8f0; box-shadow:var(--shadow-card);">
                             <div style="font-size:0.75rem; font-weight:800; color:var(--primary); margin-bottom:12px;">
                                 내 활동
                             </div>
                             <div style="display:flex; justify-content:space-around;">
                                 <div>
-                                    <div id="mypage-stat-q" style="font-size:1.5rem; font-weight:900; color:var(--text-2);">0
+                                    <div id="mypage-stat-q" style="font-size:1.5rem; font-weight:900; color:#1e293b;">0
                                     </div>
-                                    <div style="font-size:0.75rem; color:var(--text-6); margin-top:2px;">등록한 질문</div>
+                                    <div style="font-size:0.75rem; color:#94a3b8; margin-top:2px;">등록한 질문</div>
                                 </div>
                                 <div>
-                                    <div id="mypage-stat-a" style="font-size:1.5rem; font-weight:900; color:var(--text-2);">0
+                                    <div id="mypage-stat-a" style="font-size:1.5rem; font-weight:900; color:#1e293b;">0
                                     </div>
-                                    <div style="font-size:0.75rem; color:var(--text-6); margin-top:2px;">작성한 답변</div>
+                                    <div style="font-size:0.75rem; color:#94a3b8; margin-top:2px;">작성한 답변</div>
                                 </div>
                                 <div>
                                     <div id="mypage-stat-thanks"
                                         style="font-size:1.5rem; font-weight:900; color:#d97706;">0</div>
-                                    <div style="font-size:0.75rem; color:var(--text-6); margin-top:2px;">받은 감사</div>
+                                    <div style="font-size:0.75rem; color:#94a3b8; margin-top:2px;">받은 감사</div>
                                 </div>
                             </div>
                             <!-- 경험치 프로그레스 바 -->
-                            <div style="margin-top:16px; padding-top:16px; border-top:1px dashed var(--border);">
+                            <div style="margin-top:16px; padding-top:16px; border-top:1px dashed #e2e8f0;">
                                 <div
-                                    style="display:flex; justify-content:space-between; font-size:0.7rem; color:var(--text-5); margin-bottom:6px; font-weight:700;">
+                                    style="display:flex; justify-content:space-between; font-size:0.7rem; color:#64748b; margin-bottom:6px; font-weight:700;">
                                     <span id="mypage-exp-text">다음 등급까지 50 XP</span>
                                     <span id="mypage-exp-pct">0%</span>
                                 </div>
                                 <div
-                                    style="width:100%; height:8px; background:var(--surface-3); border-radius:4px; overflow:hidden;">
+                                    style="width:100%; height:8px; background:#f1f5f9; border-radius:4px; overflow:hidden;">
                                     <div id="mypage-exp-bar"
                                         style="height:100%; width:0%; background:linear-gradient(90deg, #6366f1, #8b5cf6); border-radius:4px; transition:width 0.5s ease;">
                                     </div>
@@ -486,12 +479,12 @@
 
                         <!-- 내가 쓴 글 -->
                         <div
-                            style="background:var(--surface); border-radius:16px; padding:18px; border:1px solid var(--border); box-shadow:var(--shadow-card);">
+                            style="background:#fff; border-radius:16px; padding:18px; border:1px solid #e2e8f0; box-shadow:var(--shadow-card);">
                             <div
                                 style="font-size:0.75rem; font-weight:800; color:var(--primary); margin-bottom:16px; white-space:nowrap;">
                                 내가 쓴 커뮤니티 글</div>
                             <div id="my-posts-list">
-                                <div style="text-align:center; padding:20px; color:var(--text-6);">
+                                <div style="text-align:center; padding:20px; color:#94a3b8;">
                                     <div class="loading-spinner" style="margin: 0 auto 8px auto;"></div>
                                     <p style="font-size:0.85rem;">불러오는 중...</p>
                                 </div>
@@ -500,18 +493,18 @@
 
                         <!-- 내 유쾌한 익명 프로필 -->
                         <div
-                            style="background:var(--surface); border-radius:16px; padding:18px; border:1px solid var(--border); box-shadow:var(--shadow-card);">
+                            style="background:#fff; border-radius:16px; padding:18px; border:1px solid #e2e8f0; box-shadow:var(--shadow-card);">
                             <div style="font-size:0.75rem; font-weight:800; color:var(--primary); margin-bottom:12px;">
                                 🎭 내 유쾌한 익명 프로필</div>
 
                             <div style="display:flex; flex-direction:column; gap:10px;">
-                                <div style="font-size:0.85rem; color:var(--text-4); line-height:1.5;">
+                                <div style="font-size:0.85rem; color:#475569; line-height:1.5;">
                                     따로 가입할 필요 없어요! <br>
                                     시스템이 유쾌한 익명 닉네임과 동기화 코드를 자동으로 생성해 드립니다. ✨
                                 </div>
                                 <div style="display:flex; gap:8px; margin-top:4px;">
                                     <button onclick="changeToNewRandomName()"
-                                        style="flex:1; background:var(--surface-2); color:var(--text-4); border:1px solid var(--border); border-radius:10px; padding:10px; font-weight:700; font-size:13px; cursor:pointer;">🆕
+                                        style="flex:1; background:#f8fafc; color:#475569; border:1px solid #e2e8f0; border-radius:10px; padding:10px; font-weight:700; font-size:13px; cursor:pointer;">🆕
                                         새로운 닉네임 뽑기</button>
                                 </div>
                             </div>
@@ -519,7 +512,7 @@
 
                         <!-- 계정 동기화 (기기 변경/백업) -->
                         <div
-                            style="background:var(--surface); border-radius:16px; padding:18px; border:1px solid var(--border); box-shadow:var(--shadow-card);">
+                            style="background:#fff; border-radius:16px; padding:18px; border:1px solid #e2e8f0; box-shadow:var(--shadow-card);">
                             <div style="font-size:0.75rem; font-weight:800; color:var(--primary); margin-bottom:12px;">
                                 🔄 계정 동기화 (기기 변경/백업)</div>
 
@@ -532,26 +525,26 @@
                                         style="font-size:1.2rem; font-weight:900; color:#4338ca; letter-spacing:0.5px;">
                                         -</div>
                                     <button onclick="copySyncCode()"
-                                        style="background:var(--surface); border:1px solid #ddd6fe; border-radius:6px; padding:4px 8px; font-size:11px; font-weight:700; color:#7c3aed; cursor:pointer;">복사</button>
+                                        style="background:#fff; border:1px solid #ddd6fe; border-radius:6px; padding:4px 8px; font-size:11px; font-weight:700; color:#7c3aed; cursor:pointer;">복사</button>
                                 </div>
-                                <div style="font-size:0.65rem; color:var(--text-6); margin-top:8px;">
+                                <div style="font-size:0.65rem; color:#94a3b8; margin-top:8px;">
                                     * 이 코드를 다른 기기에서 입력하면 내 정보를 그대로 가져옵니다.
                                 </div>
                             </div>
 
                              <!-- 연결된 소셜 계정 상태 -->
-                             <div id="my-linked-accounts-container" style="background:var(--surface-2); padding:14px; border-radius:12px; margin-bottom:16px; border:1px solid var(--border);">
-                                 <div style="font-size:0.7rem; color:var(--text-4); margin-bottom:8px; font-weight:800;">소셜 로그인 (기기 간 자동 동기화)</div>
+                             <div id="my-linked-accounts-container" style="background:#f8fafc; padding:14px; border-radius:12px; margin-bottom:16px; border:1px solid #e2e8f0;">
+                                 <div style="font-size:0.7rem; color:#475569; margin-bottom:8px; font-weight:800;">소셜 로그인 (기기 간 자동 동기화)</div>
                                  <div id="my-linked-accounts-list" style="display:flex; gap:8px; flex-wrap:wrap;">
-                                     <span style="font-size:0.75rem; color:var(--text-6);">확인 중...</span>
+                                     <span style="font-size:0.75rem; color:#94a3b8;">확인 중...</span>
                                  </div>
                              </div>
 
                             <div>
-                                <div style="font-size:0.7rem; color:var(--text-5); margin-bottom:8px;">다른 기기 정보 가져오기</div>
+                                <div style="font-size:0.7rem; color:#64748b; margin-bottom:8px;">다른 기기 정보 가져오기</div>
                                 <div style="display:flex; gap:8px;">
                                     <input type="text" id="sync-code-input" placeholder="동기화 코드 입력"
-                                        style="flex:1; padding:10px; border-radius:10px; border:1px solid var(--border); font-size:14px; outline:none;">
+                                        style="flex:1; padding:10px; border-radius:10px; border:1px solid #e2e8f0; font-size:14px; outline:none;">
                                     <button id="sync-restore-btn" onclick="restoreProfile()"
                                         style="background:var(--primary); color:white; border:none; border-radius:10px; padding:0 16px; font-weight:700; font-size:13px; cursor:pointer;">확인</button>
                                 </div>
@@ -560,15 +553,15 @@
 
                         <!-- 설정 메뉴 -->
                         <div
-                            style="background:var(--surface); border-radius:16px; overflow:hidden; border:1px solid var(--border); box-shadow:var(--shadow-card);">
+                            style="background:#fff; border-radius:16px; overflow:hidden; border:1px solid #e2e8f0; box-shadow:var(--shadow-card);">
                             <div id="open-xp-guide"
-                                style="padding:14px 18px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; cursor:pointer;">
+                                style="padding:14px 18px; border-bottom:1px solid #f1f5f9; display:flex; justify-content:space-between; align-items:center; cursor:pointer;">
                                 <span style="font-weight:700; font-size:0.95rem; color:#6366f1; white-space:nowrap;">⚡
-                                    XP &amp; 레벨 안내</span><span style="color:var(--text-6);">›</span>
+                                    XP &amp; 레벨 안내</span><span style="color:#94a3b8;">›</span>
                             </div>
                             <div
-                                style="padding:14px 18px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center;">
-                                <span style="font-weight:700; font-size:0.95rem; color:var(--text-2); white-space:nowrap;">🌙
+                                style="padding:14px 18px; border-bottom:1px solid #f1f5f9; display:flex; justify-content:space-between; align-items:center;">
+                                <span style="font-weight:700; font-size:0.95rem; color:#1e293b; white-space:nowrap;">🌙
                                     다크 모드</span>
                                 <label class="dm-switch">
                                     <input type="checkbox" id="dark-mode-toggle" onchange="toggleDarkMode(this.checked)">
@@ -576,34 +569,34 @@
                                 </label>
                             </div>
                             <div
-                                style="padding:14px 18px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; cursor:pointer;">
-                                <span style="font-weight:700; font-size:0.95rem; color:var(--text-2); white-space:nowrap;">🔔
-                                    알림 설정</span><span style="color:var(--text-6);">›</span>
+                                style="padding:14px 18px; border-bottom:1px solid #f1f5f9; display:flex; justify-content:space-between; align-items:center; cursor:pointer;">
+                                <span style="font-weight:700; font-size:0.95rem; color:#1e293b; white-space:nowrap;">🔔
+                                    알림 설정</span><span style="color:#94a3b8;">›</span>
                             </div>
                             <div onclick="openTOSModal()"
-                                style="padding:14px 18px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; cursor:pointer;">
-                                <span style="font-weight:700; font-size:0.95rem; color:var(--text-2); white-space:nowrap;">📋
-                                    서비스 이용약관</span><span style="color:var(--text-6);">›</span>
+                                style="padding:14px 18px; border-bottom:1px solid #f1f5f9; display:flex; justify-content:space-between; align-items:center; cursor:pointer;">
+                                <span style="font-weight:700; font-size:0.95rem; color:#1e293b; white-space:nowrap;">📋
+                                    서비스 이용약관</span><span style="color:#94a3b8;">›</span>
                             </div>
                             <div onclick="openPrivacyModal()"
                                 style="padding:14px 18px; display:flex; justify-content:space-between; align-items:center; cursor:pointer;">
-                                <span style="font-weight:700; font-size:0.95rem; color:var(--text-2); white-space:nowrap;">🔒
-                                    개인정보처리방침</span><span style="color:var(--text-6);">›</span>
+                                <span style="font-weight:700; font-size:0.95rem; color:#1e293b; white-space:nowrap;">🔒
+                                    개인정보처리방침</span><span style="color:#94a3b8;">›</span>
                             </div>
                         </div>
 
                         <!-- ⑥ 상세 안내 & FAQ (아코디언 - 구글 애드센스 콘텐츠 보강) -->
                         <div style="margin-top:24px;">
                             <div style="margin-bottom:12px;">
-                                <span style="font-weight:900; font-size:1.1rem; color:var(--text-2);">📚 이용 안내 & 자주 묻는
+                                <span style="font-weight:900; font-size:1.1rem; color:#1e293b;">📚 이용 안내 & 자주 묻는
                                     질문</span>
                             </div>
 
                             <!-- 아코디언 공통 스타일 -->
                             <style>
                                 .acc-item {
-                                    background: var(--surface);
-                                    border: 1px solid var(--border);
+                                    background: #fff;
+                                    border: 1px solid #e2e8f0;
                                     border-radius: 14px;
                                     margin-bottom: 8px;
                                     overflow: hidden;
@@ -617,13 +610,13 @@
                                     cursor: pointer;
                                     font-weight: 800;
                                     font-size: 0.92rem;
-                                    color: var(--text-2);
+                                    color: #1e293b;
                                     user-select: none;
                                 }
 
                                 .acc-arrow {
                                     font-size: 0.8rem;
-                                    color: var(--text-6);
+                                    color: #94a3b8;
                                     transition: transform 0.25s;
                                 }
 
@@ -631,7 +624,7 @@
                                     display: none;
                                     padding: 0 16px 16px;
                                     font-size: 0.875rem;
-                                    color: var(--text-4);
+                                    color: #475569;
                                     line-height: 1.8;
                                 }
 
@@ -646,7 +639,7 @@
                                 .acc-body h3 {
                                     font-size: 0.95rem;
                                     font-weight: 800;
-                                    color: var(--text-2);
+                                    color: #1e293b;
                                     margin: 14px 0 6px;
                                 }
 
@@ -671,16 +664,16 @@
                                 }
 
                                 .acc-body th {
-                                    background: var(--surface-3);
+                                    background: #f1f5f9;
                                     padding: 6px 8px;
                                     text-align: left;
                                     font-weight: 800;
-                                    border: 1px solid var(--border);
+                                    border: 1px solid #e2e8f0;
                                 }
 
                                 .acc-body td {
                                     padding: 6px 8px;
-                                    border: 1px solid var(--border);
+                                    border: 1px solid #e2e8f0;
                                 }
                             </style>
 
@@ -770,7 +763,7 @@
                                         <li><strong>커뮤니티 이용:</strong> [커뮤니티] 탭의 [자유게시판] 등에 개선 아이디어나 버그를 남겨주세요.</li>
                                         <li><strong>이메일 문의:</strong> 긴급한 오류나 제휴 문의는 개발자에게 직접 연락주시면 감사하겠습니다.</li>
                                     </ul>
-                                    <p style="font-size: 0.8rem; color: var(--text-6);">* 사복노트는 개인 프로젝트로 운영되기에 답변이 조금 늦을 수 있는
+                                    <p style="font-size: 0.8rem; color: #94a3b8;">* 사복노트는 개인 프로젝트로 운영되기에 답변이 조금 늦을 수 있는
                                         점 양해 부탁드려요!</p>
                                 </div>
                             </div>
@@ -790,7 +783,7 @@
 
                                     <h3>12가지 통합 행정/회계 솔루션 안내</h3>
                                     <div style="margin-bottom:12px;"><span
-                                            style="background:var(--surface-4); padding:4px 8px; border-radius:6px; font-weight:700; font-size:0.8rem; color:var(--text-4);">💸
+                                            style="background:#e2e8f0; padding:4px 8px; border-radius:6px; font-weight:700; font-size:0.8rem; color:#475569;">💸
                                             회계 관리 마스터</span></div>
                                     <ul>
                                         <li><strong>1. 부가세 계산기:</strong> 물품 구입 및 공사 계약 시, 총액만 입력하면 공급가액과 부가세를 즉시 분리하여
@@ -808,7 +801,7 @@
                                             고용보험) 및 갑근세, 지방소득세를 노동부 및 건강보험공단 실무 요율에 맞춰 가산출합니다.</li>
                                     </ul>
                                     <div style="margin-bottom:12px; margin-top:20px;"><span
-                                            style="background:var(--surface-4); padding:4px 8px; border-radius:6px; font-weight:700; font-size:0.8rem; color:var(--text-4);">📊
+                                            style="background:#e2e8f0; padding:4px 8px; border-radius:6px; font-weight:700; font-size:0.8rem; color:#475569;">📊
                                             사업/실적 마스터</span></div>
                                     <ul>
                                         <li><strong>5. 퍼센트 계산기:</strong> 사업 실적 증감률, 예산 집행 비율 등을 계산할 때 유용한 범용 도구입니다. 네이버
@@ -824,7 +817,7 @@
                                             '자립준비청년'으로서 자립수당 등 핵심 보호 혜택을 챙겨 받을 수 있는 법적 연령 및 잔여 혜택 기간을 즉시 판별해 냅니다.</li>
                                     </ul>
                                     <div style="margin-bottom:12px; margin-top:20px;"><span
-                                            style="background:var(--surface-4); padding:4px 8px; border-radius:6px; font-weight:700; font-size:0.8rem; color:var(--text-4);">🗂️
+                                            style="background:#e2e8f0; padding:4px 8px; border-radius:6px; font-weight:700; font-size:0.8rem; color:#475569;">🗂️
                                             파일/문서 유틸리티</span></div>
                                     <ul>
                                         <li><strong>9. 사진 모자이크:</strong> 사업 결과보고서나 시스템에 업로드할 사진 속 클라이언트의 얼굴 등 민감한 개인정보를
@@ -914,7 +907,6 @@
                                 function toggleDarkMode(on) {
                                     document.documentElement.classList.toggle('dark-mode', on);
                                     try { localStorage.setItem('sabok_dark_mode', on ? '1' : '0'); } catch (_) { /* noop */ }
-                                    if (typeof syncThemeColor === 'function') syncThemeColor();
                                     // 내정보 탭 토글과 헤더 ⚙️ 설정 모달 토글, 둘 중 어느 쪽에서 바꿔도 서로 동기화
                                     ['dark-mode-toggle', 'dark-mode-toggle-header'].forEach(function (id) {
                                         const cb = document.getElementById(id);
@@ -948,25 +940,25 @@
                                     <div class="modal-close" onclick="closeTOSModal()">✕</div>
                                 </div>
                                 <div class="modal-body"
-                                    style="overflow-y:auto; padding:16px; font-size:0.85rem; color:var(--text-4); line-height:1.6; background:var(--surface-2); border-radius:8px;">
-                                    <h4 style="color:var(--text-2); font-weight:800; margin-bottom:8px; font-size:0.95rem;">
+                                    style="overflow-y:auto; padding:16px; font-size:0.85rem; color:#475569; line-height:1.6; background:#f8fafc; border-radius:8px;">
+                                    <h4 style="color:#1e293b; font-weight:800; margin-bottom:8px; font-size:0.95rem;">
                                         제1조 (목적)</h4>
                                     <p style="margin-bottom:16px;">본 약관은 '사회복지사 비밀노트'(이하 "비밀노트")가 제공하는 서비스의 이용 조건과 절차를
                                         규정합니다.</p>
 
-                                    <h4 style="color:var(--text-2); font-weight:800; margin-bottom:8px; font-size:0.95rem;">
+                                    <h4 style="color:#1e293b; font-weight:800; margin-bottom:8px; font-size:0.95rem;">
                                         제2조 (현명한 이용)</h4>
                                     <p style="margin-bottom:16px;">1. 비밀노트의 AI 도구와 템플릿은 '실무 참고용'입니다. 법적 효력이 없으며, 최종 검토와
                                         책임은 전문가인 선생님 본인에게 있습니다.<br>
                                         2. 익명 커뮤니티는 서로 응원하는 공간입니다. 비방이나 욕설은 예고 없이 삭제될 수 있습니다.</p>
 
-                                    <h4 style="color:var(--text-2); font-weight:800; margin-bottom:8px; font-size:0.95rem;">
+                                    <h4 style="color:#1e293b; font-weight:800; margin-bottom:8px; font-size:0.95rem;">
                                         제3조 (책임의 한계)</h4>
                                     <p style="margin-bottom:16px;">1. <strong>비밀노트는 이용자 간에 발생하는 거래, 분쟁, 손해, 사기 행위 등에 대해
                                             어떠한 법적 책임도 지지 않습니다.</strong><br>
                                         2. 게시판 정보를 통해 발생한 모든 유형/무형의 결과는 이용자 본인의 책임하에 결정되어야 합니다.</p>
 
-                                    <h4 style="color:var(--text-2); font-weight:800; margin-bottom:8px; font-size:0.95rem;">
+                                    <h4 style="color:#1e293b; font-weight:800; margin-bottom:8px; font-size:0.95rem;">
                                         제4조 (데이터와 이별)</h4>
                                     <p>1. 서비스는 운영 사정에 따라 언제든 종료될 수 있으니 중요한 자료는 개별 백업해 주세요.<br>
                                         2. 감정 파쇄기에 넣은 글은 저희도 못 살려드립니다. 정말로 파쇄되거든요!</p>
@@ -982,11 +974,11 @@
                                     <div class="modal-close" onclick="closePrivacyModal()">✕</div>
                                 </div>
                                 <div class="modal-body"
-                                    style="overflow-y:auto; padding:16px; font-size:0.85rem; color:var(--text-4); line-height:1.6; background:var(--surface-2); border-radius:8px;">
+                                    style="overflow-y:auto; padding:16px; font-size:0.85rem; color:#475569; line-height:1.6; background:#f8fafc; border-radius:8px;">
                                     <p style="margin-bottom:16px; font-weight:700;">사회복지사 비밀노트("서비스" 또는 "운영자")는 이용자의
                                         개인정보를 엄격히 보호하며, 정보통신망 이용촉진 및 정보보호 등에 관한 법률 및 개인정보보호법 등 관련 법령을 준수합니다.</p>
 
-                                    <h4 style="color:var(--text-2); font-weight:800; margin-bottom:8px; font-size:0.95rem;">1.
+                                    <h4 style="color:#1e293b; font-weight:800; margin-bottom:8px; font-size:0.95rem;">1.
                                         개인정보 수집 항목 및 목적</h4>
                                     <p style="margin-bottom:16px;">본 서비스는 익명 기반으로 운영되며, 이용자의 실명, 전화번호, 주민등록번호 등 민감한
                                         개인정보를 수집하지 않습니다.<br>
@@ -994,19 +986,19 @@
                                         랭킹 시스템 운영을 목적으로 수집합니다.<br>
                                          - <strong>소셜 로그인 정보 (선택):</strong> 이용자가 계정 분실 방지를 위해 자발적으로 카카오 또는 구글 계정을 연동하는 경우, 해당 플랫폼이 제공하는 최소한의 고유 식별자(이메일 등 프로필 식별용)를 수집하여 데이터 복구 및 로그인 유지 목적으로만 사용합니다.</p>
 
-                                    <h4 style="color:var(--text-2); font-weight:800; margin-bottom:8px; font-size:0.95rem;">2.
+                                    <h4 style="color:#1e293b; font-weight:800; margin-bottom:8px; font-size:0.95rem;">2.
                                         개인정보의 제3자 제공</h4>
                                     <p style="margin-bottom:16px;">서비스는 수집된 어떠한 개인정보도 제3자에게 제공하거나 판매하지 않습니다. 데이터는 오직 본
                                         서비스의 원활한 운영 및 익명 사용자 간의 상호작용 목적으로만 이용됩니다. (소셜 로그인 연동 시에도 외부에 사용자의 정보를 전달하지 않습니다.)</p>
 
-                                    <h4 style="color:var(--text-2); font-weight:800; margin-bottom:8px; font-size:0.95rem;">3.
+                                    <h4 style="color:#1e293b; font-weight:800; margin-bottom:8px; font-size:0.95rem;">3.
                                         데이터 보관 및 파기</h4>
                                     <p style="margin-bottom:16px;">- <strong>게시글 데이터:</strong> 이용자가 삭제하기 전까지 보관되며, 서비스
                                         운영 목적에 부합하지 않는 경우 삭제될 수 있습니다.<br>
                                         - <strong>파쇄기 데이터:</strong> 브라우저 상에서 즉시 파기되며, 서버로 일절 전송되지 않습니다.<br>
                                          - 동기화 식별 코드 및 연동된 소셜 로그인 정보는 서비스 종료 시까지 혹은 이용자의 데이터 삭제(회원 탈퇴) 요청 시 일괄 파기됩니다.</p>
 
-                                    <h4 style="color:var(--text-2); font-weight:800; margin-bottom:8px; font-size:0.95rem;">4.
+                                    <h4 style="color:#1e293b; font-weight:800; margin-bottom:8px; font-size:0.95rem;">4.
                                         쿠키 및 로컬 스토리지 사용</h4>
                                     <p>본 서비스는 이용자의 편의성 제공 및 로그인 유지를 위해 브라우저의 로컬 스토리지(Local Storage) 기능을 사용하여 닉네임 식별 기호
                                         등을 저장합니다. 이용자는 브라우저 설정을 통해 언제든지 저장된 쿠키 및 스토리지 데이터를 삭제할 수 있습니다.</p>
@@ -1015,7 +1007,7 @@
                         </div>
 
                         <div style="text-align:center; padding-top:24px;">
-                            <span style="font-size:0.75rem; color:var(--text-6);">ver 1.0.0 · 사회복지사 비밀노트</span>
+                            <span style="font-size:0.75rem; color:#cbd5e1;">ver 1.0.0 · 사회복지사 비밀노트</span>
                         </div>
                         <div style="height:100px;"></div>
                     </div>
@@ -1028,8 +1020,8 @@
                     style="padding: 40px 16px 140px; min-height: 80vh; display: flex; flex-direction: column; align-items: center;">
                     <div style="text-align:center; margin-bottom:24px;">
                         <div style="font-size:3.5rem; margin-bottom:12px;">🗑️</div>
-                        <h2 style="font-size:1.4rem; font-weight:900; color:var(--text-2); margin-bottom:8px;">감정 파쇄기</h2>
-                        <p style="font-size:0.95rem; color:var(--text-5); line-height:1.5;">
+                        <h2 style="font-size:1.4rem; font-weight:900; color:#1e293b; margin-bottom:8px;">감정 파쇄기</h2>
+                        <p style="font-size:0.95rem; color:#64748b; line-height:1.5;">
                             오늘 겪은 힘든 일, 다 적어보세요.<br>
                             현장을 지나온 <strong style="color:#16a34a;">선배가 먼저 읽고</strong>,
                             <strong style="color:#ef4444;">파쇄</strong>하면 영원히 사라져요. (쓴 글은 서버 저장 안 됨)
@@ -1038,7 +1030,7 @@
                     <div id="shredder-write-area" style="width: 100%; max-width: 400px;">
                         <textarea id="shredder-textarea"
                             placeholder="예: 클라이언트한테 욕 먹었다...&#10;팀장이 또 일을 떠넘겼다...&#10;그냥 다 힘들다 진짜..."
-                            style="width: 100%; height: 180px; border: 2px dashed #fca5a5; border-radius: 16px; padding: 20px; font-size: 1rem; color: var(--text-3); background: #fff5f5; resize: none; transition: all 0.3s; outline: none; line-height: 1.6;"></textarea>
+                            style="width: 100%; height: 180px; border: 2px dashed #fca5a5; border-radius: 16px; padding: 20px; font-size: 1rem; color: #334155; background: #fff5f5; resize: none; transition: all 0.3s; outline: none; line-height: 1.6;"></textarea>
                         <div id="shredder-strips"
                             style="display: none; gap: 4px; justify-content: center; margin: 16px 0;"></div>
                         <button id="comfort-btn" onclick="startComfort()"
@@ -1049,11 +1041,11 @@
                             위로 없이 바로 파쇄하기</button>
                         <div style="text-align:center; margin-top:12px;">
                             <button onclick="openGrowthView()"
-                                style="background:none; border:none; color:var(--text-5); font-size:0.85rem; font-weight:700; cursor:pointer; text-decoration:underline;">🌱
+                                style="background:none; border:none; color:#64748b; font-size:0.85rem; font-weight:700; cursor:pointer; text-decoration:underline;">🌱
                                 나의 성장 궤적 보기</button>
                         </div>
                         <p
-                            style="text-align:center; font-size:0.72rem; color:var(--text-6); margin-top:12px; line-height:1.5;">
+                            style="text-align:center; font-size:0.72rem; color:#94a3b8; margin-top:12px; line-height:1.5;">
                             이 기능은 전문 심리상담을 대체하지 않습니다.<br>쓴 글은 저장되지 않고, 그날의 흔적(힘듦 정도·주제·위로 한 줄)만 남아요.</p>
                     </div>
                     <div id="shredder-success"
@@ -1067,11 +1059,11 @@
                                 <span class="acc-arrow">▼</span>
                             </div>
                             <div class="acc-body" style="padding: 0 16px 16px 16px;">
-                                <p style="font-size:0.85rem; color:var(--text-4); line-height:1.6; margin-bottom:12px;">
+                                <p style="font-size:0.85rem; color:#475569; line-height:1.6; margin-bottom:12px;">
                                     이 감정 파쇄기는 사회복지 현장에서 마주하는 수많은 스트레스와 감정 노동의 무게를 조금이나마 덜어드리기 위해 만들어졌습니다. 클라이언트의 폭언, 과도한
                                     행정 업무, 혹은 해결하기 힘든 딜레마로 인해 마음이 다쳤을 때, 누구에게도 말하지 못할 억눌린 감정들을 이곳에 시원하게 쏟아내 보세요.
                                 </p>
-                                <p style="font-size:0.85rem; color:var(--text-4); line-height:1.6; margin-bottom:0;">
+                                <p style="font-size:0.85rem; color:#475569; line-height:1.6; margin-bottom:0;">
                                     글을 적어 내려가고 그것이 가루가 되어 사라지는 과정을 시각적으로 경험하는 것만으로도, 마음속 응어리진 스트레스가 한결 가벼워지는
                                     <strong>카타르시스(기분 풀림) 효과</strong>를 느낄 수 있습니다. 적으신 모든 내용은 파쇄 즉시 영구 삭제되니, 가장 솔직한 나만의
                                     해우소로 안심하고 자유롭게 사용해 주세요.
@@ -1101,15 +1093,15 @@
                 <div id="pg-back-confirm"
                     style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:999; align-items:center; justify-content:center; padding:24px;">
                     <div
-                        style="background:var(--surface); border-radius:24px; padding:32px 24px; max-width:300px; width:100%; text-align:center; animation:fadeUp 0.2s ease;">
+                        style="background:#fff; border-radius:24px; padding:32px 24px; max-width:300px; width:100%; text-align:center; animation:fadeUp 0.2s ease;">
                         <div style="font-size:40px; margin-bottom:12px;">🚪</div>
                         <div style="font-size:18px; font-weight:800; color:#1a1a2e; margin-bottom:8px;">처음으로 돌아갈까요?
                         </div>
-                        <div style="font-size:13px; color:var(--text-6); margin-bottom:24px; line-height:1.6;">지금까지 입력한 답변이<br>모두
+                        <div style="font-size:13px; color:#aaa; margin-bottom:24px; line-height:1.6;">지금까지 입력한 답변이<br>모두
                             초기화돼요</div>
                         <div style="display:flex; gap:10px;">
                             <button onclick="pgCancelBack()"
-                                style="flex:1; background:#f5f5f5; color:var(--text-5); border:none; border-radius:12px; padding:13px; font-size:13px; font-weight:700; cursor:pointer;">계속
+                                style="flex:1; background:#f5f5f5; color:#888; border:none; border-radius:12px; padding:13px; font-size:13px; font-weight:700; cursor:pointer;">계속
                                 풀기</button>
                             <button onclick="pgConfirmExit()"
                                 style="flex:1; background:linear-gradient(135deg,#FF6B6B,#6C63FF); color:#fff; border:none; border-radius:12px; padding:13px; font-size:13px; font-weight:700; cursor:pointer;">처음으로</button>
@@ -1122,13 +1114,13 @@
                     <div id="pg-step-menu"
                         style="display:block; text-align:center; animation:fadeUp 0.6s ease; padding-top: 32px; padding-bottom: 40px;">
                         <div style="font-size:64px; margin-bottom:10px; animation:bounce 2s infinite;">🎪</div>
-                        <h2 style="font-size:26px; font-weight:900; color:var(--text-2); margin-bottom:6px;">사복놀이터</h2>
-                        <p style="color:var(--text-5); font-size:14px; margin-bottom:28px; line-height:1.6;">머리 아픈 서류 작업은 잠시
+                        <h2 style="font-size:26px; font-weight:900; color:#1e293b; margin-bottom:6px;">사복놀이터</h2>
+                        <p style="color:#64748b; font-size:14px; margin-bottom:28px; line-height:1.6;">머리 아픈 서류 작업은 잠시
                             안녕! 👋<br>동료들과 함께 재미있는 콘텐츠로 힐링해요 🎉</p>
 
                         <!-- 섹션 레이블 -->
                         <div
-                            style="text-align:left; font-size:11px; font-weight:800; color:var(--text-6); letter-spacing:2px; margin-bottom:12px; padding-left:4px;">
+                            style="text-align:left; font-size:11px; font-weight:800; color:#94a3b8; letter-spacing:2px; margin-bottom:12px; padding-left:4px;">
                             ✨ 심리 & 게임</div>
                         <div
                             style="display:flex; flex-direction:column; gap:12px; align-items:center; margin-bottom:20px;">
@@ -1162,7 +1154,7 @@
 
                         <!-- 섹션 레이블 -->
                         <div
-                            style="text-align:left; font-size:11px; font-weight:800; color:var(--text-6); letter-spacing:2px; margin-bottom:12px; padding-left:4px;">
+                            style="text-align:left; font-size:11px; font-weight:800; color:#94a3b8; letter-spacing:2px; margin-bottom:12px; padding-left:4px;">
                             🎲 직장인 소소 게임</div>
                         <div style="display:flex; flex-direction:column; gap:12px; align-items:center;">
                             <button class="pg-fun-btn" onclick="showPlaygroundContent('ladder')"
@@ -1217,7 +1209,7 @@
                             style="background:linear-gradient(135deg,#FF6B6B,#6C63FF); border-radius:16px; padding:16px 48px; box-shadow:0 8px 24px rgba(108,99,255,0.3);">
                             테스트 시작하기 →
                         </button>
-                        <p style="margin-top:12px; font-size:12px; color:var(--text-6);">약 3분 소요 · 12문항</p>
+                        <p style="margin-top:12px; font-size:12px; color:#bbb;">약 3분 소요 · 12문항</p>
                         <div style="height: 60px;"></div>
                     </div>
 
@@ -1225,14 +1217,14 @@
                     <div id="pg-step-quiz" style="display:none; animation:fadeUp 0.35s ease;">
                         <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px;">
                             <button onclick="pgHandleBack()" title="이전 질문"
-                                style="background:var(--surface); border:2px solid var(--border); border-radius:12px; width:42px; height:42px; cursor:pointer; font-size:20px; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:all 0.15s; box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+                                style="background:#fff; border:2px solid #eee; border-radius:12px; width:42px; height:42px; cursor:pointer; font-size:20px; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:all 0.15s; box-shadow:0 2px 8px rgba(0,0,0,0.06);">
                                 ←
                             </button>
                             <div style="flex:1;">
                                 <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
-                                    <span id="pg-q-num" style="font-size:12px; color:var(--text-6); font-weight:600;">Q1 /
+                                    <span id="pg-q-num" style="font-size:12px; color:#aaa; font-weight:600;">Q1 /
                                         12</span>
-                                    <span id="pg-q-pct" style="font-size:12px; color:var(--text-6); font-weight:600;">0%</span>
+                                    <span id="pg-q-pct" style="font-size:12px; color:#aaa; font-weight:600;">0%</span>
                                 </div>
                                 <div style="height:6px; background:#eee; border-radius:99px; overflow:hidden;">
                                     <div id="pg-q-progress"
@@ -1243,14 +1235,14 @@
                         </div>
 
                         <div
-                            style="background:var(--surface); border-radius:24px; padding:28px 24px; box-shadow:0 4px 30px rgba(0,0,0,0.07); margin-bottom:14px;">
+                            style="background:#fff; border-radius:24px; padding:28px 24px; box-shadow:0 4px 30px rgba(0,0,0,0.07); margin-bottom:14px;">
                             <div
-                                style="font-size:11px; color:var(--text-6); font-weight:700; letter-spacing:1px; margin-bottom:8px; text-transform:uppercase;">
+                                style="font-size:11px; color:#bbb; font-weight:700; letter-spacing:1px; margin-bottom:8px; text-transform:uppercase;">
                                 상황</div>
                             <div id="pg-q-situation"
                                 style="font-size:16px; font-weight:800; color:#1a1a2e; margin-bottom:6px; line-height:1.5;">
                             </div>
-                            <div id="pg-q-text" style="font-size:22px; font-weight:900; color:var(--text-2); line-height:1.4;">
+                            <div id="pg-q-text" style="font-size:22px; font-weight:900; color:#333; line-height:1.4;">
                             </div>
                         </div>
 
@@ -1266,7 +1258,7 @@
                             style="font-size:60px; margin-bottom:20px; animation:spin 1s linear infinite; display:inline-block;">
                             🔮</div>
                         <h2 style="font-size:20px; font-weight:800; color:#1a1a2e; margin-bottom:8px;">유형 분석 중...</h2>
-                        <p style="color:var(--text-6); font-size:14px;">선생님의 답변을 분석하고 있어요</p>
+                        <p style="color:#aaa; font-size:14px;">선생님의 답변을 분석하고 있어요</p>
                         <div style="margin-top:24px; display:flex; justify-content:center; gap:6px;">
                             <div
                                 style="width:8px; height:8px; border-radius:50%; background:linear-gradient(135deg,#FF6B6B,#6C63FF); animation:bounce 0.8s ease 0s infinite alternate;">
