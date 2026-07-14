@@ -2,6 +2,15 @@
 <html lang="ko">
 
 <head>
+    <script>
+        (function () {
+            try {
+                if (localStorage.getItem('sabok_dark_mode') === '1') {
+                    document.documentElement.classList.add('dark-mode');
+                }
+            } catch (_) { /* noop */ }
+        })();
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>사복노트 — 신입 사회복지사 익명 대나무숲 & 실무 AI 도우미</title>
@@ -551,6 +560,15 @@
                                     XP &amp; 레벨 안내</span><span style="color:#94a3b8;">›</span>
                             </div>
                             <div
+                                style="padding:14px 18px; border-bottom:1px solid #f1f5f9; display:flex; justify-content:space-between; align-items:center;">
+                                <span style="font-weight:700; font-size:0.95rem; color:#1e293b; white-space:nowrap;">🌙
+                                    다크 모드</span>
+                                <label class="dm-switch">
+                                    <input type="checkbox" id="dark-mode-toggle" onchange="toggleDarkMode(this.checked)">
+                                    <span class="dm-switch-slider"></span>
+                                </label>
+                            </div>
+                            <div
                                 style="padding:14px 18px; border-bottom:1px solid #f1f5f9; display:flex; justify-content:space-between; align-items:center; cursor:pointer;">
                                 <span style="font-weight:700; font-size:0.95rem; color:#1e293b; white-space:nowrap;">🔔
                                     알림 설정</span><span style="color:#94a3b8;">›</span>
@@ -886,6 +904,15 @@
 
 
                             <script>
+                                function toggleDarkMode(on) {
+                                    document.documentElement.classList.toggle('dark-mode', on);
+                                    try { localStorage.setItem('sabok_dark_mode', on ? '1' : '0'); } catch (_) { /* noop */ }
+                                }
+                                (function initDarkModeToggle() {
+                                    const cb = document.getElementById('dark-mode-toggle');
+                                    if (cb) cb.checked = document.documentElement.classList.contains('dark-mode');
+                                })();
+
                                 function toggleAcc(header) {
                                     const body = header.nextElementSibling;
                                     const arrow = header.querySelector('.acc-arrow');

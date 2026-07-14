@@ -4,6 +4,71 @@
 */
 
 /* ============================================
+   DARK MODE (필터 기반 간이 다크모드)
+   전체 인라인 스타일을 일일이 다크 팔레트로 바꾸는 대신,
+   화면 전체를 반전(invert)시키고 이미지·영상·아이프레임·캔버스만
+   다시 반전해서 원래 색으로 되돌리는 방식입니다.
+   완벽하진 않지만(이모지 색감이 살짝 달라짐) 적은 코드로
+   전체 화면에 일관되게 적용됩니다.
+   ============================================ */
+html.dark-mode {
+  filter: invert(1) hue-rotate(180deg);
+  background: #0f172a;
+}
+
+html.dark-mode img,
+html.dark-mode video,
+html.dark-mode iframe,
+html.dark-mode canvas {
+  filter: invert(1) hue-rotate(180deg);
+}
+
+/* 설정 메뉴의 다크모드 토글 스위치 */
+.dm-switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 26px;
+  flex-shrink: 0;
+}
+
+.dm-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.dm-switch-slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background-color: #e2e8f0;
+  transition: 0.2s;
+  border-radius: 26px;
+}
+
+.dm-switch-slider::before {
+  content: "";
+  position: absolute;
+  height: 20px;
+  width: 20px;
+  left: 3px;
+  bottom: 3px;
+  background-color: #fff;
+  transition: 0.2s;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.dm-switch input:checked + .dm-switch-slider {
+  background-color: #6366f1;
+}
+
+.dm-switch input:checked + .dm-switch-slider::before {
+  transform: translateX(18px);
+}
+
+/* ============================================
    TOKENS
    ============================================ */
 :root {

@@ -44,36 +44,6 @@ try {
     }
     ensureAnonSession();
 
-    /* --- OAuth 콜백 에러 처리 ---
-       [버그 원인] 다른 기기에서 linkIdentity()로 이미 연결된 카카오/구글을 시도하면
-       클라이언트가 아닌 콜백(redirect) 단계에서 422(Identity is already linked)로 실패하고,
-       에러가 URL 해시(#error_description=...)에 담겨 돌아온다.
-       기존에는 이걸 아무도 읽지 않아 "로그인이 안 되는" 것처럼 보였다.
-       → 여기서 잡아 기존 계정 로그인(signInWithOAuth)으로 이어준다. */
-    (function handleOAuthCallbackError() {
-        try {
-            const hashParams = new URLSearchParams((window.location.hash || '').replace(/^#/, ''));
-            const queryParams = new URLSearchParams(window.location.search);
-            const desc = hashParams.get('error_description') || queryParams.get('error_description');
-            const errCode = hashParams.get('error_code') || queryParams.get('error_code');
-            if (!desc && !errCode) return;
-            history.replaceState(null, '', window.location.pathname);
-            const provider = localStorage.getItem('sabok_pending_provider') || 'kakao';
-            const providerName = provider === 'google' ? '구글' : '카카오';
-            const already = (desc && desc.toLowerCase().indexOf('already linked') !== -1) || errCode === 'identity_already_exists';
-            if (already) {
-                if (confirm('이 ' + providerName + ' 계정은 예전에 이미 연결한 적이 있어요. 🙌\n그 계정으로 로그인해서 기존 기록(성장 궤적·닉네임·게임)을 불러올까요?\n\n(지금 이 기기의 임시 기록은 사라져요)')) {
-                    if (supabase) supabase.auth.signInWithOAuth({
-                        provider: provider,
-                        options: { redirectTo: window.location.origin + window.location.pathname }
-                    });
-                }
-            } else if (desc) {
-                alert('소셜 로그인 중 문제가 발생했어요. 😢\n잠시 후 다시 시도해 주세요.\n(' + desc + ')');
-            }
-        } catch (_) { /* noop */ }
-    })();
-
     /* --- Anonymous User ID (localStorage) --- */
     /* --- Utility: HTML Escape --- */
     function escapeHtml(text) {
@@ -409,7 +379,6 @@ try {
             }
         } catch (_) { /* noop */ }
 
-        lastGrowthEntries = entries;
         view.innerHTML = renderGrowthView(entries, authFlags);
         // 자연스러운 순간에 딱 한 번: 궤적 3개 이상 + 아직 익명일 때만 권유
         if (authFlags.anonymous && entries.length >= 3 && !localStorage.getItem(LINK_OFFER_KEY)) {
@@ -531,187 +500,8 @@ try {
                 ${lines}
             </div>
             <p style="font-size:0.8rem; color:#64748b; text-align:center; line-height:1.6;">${entries.length}개의 흔적이 쌓였어요.<br>여기까지 걸어온 건 다른 누구도 아닌 당신이에요. 👏</p>
-            <button id="growth-card-btn" onclick="downloadGrowthCard()" style="width:100%; margin-top:16px; padding:14px; background:linear-gradient(135deg,#6366f1,#8b5cf6); color:#fff; border:none; border-radius:14px; font-size:0.92rem; font-weight:800; cursor:pointer; box-shadow:0 4px 12px rgba(99,102,241,0.25);">🖼️ 이 궤적 카드로 저장하기</button>
-            <button onclick="deleteAllGrowth()" style="width:100%; margin-top:10px; padding:12px; background:none; border:1.5px solid #fecaca; color:#ef4444; border-radius:12px; font-size:0.85rem; font-weight:700; cursor:pointer;">궤적 전체 삭제</button>
+            <button onclick="deleteAllGrowth()" style="width:100%; margin-top:20px; padding:12px; background:none; border:1.5px solid #fecaca; color:#ef4444; border-radius:12px; font-size:0.85rem; font-weight:700; cursor:pointer;">궤적 전체 삭제</button>
             ${COMFORT_DISCLAIMER}`;
-    }
-
-    /* ===== 성장 궤적 카드 내보내기 (이미지 저장) =====
-       심리테스트 결과 카드(pgDownloadImage)와 같은 캔버스 다운로드 패턴을 그대로 따른다. */
-    let lastGrowthEntries = [];
-
-    window.downloadGrowthCard = async function () {
-        const btn = document.getElementById('growth-card-btn');
-        try {
-            await buildGrowthCardImage(lastGrowthEntries);
-            if (btn) {
-                const oldBg = btn.style.background;
-                btn.innerHTML = '✅ 저장 완료!';
-                btn.style.background = '#4CAF50';
-                setTimeout(() => {
-                    btn.style.background = oldBg;
-                    btn.innerHTML = '🖼️ 이 궤적 카드로 저장하기';
-                }, 3000);
-            }
-        } catch (e) {
-            alert('카드 저장에 실패했어요.\n(일부 브라우저 환경에서는 직접 다운로드가 제한될 수 있습니다.)');
-            console.error(e);
-        }
-    };
-
-    function roundRect(ctx, x, y, w, h, r) {
-        ctx.beginPath();
-        ctx.moveTo(x + r, y);
-        ctx.arcTo(x + w, y, x + w, y + h, r);
-        ctx.arcTo(x + w, y + h, x, y + h, r);
-        ctx.arcTo(x, y + h, x, y, r);
-        ctx.arcTo(x, y, x + w, y, r);
-        ctx.closePath();
-    }
-
-    function drawHardnessSparkline(ctx, entries, x, y, w, h) {
-        const n = entries.length;
-        const px = i => n === 1 ? x + w / 2 : x + w * (i / (n - 1));
-        const py = hVal => y + h - h * ((hVal - 1) / 4);
-        ctx.beginPath();
-        entries.forEach((e, i) => {
-            const xx = px(i), yy = py(e.hardness);
-            if (i === 0) ctx.moveTo(xx, yy); else ctx.lineTo(xx, yy);
-        });
-        ctx.strokeStyle = '#fff';
-        ctx.lineWidth = 3;
-        ctx.lineJoin = 'round';
-        ctx.lineCap = 'round';
-        ctx.stroke();
-        entries.forEach((e, i) => {
-            ctx.beginPath();
-            ctx.arc(px(i), py(e.hardness), 4, 0, Math.PI * 2);
-            ctx.fillStyle = '#fff';
-            ctx.fill();
-        });
-    }
-
-    function drawTagChips(ctx, tags, x, y, maxW) {
-        ctx.textAlign = 'left';
-        if (!tags.length) {
-            ctx.font = '15px Arial';
-            ctx.fillStyle = 'rgba(255,255,255,0.5)';
-            ctx.fillText('기록 없음', x, y + 16);
-            return;
-        }
-        let cx2 = x;
-        ctx.font = 'bold 16px Arial';
-        tags.forEach(t => {
-            const label = '#' + t;
-            const tw = ctx.measureText(label).width + 24;
-            if (cx2 + tw > x + maxW) return; // 카드 폭을 넘는 태그는 생략
-            ctx.fillStyle = 'rgba(255,255,255,0.22)';
-            roundRect(ctx, cx2, y, tw, 30, 15);
-            ctx.fill();
-            ctx.fillStyle = '#fff';
-            ctx.fillText(label, cx2 + 12, y + 20);
-            cx2 += tw + 8;
-        });
-    }
-
-    async function buildGrowthCardImage(entries) {
-        if (!entries || entries.length < 3) throw new Error('not_enough_entries');
-        if (document.fonts && document.fonts.ready) {
-            try { await document.fonts.ready; } catch (_) { /* noop */ }
-        }
-
-        const W = 800, H = 1040;
-        const canvas = document.createElement('canvas');
-        canvas.width = W; canvas.height = H;
-        const ctx = canvas.getContext('2d');
-
-        const grad = ctx.createLinearGradient(0, 0, W, H);
-        grad.addColorStop(0, '#6366f1');
-        grad.addColorStop(1, '#8b5cf6');
-        ctx.fillStyle = grad;
-        ctx.fillRect(0, 0, W, H);
-
-        [[W * 0.88, H * 0.07, 150, 0.10], [W * 0.08, H * 0.93, 130, 0.08]].forEach(([x, y, r, a]) => {
-            ctx.beginPath();
-            ctx.arc(x, y, r, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(255,255,255,${a})`;
-            ctx.fill();
-        });
-
-        const cx = W / 2;
-        ctx.textAlign = 'center';
-
-        ctx.font = 'bold 22px Arial';
-        ctx.fillStyle = 'rgba(255,255,255,0.6)';
-        ctx.fillText('사복노트 — 나의 성장 궤적', cx, 60);
-
-        ctx.font = '90px serif';
-        ctx.fillText('🌱', cx, 175);
-
-        ctx.font = 'bold 38px Arial';
-        ctx.fillStyle = '#fff';
-        ctx.fillText(`${entries.length}개의 흔적을 쌓았어요`, cx, 235);
-
-        ctx.font = '20px Arial';
-        ctx.fillStyle = 'rgba(255,255,255,0.85)';
-        ctx.fillText('여기까지 걸어온 건 다른 누구도 아닌 나예요', cx, 268);
-
-        // 힘듦의 흐름 카드
-        const cardX = 60, cardY = 310, cardW = W - 120, cardH = 260;
-        ctx.fillStyle = 'rgba(255,255,255,0.14)';
-        roundRect(ctx, cardX, cardY, cardW, cardH, 20);
-        ctx.fill();
-
-        ctx.font = 'bold 20px Arial';
-        ctx.textAlign = 'left';
-        ctx.fillStyle = 'rgba(255,255,255,0.9)';
-        ctx.fillText('힘듦의 흐름 (위로 갈수록 힘든 날)', cardX + 24, cardY + 38);
-
-        drawHardnessSparkline(ctx, entries, cardX + 24, cardY + 60, cardW - 48, cardH - 100);
-
-        // 주제 변화 카드
-        const tagCardY = cardY + cardH + 24, tagCardH = 180;
-        ctx.fillStyle = 'rgba(255,255,255,0.14)';
-        roundRect(ctx, cardX, tagCardY, cardW, tagCardH, 20);
-        ctx.fill();
-
-        ctx.font = 'bold 20px Arial';
-        ctx.fillStyle = 'rgba(255,255,255,0.9)';
-        ctx.fillText('이야기 주제의 변화', cardX + 24, tagCardY + 38);
-
-        const half = Math.floor(entries.length / 2);
-        const earlyTags = topTags(entries.slice(0, half));
-        const recentTags = topTags(entries.slice(half));
-
-        ctx.font = '16px Arial';
-        ctx.fillStyle = 'rgba(255,255,255,0.65)';
-        ctx.fillText('처음엔', cardX + 24, tagCardY + 68);
-        drawTagChips(ctx, earlyTags, cardX + 24, tagCardY + 82, cardW - 48);
-
-        ctx.font = '16px Arial';
-        ctx.fillStyle = 'rgba(255,255,255,0.65)';
-        ctx.fillText('요즘은', cardX + 24, tagCardY + 132);
-        drawTagChips(ctx, recentTags, cardX + 24, tagCardY + 146, cardW - 48);
-
-        ctx.textAlign = 'center';
-        ctx.font = '18px Arial';
-        ctx.fillStyle = 'rgba(255,255,255,0.4)';
-        ctx.fillText('saboknote.com', cx, H - 24);
-
-        return new Promise((resolve, reject) => {
-            try {
-                const dataUrl = canvas.toDataURL('image/png');
-                const link = document.createElement('a');
-                link.download = `나의_성장_궤적_${entries.length}개.png`;
-                link.href = dataUrl;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                resolve();
-            } catch (e) {
-                reject(e);
-            }
-        });
     }
 
     /* ===== 2단계: 계정 연결 (익명 → 카카오 승격) =====
@@ -722,7 +512,6 @@ try {
 
     window.linkKakao = async function () {
         try {
-            localStorage.setItem('sabok_pending_provider', 'kakao');
             const session = await ensureAnonSession();
             if (!session) throw new Error('no_session');
             const { error } = await supabase.auth.linkIdentity({
@@ -749,7 +538,6 @@ try {
     // 이미 카카오에 연결된 계정으로 되돌아가는 로그인 (기기 변경·재방문 시 복원 경로)
     window.signInKakao = async function () {
         try {
-            localStorage.setItem('sabok_pending_provider', 'kakao');
             const { error } = await supabase.auth.signInWithOAuth({
                 provider: 'kakao',
                 options: { redirectTo: window.location.origin + window.location.pathname }
@@ -762,7 +550,6 @@ try {
 
     window.linkGoogle = async function () {
         try {
-            localStorage.setItem('sabok_pending_provider', 'google');
             const session = await ensureAnonSession();
             if (!session) throw new Error('no_session');
             const { error } = await supabase.auth.linkIdentity({
@@ -787,7 +574,6 @@ try {
 
     window.signInGoogle = async function () {
         try {
-            localStorage.setItem('sabok_pending_provider', 'google');
             const { error } = await supabase.auth.signInWithOAuth({
                 provider: 'google',
                 options: { redirectTo: window.location.origin + window.location.pathname }
@@ -795,50 +581,6 @@ try {
             if (error) throw error;
         } catch (e) {
             alert('로그인에 실패했어요. 잠시 후 다시 시도해 주세요. 😢');
-        }
-    };
-
-    /* ===== 내 정보 탭 소셜 로그인 진입점 =====
-       처음 연결이면 익명 계정 승격(linkIdentity),
-       예전에 연결한 적 있으면 그 계정으로 로그인(signInWithOAuth).
-       동기화 코드(sabok_user_id)는 연결 직전에 계정 메타데이터에 바인딩해
-       다른 기기에서 로그인만 해도 닉네임·게시글·게임 기록까지 복원되게 한다. */
-    window.socialLogin = async function (provider) {
-        if (!supabase) { alert('네트워크 연결을 확인한 뒤 다시 시도해 주세요.'); return; }
-        const providerName = provider === 'google' ? '구글' : '카카오';
-        try {
-            localStorage.setItem('sabok_pending_provider', provider);
-            const session = await ensureAnonSession();
-            const u = session && session.user;
-            if (u && (u.identities || []).some(i => i.provider === 'kakao' || i.provider === 'google')) {
-                alert('이미 소셜 계정으로 로그인돼 있어요. 😊');
-                if (typeof initMypage === 'function') initMypage();
-                return;
-            }
-            const hasAccount = confirm('예전에 ' + providerName + ' 계정을 연결한 적이 있나요?\n\n[확인] 네 — 그 계정으로 로그인해서 기존 기록을 불러올게요\n[취소] 아니요, 처음이에요 — 지금 이 기기의 기록을 계정에 묶을게요');
-            const redirectTo = window.location.origin + window.location.pathname;
-            if (hasAccount || !session) {
-                // 기존 계정 로그인 (다른 기기에서 재로그인하는 경로)
-                const { error } = await supabase.auth.signInWithOAuth({ provider: provider, options: { redirectTo: redirectTo } });
-                if (error) throw error;
-                return;
-            }
-            // 처음 연결: 동기화 코드를 계정에 먼저 심고 익명 → 소셜 승격
-            try { await supabase.auth.updateUser({ data: { sabok_user_id: getOrCreateUserId() } }); } catch (_) { /* noop */ }
-            const { error } = await supabase.auth.linkIdentity({ provider: provider, options: { redirectTo: redirectTo } });
-            if (error) throw error;
-        } catch (e) {
-            const msg = String((e && e.message) || e);
-            if (msg.indexOf('already') !== -1) {
-                if (confirm('이 ' + providerName + ' 계정은 이미 연결돼 있어요. 🙌\n그 계정으로 로그인해서 기존 기록을 불러올까요?')) {
-                    return provider === 'google' ? window.signInGoogle() : window.signInKakao();
-                }
-            } else if (msg.indexOf('linking') !== -1 || msg.indexOf('disabled') !== -1) {
-                // 수동 연결 기능이 꺼져 있으면 로그인으로 대체
-                return provider === 'google' ? window.signInGoogle() : window.signInKakao();
-            } else {
-                alert('로그인에 실패했어요. 잠시 후 다시 시도해 주세요. 😢');
-            }
         }
     };
 
@@ -852,7 +594,7 @@ try {
                 alert('지금은 소셜 계정으로 로그인돼 있지 않아요. (익명 사용 중)');
                 return;
             }
-            if (!confirm('로그아웃할까요?\n이 기기는 완전히 새 동기화 코드로 초기화되고,\n다시 카카오/구글로 로그인하면 원래 기록으로 돌아와요. 🌱')) return;
+            if (!confirm('로그아웃할까요?\n이 기기의 임시 기록은 비워지고,\n다시 카카오/구글로 로그인하면 원래 기록으로 돌아와요. 🌱')) return;
             try { await supabase.auth.signOut(); } catch (_) { /* noop */ }
             // 로컬 신원 초기화 → 완전한 "새 기기" 상태
             try {
@@ -861,13 +603,12 @@ try {
                 localStorage.removeItem(LINK_OFFER_KEY);
                 localStorage.removeItem(LINK_DONE_KEY);
                 localStorage.removeItem(SABOK_RESTORE_DECLINED_KEY);
-                localStorage.removeItem('sabok_pending_provider');
                 Object.keys(localStorage).forEach(k => {
                     if (k.startsWith('sb-') && k.endsWith('-auth-token')) localStorage.removeItem(k);
                 });
             } catch (_) { /* noop */ }
             sabokAuthPromise = null;
-            alert('로그아웃됐어요. 이 기기에는 새 동기화 코드가 발급돼요.\n다시 카카오/구글로 로그인하면 기존 기록으로 돌아와요. 👋');
+            alert('로그아웃됐어요. 다시 로그인하면 기록이 돌아와요. 👋');
             location.reload();
         } catch (_) {
             alert('로그아웃 중 문제가 생겼어요. 잠시 후 다시 시도해 주세요.');
@@ -4413,87 +4154,6 @@ try {
         }
     };
 
-    /* ===== 받은 감사 리액션 =====
-       Q&A 답변(reply_type='help')과 커뮤니티 댓글(reply_type='community')에
-       공용으로 쓰는 감사(🙏) 리액션. reply_thanks 테이블에 (reply_id, reply_type, giver_id) 유니크. */
-    async function fetchThanksInfo(replyIds, replyType, myUserId) {
-        const info = {};
-        (replyIds || []).forEach(id => { info[id] = { count: 0, mine: false }; });
-        if (!replyIds || !replyIds.length || !supabase) return info;
-        try {
-            const { data, error } = await supabase
-                .from('reply_thanks')
-                .select('reply_id, giver_id')
-                .eq('reply_type', replyType)
-                .in('reply_id', replyIds);
-            if (!error && data) {
-                data.forEach(row => {
-                    if (!info[row.reply_id]) info[row.reply_id] = { count: 0, mine: false };
-                    info[row.reply_id].count += 1;
-                    if (row.giver_id === myUserId) info[row.reply_id].mine = true;
-                });
-            }
-        } catch (_) { /* noop */ }
-        return info;
-    }
-
-    function renderThanksButton(replyId, replyType, receiverId, info) {
-        const mine = !!(info && info.mine);
-        const count = (info && info.count) || 0;
-        return `<button id="thanks-btn-${replyType}-${replyId}" onclick="toggleThanks('${replyId}', '${replyType}', '${escapeAttr(receiverId || '')}')"
-            style="margin-top:8px; padding:6px 12px; border-radius:20px; border:1px solid ${mine ? '#fde68a' : '#e2e8f0'}; background:${mine ? '#fef9c3' : '#f8fafc'}; color:${mine ? '#a16207' : '#64748b'}; font-size:0.78rem; font-weight:700; cursor:pointer;">${mine ? '💛' : '🤍'} 감사해요 <span>${count}</span></button>`;
-    }
-
-    window.toggleThanks = async function (replyId, replyType, receiverId) {
-        if (!supabase) return;
-        const myUserId = getOrCreateUserId();
-        if (receiverId && receiverId === myUserId) {
-            alert('내 답변에는 감사를 누를 수 없어요. 😊');
-            return;
-        }
-        const btn = document.getElementById(`thanks-btn-${replyType}-${replyId}`);
-        if (btn) btn.disabled = true;
-        try {
-            const { data: existing, error: selErr } = await supabase
-                .from('reply_thanks')
-                .select('id')
-                .eq('reply_id', replyId)
-                .eq('reply_type', replyType)
-                .eq('giver_id', myUserId)
-                .maybeSingle();
-            if (selErr) throw selErr;
-
-            if (existing) {
-                const { error: delErr } = await supabase.from('reply_thanks').delete().eq('id', existing.id);
-                if (delErr) throw delErr;
-            } else {
-                const { error: insErr } = await supabase.from('reply_thanks').insert([
-                    { reply_id: replyId, reply_type: replyType, receiver_id: receiverId, giver_id: myUserId }
-                ]);
-                if (insErr) throw insErr;
-            }
-
-            const { count } = await supabase
-                .from('reply_thanks')
-                .select('id', { count: 'exact', head: true })
-                .eq('reply_id', replyId)
-                .eq('reply_type', replyType);
-
-            if (btn) {
-                const mineNow = !existing;
-                btn.innerHTML = `${mineNow ? '💛' : '🤍'} 감사해요 <span>${count || 0}</span>`;
-                btn.style.background = mineNow ? '#fef9c3' : '#f8fafc';
-                btn.style.color = mineNow ? '#a16207' : '#64748b';
-                btn.style.borderColor = mineNow ? '#fde68a' : '#e2e8f0';
-            }
-        } catch (e) {
-            console.error('toggleThanks error:', e);
-            alert('감사 표시 중 문제가 발생했어요. 잠시 후 다시 시도해 주세요.');
-        } finally {
-            if (btn) btn.disabled = false;
-        }
-    };
-
     window.openQaDetail = async function (id) {
         if (!supabase) {
             alert('Supabase 설정이 필요합니다.');
@@ -4520,7 +4180,6 @@ try {
             let repliesHtml = replies.length > 0 ? '' : '<p style="text-align:center; padding:30px 0; color:#94a3b8; font-size:0.9rem;">아직 등록된 답변이 없습니다.<br>첫 번째 답변의 주인공이 되어보세요! ✨</p>';
 
             const myUserId = getOrCreateUserId();
-            const thanksInfo = await fetchThanksInfo(replies.map(r => r.id), 'help', myUserId);
             replies.forEach(r => {
                 const isMyReply = r.user_id && r.user_id === myUserId;
                 const replyActions = isMyReply ? `
@@ -4528,7 +4187,6 @@ try {
                         <button onclick="editReply('${r.id}', '${post.id}')" style="flex:1; padding:6px; border-radius:10px; border:1px solid #e2e8f0; background:#f8fafc; color:#475569; font-size:0.78rem; font-weight:700; cursor:pointer;">✏️ 수정</button>
                         <button onclick="deleteReply('${r.id}', '${post.id}')" style="flex:1; padding:6px; border-radius:10px; border:1px solid #fee2e2; background:#fff5f5; color:#ef4444; font-size:0.78rem; font-weight:700; cursor:pointer;">🗑️ 삭제</button>
                     </div>` : '';
-                const thanksHtml = isMyReply ? '' : renderThanksButton(r.id, 'help', r.user_id, thanksInfo[r.id]);
                 repliesHtml += `
                 <div id="reply-item-${r.id}" style="background:#f8fafc; padding:16px; border-radius:14px; border:1px solid #f1f5f9; margin-bottom:12px;">
                     <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
@@ -4537,7 +4195,6 @@ try {
                     </div>
                     <div style="font-size:0.9rem; color:#475569; line-height:1.5;">${escapeHtml(r.content)}</div>
                     ${replyActions}
-                    ${thanksHtml}
                 </div>
             `;
             });
@@ -5030,7 +4687,6 @@ try {
             let repliesHtml = safeReplies.length > 0 ? '' : '<p style="text-align:center; padding:30px 0; color:#94a3b8; font-size:0.9rem;">아직 댓글이 없습니다.<br>첫 번째 댓글을 남겨보세요! ✨</p>';
 
             const myUserId = getOrCreateUserId();
-            const thanksInfo = await fetchThanksInfo(safeReplies.map(r => r.id), 'community', myUserId);
             safeReplies.forEach(r => {
                 const isMyReply = r.user_id && r.user_id === myUserId;
                 const replyActions = isMyReply ? `
@@ -5038,7 +4694,6 @@ try {
                         <button onclick="editCommReply('${r.id}', '${post.id}')" style="flex:1; padding:6px; border-radius:10px; border:1px solid #e2e8f0; background:#f8fafc; color:#475569; font-size:0.78rem; font-weight:700; cursor:pointer;">✏️ 수정</button>
                         <button onclick="deleteCommReply('${r.id}', '${post.id}')" style="flex:1; padding:6px; border-radius:10px; border:1px solid #fee2e2; background:#fff5f5; color:#ef4444; font-size:0.78rem; font-weight:700; cursor:pointer;">🗑️ 삭제</button>
                     </div>` : '';
-                const thanksHtml = isMyReply ? '' : renderThanksButton(r.id, 'community', r.user_id, thanksInfo[r.id]);
                 repliesHtml += `
                 <div id="comm-reply-item-${r.id}" style="background:#f8fafc; padding:16px; border-radius:14px; border:1px solid #f1f5f9; margin-bottom:12px;">
                     <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
@@ -5047,7 +4702,6 @@ try {
                     </div>
                     <div style="font-size:0.9rem; color:#475569; line-height:1.5;">${escapeHtml(r.content)}</div>
                     ${replyActions}
-                    ${thanksHtml}
                 </div>
             `;
             });
@@ -5397,37 +5051,29 @@ try {
         // 소셜 연동 상태 표시
         const linkedList = document.getElementById('my-linked-accounts-list');
         if (linkedList) {
-            const loginButtonsHtml =
-                '<div style="width:100%;">' +
-                '<p style="font-size:0.78rem; color:#64748b; line-height:1.55; margin:0 0 10px;">소셜 계정을 연결하면 동기화 코드 없이도<br>어느 기기에서든 내 기록이 그대로 이어져요.</p>' +
-                '<button onclick="socialLogin(\'kakao\')" style="width:100%; padding:12px; background:#FEE500; color:#191919; border:none; border-radius:10px; font-size:0.88rem; font-weight:800; cursor:pointer; margin-bottom:8px;">💬 카카오로 로그인 / 연결</button>' +
-                '<button onclick="socialLogin(\'google\')" style="width:100%; padding:12px; background:#ffffff; color:#191919; border:1px solid #d1d5db; border-radius:10px; font-size:0.88rem; font-weight:800; cursor:pointer;">🌐 구글로 로그인 / 연결</button>' +
-                '</div>';
             linkedList.innerHTML = '<span style="font-size:0.75rem; color:#94a3b8;">확인 중...</span>';
             ensureAnonSession().then(session => {
                 const u = session && session.user;
-                const providers = (u && u.identities ? u.identities : []).map(i => i.provider);
-                const providerRow = function (icon, iconBg, iconBorder, name) {
-                    return '<div style="display:flex; align-items:center; gap:10px; background:#fff; border:1px solid #e2e8f0; border-radius:12px; padding:10px 12px; margin-bottom:8px;">' +
-                        '<div style="width:34px; height:34px; border-radius:10px; background:' + iconBg + '; border:' + iconBorder + '; display:flex; align-items:center; justify-content:center; font-size:1rem; flex-shrink:0;">' + icon + '</div>' +
-                        '<div style="flex:1; min-width:0;">' +
-                        '<div style="font-size:0.85rem; font-weight:800; color:#1e293b;">' + name + '</div>' +
-                        '<div style="font-size:0.7rem; color:#16a34a; font-weight:700; margin-top:2px;"><span style="font-size:0.55rem; vertical-align:1px;">●</span> 연결됨 · 기기 간 자동 동기화 중</div>' +
-                        '</div></div>';
-                };
+                if (!u || !u.identities) {
+                    linkedList.innerHTML = '<span style="font-size:0.75rem; color:#94a3b8;">현재 연동된 소셜 계정이 없습니다. (성장 궤적에서 연동 가능)</span>';
+                    return;
+                }
+                const providers = u.identities.map(i => i.provider);
                 let html = '';
-                if (providers.includes('kakao')) html += providerRow('💬', '#FEE500', 'none', '카카오 계정');
-                if (providers.includes('google')) html += providerRow('🌐', '#ffffff', '1px solid #e2e8f0', '구글 계정');
+                if (providers.includes('kakao')) {
+                    html += '<span style="background:#FEE500; color:#191919; padding:4px 8px; border-radius:6px; font-size:0.75rem; font-weight:800; margin-right:4px;">💬 카카오 연동됨</span>';
+                }
+                if (providers.includes('google')) {
+                    html += '<span style="background:#ffffff; border:1px solid #d1d5db; color:#191919; padding:4px 8px; border-radius:6px; font-size:0.75rem; font-weight:800;">🌐 구글 연동됨</span>';
+                }
                 if (!html) {
-                    html = loginButtonsHtml;
+                    html = '<span style="font-size:0.75rem; color:#94a3b8;">현재 연동된 소셜 계정이 없습니다. (성장 궤적에서 연동 가능)</span>';
                 } else {
-                    html = '<div style="width:100%;">' + html +
-                        '<button onclick="logout()" style="width:100%; padding:11px; background:none; border:1px solid #e2e8f0; color:#94a3b8; border-radius:10px; font-size:0.8rem; font-weight:700; cursor:pointer;">로그아웃</button>' +
-                        '</div>';
+                    html += '<button onclick="logout()" style="display:block; margin-top:10px; padding:8px 14px; background:none; border:1px solid #cbd5e1; color:#64748b; border-radius:10px; font-size:0.8rem; font-weight:700; cursor:pointer;">로그아웃</button>';
                 }
                 linkedList.innerHTML = html;
-            }).catch(() => {
-                linkedList.innerHTML = loginButtonsHtml;
+            }).catch(e => {
+                linkedList.innerHTML = '<span style="font-size:0.75rem; color:#ef4444;">상태를 불러오지 못했습니다.</span>';
             });
         }
 
@@ -5473,11 +5119,8 @@ try {
 
             aCount = (helpMeReplyCount || 0) + (commReplyCount || 0);
 
-            const { count: thanksReceivedCount } = await supabase
-                .from('reply_thanks')
-                .select('*', { count: 'exact', head: true })
-                .eq('receiver_id', myUserId);
-            thanksCount = thanksReceivedCount || 0;
+            // 받은 감사는 추후 구현 예정
+            thanksCount = 0;
         } catch (e) { console.error('Stats fetch error:', e); }
 
         const elQ = document.getElementById('mypage-stat-q');
