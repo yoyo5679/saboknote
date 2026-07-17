@@ -6749,12 +6749,16 @@ try {
         pgState.resultType = type;
 
         try {
-            // Save result (fire-and-forget, errors are silent)
-            fetch(supabaseUrl + '/rest/v1/welfare_type_results', {
-                method: 'POST',
-                headers: { 'apikey': supabaseKey, 'Authorization': 'Bearer ' + supabaseKey, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
-                body: JSON.stringify({ type: type })
-            }).catch(e => console.warn('Could not save type result', e));
+            // Save result — 기기당 1회만 집계 (재응시가 통계를 부풀리지 않도록)
+            if (!localStorage.getItem('sabok_type_submitted')) {
+                fetch(supabaseUrl + '/rest/v1/welfare_type_results', {
+                    method: 'POST',
+                    headers: { 'apikey': supabaseKey, 'Authorization': 'Bearer ' + supabaseKey, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+                    body: JSON.stringify({ type: type })
+                }).then(r => {
+                    if (r.ok) localStorage.setItem('sabok_type_submitted', '1');
+                }).catch(e => console.warn('Could not save type result', e));
+            }
 
             // Fetch stats concurrently with a minimum visual delay
             const [, statsData] = await Promise.all([
@@ -6770,7 +6774,7 @@ try {
                 const total = statsData.length;
                 const pct = {};
                 Object.keys(count).forEach(k => { pct[k] = Math.round((count[k] / total) * 100); });
-                pgState.stats = { pct, total };
+                pgState.stats = { pct, count, total };
             } else {
                 pgState.stats = null;
             }
@@ -6795,27 +6799,35 @@ try {
             distHtml = `<div style="text-align:center; padding:18px 0;"><div style="font-size:22px; animation:spin 1.5s linear infinite; display:inline-block;">📡</div><div style="font-size:12px; color:var(--text-6); margin-top:8px;">데이터 집계 중이에요...<br>곧 실제 분포를 보여드릴게요!</div></div>`;
         } else if (pgState.stats && pgState.stats.total > 0) {
             const stats = pgState.stats;
+            // 표본이 적을 땐 퍼센트가 과장돼 보이므로 실제 인원수로 표기
+            const smallSample = stats.total < 30;
             distHtml += `
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
                     <div style="font-size:13px; font-weight:800; color:var(--text-2);">📊 전체 복지사 유형 분포</div>
-                    <div style="font-size:11px; color:var(--text-6);">총 ${stats.total.toLocaleString()}명</div>
+                    <div style="font-size:11px; color:var(--text-6);">지금까지 ${stats.total.toLocaleString()}명 참여</div>
                 </div>
             `;
 
             Object.entries(pgTypes).forEach(([k, v]) => {
                 const pct = stats.pct[k] || 0;
+                const cnt = (stats.count && stats.count[k]) || 0;
                 const isMe = k === pgState.resultType;
+                const valueLabel = smallSample ? `${cnt}명` : `${pct}%`;
                 distHtml += `
                 <div style="margin-bottom:8px;">
                   <div style="display:flex; justify-content:space-between; margin-bottom:3px;">
                     <span style="font-size:11px; font-weight:${isMe ? 800 : 600}; color:${isMe ? v.color : '#888'};">${v.emoji} ${v.name}${isMe ? " ← 나" : ""}</span>
-                    <span style="font-size:11px; font-weight:700; color:${isMe ? v.color : '#bbb'};">${pct}%</span>
+                    <span style="font-size:11px; font-weight:700; color:${isMe ? v.color : '#bbb'};">${valueLabel}</span>
                   </div>
                   <div style="height:5px; background:#f2f2f2; border-radius:99px; overflow:hidden;">
                     <div style="height:100%; width:${pct}%; background:${isMe ? v.bg : '#e0e0e0'}; border-radius:99px; transition:width 1s ease;"></div>
                   </div>
                 </div>`;
             });
+
+            if (smallSample) {
+                distHtml += `<div style="font-size:10.5px; color:var(--text-6); margin-top:10px; text-align:center;">🌱 아직 참여자가 적어 분포가 한쪽으로 몰려 보일 수 있어요. 공유해서 표본을 늘려주세요!</div>`;
+            }
         } else {
             distHtml += `
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
@@ -6914,7 +6926,7 @@ try {
             if (btn) {
                 const oldBg = btn.style.background;
                 btn.style.background = "#4CAF50";
-                btn.innerHTML = "✅ 다운로드 완료!";
+                btn.innerHTML = "✅ 이미지 준비 완료!";
                 setTimeout(() => { btn.style.background = oldBg; btn.innerHTML = "🖼️ 결과 이미지 저장하기(다운로드)"; }, 3000);
             }
         } catch (e) {
@@ -6922,6 +6934,30 @@ try {
             console.error(e);
         }
     };
+
+    /* ===== 이미지 저장 공통 헬퍼 =====
+       모바일(특히 iOS·카톡 인앱 브라우저)은 <a download> 클릭이 조용히 무시되는 경우가 많아
+       이미지를 모달로 띄우고 '길게 눌러 저장'을 안내한다. 데스크톱은 그대로 다운로드. */
+    function presentCanvasForSave(canvas, filename) {
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
+            || (navigator.maxTouchPoints > 1 && /Mac/.test(navigator.userAgent));
+        const dataUrl = canvas.toDataURL('image/png');
+        if (isMobile) {
+            openModal('🖼️ 이미지 저장', `
+                <div style="text-align:center;">
+                    <img src="${dataUrl}" alt="결과 이미지" style="width:100%; border-radius:14px; margin-bottom:12px; box-shadow:0 6px 20px rgba(0,0,0,0.15);">
+                    <p style="font-size:0.92rem; color:var(--text-3); font-weight:700; line-height:1.7;">
+                        위 이미지를 <span style="color:var(--primary);">길게 꾹~ 눌러서</span><br>'사진에 저장' 또는 '이미지 저장'을 선택하세요 👆</p>
+                </div>`);
+            return;
+        }
+        const link = document.createElement('a');
+        link.download = filename;
+        link.href = dataUrl;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
 
     /* ===== 공유 공통 헬퍼: 모바일이면 네이티브 공유 시트(카톡·인스타), 아니면 다운로드+링크복사 ===== */
     async function shareCanvasAsImage(canvas, filename, shareText) {
@@ -6937,13 +6973,8 @@ try {
             await navigator.share({ title: '사복노트', text: shareText, url: 'https://saboknote.com/' });
             return 'shared';
         }
-        // 데스크톱 등 Web Share 미지원: 이미지 다운로드 + 공유 문구 클립보드 복사
-        const link = document.createElement('a');
-        link.download = filename;
-        link.href = canvas.toDataURL('image/png');
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        // Web Share 미지원: 이미지 저장 안내(모바일=길게 눌러 저장, 데스크톱=다운로드) + 공유 문구 복사
+        presentCanvasForSave(canvas, filename);
         try { await navigator.clipboard.writeText(shareText + ' → https://saboknote.com/'); } catch (e) { /* noop */ }
         return 'downloaded';
     }
@@ -7044,12 +7075,7 @@ try {
 
     async function pgDownloadImage(t) {
         const canvas = pgGenerateResultCanvas(t);
-        const link = document.createElement("a");
-        link.download = `나의_사복_유형_${t.name.replace(/\s+/g, '_')}.png`;
-        link.href = canvas.toDataURL("image/png");
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        presentCanvasForSave(canvas, `나의_사복_유형_${t.name.replace(/\s+/g, '_')}.png`);
     }
 
     /* ============================================================
@@ -7271,12 +7297,7 @@ try {
     window.bingoDownload = function () {
         const lines = bingoCountLines(bingoState.checked);
         const canvas = bingoGenerateCanvas();
-        const link = document.createElement('a');
-        link.download = `사회복지사_공감빙고_${lines}줄.png`;
-        link.href = canvas.toDataURL('image/png');
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        presentCanvasForSave(canvas, `사회복지사_공감빙고_${lines}줄.png`);
     };
 
     /* --- Image Mosaic Logic --- */
