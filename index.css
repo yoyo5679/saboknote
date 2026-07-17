@@ -369,6 +369,14 @@ body {
   letter-spacing: -0.01em;
 }
 
+.hero-eyebrow-sm {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.78);
+  margin-bottom: 6px;
+  letter-spacing: -0.01em;
+}
+
 .hero-title {
   font-size: 1.42rem;
   font-weight: 500;
