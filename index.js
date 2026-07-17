@@ -3034,7 +3034,8 @@ try {
             document.getElementById('run-ltc-calc').onclick = calculateLTC;
 
             // Ensure the first tab is visually and functionally active
-            if (typeof switchAdminTab === 'function') switchAdminTab('vat');
+            // (fromUserClick=false — 모달을 열었을 뿐 아직 어떤 도구도 "쓴" 게 아니므로 최근사용에 기록하지 않음)
+            if (typeof switchAdminTab === 'function') switchAdminTab('vat', false);
 
             if (typeof initPhotoCompressor === 'function') initPhotoCompressor();
             if (typeof initImageConverter === 'function') initImageConverter();
@@ -3420,7 +3421,63 @@ try {
         resultContent.innerHTML = html;
     };
 
-    window.switchAdminTab = function (tabName) {
+    /* ===== 최근 사용 도구 (홈 상단 한 줄) =====
+       12개 계산기 중 실제로 쓰는 건 사람마다 2~3개뿐이라, 마지막으로 쓴 도구를
+       localStorage에 기록해두고 홈 화면 상단에서 바로 열 수 있게 한다. */
+    const RECENT_TOOLS_KEY = 'sabok_recent_tools';
+    const ADMIN_TOOL_META = {
+        vat: { label: '부가세', icon: '🧾' },
+        budget: { label: '단가계산', icon: '📐' },
+        tax: { label: '강사료', icon: '👛' },
+        payroll: { label: '급여정산', icon: '💵' },
+        percent: { label: '퍼센트', icon: '📊' },
+        target: { label: '목표달성', icon: '🎯' },
+        ltc: { label: '장기요양', icon: '🏥' },
+        youth: { label: '자립청년', icon: '🌱' },
+        mosaic: { label: '모자이크', icon: '🖼️' },
+        compressor: { label: '사진압축', icon: '📷' },
+        converter: { label: '포맷변환', icon: '🔄' },
+        pdf: { label: 'PDF압축', icon: '📄' }
+    };
+
+    function recordToolUsage(tabName) {
+        if (!ADMIN_TOOL_META[tabName]) return;
+        try {
+            let recent = JSON.parse(localStorage.getItem(RECENT_TOOLS_KEY) || '[]');
+            recent = recent.filter(t => t !== tabName);
+            recent.unshift(tabName);
+            localStorage.setItem(RECENT_TOOLS_KEY, JSON.stringify(recent.slice(0, 5)));
+        } catch (e) { /* localStorage 불가 환경 무시 */ }
+        renderRecentTools();
+    }
+
+    function renderRecentTools() {
+        const wrap = document.getElementById('recent-tools-row');
+        const chipsEl = document.getElementById('recent-tools-chips');
+        if (!wrap || !chipsEl) return;
+        let recent = [];
+        try { recent = JSON.parse(localStorage.getItem(RECENT_TOOLS_KEY) || '[]'); } catch (e) { /* noop */ }
+        recent = recent.filter(t => ADMIN_TOOL_META[t]).slice(0, 3);
+
+        if (recent.length === 0) {
+            wrap.style.display = 'none';
+            return;
+        }
+        wrap.style.display = 'flex';
+        chipsEl.innerHTML = recent.map(t => {
+            const meta = ADMIN_TOOL_META[t];
+            return `<button class="action-chip" onclick="openAdminToolDirect('${t}')" style="white-space:nowrap;">${meta.icon} ${meta.label}</button>`;
+        }).join('');
+    }
+
+    window.openAdminToolDirect = function (tabName) {
+        const btn = document.getElementById('open-admin-calc');
+        if (btn) btn.click();
+        if (typeof switchAdminTab === 'function') switchAdminTab(tabName);
+    };
+
+    window.switchAdminTab = function (tabName, fromUserClick = true) {
+        if (fromUserClick) recordToolUsage(tabName);
         const contentVat = document.getElementById('admin-content-vat');
         const contentTax = document.getElementById('admin-content-tax');
         const contentLtc = document.getElementById('admin-content-ltc');
@@ -4383,6 +4440,43 @@ try {
         openModal('질문하기 🆘', content, 'helpme');
     };
 
+    /* ===== 동기화 코드 안내 타이밍 =====
+       '내 정보'까지 들어가야 발견하던 카카오 연동 유도를,
+       첫 기록(질문/글)이 생긴 직후 — 잃을 게 생긴 순간 — 딱 한 번만 보여준다. */
+    async function maybeShowSyncNudge() {
+        try {
+            if (localStorage.getItem('sabok_sync_nudge_shown')) return;
+
+            const session = await ensureAnonSession();
+            if (!session) return;
+            const u = session.user || {};
+            const linked = (u.identities || []).some(i => i.provider === 'kakao' || i.provider === 'google');
+            if (linked) return;
+
+            localStorage.setItem('sabok_sync_nudge_shown', '1');
+
+            setTimeout(() => {
+                openModal('📝 기록이 생겼어요!', `
+                <div style="text-align:center; padding:8px 0;">
+                    <div style="font-size:2.5rem; margin-bottom:10px;">🌱</div>
+                    <p style="font-size:0.95rem; color:var(--text-2); font-weight:700; line-height:1.6; margin-bottom:4px;">
+                        방금 남긴 기록, 잃어버리지 않게<br>딱 10초만 지켜둘까요?</p>
+                    <p style="font-size:0.82rem; color:var(--text-6); margin-bottom:20px;">
+                        브라우저 기록을 지우거나 폰을 바꾸면<br>지금 기록은 그대로 사라질 수 있어요.</p>
+                    <button onclick="linkKakao()"
+                        style="width:100%; padding:13px; background:#FEE500; color:var(--text-1); border:none; border-radius:12px; font-size:0.92rem; font-weight:800; cursor:pointer; margin-bottom:8px;">💬
+                        카카오 3초 연결로 지키기</button>
+                    <button onclick="document.getElementById('close-modal').click()"
+                        style="width:100%; padding:11px; background:none; color:var(--text-6); border:none; font-size:0.85rem; cursor:pointer;">다음에
+                        할게요</button>
+                </div>
+            `, 'sync-nudge');
+            }, 500);
+        } catch (e) {
+            console.warn('sync nudge error:', e);
+        }
+    }
+
     window.submitQuestion = async function () {
         const title = document.getElementById('ask-title').value;
         const category = document.getElementById('ask-category').value;
@@ -4417,6 +4511,7 @@ try {
             alert('질문이 게시되었습니다! 답변이 달리면 알림을 드릴게요.');
             document.getElementById('close-modal').click();
             initHelpMe(); // Refresh list
+            maybeShowSyncNudge();
         } catch (err) {
             console.error('Error submitting post:', err);
             alert('게시 중 오류가 발생했습니다.');
@@ -5011,6 +5106,7 @@ try {
             else if (cleanCategory === '하루일기') loadCommunityPosts('하루일기');
             else loadCommunityPosts('all');
 
+            maybeShowSyncNudge();
         } catch (err) {
             console.error('Error submitting community post:', err);
             alert('등록 중 오류가 발생했습니다.');
@@ -5820,6 +5916,29 @@ try {
         });
     }
 
+    /* --- 게시판 면책 문구 접기: 첫 방문엔 전체, 이후엔 한 줄 + 더보기 --- */
+    window.toggleDisclaimer = function (key) {
+        const full = document.getElementById(key + '-disclaimer-full');
+        const short = document.getElementById(key + '-disclaimer-short');
+        if (!full || !short) return;
+        const expanded = full.style.display !== 'none';
+        full.style.display = expanded ? 'none' : 'block';
+        short.style.display = expanded ? 'flex' : 'none';
+    };
+
+    function initDisclaimerCollapse(key) {
+        const full = document.getElementById(key + '-disclaimer-full');
+        const short = document.getElementById(key + '-disclaimer-short');
+        if (!full || !short) return;
+        const seenKey = 'sabok_disclaimer_seen_' + key;
+        if (localStorage.getItem(seenKey)) {
+            full.style.display = 'none';
+            short.style.display = 'flex';
+        } else {
+            localStorage.setItem(seenKey, '1');
+        }
+    }
+
     /* --- View Switcher --- */
     window.switchView = function (view) {
         const views = ['home', 'record', 'community', 'mypage', 'shredder', 'playground', 'treasure'];
@@ -5850,6 +5969,11 @@ try {
         // 커뮤니티 탭 진입 시 데이터 로딩
         if (view === 'community') {
             loadCommunityPosts('all');
+            initDisclaimerCollapse('community');
+        }
+        // 도와줘요 탭 진입 시 면책 문구 접기 상태 갱신
+        if (view === 'record') {
+            initDisclaimerCollapse('qa');
         }
         // 내 정보 탭 진입 시 내 글 로딩
         if (view === 'mypage') {
@@ -5871,6 +5995,7 @@ try {
         initMyPageMenus();
         initHeaderButtons();
         initNewsletterReader();
+        renderRecentTools();
 
         // URL 해시로 초기 뷰 + 모달 결정 (공유 링크 지원)
         const validViews = ['home', 'record', 'community', 'mypage', 'shredder', 'playground', 'treasure'];

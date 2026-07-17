@@ -126,6 +126,15 @@
                     <div class="hero-illustration">📔</div>
                 </div>
 
+                <!-- ②-1 최근 사용 도구 (재방문자용, 사용 이력 없으면 숨김) -->
+                <div id="recent-tools-row"
+                    style="display:none; align-items:center; gap:8px; padding:14px 13px 0; overflow-x:auto; -webkit-overflow-scrolling:touch;">
+                    <span
+                        style="font-size:0.72rem; font-weight:800; color:var(--text-6); white-space:nowrap; flex-shrink:0;">🕐
+                        최근 사용</span>
+                    <div id="recent-tools-chips" style="display:flex; gap:8px;"></div>
+                </div>
+
                 <!-- ③ 자주 쓰는 도구 -->
                 <section class="sec">
                     <div class="sec-head">
@@ -335,14 +344,19 @@
                     </div>
 
 
-                    <!-- 게시판 면책 문구 -->
-                    <div
-                        style="margin-top:10px; padding:20px; background:var(--surface-2); border-radius:16px; border:1px solid var(--border); text-align:center;">
-                        <p style="font-size:0.75rem; color:var(--text-6); line-height:1.7; margin:0;">
+                    <!-- 게시판 면책 문구 (첫 방문엔 전체, 이후엔 한 줄 + 더보기) -->
+                    <div id="qa-disclaimer"
+                        style="margin-top:10px; padding:16px 20px; background:var(--surface-2); border-radius:16px; border:1px solid var(--border); text-align:center;">
+                        <p id="qa-disclaimer-full" style="font-size:0.75rem; color:var(--text-6); line-height:1.7; margin:0;">
                             🌿 <strong>따뜻한 사복인들의 약속:</strong> 사복노트는 현장의 지혜가 모이는 소중한 공간이에요. 다만, 동료들의 조언이나 정보를 활용하실 때는
                             선생님의 멋진 판단력을 한 번 더 믿어주세요! 개인적인 선택으로 생기는 결과들에 대해 사복노트는 마음으로만 함께할 수 있답니다. 우리 서로를 아끼며 슬기롭게
                             소통해요! ✨
                         </p>
+                        <div id="qa-disclaimer-short" style="display:none; align-items:center; justify-content:center; gap:6px;">
+                            <p style="font-size:0.75rem; color:var(--text-6); margin:0;">🌿 따뜻한 사복인들의 약속</p>
+                            <button onclick="toggleDisclaimer('qa')"
+                                style="background:none; border:none; color:var(--primary); font-size:0.75rem; font-weight:700; cursor:pointer; padding:0;">더보기</button>
+                        </div>
                     </div>
 
                     <div style="height:100px;"></div>
@@ -399,13 +413,19 @@
                             <p style="font-size:0.9rem;">게시글을 불러오는 중...</p>
                         </div>
                     </div>
-                    <!-- 게시판 면책 문구 -->
-                    <div
-                        style="margin-top:10px; padding:20px; background:var(--surface-2); border-radius:16px; border:1px solid var(--border); text-align:center;">
-                        <p style="font-size:0.75rem; color:var(--text-6); line-height:1.7; margin:0;">
+                    <!-- 게시판 면책 문구 (첫 방문엔 전체, 이후엔 한 줄 + 더보기) -->
+                    <div id="community-disclaimer"
+                        style="margin-top:10px; padding:16px 20px; background:var(--surface-2); border-radius:16px; border:1px solid var(--border); text-align:center;">
+                        <p id="community-disclaimer-full" style="font-size:0.75rem; color:var(--text-6); line-height:1.7; margin:0;">
                             🤝 <strong>우리들의 소중한 쉼터:</strong> 여기서 나누는 모든 이야기와 만남이 선생님께 힘이 되길 바라요. 혹시 모를 개인적인 거래나 깊은 조언은
                             조금 더 신중하게 살펴주시길 부탁드려요. 사복노트는 선생님이 상처받지 않고 즐겁게 소통하는 곳이길 꿈꿉니다! 우리 어른스럽고 따뜻하게 함께해요! ☀️
                         </p>
+                        <div id="community-disclaimer-short"
+                            style="display:none; align-items:center; justify-content:center; gap:6px;">
+                            <p style="font-size:0.75rem; color:var(--text-6); margin:0;">🤝 우리들의 소중한 쉼터</p>
+                            <button onclick="toggleDisclaimer('community')"
+                                style="background:none; border:none; color:var(--primary); font-size:0.75rem; font-weight:700; cursor:pointer; padding:0;">더보기</button>
+                        </div>
                     </div>
 
                     <div style="height:100px;"></div>
@@ -1358,7 +1378,7 @@
 
     </div><!-- /#app -->
 
-    <script src="index.js?v=10" charset="utf-8"></script>
+    <script src="index.js?v=11" charset="utf-8"></script>
     <script>
         // PWA Service Worker Registration
         if ('serviceWorker' in navigator) {
