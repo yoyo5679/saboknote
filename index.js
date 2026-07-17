@@ -6610,7 +6610,7 @@ try {
         if (introTypesCont) {
             let html = '';
             for (const [k, v] of Object.entries(pgTypes)) {
-                html += `<div style="background:${v.card}; border:1.5px solid ${v.color}22; border-radius:20px; padding:6px 12px; font-size:12px; color:${v.color}; font-weight:700;">${v.emoji} ${v.name.replace("형", "")}</div>`;
+                html += `<div style="background:${v.card}; border:1.5px solid ${v.color}22; border-radius:20px; padding:5px 10px; font-size:11px; color:${v.color}; font-weight:700;">${v.emoji} ${v.name.replace("형", "")}</div>`;
             }
             introTypesCont.innerHTML = html;
         }
