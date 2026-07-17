@@ -6659,6 +6659,17 @@ try {
             const el = document.getElementById('pg-step-' + s);
             if (el) el.style.display = (s === stepName) ? 'block' : 'none';
         });
+        pgResetScroll();
+    }
+
+    // 스텝 전환·다시하기 후 이전 스크롤 위치 때문에 화면 상단이 잘려 보이는 것 방지
+    // (#view-playground는 overflow:hidden이지만 scrollIntoView가 몰래 스크롤시킬 수 있어 함께 리셋)
+    function pgResetScroll() {
+        const main = document.querySelector('.app-main');
+        if (main) main.scrollTop = 0;
+        const view = document.getElementById('view-playground');
+        if (view) view.scrollTop = 0;
+        window.scrollTo(0, 0);
     }
 
     function pgShowStep(stepName) {
@@ -7171,6 +7182,7 @@ try {
         bingoState.checked = new Set([BINGO_FREE_IDX]);
         const container = document.getElementById('pg-step-bingo');
         if (!container) return;
+        if (typeof pgResetScroll === 'function') pgResetScroll();
 
         container.innerHTML = `
             <div style="text-align:center; padding:10px 0 4px;">
@@ -7251,7 +7263,13 @@ try {
                 style="width:100%; border:none; border-radius:14px; padding:14px; font-size:14px; font-weight:800; cursor:pointer; background:#f0f0f0; color:#888;">
                 🔄 다시 하기</button>
         `;
-        resultEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // scrollIntoView는 overflow:hidden인 #view-playground까지 스크롤시켜 레이아웃이 어긋나므로
+        // 실제 스크롤 컨테이너(.app-main)만 직접 스크롤한다
+        const mainEl = document.querySelector('.app-main');
+        if (mainEl) {
+            const top = mainEl.scrollTop + resultEl.getBoundingClientRect().top - mainEl.getBoundingClientRect().top - 12;
+            mainEl.scrollTo({ top, behavior: 'smooth' });
+        }
     };
 
     function bingoGenerateCanvas() {
