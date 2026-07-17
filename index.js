@@ -8,6 +8,14 @@ try {
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNlbGRybnBvaGRrZ2dlbm5qaWVvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIyMzI3MjksImV4cCI6MjA4NzgwODcyOX0.PyzWPa-kwYgh-HmuDELD642TCVn7Ajri54FsR7Ik2Gs';
     const supabase = window.supabase ? window.supabase.createClient(supabaseUrl, supabaseKey) : null;
 
+    /* --- 네트워크가 멈춰도 "불러오는 중..."에 영원히 갇히지 않도록 --- */
+    function withTimeout(promise, ms = 10000) {
+        return Promise.race([
+            promise,
+            new Promise((_, reject) => setTimeout(() => reject(new Error('요청 시간이 초과됐습니다.')), ms))
+        ]);
+    }
+
     /* --- 익명 로그인 (정서 동반자) — 앱 여는 순간 자동 발급, 사용자 입력 0 --- */
     let sabokAuthPromise = null;
     function ensureAnonSession() {
@@ -4294,19 +4302,21 @@ try {
         listContainer.innerHTML = '<div style="text-align:center; padding:40px 20px; color:var(--text-6);"><p style="font-size:0.9rem;">불러오는 중...</p></div>';
 
         try {
-            const { data, error } = await supabase
-                .from('posts')
-                .select('*')
-                .order('created_at', { ascending: false });
+            const { data, error } = await withTimeout(
+                supabase.from('posts').select('*').order('created_at', { ascending: false })
+            );
 
             if (error) throw error;
 
             if (!data || data.length === 0) {
                 listContainer.innerHTML = `
                 <div style="text-align:center; padding:48px 20px;">
-                    <div style="font-size:3rem; margin-bottom:12px;">🌱</div>
-                    <p style="font-size:1rem; font-weight:800; color:var(--text-3); margin-bottom:6px;">아직 질문이 없어요</p>
-                    <p style="font-size:0.85rem; color:var(--text-6);">첫 번째 질문의 주인공이 되어보세요!</p>
+                    <div style="font-size:3rem; margin-bottom:12px;">🦊</div>
+                    <p style="font-size:1rem; font-weight:800; color:var(--text-3); margin-bottom:6px;">아직 조용하네요</p>
+                    <p style="font-size:0.85rem; color:var(--text-6); margin-bottom:18px;">첫 질문의 주인공이 되어보세요!</p>
+                    <button class="btn-primary" onclick="openAskModal()"
+                        style="width:auto; margin:0; padding:10px 22px; border-radius:20px; font-size:0.85rem;">+
+                        질문하기</button>
                 </div>`;
                 return;
             }
@@ -4330,12 +4340,15 @@ try {
         } catch (err) {
             console.error('Error fetching posts:', err);
             listContainer.innerHTML = `
-            <div style="text-align:center; padding:40px 20px; color:#ef4444;">
+            <div style="text-align:center; padding:40px 20px;">
                 <div style="font-size:2rem; margin-bottom:8px;">⚠️</div>
-                <p style="font-size:0.9rem;">데이터를 불러오지 못했습니다.<br><span style="font-size:0.8rem; color:var(--text-6);">${err.message}</span></p>
+                <p style="font-size:0.9rem; color:var(--text-4); margin-bottom:16px;">글을 불러오지 못했어요. 네트워크를 확인해주세요.</p>
+                <button class="btn-primary btn-outline" onclick="initHelpMe()"
+                    style="width:auto; margin:0; padding:8px 20px; border-radius:20px; font-size:0.82rem;">다시 시도</button>
             </div>`;
         }
     }
+    window.initHelpMe = initHelpMe;
 
     window.openAskModal = function () {
         const content = `
@@ -4869,7 +4882,7 @@ try {
             if (category !== 'all') {
                 query = query.eq('category', category);
             }
-            const { data, error } = await query;
+            const { data, error } = await withTimeout(query);
 
             if (error) throw error;
 
@@ -4877,8 +4890,11 @@ try {
                 listContainer.innerHTML = `
                 <div style="text-align:center; padding:48px 20px;">
                     <div style="font-size:3rem; margin-bottom:12px;">📭</div>
-                    <p style="font-size:1rem; font-weight:800; color:var(--text-3); margin-bottom:6px;">아직 작성된 글이 없어요</p>
-                    <p style="font-size:0.85rem; color:var(--text-6);">새로운 이야기를 시작해보세요!</p>
+                    <p style="font-size:1rem; font-weight:800; color:var(--text-3); margin-bottom:6px;">아직 조용하네요</p>
+                    <p style="font-size:0.85rem; color:var(--text-6); margin-bottom:18px;">새로운 이야기를 가장 먼저 시작해보세요!</p>
+                    <button class="btn-primary" onclick="openCommunityPostModal()"
+                        style="width:auto; margin:0; padding:10px 22px; border-radius:20px; font-size:0.85rem;">✏️
+                        글쓰기</button>
                 </div>`;
                 return;
             }
@@ -4909,9 +4925,11 @@ try {
         } catch (err) {
             console.error('Error fetching community posts:', err);
             listContainer.innerHTML = `
-            <div style="text-align:center; padding:40px 20px; color:#ef4444;">
+            <div style="text-align:center; padding:40px 20px;">
                 <div style="font-size:2rem; margin-bottom:8px;">⚠️</div>
-                <p style="font-size:0.9rem;">데이터를 불러오지 못했습니다.<br><span style="font-size:0.8rem; color:var(--text-6);">${err.message}</span></p>
+                <p style="font-size:0.9rem; color:var(--text-4); margin-bottom:16px;">글을 불러오지 못했어요. 네트워크를 확인해주세요.</p>
+                <button class="btn-primary btn-outline" onclick="loadCommunityPosts('${category}')"
+                    style="width:auto; margin:0; padding:8px 20px; border-radius:20px; font-size:0.82rem;">다시 시도</button>
             </div>`;
         }
     };

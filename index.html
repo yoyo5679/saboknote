@@ -19,7 +19,7 @@
         window.addEventListener('DOMContentLoaded', syncThemeColor);
     </script>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>사회복지사 실무 도구 모음 | AI 프롬프트·강사료·부가세·장기요양 계산기 — 사복노트</title>
 
     <!-- SEO -->
@@ -252,6 +252,20 @@
                             <div class="svc-desc">맞춤형 복지 서비스를 빠르게</div>
                         </a>
 
+                    </div>
+                </section>
+
+                <!-- ④-1 사복놀이터 (하단 탭에서 이동) -->
+                <section class="sec" style="padding-bottom: 0;">
+                    <div class="svc-card" onclick="switchView('playground')"
+                        style="background:linear-gradient(135deg,#f5f3ff 0%,#ede9fe 100%); border:1.5px solid #ddd6fe; grid-column: span 2; display:flex; flex-direction:row; align-items:center; justify-content:space-between; padding: 20px;">
+                        <div>
+                            <div class="svc-tag" style="background:#6c63ff;color:#ffffff; display:inline-block; margin-bottom:8px;">놀이터
+                            </div>
+                            <div class="svc-title" style="font-size:1.1rem; margin-bottom:4px;">나는 어떤 유형의 사회복지사?</div>
+                            <div class="svc-desc" style="font-size:0.85rem; color:#5b21b6;">심리테스트 · 사복 키우기 · 사다리타기 한 번에</div>
+                        </div>
+                        <div style="font-size:2.5rem;">🎢</div>
                     </div>
                 </section>
 
@@ -1307,7 +1321,7 @@
             </button>
             <button class="nav-item" id="nav-record" onclick="switchView('record')">
                 <span class="nav-icon">🆘</span>
-                <span class="nav-label">도와줘요</span>
+                <span class="nav-label">Q&A</span>
             </button>
             <button class="nav-item" id="nav-community" onclick="switchView('community')">
                 <span class="nav-icon">💬</span>
@@ -1317,13 +1331,9 @@
                 <span class="nav-icon">🗑️</span>
                 <span class="nav-label">파쇄기</span>
             </button>
-            <button class="nav-item" id="nav-playground" onclick="switchView('playground')">
-                <span class="nav-icon">🎢</span>
-                <span class="nav-label">놀이터</span>
-            </button>
             <button class="nav-item" id="nav-treasure" onclick="switchView('treasure')">
                 <span class="nav-icon">🍯</span>
-                <span class="nav-label">보물창고</span>
+                <span class="nav-label">자료실</span>
             </button>
             <button class="nav-item" id="nav-mypage" onclick="switchView('mypage')">
                 <span class="nav-icon">👤</span>
