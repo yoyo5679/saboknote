@@ -7173,18 +7173,17 @@ try {
         if (!container) return;
 
         container.innerHTML = `
-            <div style="text-align:center; padding:20px 0 6px;">
-                <div style="font-size:52px; margin-bottom:8px;">🎯</div>
-                <h2 style="font-size:22px; font-weight:900; color:var(--text-2); margin-bottom:6px;">사회복지사 공감 빙고</h2>
-                <p style="color:var(--text-5); font-size:13px; margin-bottom:18px; line-height:1.6;">겪어본 적 있는 칸을 전부 탭!<br>몇 줄 빙고가 나오는지 확인해봐요 👀</p>
+            <div style="text-align:center; padding:10px 0 4px;">
+                <h2 style="font-size:19px; font-weight:900; color:var(--text-2); margin-bottom:3px;">🎯 사회복지사 공감 빙고</h2>
+                <p style="color:var(--text-5); font-size:12px; margin-bottom:10px;">겪어본 칸을 전부 탭! 몇 줄 빙고 나올까요 👀</p>
             </div>
 
-            <div id="bingo-grid" style="display:grid; grid-template-columns:repeat(5,1fr); gap:6px; margin-bottom:12px;"></div>
+            <div id="bingo-grid" style="display:grid; grid-template-columns:repeat(5,1fr); gap:5px; margin-bottom:8px;"></div>
 
-            <div id="bingo-status" style="text-align:center; font-size:0.9rem; font-weight:800; color:var(--text-3); margin-bottom:14px;">1칸 공감 · 0줄 빙고</div>
+            <div id="bingo-status" style="text-align:center; font-size:0.85rem; font-weight:800; color:var(--text-3); margin-bottom:8px;">1칸 공감 · 0줄 빙고</div>
 
             <button onclick="bingoShowResult()" class="btn-primary"
-                style="width:100%; border:none; border-radius:14px; padding:15px; font-size:15px; font-weight:800; cursor:pointer; margin-bottom:8px; background:linear-gradient(135deg,#F59E0B,#EF4444); color:#fff; box-shadow:0 6px 20px rgba(239,68,68,0.28);">
+                style="width:100%; border:none; border-radius:14px; padding:13px; font-size:15px; font-weight:800; cursor:pointer; margin-bottom:8px; background:linear-gradient(135deg,#F59E0B,#EF4444); color:#fff; box-shadow:0 6px 20px rgba(239,68,68,0.28);">
                 🎉 결과 보기</button>
 
             <div id="bingo-result" style="display:none;"></div>
@@ -7205,8 +7204,8 @@ try {
             const color = checked ? '#fff' : 'var(--text-4)';
             const border = checked ? 'none' : '1.5px solid var(--border)';
             return `<button onclick="bingoToggle(${i})" ${isFree ? 'disabled' : ''}
-                style="aspect-ratio:1; padding:3px; border-radius:10px; border:${border}; background:${bg}; color:${color};
-                font-size:0.6rem; font-weight:700; line-height:1.25; cursor:${isFree ? 'default' : 'pointer'};
+                style="aspect-ratio:1.08; padding:2px; border-radius:9px; border:${border}; background:${bg}; color:${color};
+                font-size:0.6rem; font-weight:700; line-height:1.22; cursor:${isFree ? 'default' : 'pointer'};
                 word-break:keep-all; overflow:hidden; transition:all 0.15s; font-family:inherit;">${item}</button>`;
         }).join('');
         bingoUpdateStatus();
