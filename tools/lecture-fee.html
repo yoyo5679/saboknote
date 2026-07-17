@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>강사료 계산기 — 3.3% 사업소득·8.8% 기타소득 원천징수 실수령액 | 사복노트</title>
+    <meta name="description" content="강사료 세전 금액만 입력하면 3.3%(사업소득)·8.8%(기타소득) 원천징수 세액과 실수령액을 바로 계산. 기타소득 과세최저한(125,000원 이하 면세)까지 자동 반영. 무료·가입 없음.">
+    <meta name="keywords" content="강사료 계산기, 강사료 3.3%, 기타소득 8.8%, 원천징수 계산, 강사료 실수령액, 강사비 세금, 외부강사 수당, 사회복지시설 강사료">
+    <link rel="canonical" href="https://saboknote.com/tools/lecture-fee.html">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="강사료 계산기 — 3.3%·8.8% 원천징수 실수령액">
+    <meta property="og:description" content="세전 금액만 입력하면 원천징수 세액과 실수령액을 바로 계산. 과세최저한 자동 반영.">
+    <meta property="og:url" content="https://saboknote.com/tools/lecture-fee.html">
+    <meta property="og:image" content="https://saboknote.com/og-image.png">
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👛</text></svg>">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "강사료 3.3%와 8.8%는 언제 적용하나요?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "강의를 계속·반복적으로 하는 전문 강사는 사업소득으로 3.3%(소득세 3% + 지방소득세 0.3%)를 원천징수합니다. 일시적·우발적으로 특강을 하는 경우는 기타소득으로 8.8%(필요경비 60% 인정 후 22% 적용)를 원천징수합니다."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "기타소득 과세최저한이 무엇인가요?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "기타소득은 건별 소득금액 5만원 이하(강사료 기준 세전 125,000원 이하)는 과세최저한으로 소득세를 원천징수하지 않습니다. 이 경우 세전 금액을 그대로 지급합니다."
+          }
+        }
+      ]
+    }
+    </script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Pretendard', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; background: #f8fafc; color: #1e293b; line-height: 1.65; }
+        .top { background: linear-gradient(125deg, #0f2d6b 0%, #1e4eb5 45%, #3b7ef8 100%); color: #fff; padding: 28px 20px 32px; }
+        .top .site { font-size: 0.82rem; opacity: 0.85; margin-bottom: 10px; }
+        .top .site a { color: #fff; text-decoration: none; font-weight: 700; }
+        .top h1 { font-size: 1.5rem; font-weight: 900; letter-spacing: -0.02em; }
+        .top p { font-size: 0.9rem; opacity: 0.9; margin-top: 6px; }
+        main { max-width: 640px; margin: 0 auto; padding: 20px 16px 60px; }
+        .card { background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); }
+        .card h2 { font-size: 1.05rem; font-weight: 800; margin-bottom: 14px; }
+        label { display: block; font-size: 0.85rem; font-weight: 700; color: #475569; margin-bottom: 6px; }
+        input[type=number] { width: 100%; padding: 13px 14px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1.05rem; font-family: inherit; }
+        input[type=number]:focus { outline: none; border-color: #2563eb; }
+        .toggle { display: flex; gap: 8px; margin-bottom: 14px; }
+        .toggle button { flex: 1; padding: 11px 0; border-radius: 12px; border: 2px solid #e2e8f0; background: #fff; font-size: 0.9rem; font-weight: 800; color: #64748b; cursor: pointer; font-family: inherit; }
+        .toggle button.on { border-color: #2563eb; background: #eff6ff; color: #1d4ed8; }
+        .note { font-size: 0.78rem; color: #b45309; background: #fffbeb; border: 1px solid #fde68a; border-radius: 10px; padding: 10px 12px; margin-bottom: 14px; display: none; }
+        .rows { margin-top: 14px; display: flex; gap: 10px; }
+        .cell { flex: 1; background: #f1f5f9; border-radius: 12px; padding: 12px 14px; }
+        .cell .k { font-size: 0.76rem; color: #64748b; margin-bottom: 2px; }
+        .cell .v { font-size: 1.1rem; font-weight: 800; }
+        .cell.hl { background: #eff6ff; }
+        .cell.hl .v { color: #1d4ed8; }
+        h3 { font-size: 0.98rem; font-weight: 800; margin: 18px 0 8px; }
+        .faq p, .desc p { font-size: 0.9rem; color: #475569; margin-bottom: 10px; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin-top: 8px; }
+        th, td { border: 1px solid #e2e8f0; padding: 8px 10px; text-align: left; }
+        th { background: #f8fafc; font-weight: 800; }
+        .links a { display: inline-block; background: #eef2ff; color: #4338ca; border-radius: 20px; padding: 8px 14px; font-size: 0.85rem; font-weight: 700; text-decoration: none; margin: 0 6px 8px 0; }
+        .cta { display: block; text-align: center; background: linear-gradient(135deg, #2563eb, #4338ca); color: #fff; border-radius: 14px; padding: 15px; font-size: 0.95rem; font-weight: 800; text-decoration: none; margin-top: 6px; }
+        footer { text-align: center; font-size: 0.78rem; color: #94a3b8; padding: 0 16px 40px; }
+        footer a { color: #64748b; }
+    </style>
+</head>
+
+<body>
+    <div class="top">
+        <div class="site"><a href="/">📔 사복노트</a> › 도구 › 강사료 계산기</div>
+        <h1>👛 강사료 원천징수 계산기</h1>
+        <p>3.3% 사업소득 · 8.8% 기타소득 실수령액을 바로 계산해요</p>
+    </div>
+
+    <main>
+        <div class="card">
+            <h2>세전 강사료 → 세금·실수령액</h2>
+            <div class="toggle">
+                <button id="btn-33" class="on" onclick="setRate(0.033)">사업소득 (3.3%)</button>
+                <button id="btn-88" onclick="setRate(0.088)">기타소득 (8.8%)</button>
+            </div>
+            <div class="note" id="note-88">💡 기타소득은 세전 125,000원 이하일 경우 과세최저한으로 세금을 떼지 않아요.</div>
+            <label for="fee-input">세전 강사료 (원)</label>
+            <input type="number" id="fee-input" placeholder="예: 300000" inputmode="numeric" oninput="calc()">
+            <div class="rows">
+                <div class="cell">
+                    <div class="k">원천징수 세액</div>
+                    <div class="v" id="out-tax">0원</div>
+                </div>
+                <div class="cell hl">
+                    <div class="k">실수령액</div>
+                    <div class="v" id="out-net">0원</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card desc">
+            <h2>3.3% vs 8.8% 언제 쓰나요?</h2>
+            <table>
+                <tr><th>구분</th><th>세율</th><th>대상</th></tr>
+                <tr><td>사업소득</td><td>3.3%</td><td>계속·반복적으로 강의하는 전문 강사 (소득세 3% + 지방소득세 0.3%)</td></tr>
+                <tr><td>기타소득</td><td>8.8%</td><td>일시적·우발적 특강 (필요경비 60% 인정 → 40% × 22%)</td></tr>
+            </table>
+            <p style="margin-top:10px;">헷갈리면 강사에게 "다른 곳에서도 정기적으로 강의하시나요?"를 확인하세요. 정기적이면 사업소득 3.3%가 일반적입니다.</p>
+        </div>
+
+        <div class="card faq">
+            <h2>자주 묻는 질문</h2>
+            <h3>Q. 세액의 원 단위는 왜 0으로 끝나나요?</h3>
+            <p>원천징수 세액은 10원 미만 절사가 원칙이라, 이 계산기도 세액을 10원 단위로 내림 처리합니다.</p>
+            <h3>Q. 기타소득 과세최저한이 뭔가요?</h3>
+            <p>기타소득은 건별 소득금액 5만원 이하 — 강사료 기준 세전 125,000원 이하 — 는 세금을 원천징수하지 않아요. 이 계산기에 8.8%를 선택하고 125,000원 이하를 입력하면 세액 0원으로 계산됩니다.</p>
+            <h3>Q. 지급명세서 제출도 해야 하나요?</h3>
+            <p>네, 원천징수 후 다음 달 10일까지 원천세 신고·납부하고, 소득 종류에 따라 지급명세서를 기한 내 제출해야 합니다. 기관 세무 일정에 맞춰 확인하세요.</p>
+        </div>
+
+        <div class="card links">
+            <h2>관련 도구</h2>
+            <a href="/tools/vat.html">🧾 부가세 계산기</a>
+            <a href="/tools/ltc-limit.html">🏥 장기요양 한도액·본인부담금</a>
+            <a href="/tools/">🛠️ 전체 도구 모음</a>
+            <a class="cta" href="/#home/admin">💸 사복노트 앱에서 12가지 계산기 모두 쓰기 →</a>
+        </div>
+    </main>
+
+    <footer>📔 <a href="/">사복노트</a> — 사회복지사를 위한 실무 도구 모음 · 가입 없이 무료</footer>
+
+    <script>
+        var rate = 0.033;
+        function setRate(r) {
+            rate = r;
+            document.getElementById('btn-33').className = r === 0.033 ? 'on' : '';
+            document.getElementById('btn-88').className = r === 0.088 ? 'on' : '';
+            document.getElementById('note-88').style.display = r === 0.088 ? 'block' : 'none';
+            calc();
+        }
+        function calc() {
+            var gross = parseInt(document.getElementById('fee-input').value);
+            var t = document.getElementById('out-tax'), n = document.getElementById('out-net');
+            if (!gross || gross <= 0) { t.innerText = '0원'; n.innerText = '0원'; return; }
+            var tax, net;
+            if (rate === 0.088 && gross <= 125000) { tax = 0; net = gross; }
+            else {
+                tax = Math.floor(Math.round(gross * rate) / 10) * 10;
+                net = gross - tax;
+            }
+            t.innerText = tax.toLocaleString() + '원';
+            n.innerText = net.toLocaleString() + '원';
+        }
+    </script>
+</body>
+
+</html>

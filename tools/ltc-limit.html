@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026 장기요양 등급별 한도액·본인부담금 계산기 — 재가급여 월 한도 | 사복노트</title>
+    <meta name="description" content="2026년 노인장기요양보험 등급별(1~5등급·인지지원등급) 재가급여 월 한도액 표와 본인부담금(일반 15%·감경 9%/6%·기초 0%) 자동 계산. 방문요양 시간별 수가표 포함. 무료·가입 없음.">
+    <meta name="keywords" content="장기요양 한도액, 2026 장기요양 수가, 재가급여 월 한도액, 장기요양 본인부담금, 방문요양 수가, 노인장기요양보험 등급, 인지지원등급 한도">
+    <link rel="canonical" href="https://saboknote.com/tools/ltc-limit.html">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="2026 장기요양 등급별 한도액·본인부담금 계산기">
+    <meta property="og:description" content="등급별 재가급여 월 한도액 표 + 본인부담금 자동 계산. 방문요양 수가표 포함.">
+    <meta property="og:url" content="https://saboknote.com/tools/ltc-limit.html">
+    <meta property="og:image" content="https://saboknote.com/og-image.png">
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏥</text></svg>">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "재가급여 월 한도액을 초과하면 어떻게 되나요?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "월 한도액을 초과한 금액은 공단 지원 없이 전액 본인이 부담합니다. 서비스 계획을 세울 때 한도액 안에서 이용 일수와 시간을 조정하는 것이 중요합니다."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "본인부담금 감경(9%, 6%)은 누가 받나요?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "건강보험료 순위 하위 25% 이하 등 감경 요건에 해당하면 본인부담률이 9% 또는 6%로 감경되고, 국민기초생활수급자는 본인부담금이 면제(0%)됩니다. 감경 여부는 국민건강보험공단 확인이 필요합니다."
+          }
+        }
+      ]
+    }
+    </script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Pretendard', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; background: #f8fafc; color: #1e293b; line-height: 1.65; }
+        .top { background: linear-gradient(125deg, #0f2d6b 0%, #1e4eb5 45%, #3b7ef8 100%); color: #fff; padding: 28px 20px 32px; }
+        .top .site { font-size: 0.82rem; opacity: 0.85; margin-bottom: 10px; }
+        .top .site a { color: #fff; text-decoration: none; font-weight: 700; }
+        .top h1 { font-size: 1.45rem; font-weight: 900; letter-spacing: -0.02em; }
+        .top p { font-size: 0.9rem; opacity: 0.9; margin-top: 6px; }
+        main { max-width: 640px; margin: 0 auto; padding: 20px 16px 60px; }
+        .card { background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); }
+        .card h2 { font-size: 1.05rem; font-weight: 800; margin-bottom: 14px; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+        th, td { border: 1px solid #e2e8f0; padding: 9px 10px; text-align: right; }
+        th:first-child, td:first-child { text-align: left; }
+        th { background: #f8fafc; font-weight: 800; text-align: center; }
+        label { display: block; font-size: 0.85rem; font-weight: 700; color: #475569; margin: 12px 0 6px; }
+        select { width: 100%; padding: 12px 14px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem; font-family: inherit; background: #fff; }
+        select:focus { outline: none; border-color: #2563eb; }
+        .rows { margin-top: 14px; display: flex; gap: 10px; flex-wrap: wrap; }
+        .cell { flex: 1; min-width: 140px; background: #f1f5f9; border-radius: 12px; padding: 12px 14px; }
+        .cell .k { font-size: 0.76rem; color: #64748b; margin-bottom: 2px; }
+        .cell .v { font-size: 1.05rem; font-weight: 800; }
+        .cell.hl { background: #eff6ff; }
+        .cell.hl .v { color: #1d4ed8; }
+        h3 { font-size: 0.98rem; font-weight: 800; margin: 18px 0 8px; }
+        .faq p, .desc p { font-size: 0.9rem; color: #475569; margin-bottom: 10px; }
+        .warn { font-size: 0.78rem; color: #92400e; background: #fffbeb; border: 1px solid #fde68a; border-radius: 10px; padding: 10px 12px; margin-top: 12px; }
+        .links a { display: inline-block; background: #eef2ff; color: #4338ca; border-radius: 20px; padding: 8px 14px; font-size: 0.85rem; font-weight: 700; text-decoration: none; margin: 0 6px 8px 0; }
+        .cta { display: block; text-align: center; background: linear-gradient(135deg, #2563eb, #4338ca); color: #fff; border-radius: 14px; padding: 15px; font-size: 0.95rem; font-weight: 800; text-decoration: none; margin-top: 6px; }
+        footer { text-align: center; font-size: 0.78rem; color: #94a3b8; padding: 0 16px 40px; }
+        footer a { color: #64748b; }
+    </style>
+</head>
+
+<body>
+    <div class="top">
+        <div class="site"><a href="/">📔 사복노트</a> › 도구 › 장기요양 한도액</div>
+        <h1>🏥 2026 장기요양 등급별 한도액·본인부담금</h1>
+        <p>재가급여 월 한도액 표 + 본인부담금 자동 계산</p>
+    </div>
+
+    <main>
+        <div class="card">
+            <h2>2026년 등급별 재가급여 월 한도액</h2>
+            <table>
+                <tr><th>등급</th><th>월 한도액</th></tr>
+                <tr><td>1등급</td><td>2,512,900원</td></tr>
+                <tr><td>2등급</td><td>2,331,200원</td></tr>
+                <tr><td>3등급</td><td>1,528,200원</td></tr>
+                <tr><td>4등급</td><td>1,409,700원</td></tr>
+                <tr><td>5등급</td><td>1,208,900원</td></tr>
+                <tr><td>인지지원등급</td><td>676,320원</td></tr>
+            </table>
+        </div>
+
+        <div class="card">
+            <h2>본인부담금 계산기 (한도액 전액 이용 기준)</h2>
+            <label for="sel-grade">장기요양 등급</label>
+            <select id="sel-grade" onchange="calc()">
+                <option value="1">1등급</option>
+                <option value="2">2등급</option>
+                <option value="3" selected>3등급</option>
+                <option value="4">4등급</option>
+                <option value="5">5등급</option>
+                <option value="6">인지지원등급</option>
+            </select>
+            <label for="sel-rate">본인부담률</label>
+            <select id="sel-rate" onchange="calc()">
+                <option value="0.15" selected>일반 (15%)</option>
+                <option value="0.09">감경 (9%)</option>
+                <option value="0.06">감경 (6%)</option>
+                <option value="0">기초생활수급자 (0%)</option>
+            </select>
+            <div class="rows">
+                <div class="cell">
+                    <div class="k">월 한도액</div>
+                    <div class="v" id="out-limit">1,528,200원</div>
+                </div>
+                <div class="cell hl">
+                    <div class="k">최대 본인부담금 / 월</div>
+                    <div class="v" id="out-copay">229,230원</div>
+                </div>
+                <div class="cell">
+                    <div class="k">공단부담금 / 월</div>
+                    <div class="v" id="out-fund">1,298,970원</div>
+                </div>
+            </div>
+            <div class="warn">⚠️ 한도액을 전액 이용했을 때의 최대치입니다. 실제 본인부담금은 이용한 급여비용 × 본인부담률로 계산되며, 한도 초과분은 전액 본인 부담이에요.</div>
+        </div>
+
+        <div class="card">
+            <h2>방문요양 시간별 수가 (2026, 1회당)</h2>
+            <table>
+                <tr><th>이용 시간</th><th>수가</th><th>이용 시간</th><th>수가</th></tr>
+                <tr><td>30분</td><td>18,450원</td><td>150분</td><td>52,640원</td></tr>
+                <tr><td>60분</td><td>26,320원</td><td>180분</td><td>59,020원</td></tr>
+                <tr><td>90분</td><td>35,120원</td><td>210분</td><td>65,530원</td></tr>
+                <tr><td>120분</td><td>45,430원</td><td>240분</td><td>72,080원</td></tr>
+            </table>
+            <p style="font-size:0.8rem; color:#64748b; margin-top:8px;">* 기관 가산율 적용 전 기본 수가 기준</p>
+        </div>
+
+        <div class="card faq">
+            <h2>자주 묻는 질문</h2>
+            <h3>Q. 월 한도액을 초과하면 어떻게 되나요?</h3>
+            <p>초과분은 공단 지원 없이 전액 본인 부담이에요. 급여계획서를 짤 때 한도 안에서 이용 횟수·시간을 조정하는 게 핵심입니다.</p>
+            <h3>Q. 감경(9%·6%)은 누가 받나요?</h3>
+            <p>건강보험료 순위 하위 25% 이하 등 감경 요건 해당 시 9% 또는 6%로 감경되고, 기초생활수급자는 면제(0%)입니다. 대상 여부는 국민건강보험공단에서 확인하세요.</p>
+            <h3>Q. 가산율이 붙으면 수가가 달라지나요?</h3>
+            <p>네, 기관의 인력 배치 등에 따른 가산율이 수가에 곱해집니다. 가산율까지 반영한 모의계산은 사복노트 앱의 장기요양 계산기에서 할 수 있어요.</p>
+        </div>
+
+        <div class="card links">
+            <h2>관련 도구</h2>
+            <a href="/tools/vat.html">🧾 부가세 계산기</a>
+            <a href="/tools/lecture-fee.html">👛 강사료 원천징수 계산기</a>
+            <a href="/tools/">🛠️ 전체 도구 모음</a>
+            <a class="cta" href="/#home/admin">💸 사복노트 앱에서 가산율 반영 모의계산 하기 →</a>
+        </div>
+    </main>
+
+    <footer>📔 <a href="/">사복노트</a> — 사회복지사를 위한 실무 도구 모음 · 가입 없이 무료<br>본 자료는 참고용이며, 최종 기준은 국민건강보험공단 고시를 확인하세요.</footer>
+
+    <script>
+        var LIMITS = { 1: 2512900, 2: 2331200, 3: 1528200, 4: 1409700, 5: 1208900, 6: 676320 };
+        function calc() {
+            var g = parseInt(document.getElementById('sel-grade').value);
+            var r = parseFloat(document.getElementById('sel-rate').value);
+            var limit = LIMITS[g];
+            var copay = Math.floor(limit * r);
+            document.getElementById('out-limit').innerText = limit.toLocaleString() + '원';
+            document.getElementById('out-copay').innerText = copay.toLocaleString() + '원';
+            document.getElementById('out-fund').innerText = (limit - copay).toLocaleString() + '원';
+        }
+        calc();
+    </script>
+</body>
+
+</html>
