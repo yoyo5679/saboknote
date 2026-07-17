@@ -65,12 +65,30 @@ body {
 .ov {
   position:absolute; inset:0;
   display:flex; flex-direction:column;
-  align-items:center; justify-content:center;
+  align-items:center; justify-content:flex-start;
   gap:8px; padding:12px; text-align:center;
   background:rgba(13,15,26,0.93);
   backdrop-filter:blur(6px);
+  overflow-y:auto;
 }
+/* 콘텐츠가 캔버스보다 클 때 가운데 정렬(justify-content:center)은 위아래가 잘려나감.
+   위아래에 margin:auto 스페이서를 두면 공간이 남을 땐 가운데, 넘칠 땐 위부터 스크롤. */
+.ov::before, .ov::after { content:''; margin:auto; flex-shrink:0; }
+.ov > * { flex-shrink:0; }
 .ov .em { font-size:2.2rem; animation:fl 2s ease-in-out infinite; }
+/* 모바일: 인트로 전체가 캔버스 높이(~240px) 안에 들어가도록 압축 */
+@media (max-width:520px){
+  .ov { gap:3px; padding:4px 8px; }
+  .ov .em { font-size:1.15rem; }
+  .ov h2 { font-size:1.02rem; }
+  .ov .sub { font-size:0.66rem; line-height:1.35; }
+  .og { gap:4px 6px; }
+  .oi { font-size:0.62rem; padding:2px 7px; }
+  .ov .btn { padding:8px 18px; font-size:0.88rem; margin-top:2px; }
+  .ov .fs { font-size:1.5rem; }
+  /* 키보드 조작 안내는 모바일에서 무의미 (화면에 점프/슬라이드 버튼이 이미 있음) */
+  #startScr .sub:last-of-type { display:none; }
+}
 @keyframes fl { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
 .ov h2 {
   font-family:'Black Han Sans',sans-serif;
@@ -249,16 +267,24 @@ body {
     var uid = getUid(), uname = getUname();
     try {
       var res = await supabase.from('escape_ranks').select('best_score').eq('user_id', uid);
-      var currentBest = 0;
-      if (res.data && res.data.length > 0) currentBest = res.data[0].best_score;
-      if (score > currentBest) {
-        await supabase.from('escape_ranks').upsert({
+      var hasRow = res.data && res.data.length > 0;
+      var currentBest = hasRow ? res.data[0].best_score : 0;
+      /* upsert는 PK 설정에 따라 같은 유저의 행이 중복 생성될 수 있어
+         조회 결과 기준으로 update/insert를 명시적으로 분기한다 */
+      if (hasRow) {
+        if (score > currentBest) {
+          await supabase.from('escape_ranks')
+            .update({ nickname: uname, best_score: score, updated_at: new Date().toISOString() })
+            .eq('user_id', uid);
+        }
+      } else {
+        await supabase.from('escape_ranks').insert({
           user_id: uid, nickname: uname, best_score: score,
           updated_at: new Date().toISOString()
         });
       }
       await loadRanksServer();
-    } catch(e) {}
+    } catch(e) { console.warn('rank save:', e); }
   }
   function renderRanks() {
     var medals = ['🥇','🥈','🥉','4위','5위'];
