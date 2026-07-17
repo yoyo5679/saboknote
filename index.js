@@ -6015,6 +6015,8 @@ try {
             'tos':          () => window.openTOSModal && window.openTOSModal(),
             'privacy':      () => window.openPrivacyModal && window.openPrivacyModal(),
             'install':      () => window.showPWAInstallGuide && window.showPWAInstallGuide(),
+            'bingo':        () => window.showPlaygroundContent && window.showPlaygroundContent('bingo'),
+            'quiz':         () => window.showPlaygroundContent && window.showPlaygroundContent('quiz'),
         };
 
         function dispatchHash(hash) {
@@ -6921,7 +6923,7 @@ try {
     }
 
     window.pgHandleCopyLink = function () {
-        navigator.clipboard.writeText("나는 어떤 복지사 유형? 테스트 해봐! → https://saboknote.com/");
+        navigator.clipboard.writeText("나는 어떤 복지사 유형? 테스트 해봐! → https://saboknote.com/#playground/quiz");
         const btn = document.getElementById('pg-btn-link-copy');
         if (btn) {
             btn.innerHTML = "✅ 링크 복사됨!";
@@ -7017,22 +7019,24 @@ try {
     }
 
     /* ===== 공유 공통 헬퍼: 모바일이면 네이티브 공유 시트(카톡·인스타), 아니면 다운로드+링크복사 ===== */
-    async function shareCanvasAsImage(canvas, filename, shareText) {
+    async function shareCanvasAsImage(canvas, filename, shareText, shareUrl) {
+        shareUrl = shareUrl || 'https://saboknote.com/';
         const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
         if (!blob) throw new Error('이미지 생성 실패');
         const file = new File([blob], filename, { type: 'image/png' });
 
         if (navigator.canShare && navigator.canShare({ files: [file] })) {
-            await navigator.share({ files: [file], title: '사복노트', text: shareText });
+            // 파일 공유 시 url 필드를 무시하는 앱(카톡 등)이 있어 텍스트에도 링크를 포함
+            await navigator.share({ files: [file], title: '사복노트', text: `${shareText}\n${shareUrl}` });
             return 'shared';
         }
         if (navigator.share) {
-            await navigator.share({ title: '사복노트', text: shareText, url: 'https://saboknote.com/' });
+            await navigator.share({ title: '사복노트', text: shareText, url: shareUrl });
             return 'shared';
         }
         // Web Share 미지원: 이미지 저장 안내(모바일=길게 눌러 저장, 데스크톱=다운로드) + 공유 문구 복사
         presentCanvasForSave(canvas, filename);
-        try { await navigator.clipboard.writeText(shareText + ' → https://saboknote.com/'); } catch (e) { /* noop */ }
+        try { await navigator.clipboard.writeText(shareText + ' → ' + shareUrl); } catch (e) { /* noop */ }
         return 'downloaded';
     }
 
@@ -7045,7 +7049,8 @@ try {
             const mode = await shareCanvasAsImage(
                 canvas,
                 `나의_사복_유형_${t.name.replace(/\s+/g, '_')}.png`,
-                `나는 "${t.name}" 유형 사회복지사래요 ${t.emoji} 당신은 어떤 유형?`
+                `나는 "${t.name}" 유형 사회복지사래요 ${t.emoji} 당신은 어떤 유형?`,
+                'https://saboknote.com/#playground/quiz'
             );
             if (btn && mode === 'downloaded') {
                 btn.innerHTML = '✅ 이미지 저장 + 공유 문구 복사됨!';
@@ -7357,7 +7362,8 @@ try {
             const mode = await shareCanvasAsImage(
                 canvas,
                 `사회복지사_공감빙고_${lines}줄.png`,
-                `사회복지사 공감 빙고 ${lines}줄 나왔어요 🎯 당신은 몇 줄?`
+                `사회복지사 공감 빙고 ${lines}줄 나왔어요 🎯 당신은 몇 줄?`,
+                'https://saboknote.com/#playground/bingo'
             );
             if (btn && mode === 'downloaded') {
                 btn.innerHTML = '✅ 이미지 저장 + 공유 문구 복사됨!';
