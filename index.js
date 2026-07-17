@@ -2046,6 +2046,8 @@ try {
         const modalBody = document.getElementById('modal-body');
 
         if (modalTitle && modalBody) {
+            const wasOpen = modalOverlay && modalOverlay.classList.contains('active');
+
             modalTitle.innerText = title;
             modalBody.innerHTML = contentHtml;
             if (modalOverlay) {
@@ -2061,18 +2063,31 @@ try {
             document.body.style.overflow = 'hidden';
             document.body.style.touchAction = 'none';
 
-            // URL 해시에 모달 ID 추가 (공유 링크 지원)
-            if (modalId) {
-                const currentView = window._currentView || 'home';
-                const newHash = '#' + currentView + '/' + modalId;
-                if (window.location.hash !== newHash) {
-                    history.replaceState({ modal: modalId }, '', newHash);
+            /* 히스토리 연동: 모달을 열 때 히스토리 항목을 하나 쌓아서
+               뒤로가기가 사이트 이탈이 아니라 "모달 닫기"가 되게 한다. */
+            const currentView = window._currentView || 'home';
+            const newHash = modalId
+                ? '#' + currentView + '/' + modalId
+                : (window.location.hash || window.location.pathname);
+
+            if (wasOpen) {
+                // 모달 → 모달 전환은 항목을 더 쌓지 않고 주소만 교체
+                if (modalId && window.location.hash !== newHash) {
+                    history.replaceState({ sabokModal: true }, '', newHash);
                 }
+            } else if (window._suppressModalPush) {
+                // 뒤로/앞으로 가기(popstate)로 다시 열리는 경우 — 항목이 이미 존재
+                window._modalHistoryPushed = true;
+            } else {
+                history.pushState({ sabokModal: true }, '', newHash);
+                window._modalHistoryPushed = true;
             }
         }
     }
 
-    function closeModal() {
+    // 실제 닫기 동작 (히스토리는 건드리지 않음 — popstate 핸들러와 closeModal이 호출)
+    function closeModalNow() {
+        window._modalHistoryPushed = false;
         const modalOverlay = document.getElementById('modal-overlay');
         const modalContainer = document.getElementById('modal-container');
         if (modalOverlay) modalOverlay.classList.remove('active');
@@ -2089,6 +2104,16 @@ try {
             const tabHash = currentView === 'home' ? window.location.pathname : '#' + currentView;
             history.replaceState(null, '', tabHash);
         }, 350);
+    }
+
+    function closeModal() {
+        // X 버튼·오버레이 클릭으로 닫을 때: 모달이 쌓은 히스토리 항목도 함께 걷어낸다
+        // (안 걷어내면 나중에 뒤로가기를 두 번 눌러야 하는 어긋난 상태가 됨)
+        if (window._modalHistoryPushed) {
+            history.back(); // → popstate 핸들러가 closeModalNow() 실행
+            return;
+        }
+        closeModalNow();
     }
 
     /* --- Official Eligibility Gateway (Bokjiro) --- */
@@ -5940,7 +5965,7 @@ try {
     }
 
     /* --- View Switcher --- */
-    window.switchView = function (view) {
+    window.switchView = function (view, fromHistory) {
         const views = ['home', 'record', 'community', 'mypage', 'shredder', 'playground', 'treasure'];
         window._currentView = view; // 현재 탭 전역 저장 (모달 딥링크용)
         // 스크롤 잠금 해제 (탭 이동 시 모달 버그 보완)
@@ -5955,10 +5980,16 @@ try {
             if (navBtn) navBtn.classList.toggle('active', v === view);
         });
 
-        // URL 해시 업데이트 (공유 링크용 - history 오염 없이)
-        const hash = view === 'home' ? '' : '#' + view;
-        if (window.location.hash.replace('#', '') !== view) {
-            history.replaceState(null, '', hash || window.location.pathname);
+        /* 히스토리 연동: 탭 이동도 항목을 쌓아 뒤로가기가 "이전 탭"으로 가게 한다.
+           fromHistory=true(뒤로/앞으로 가기에 반응 중)일 땐 히스토리를 건드리지 않는다. */
+        if (!fromHistory) {
+            const targetUrl = view === 'home' ? window.location.pathname : '#' + view;
+            const curHashView = window.location.hash.replace('#', '').split('/')[0] || 'home';
+            if (curHashView !== view) {
+                history.pushState(null, '', targetUrl);
+            } else if (window.location.hash.replace('#', '') !== (view === 'home' ? '' : view)) {
+                history.replaceState(null, '', targetUrl);
+            }
         }
 
         // 놀이터 메뉴 초기화 (놀이터 탭 진입 시 메뉴화면 먼저 보여주기)
@@ -6024,9 +6055,11 @@ try {
             const view = parts[0];
             const modalId = parts[1];
             const targetView = validViews.includes(view) ? view : 'home';
-            switchView(targetView);
+            switchView(targetView, true);
             if (modalId && window._modalRegistry[modalId]) {
-                // 초기화 완료 후 모달 열기
+                // 딥링크 진입: 주소에서 모달 부분을 먼저 걷어낸 뒤 열어야
+                // openModal의 pushState와 합쳐져 [#탭, #탭/모달] 두 층이 깔끔하게 쌓인다
+                history.replaceState(null, '', targetView === 'home' ? window.location.pathname : '#' + targetView);
                 setTimeout(() => {
                     if (window._modalRegistry[modalId]) window._modalRegistry[modalId]();
                 }, 200);
@@ -6035,9 +6068,24 @@ try {
 
         dispatchHash(window.location.hash || '#home');
 
-        // 브라우저 뒤로가기/앞으로가기 시 해시 변경 처리
-        window.addEventListener('hashchange', () => {
-            dispatchHash(window.location.hash);
+        /* 브라우저 뒤로/앞으로 가기: 히스토리 항목이 쌓이므로 hashchange 대신 popstate로 처리.
+           - 모달이 열린 상태에서 pop → 모달만 닫힘 (사이트 이탈 방지의 핵심)
+           - 탭 항목으로 pop → 해당 탭으로 전환
+           - 앞으로 가기로 모달 항목에 진입 → 모달 다시 열기 (push 없이) */
+        window.addEventListener('popstate', () => {
+            const parts = window.location.hash.replace('#', '').split('/');
+            const view = validViews.includes(parts[0]) ? parts[0] : 'home';
+            const modalId = parts[1];
+            const overlay = document.getElementById('modal-overlay');
+            const modalOpen = overlay && overlay.classList.contains('active');
+
+            if (modalOpen && !modalId) closeModalNow();
+            switchView(view, true);
+            if (modalId && !modalOpen && window._modalRegistry[modalId]) {
+                window._suppressModalPush = true;
+                try { window._modalRegistry[modalId](); }
+                finally { window._suppressModalPush = false; }
+            }
         });
 
         // 놀이터 선택 로직 추가
