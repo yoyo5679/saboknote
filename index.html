@@ -272,7 +272,7 @@
                             <div class="svc-tag" style="background:#6c63ff;color:#ffffff; display:inline-block; margin-bottom:8px;">놀이터
                             </div>
                             <div class="svc-title" style="font-size:1.1rem; margin-bottom:4px;">나는 어떤 유형의 사회복지사?</div>
-                            <div class="svc-desc" style="font-size:0.85rem; color:#5b21b6;">심리테스트 · 사복 키우기 · 사다리타기 한 번에</div>
+                            <div class="svc-desc" style="font-size:0.85rem; color:#5b21b6;">심리테스트 · 공감 빙고 · 사다리타기 한 번에</div>
                         </div>
                         <div style="font-size:2.5rem;">🎢</div>
                     </div>
@@ -1166,6 +1166,15 @@
                                 </div>
                             </button>
 
+                            <button class="pulse-hover btn-primary" onclick="showPlaygroundContent('bingo')"
+                                style="width:100%; max-width:360px; background:linear-gradient(135deg,#F59E0B,#EF4444); border-radius:18px; padding:20px 20px; box-shadow:0 6px 20px rgba(239,68,68,0.22); border:none; color:white; display:flex; align-items:center; gap:16px; text-align:left;">
+                                <span style="font-size:36px; flex-shrink:0;">🎯</span>
+                                <div>
+                                    <div style="font-size:16px; font-weight:800; margin-bottom:3px;">사회복지사 공감 빙고</div>
+                                    <div style="font-size:12px; font-weight:500; opacity:0.85;">"이거 완전 나잖아?" 몇 줄 빙고 나올까</div>
+                                </div>
+                            </button>
+
                             <button class="pulse-hover btn-primary" onclick="showPlaygroundContent('escape')"
                                 style="width:100%; max-width:360px; background:linear-gradient(135deg,#3b82f6,#1d4ed8); border-radius:18px; padding:20px 20px; box-shadow:0 6px 20px rgba(59,130,246,0.22); border:none; color:white; display:flex; align-items:center; gap:16px; text-align:left;">
                                 <span style="font-size:36px; flex-shrink:0;">🏃</span>
@@ -1320,6 +1329,11 @@
                         <!-- Injected by JS -->
                     </div>
 
+                    <!-- ===== 사회복지사 공감 빙고 STEP ===== -->
+                    <div id="pg-step-bingo" style="display:none; animation:fadeUp 0.5s ease; padding-bottom:80px;">
+                        <!-- Injected by JS -->
+                    </div>
+
 
 
                     <div style="height:100px;"></div>
@@ -1378,7 +1392,7 @@
 
     </div><!-- /#app -->
 
-    <script src="index.js?v=11" charset="utf-8"></script>
+    <script src="index.js?v=12" charset="utf-8"></script>
     <script>
         // PWA Service Worker Registration
         if ('serviceWorker' in navigator) {

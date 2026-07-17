@@ -6062,6 +6062,11 @@ try {
                 initLunchPicker();
                 return;
             }
+            if (type === 'bingo') {
+                pgShowAllSteps('bingo');
+                if (window.initBingoGame) window.initBingoGame();
+                return;
+            }
 
         };
 
@@ -6596,6 +6601,8 @@ try {
         stats: null,
         statsLoading: true
     };
+    // 인라인 onmouseenter 핸들러가 window.pgState를 참조하므로 반드시 노출
+    window.pgState = pgState;
 
     function initPlayground() {
         // Build intro types preview
@@ -6648,7 +6655,7 @@ try {
 
     // 모든 스텝(메뉴 포함)을 통합 관리하는 함수
     function pgShowAllSteps(stepName) {
-        ['menu', 'intro', 'quiz', 'loading', 'result', 'ladder', 'lunch'].forEach(s => {
+        ['menu', 'intro', 'quiz', 'loading', 'result', 'ladder', 'lunch', 'bingo'].forEach(s => {
             const el = document.getElementById('pg-step-' + s);
             if (el) el.style.display = (s === stepName) ? 'block' : 'none';
         });
@@ -6855,7 +6862,14 @@ try {
               ${distHtml}
             </div>
 
-            <button id="pg-btn-img-download" onclick="pgHandleDownloadImage()" style="${btnStyle(t.bg, `0 6px 20px ${t.color}50`)} display:flex; align-items:center; justify-content:center; gap:8px;">
+            <button id="pg-btn-img-share" onclick="pgHandleShareImage()" style="${btnStyle(t.bg, `0 6px 20px ${t.color}50`)} display:flex; align-items:center; justify-content:center; gap:8px; font-size:15px;">
+              📤 결과 공유하기
+            </button>
+            <div style="text-align:center; font-size:11px; color:var(--text-6); margin-bottom:8px;">
+              카톡·인스타 스토리로 바로 공유할 수 있어요 ✨
+            </div>
+
+            <button id="pg-btn-img-download" onclick="pgHandleDownloadImage()" style="${btnStyle('var(--surface)', 'none', 'var(--text-3)')} border:1.5px solid var(--border-strong); display:flex; align-items:center; justify-content:center; gap:8px;">
               🖼️ 결과 이미지 저장하기(다운로드)
             </button>
             <div style="text-align:center; font-size:11px; color:var(--text-6); margin-bottom:8px;">
@@ -6909,7 +6923,54 @@ try {
         }
     };
 
-    async function pgDownloadImage(t) {
+    /* ===== 공유 공통 헬퍼: 모바일이면 네이티브 공유 시트(카톡·인스타), 아니면 다운로드+링크복사 ===== */
+    async function shareCanvasAsImage(canvas, filename, shareText) {
+        const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+        if (!blob) throw new Error('이미지 생성 실패');
+        const file = new File([blob], filename, { type: 'image/png' });
+
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            await navigator.share({ files: [file], title: '사복노트', text: shareText });
+            return 'shared';
+        }
+        if (navigator.share) {
+            await navigator.share({ title: '사복노트', text: shareText, url: 'https://saboknote.com/' });
+            return 'shared';
+        }
+        // 데스크톱 등 Web Share 미지원: 이미지 다운로드 + 공유 문구 클립보드 복사
+        const link = document.createElement('a');
+        link.download = filename;
+        link.href = canvas.toDataURL('image/png');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        try { await navigator.clipboard.writeText(shareText + ' → https://saboknote.com/'); } catch (e) { /* noop */ }
+        return 'downloaded';
+    }
+
+    window.pgHandleShareImage = async function () {
+        if (!pgState.resultType) return;
+        const t = pgTypes[pgState.resultType];
+        const btn = document.getElementById('pg-btn-img-share');
+        try {
+            const canvas = pgGenerateResultCanvas(t);
+            const mode = await shareCanvasAsImage(
+                canvas,
+                `나의_사복_유형_${t.name.replace(/\s+/g, '_')}.png`,
+                `나는 "${t.name}" 유형 사회복지사래요 ${t.emoji} 당신은 어떤 유형?`
+            );
+            if (btn && mode === 'downloaded') {
+                btn.innerHTML = '✅ 이미지 저장 + 공유 문구 복사됨!';
+                setTimeout(() => { btn.innerHTML = '📤 결과 공유하기'; }, 3000);
+            }
+        } catch (e) {
+            if (e && e.name === 'AbortError') return; // 사용자가 공유 시트를 닫음
+            console.error(e);
+            alert('공유에 실패했어요. 아래 이미지 저장 버튼을 이용해주세요.');
+        }
+    };
+
+    function pgGenerateResultCanvas(t) {
         const W = 800, H = 800;
         const canvas = document.createElement("canvas");
         canvas.width = W; canvas.height = H;
@@ -6978,21 +7039,245 @@ try {
         ctx.font = "18px Arial"; ctx.fillStyle = "rgba(255,255,255,0.38)";
         ctx.fillText("saboknote.com", cx, H - 16);
 
-        return new Promise((resolve, reject) => {
-            try {
-                const dataUrl = canvas.toDataURL("image/png");
-                const link = document.createElement("a");
-                link.download = `나의_사복_유형_${t.name.replace(/\s+/g, '_')}.png`;
-                link.href = dataUrl;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                resolve();
-            } catch (e) {
-                reject(e);
+        return canvas;
+    }
+
+    async function pgDownloadImage(t) {
+        const canvas = pgGenerateResultCanvas(t);
+        const link = document.createElement("a");
+        link.download = `나의_사복_유형_${t.name.replace(/\s+/g, '_')}.png`;
+        link.href = canvas.toDataURL("image/png");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    /* ============================================================
+       사회복지사 공감 빙고 — "이거 완전 나잖아?" 25칸 공감 체크
+       ============================================================ */
+    const BINGO_FREE_IDX = 12; // 정중앙 무료 칸
+    const BINGO_ITEMS = [
+        '민원 전화 3연타', '공문 반려당함', '강사 당일 펑크', '정산 10원 안 맞음', '어르신께 아들·딸 취급',
+        '후원물품 나르다 삐끗', '"좋은 일 하시네요" 들음', '월급 보고 현타', '사업계획서 밤샘', '희망이음 오류 멘붕',
+        '점심시간에 민원 응대', '주말 행사 동원', '오늘도 출근 성공 🌟', '엑셀 서식 와장창', '평가철 영혼 가출',
+        '커피가 주식', '감사 대비 서류 재출력', '대상자에게 욕 들음', '12월 지출 폭탄', '사례회의 3시간 초과',
+        '퇴근 5분 전 긴급콜', '개인폰으로 업무 연락', '"봉사직 아니냐" 들음', '프로그램 전속 사진사', '서류가 사람보다 많음'
+    ];
+    const bingoState = { checked: new Set([BINGO_FREE_IDX]) };
+
+    function bingoCountLines(checked) {
+        const lines = [];
+        for (let r = 0; r < 5; r++) lines.push([0, 1, 2, 3, 4].map(c => r * 5 + c));
+        for (let c = 0; c < 5; c++) lines.push([0, 1, 2, 3, 4].map(r => r * 5 + c));
+        lines.push([0, 6, 12, 18, 24]);
+        lines.push([4, 8, 12, 16, 20]);
+        return lines.filter(line => line.every(i => checked.has(i))).length;
+    }
+
+    function bingoVerdict(lineCount) {
+        if (lineCount === 0) return { emoji: '🌱', name: '새싹 복지사', desc: '아직 현장의 매운맛을 다 못 보셨군요! 그 순수함, 오래 지켜지길 바라요.', color: '#10b981', color2: '#059669' };
+        if (lineCount <= 2) return { emoji: '💪', name: '적응 완료 복지사', desc: '슬슬 짬바가 차오르는 중. 이제 웬만한 일엔 놀라지 않죠?', color: '#3b82f6', color2: '#2563eb' };
+        if (lineCount <= 5) return { emoji: '🔥', name: '중견 고인물', desc: '현장 만렙까지 얼마 안 남았어요. 후배들이 슬슬 기대기 시작합니다.', color: '#f59e0b', color2: '#ea580c' };
+        if (lineCount <= 8) return { emoji: '🏆', name: '전설의 고인물', desc: '이 구역의 산증인. 선생님 없으면 기관이 안 돌아갑니다.', color: '#8b5cf6', color2: '#6d28d9' };
+        return { emoji: '🚨', name: '소진 주의보', desc: '너무 많은 걸 겪으셨어요... 오늘은 감정 파쇄기에 다 털어놓고 가세요.', color: '#ef4444', color2: '#b91c1c' };
+    }
+
+    window.initBingoGame = function () {
+        bingoState.checked = new Set([BINGO_FREE_IDX]);
+        const container = document.getElementById('pg-step-bingo');
+        if (!container) return;
+
+        container.innerHTML = `
+            <div style="text-align:center; padding:20px 0 6px;">
+                <div style="font-size:52px; margin-bottom:8px;">🎯</div>
+                <h2 style="font-size:22px; font-weight:900; color:var(--text-2); margin-bottom:6px;">사회복지사 공감 빙고</h2>
+                <p style="color:var(--text-5); font-size:13px; margin-bottom:18px; line-height:1.6;">겪어본 적 있는 칸을 전부 탭!<br>몇 줄 빙고가 나오는지 확인해봐요 👀</p>
+            </div>
+
+            <div id="bingo-grid" style="display:grid; grid-template-columns:repeat(5,1fr); gap:6px; margin-bottom:12px;"></div>
+
+            <div id="bingo-status" style="text-align:center; font-size:0.9rem; font-weight:800; color:var(--text-3); margin-bottom:14px;">1칸 공감 · 0줄 빙고</div>
+
+            <button onclick="bingoShowResult()" class="btn-primary"
+                style="width:100%; border:none; border-radius:14px; padding:15px; font-size:15px; font-weight:800; cursor:pointer; margin-bottom:8px; background:linear-gradient(135deg,#F59E0B,#EF4444); color:#fff; box-shadow:0 6px 20px rgba(239,68,68,0.28);">
+                🎉 결과 보기</button>
+
+            <div id="bingo-result" style="display:none;"></div>
+
+            <button onclick="pgShowAllSteps('menu')" style="width:100%; background:var(--surface-2); color:var(--text-5); border:1.5px solid var(--border); border-radius:14px; padding:14px; font-size:14px; font-weight:700; cursor:pointer; margin-top:8px;">
+                ← 놀이터 메뉴로</button>
+        `;
+        bingoRenderGrid();
+    };
+
+    function bingoRenderGrid() {
+        const grid = document.getElementById('bingo-grid');
+        if (!grid) return;
+        grid.innerHTML = BINGO_ITEMS.map((item, i) => {
+            const checked = bingoState.checked.has(i);
+            const isFree = i === BINGO_FREE_IDX;
+            const bg = checked ? 'linear-gradient(135deg,#F59E0B,#EF4444)' : 'var(--surface)';
+            const color = checked ? '#fff' : 'var(--text-4)';
+            const border = checked ? 'none' : '1.5px solid var(--border)';
+            return `<button onclick="bingoToggle(${i})" ${isFree ? 'disabled' : ''}
+                style="aspect-ratio:1; padding:3px; border-radius:10px; border:${border}; background:${bg}; color:${color};
+                font-size:0.6rem; font-weight:700; line-height:1.25; cursor:${isFree ? 'default' : 'pointer'};
+                word-break:keep-all; overflow:hidden; transition:all 0.15s; font-family:inherit;">${item}</button>`;
+        }).join('');
+        bingoUpdateStatus();
+    }
+
+    window.bingoToggle = function (i) {
+        if (i === BINGO_FREE_IDX) return;
+        if (bingoState.checked.has(i)) bingoState.checked.delete(i);
+        else bingoState.checked.add(i);
+        bingoRenderGrid();
+    };
+
+    function bingoUpdateStatus() {
+        const el = document.getElementById('bingo-status');
+        if (!el) return;
+        const lines = bingoCountLines(bingoState.checked);
+        el.innerText = `${bingoState.checked.size}칸 공감 · ${lines}줄 빙고`;
+        el.style.color = lines >= 3 ? '#EF4444' : 'var(--text-3)';
+    }
+
+    window.bingoShowResult = function () {
+        const lines = bingoCountLines(bingoState.checked);
+        const v = bingoVerdict(lines);
+        const resultEl = document.getElementById('bingo-result');
+        if (!resultEl) return;
+
+        resultEl.style.display = 'block';
+        resultEl.innerHTML = `
+            <div style="background:linear-gradient(135deg,${v.color},${v.color2}); border-radius:24px; padding:28px 20px; margin:14px 0; text-align:center; box-shadow:0 10px 32px ${v.color}40;">
+                <div style="font-size:56px; margin-bottom:6px;">${v.emoji}</div>
+                <div style="font-size:11px; color:rgba(255,255,255,0.75); letter-spacing:3px; font-weight:700; margin-bottom:4px;">${bingoState.checked.size}칸 공감 · ${lines}줄 빙고</div>
+                <h2 style="font-size:24px; font-weight:900; color:#fff; margin-bottom:8px;">${v.name}</h2>
+                <p style="font-size:13.5px; color:rgba(255,255,255,0.92); line-height:1.7; max-width:300px; margin:0 auto;">${v.desc}</p>
+            </div>
+            <button id="bingo-btn-share" onclick="bingoShare()"
+                style="width:100%; border:none; border-radius:14px; padding:15px; font-size:15px; font-weight:800; cursor:pointer; margin-bottom:8px; background:linear-gradient(135deg,${v.color},${v.color2}); color:#fff; box-shadow:0 6px 20px ${v.color}45;">
+                📤 빙고판 공유하기</button>
+            <div style="text-align:center; font-size:11px; color:var(--text-6); margin-bottom:8px;">카톡·인스타 스토리로 바로 공유할 수 있어요 ✨</div>
+            <button onclick="bingoDownload()"
+                style="width:100%; border:1.5px solid var(--border-strong); border-radius:14px; padding:14px; font-size:14px; font-weight:800; cursor:pointer; margin-bottom:8px; background:var(--surface); color:var(--text-3);">
+                🖼️ 빙고판 이미지 저장하기</button>
+            <button onclick="initBingoGame()"
+                style="width:100%; border:none; border-radius:14px; padding:14px; font-size:14px; font-weight:800; cursor:pointer; background:#f0f0f0; color:#888;">
+                🔄 다시 하기</button>
+        `;
+        resultEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+
+    function bingoGenerateCanvas() {
+        const lines = bingoCountLines(bingoState.checked);
+        const v = bingoVerdict(lines);
+        const W = 900, H = 1200;
+        const canvas = document.createElement('canvas');
+        canvas.width = W; canvas.height = H;
+        const ctx = canvas.getContext('2d');
+
+        const grad = ctx.createLinearGradient(0, 0, W, H);
+        grad.addColorStop(0, v.color);
+        grad.addColorStop(1, v.color2);
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, W, H);
+
+        [[W * 0.88, 90, 130, 0.10], [W * 0.08, H * 0.92, 110, 0.08]].forEach(([x, y, r, a]) => {
+            ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(255,255,255,${a})`; ctx.fill();
+        });
+
+        const cx = W / 2;
+        ctx.textAlign = 'center';
+
+        ctx.font = 'bold 22px Arial'; ctx.fillStyle = 'rgba(255,255,255,0.55)';
+        ctx.fillText('사회복지사 공감 빙고', cx, 52);
+
+        ctx.font = '64px serif'; ctx.fillText(v.emoji, cx, 135);
+        ctx.font = 'bold 46px Arial'; ctx.fillStyle = '#fff';
+        ctx.fillText(v.name, cx, 195);
+        ctx.font = 'bold 26px Arial'; ctx.fillStyle = 'rgba(255,255,255,0.85)';
+        ctx.fillText(`${bingoState.checked.size}칸 공감 · ${lines}줄 빙고`, cx, 236);
+
+        // 5×5 그리드
+        const cell = 158, gap = 8;
+        const gridW = cell * 5 + gap * 4;
+        const gx = (W - gridW) / 2, gy = 270;
+        ctx.textAlign = 'center';
+        BINGO_ITEMS.forEach((item, i) => {
+            const r = Math.floor(i / 5), c = i % 5;
+            const x = gx + c * (cell + gap), y = gy + r * (cell + gap);
+            const checked = bingoState.checked.has(i);
+
+            ctx.fillStyle = checked ? 'rgba(255,255,255,0.94)' : 'rgba(255,255,255,0.16)';
+            ctx.beginPath();
+            if (ctx.roundRect) ctx.roundRect(x, y, cell, cell, 14);
+            else ctx.rect(x, y, cell, cell);
+            ctx.fill();
+
+            // 셀 텍스트 줄바꿈 (한 줄 최대 6자)
+            ctx.font = 'bold 19px Arial';
+            ctx.fillStyle = checked ? v.color2 : 'rgba(255,255,255,0.85)';
+            const chunks = [];
+            let buf = '';
+            item.split(' ').forEach(word => {
+                if ((buf + ' ' + word).trim().length > 6 && buf) { chunks.push(buf); buf = word; }
+                else buf = (buf + ' ' + word).trim();
+            });
+            if (buf) chunks.push(buf);
+            const lineH = 24;
+            const startY = y + cell / 2 - ((chunks.length - 1) * lineH) / 2 + 7;
+            chunks.slice(0, 4).forEach((l, li) => ctx.fillText(l, x + cell / 2, startY + li * lineH));
+
+            if (checked && i !== BINGO_FREE_IDX) {
+                ctx.font = '22px Arial';
+                ctx.fillText('✓', x + cell - 20, y + 28);
             }
         });
+
+        const gridH = cell * 5 + gap * 4;
+        const footY = gy + gridH + 46;
+        ctx.font = '23px Arial'; ctx.fillStyle = 'rgba(255,255,255,0.9)';
+        ctx.fillText('당신은 몇 줄 빙고인가요?', cx, footY);
+        ctx.font = 'bold 21px Arial'; ctx.fillStyle = 'rgba(255,255,255,0.5)';
+        ctx.fillText('saboknote.com', cx, H - 28);
+
+        return canvas;
     }
+
+    window.bingoShare = async function () {
+        const btn = document.getElementById('bingo-btn-share');
+        const lines = bingoCountLines(bingoState.checked);
+        try {
+            const canvas = bingoGenerateCanvas();
+            const mode = await shareCanvasAsImage(
+                canvas,
+                `사회복지사_공감빙고_${lines}줄.png`,
+                `사회복지사 공감 빙고 ${lines}줄 나왔어요 🎯 당신은 몇 줄?`
+            );
+            if (btn && mode === 'downloaded') {
+                btn.innerHTML = '✅ 이미지 저장 + 공유 문구 복사됨!';
+                setTimeout(() => { btn.innerHTML = '📤 빙고판 공유하기'; }, 3000);
+            }
+        } catch (e) {
+            if (e && e.name === 'AbortError') return;
+            console.error(e);
+            alert('공유에 실패했어요. 이미지 저장 버튼을 이용해주세요.');
+        }
+    };
+
+    window.bingoDownload = function () {
+        const lines = bingoCountLines(bingoState.checked);
+        const canvas = bingoGenerateCanvas();
+        const link = document.createElement('a');
+        link.download = `사회복지사_공감빙고_${lines}줄.png`;
+        link.href = canvas.toDataURL('image/png');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
 
     /* --- Image Mosaic Logic --- */
     window.initImageMosaic = function () {
