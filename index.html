@@ -125,32 +125,6 @@
                     <div class="hero-illustration">📔</div>
                 </div>
 
-                <!-- ② 바로 써보는 부가세 계산기 (인라인, 클릭 없이 즉시 사용) -->
-                <section class="sec">
-                    <div class="step-card beautiful-card" style="padding:16px;">
-                        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">
-                            <span style="font-weight:800; color:var(--text-1); font-size:0.95rem;">🧾 부가세 계산기, 바로 써보세요</span>
-                            <span onclick="document.getElementById('open-admin-calc').click()"
-                                style="font-size:0.72rem; color:var(--primary); font-weight:700; cursor:pointer; white-space:nowrap;">12가지
-                                계산기 →</span>
-                        </div>
-                        <input type="number" id="home-vat-input" class="calc-input" placeholder="총 결제금액 입력 (예: 55000)"
-                            oninput="calcVATHome()" style="font-size:1.05rem; padding:12px; margin-bottom:10px;">
-                        <div style="display:flex; gap:8px;">
-                            <div
-                                style="flex:1; background:var(--surface-2); border:1px solid var(--border); border-radius:10px; padding:10px 12px;">
-                                <div style="font-size:0.75rem; color:var(--text-5); margin-bottom:2px;">공급가액</div>
-                                <div id="home-vat-supply" style="font-weight:800; color:var(--text-1); font-size:1rem;">0원</div>
-                            </div>
-                            <div
-                                style="flex:1; background:var(--surface-2); border:1px solid var(--border); border-radius:10px; padding:10px 12px;">
-                                <div style="font-size:0.75rem; color:var(--text-5); margin-bottom:2px;">부가세 (10%)</div>
-                                <div id="home-vat-tax" style="font-weight:800; color:var(--text-1); font-size:1rem;">0원</div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
                 <!-- ③ 자주 쓰는 도구 -->
                 <section class="sec">
                     <div class="sec-head">
@@ -1374,7 +1348,7 @@
 
     </div><!-- /#app -->
 
-    <script src="index.js?v=9" charset="utf-8"></script>
+    <script src="index.js?v=10" charset="utf-8"></script>
     <script>
         // PWA Service Worker Registration
         if ('serviceWorker' in navigator) {
