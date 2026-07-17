@@ -6937,17 +6937,63 @@ try {
 
     /* ===== 이미지 저장 공통 헬퍼 =====
        모바일(특히 iOS·카톡 인앱 브라우저)은 <a download> 클릭이 조용히 무시되는 경우가 많아
-       이미지를 모달로 띄우고 '길게 눌러 저장'을 안내한다. 데스크톱은 그대로 다운로드. */
+       이미지를 모달로 띄우고 저장 버튼 + '길게 눌러 저장' 안내를 함께 제공한다.
+       데스크톱은 그대로 즉시 다운로드. */
+    let _pendingSaveImage = null;
+
+    function triggerBlobDownload(dataUrl, filename) {
+        return fetch(dataUrl)
+            .then(r => r.blob())
+            .then(blob => {
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.download = filename;
+                link.href = url;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                setTimeout(() => URL.revokeObjectURL(url), 10000);
+            });
+    }
+
+    window.saveModalDownload = async function () {
+        if (!_pendingSaveImage) return;
+        const btn = document.getElementById('save-modal-dl-btn');
+        try {
+            // 공유 시트를 지원하는 모바일은 시트의 '이미지 저장'이 사진첩에 바로 저장되는 가장 확실한 경로
+            const blob = await fetch(_pendingSaveImage.dataUrl).then(r => r.blob());
+            const file = new File([blob], _pendingSaveImage.filename, { type: 'image/png' });
+            if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                await navigator.share({ files: [file], title: '사복노트' });
+            } else {
+                await triggerBlobDownload(_pendingSaveImage.dataUrl, _pendingSaveImage.filename);
+            }
+            if (btn) {
+                btn.innerHTML = '✅ 완료!';
+                setTimeout(() => { btn.innerHTML = '📥 이미지 저장하기'; }, 2500);
+            }
+        } catch (e) {
+            if (e && e.name === 'AbortError') return; // 사용자가 시트를 닫음
+            console.warn('saveModalDownload:', e);
+            // 마지막 폴백: 단순 다운로드 시도
+            try { await triggerBlobDownload(_pendingSaveImage.dataUrl, _pendingSaveImage.filename); } catch (e2) { /* noop */ }
+        }
+    };
+
     function presentCanvasForSave(canvas, filename) {
         const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
             || (navigator.maxTouchPoints > 1 && /Mac/.test(navigator.userAgent));
         const dataUrl = canvas.toDataURL('image/png');
         if (isMobile) {
+            _pendingSaveImage = { dataUrl, filename };
             openModal('🖼️ 이미지 저장', `
                 <div style="text-align:center;">
-                    <img src="${dataUrl}" alt="결과 이미지" style="width:100%; border-radius:14px; margin-bottom:12px; box-shadow:0 6px 20px rgba(0,0,0,0.15);">
-                    <p style="font-size:0.92rem; color:var(--text-3); font-weight:700; line-height:1.7;">
-                        위 이미지를 <span style="color:var(--primary);">길게 꾹~ 눌러서</span><br>'사진에 저장' 또는 '이미지 저장'을 선택하세요 👆</p>
+                    <img src="${dataUrl}" alt="결과 이미지" style="width:100%; border-radius:14px; margin-bottom:14px; box-shadow:0 6px 20px rgba(0,0,0,0.15);">
+                    <button id="save-modal-dl-btn" onclick="saveModalDownload()" class="btn-primary"
+                        style="width:100%; padding:14px; border:none; border-radius:14px; font-size:0.95rem; font-weight:800; cursor:pointer; margin-bottom:10px;">
+                        📥 이미지 저장하기</button>
+                    <p style="font-size:0.82rem; color:var(--text-6); line-height:1.6;">
+                        버튼이 안 되면 위 이미지를 <strong>길게 꾹~</strong> 눌러<br>'사진에 저장'을 선택하세요 👆</p>
                 </div>`);
             return;
         }
@@ -7001,6 +7047,19 @@ try {
         }
     };
 
+    /* 이모지는 글리프 여백이 비대칭이라 textAlign:center로도 살짝 치우친다.
+       실제 그려지는 영역(actualBoundingBox)을 재서 시각적 중앙에 배치한다. */
+    function drawEmojiCentered(ctx, text, cx, y, font) {
+        ctx.save();
+        ctx.font = font;
+        ctx.textAlign = 'left';
+        const m = ctx.measureText(text);
+        const bbLeft = (typeof m.actualBoundingBoxLeft === 'number') ? m.actualBoundingBoxLeft : 0;
+        const bbRight = (typeof m.actualBoundingBoxRight === 'number') ? m.actualBoundingBoxRight : m.width;
+        ctx.fillText(text, cx - (bbRight - bbLeft) / 2, y);
+        ctx.restore();
+    }
+
     function pgGenerateResultCanvas(t) {
         const W = 800, H = 800;
         const canvas = document.createElement("canvas");
@@ -7026,7 +7085,7 @@ try {
         ctx.font = "bold 22px Arial"; ctx.fillStyle = "rgba(255,255,255,0.55)";
         ctx.fillText("사복천재 비밀노트", cx, 55);
 
-        ctx.font = "130px serif"; ctx.fillText(t.emoji, cx, 195);
+        drawEmojiCentered(ctx, t.emoji, cx, 195, "130px serif");
 
         ctx.font = "bold 24px Arial"; ctx.fillStyle = "rgba(255,255,255,0.65)";
         ctx.fillText("나의 복지사 유형", cx, 270);
@@ -7221,7 +7280,7 @@ try {
         ctx.font = 'bold 22px Arial'; ctx.fillStyle = 'rgba(255,255,255,0.55)';
         ctx.fillText('사회복지사 공감 빙고', cx, 52);
 
-        ctx.font = '64px serif'; ctx.fillText(v.emoji, cx, 135);
+        drawEmojiCentered(ctx, v.emoji, cx, 135, '64px serif');
         ctx.font = 'bold 46px Arial'; ctx.fillStyle = '#fff';
         ctx.fillText(v.name, cx, 195);
         ctx.font = 'bold 26px Arial'; ctx.fillStyle = 'rgba(255,255,255,0.85)';
