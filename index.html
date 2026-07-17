@@ -20,28 +20,28 @@
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>사복노트 — 신입 사회복지사 익명 대나무숲 & 실무 AI 도우미</title>
+    <title>사회복지사 실무 도구 모음 | AI 프롬프트·강사료·부가세·장기요양 계산기 — 사복노트</title>
 
     <!-- SEO -->
     <meta name="description"
-        content="매일 울면서 퇴근하는 신입 사회복지사를 위한 익명 감정 쓰레기통과 현장 선배의 위로. AI 프롬프트, 복지 단어장, 행정/회계 계산기 등 실무 치트키까지 한 곳에 모인 정서적 안전기지 사복노트입니다.">
-    <meta name="keywords" content="사회복지사, 신입 사회복지사, 사복노트, 번아웃, 사회복지사 고민, 익명 커뮤니티, AI 프롬프트, 복지 용어 단어장, 행정 계산기, 업무자동화">
+        content="강사료 3.3%/8.8%, 부가세, 급여정산, 장기요양 한도 등 12가지 계산기와 사례관리 기록용 AI 프롬프트를 무료로. 가입 없이 바로 사용.">
+    <meta name="keywords" content="사회복지사, 강사료 계산, 부가세 계산기, 장기요양 한도, 사회복지사 행정 계산기, 사복노트, AI 프롬프트, 복지 용어 단어장, 급여정산, 업무자동화">
     <meta name="author" content="사복천재">
     <meta name="google-site-verification" content="PyjWisy_WXhTuiX22w8tal4jJoml2hD-DhaL3aFr_Ko" />
     <meta name="naver-site-verification" content="d5aa544e9d16507290a58203ce4842dc9be60f02" />
 
     <!-- Open Graph (카카오·SNS 공유) -->
     <meta property="og:type" content="website">
-    <meta property="og:title" content="사복노트 — 사회복지사 익명 대나무숲 & 실무 AI 🌿">
-    <meta property="og:description" content="클라이언트에게 상처받은 날의 감정 파쇄기, 그리고 AI 프롬프트·단어장·계산기 등 실무 치트키까지 한 번에!">
+    <meta property="og:title" content="사회복지사 실무 도구 모음 | AI 프롬프트·강사료·부가세·장기요양 계산기 — 사복노트">
+    <meta property="og:description" content="강사료 3.3%/8.8%, 부가세, 급여정산, 장기요양 한도 등 12가지 계산기와 사례관리 기록용 AI 프롬프트를 무료로. 가입 없이 바로 사용.">
     <meta property="og:url" content="https://saboknote.com">
     <link rel="canonical" href="https://saboknote.com">
     <meta property="og:site_name" content="사복노트 (사회복지사 비밀노트)">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="사복노트 — 사회복지사 익명 대나무숲 & 실무 AI 🌿">
-    <meta name="twitter:description" content="위로가 필요한 날의 감정 쓰레기통과 AI 프롬프트·단어장·계산기 등 실무 치트키.">
+    <meta name="twitter:title" content="사회복지사 실무 도구 모음 | AI 프롬프트·강사료·부가세·장기요양 계산기 — 사복노트">
+    <meta name="twitter:description" content="강사료 3.3%/8.8%, 부가세, 급여정산, 장기요양 한도 등 12가지 계산기와 사례관리 기록용 AI 프롬프트를 무료로. 가입 없이 바로 사용.">
 
     <!-- PWA Settings -->
     <link rel="manifest" href="manifest.json">
@@ -119,33 +119,37 @@
                 <div class="hero-banner">
                     <div class="hero-overlay"></div>
                     <div class="hero-content">
-                        <div class="hero-header">
-                            <div class="hero-eyebrow">✨ "사회복지사가 행복해야 현장이 행복합니다!"</div>
-                        </div>
                         <div class="hero-title">AI 프롬프트로 서류 뚝딱,<br><strong>행정/회계 계산은 1초 컷!</strong></div>
-                        <div class="hero-chips">
-                            <span class="hero-chip">프롬프트</span>
-                            <span class="hero-chip">행정회계</span>
-                            <span class="hero-chip">복지용어</span>
-                            <span class="hero-chip">익명 Q&A</span>
-                        </div>
                         <div class="hero-pwa-badge" onclick="showPWAInstallGuide()">1초 만에 바탕화면에 꺼내기 ✨</div>
                     </div>
                     <div class="hero-illustration">📔</div>
                 </div>
 
-                <!-- ② 검색 + 액션 버튼 바 -->
-                <div class="search-bar-wrap">
-                    <div class="search-bar" onclick="document.getElementById('open-voca-dict').click()">
-                        <span class="search-ico">🔍</span>
-                        <span class="search-hint">복지 용어 검색...</span>
+                <!-- ② 바로 써보는 부가세 계산기 (인라인, 클릭 없이 즉시 사용) -->
+                <section class="sec">
+                    <div class="step-card beautiful-card" style="padding:16px;">
+                        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">
+                            <span style="font-weight:800; color:var(--text-1); font-size:0.95rem;">🧾 부가세 계산기, 바로 써보세요</span>
+                            <span onclick="document.getElementById('open-admin-calc').click()"
+                                style="font-size:0.72rem; color:var(--primary); font-weight:700; cursor:pointer; white-space:nowrap;">12가지
+                                계산기 →</span>
+                        </div>
+                        <input type="number" id="home-vat-input" class="calc-input" placeholder="총 결제금액 입력 (예: 55000)"
+                            oninput="calcVATHome()" style="font-size:1.05rem; padding:12px; margin-bottom:10px;">
+                        <div style="display:flex; gap:8px;">
+                            <div
+                                style="flex:1; background:var(--surface-2); border:1px solid var(--border); border-radius:10px; padding:10px 12px;">
+                                <div style="font-size:0.75rem; color:var(--text-5); margin-bottom:2px;">공급가액</div>
+                                <div id="home-vat-supply" style="font-weight:800; color:var(--text-1); font-size:1rem;">0원</div>
+                            </div>
+                            <div
+                                style="flex:1; background:var(--surface-2); border:1px solid var(--border); border-radius:10px; padding:10px 12px;">
+                                <div style="font-size:0.75rem; color:var(--text-5); margin-bottom:2px;">부가세 (10%)</div>
+                                <div id="home-vat-tax" style="font-weight:800; color:var(--text-1); font-size:1rem;">0원</div>
+                            </div>
+                        </div>
                     </div>
-                    <button class="action-chip" onclick="document.getElementById('open-dashboard').click()">📊
-                        지표</button>
-                    <button class="action-chip" onclick="document.getElementById('calc-eligibility').click()">💰
-                        수급</button>
-                </div>
-
+                </section>
 
                 <!-- ③ 자주 쓰는 도구 -->
                 <section class="sec">
@@ -224,6 +228,18 @@
                     </div>
                 </section>
 
+                <!-- ③-1 검색 + 액션 버튼 바 (코어 기능 아님 — 도구 아래로) -->
+                <div class="search-bar-wrap">
+                    <div class="search-bar" onclick="document.getElementById('open-voca-dict').click()">
+                        <span class="search-ico">🔍</span>
+                        <span class="search-hint">복지 용어 검색...</span>
+                    </div>
+                    <button class="action-chip" onclick="document.getElementById('open-dashboard').click()">📊
+                        지표</button>
+                    <button class="action-chip" onclick="document.getElementById('calc-eligibility').click()">💰
+                        수급</button>
+                </div>
+
                 <!-- ④ 주요 서비스 (이미지형 가로 배너 2열) -->
                 <section class="sec">
                     <div class="sec-head">
@@ -295,6 +311,11 @@
                         <span style="font-size:0.95rem; opacity:0.3; transform: rotate(10deg);">📔</span>
                     </div>
                 </section>
+
+                <!-- 푸터 슬로건 (톤앤매너용, 부각 X) -->
+                <div style="text-align:center; padding:24px 20px 4px; color:var(--text-6); font-size:0.78rem; line-height:1.5;">
+                    ✨ "사회복지사가 행복해야 현장이 행복합니다!"
+                </div>
 
                 <div style="height:100px;"></div>
             </div> <!-- end view-home -->
@@ -1353,7 +1374,7 @@
 
     </div><!-- /#app -->
 
-    <script src="index.js?v=8" charset="utf-8"></script>
+    <script src="index.js?v=9" charset="utf-8"></script>
     <script>
         // PWA Service Worker Registration
         if ('serviceWorker' in navigator) {
