@@ -3677,21 +3677,6 @@ try {
         document.getElementById('vat-copy-text').innerText = `공급가액 ${supply.toLocaleString()} 원 / 부가세 ${tax.toLocaleString()} 원`;
     };
 
-    window.calcVATHome = function () {
-        const input = document.getElementById('home-vat-input').value;
-        if (!input || isNaN(input)) {
-            document.getElementById('home-vat-supply').innerText = '0원';
-            document.getElementById('home-vat-tax').innerText = '0원';
-            return;
-        }
-        const total = parseInt(input);
-        const supply = Math.floor(total / 1.1);
-        const tax = total - supply;
-
-        document.getElementById('home-vat-supply').innerText = supply.toLocaleString() + '원';
-        document.getElementById('home-vat-tax').innerText = tax.toLocaleString() + '원';
-    };
-
     window.setTaxType = function (type) {
         const btnBus = document.getElementById('btn-tax-business');
         const btnOth = document.getElementById('btn-tax-other');
