@@ -3622,10 +3622,11 @@ try {
 
     // 히어로 인사말에 익명 닉네임 반영
     function initHomeGreeting() {
-        const el = document.getElementById('home-nick');
-        if (!el) return;
         const name = localStorage.getItem('saboks_anonymous_name');
-        if (name) el.innerText = name;
+        const el = document.getElementById('home-nick');
+        if (el && name) el.innerText = name;
+        const sideNick = document.getElementById('side-nick');
+        if (sideNick && name) sideNick.innerText = name;
         fitGreeting();
     }
 
@@ -6160,6 +6161,8 @@ try {
             if (el) el.className = (v === view) ? 'view-content active' : 'view-content hidden';
             const navBtn = document.getElementById('nav-' + v);
             if (navBtn) navBtn.classList.toggle('active', v === view);
+            const sideBtn = document.getElementById('snav-' + v);
+            if (sideBtn) sideBtn.classList.toggle('active', v === view);
         });
 
         /* 히스토리 연동: 탭 이동도 항목을 쌓아 뒤로가기가 "이전 탭"으로 가게 한다.

@@ -105,6 +105,40 @@
         </div>
     </noscript>
 
+    <!-- ===== DESKTOP SIDE NAV (클로드 디자인 웹 버전, ≥1024px에서만 표시) ===== -->
+    <nav class="side-nav" id="side-nav">
+        <div class="side-brand" onclick="switchView('home')">
+            <span class="logo-badge">🌿</span>
+            <div>
+                <div class="side-brand-name">사복노트</div>
+                <div class="side-brand-sub">사회복지사 비밀노트</div>
+            </div>
+        </div>
+        <div class="side-nav-items">
+            <button class="side-item active" id="snav-home" onclick="switchView('home')"><span
+                    class="side-ico">🏠</span>홈</button>
+            <button class="side-item" id="snav-record" onclick="switchView('record')"><span
+                    class="side-ico">🆘</span>도와줘요</button>
+            <button class="side-item" id="snav-community" onclick="switchView('community')"><span
+                    class="side-ico">💬</span>커뮤니티</button>
+            <button class="side-item" id="snav-shredder" onclick="switchView('shredder')"><span
+                    class="side-ico">🗑️</span>감정 파쇄기</button>
+            <button class="side-item" id="snav-playground" onclick="switchView('playground')"><span
+                    class="side-ico">🎢</span>놀이터</button>
+            <button class="side-item" id="snav-treasure" onclick="switchView('treasure')"><span
+                    class="side-ico">🍯</span>보물창고</button>
+            <button class="side-item" id="snav-mypage" onclick="switchView('mypage')"><span
+                    class="side-ico">👤</span>내 정보</button>
+        </div>
+        <button class="side-profile" onclick="switchView('mypage')">
+            <span class="side-profile-emoji">🦊</span>
+            <div style="min-width:0; text-align:left;">
+                <div class="side-profile-name" id="side-nick">사복인</div>
+                <div class="side-profile-sub">내 정보 보기 →</div>
+            </div>
+        </button>
+    </nav>
+
     <div id="app">
 
         <!-- ===== HEADER (클로드 디자인 개선안) ===== -->
@@ -1362,7 +1396,7 @@
 
     </div><!-- /#app -->
 
-    <script src="index.js?v=26" charset="utf-8"></script>
+    <script src="index.js?v=27" charset="utf-8"></script>
     <script>
         // PWA Service Worker Registration
         if ('serviceWorker' in navigator) {
