@@ -3477,21 +3477,21 @@ try {
     }
 
     function renderRecentTools() {
-        const wrap = document.getElementById('recent-tools-row');
+        const sec = document.getElementById('recent-sec');
         const chipsEl = document.getElementById('recent-tools-chips');
-        if (!wrap || !chipsEl) return;
+        if (!sec || !chipsEl) return;
         let recent = [];
         try { recent = JSON.parse(localStorage.getItem(RECENT_TOOLS_KEY) || '[]'); } catch (e) { /* noop */ }
         recent = recent.filter(t => ADMIN_TOOL_META[t]).slice(0, 3);
 
         if (recent.length === 0) {
-            wrap.style.display = 'none';
+            sec.style.display = 'none';
             return;
         }
-        wrap.style.display = 'flex';
+        sec.style.display = '';
         chipsEl.innerHTML = recent.map(t => {
             const meta = ADMIN_TOOL_META[t];
-            return `<button class="action-chip" onclick="openAdminToolDirect('${t}')" style="white-space:nowrap;">${meta.icon} ${meta.label}</button>`;
+            return `<button class="recent-chip" onclick="openAdminToolDirect('${t}')">${meta.icon} ${meta.label}</button>`;
         }).join('');
     }
 
@@ -3504,6 +3504,87 @@ try {
     /* ============================================================
        HOME V2 — 클로드 디자인 개선안 훅
        ============================================================ */
+    /* 즐겨찾는 도구 — 별 토글로 홈을 개인화 (localStorage 저장) */
+    const ALL_TOOLS = [
+        { id: 'prompter', icon: '🪄', name: '비밀 프롬프트', desc: '사례기록·보고서 AI 주문', tint: '#eef2ff', act: () => document.getElementById('open-ai-prompter').click() },
+        { id: 'admin', icon: '💸', name: '행정/회계 마스터', desc: '12가지 계산 1초 컷', tint: '#ecfdf5', act: () => document.getElementById('open-admin-calc').click() },
+        { id: 'voca', icon: '📖', name: '생존 단어장', desc: '초보 복지사 용어 사전', tint: '#fffbeb', act: () => document.getElementById('open-voca-dict').click() },
+        { id: 'eligibility', icon: '💰', name: '수급판정 계산', desc: '기초수급·차상위 기준', tint: '#fef2f2', act: () => document.getElementById('calc-eligibility').click() },
+        { id: 'dashboard', icon: '📊', name: '핵심 지표', desc: '중위소득·장기요양 수가', tint: '#f1f5f9', act: () => document.getElementById('open-dashboard').click() },
+        { id: 'newsletter', icon: '💌', name: '비밀 편지', desc: '사복천재의 뉴스레터', tint: '#f5f3ff', act: () => document.getElementById('open-newsletter-read').click() },
+        { id: 'support', icon: '🔍', name: '지원정보 찾기', desc: '맞춤형 복지서비스 검색', tint: '#eff6ff', act: () => window.open('https://bok-jumoney.vercel.app', '_blank') },
+        { id: 'vat', icon: '🧾', name: '부가세 계산기', desc: '공급가액·부가세 역산', tint: '#ecfeff', act: () => window.open('/tools/vat.html', '_blank') },
+        { id: 'lecture', icon: '👛', name: '강사료 계산기', desc: '3.3%·8.8% 실수령액', tint: '#fdf4ff', act: () => window.open('/tools/lecture-fee.html', '_blank') },
+        { id: 'ltc', icon: '🏥', name: '장기요양 한도', desc: '2026 등급별 한도·수가', tint: '#fff7ed', act: () => window.open('/tools/ltc-limit.html', '_blank') },
+        { id: 'request', icon: '🙋', name: '요청하기', desc: '필요한 프롬프트·용어 요청', tint: '#fefce8', act: () => document.getElementById('open-request-modal').click() },
+    ];
+    const FAV_KEY = 'sabok_fav_tools';
+    const DEFAULT_FAVS = ['prompter', 'admin', 'voca', 'eligibility', 'dashboard', 'support'];
+
+    function getFavs() {
+        try {
+            const raw = localStorage.getItem(FAV_KEY);
+            if (raw === null) return DEFAULT_FAVS.slice();
+            const arr = JSON.parse(raw);
+            return Array.isArray(arr) ? arr.filter(id => ALL_TOOLS.some(t => t.id === id)) : DEFAULT_FAVS.slice();
+        } catch (e) { return DEFAULT_FAVS.slice(); }
+    }
+    function setFavs(list) {
+        try { localStorage.setItem(FAV_KEY, JSON.stringify(list)); } catch (e) { /* noop */ }
+    }
+    window.toolAct = function (id) {
+        const t = ALL_TOOLS.find(x => x.id === id);
+        if (t) t.act();
+    };
+    window.toggleFav = function (id, ev) {
+        if (ev) ev.stopPropagation();
+        let favs = getFavs();
+        favs = favs.includes(id) ? favs.filter(x => x !== id) : favs.concat(id);
+        setFavs(favs);
+        renderFavGrid();
+        renderAllToolsList();
+    };
+    function renderFavGrid() {
+        const grid = document.getElementById('fav-grid');
+        if (!grid) return;
+        const favs = getFavs();
+        const tools = ALL_TOOLS.filter(t => favs.includes(t.id));
+        if (tools.length === 0) {
+            grid.innerHTML = `<div class="fav-empty">아직 즐겨찾는 도구가 없어요.<br>‘전체 도구 →’에서 ⭐를 눌러 담아보세요.</div>`;
+            return;
+        }
+        grid.innerHTML = tools.map(t => `
+            <div class="fav-card" onclick="toolAct('${t.id}')">
+                <button class="fav-star" title="즐겨찾기 해제" onclick="toggleFav('${t.id}', event)">⭐</button>
+                <div class="fav-ico" style="background:${t.tint};">${t.icon}</div>
+                <div class="fav-name">${t.name}</div>
+                <div class="fav-desc">${t.desc}</div>
+            </div>`).join('');
+    }
+    function renderAllToolsList() {
+        const list = document.getElementById('all-tools-list');
+        if (!list) return;
+        const favs = getFavs();
+        list.innerHTML = ALL_TOOLS.map(t => {
+            const on = favs.includes(t.id);
+            return `<button class="all-tool-row" onclick="toolAct('${t.id}'); closeModal();">
+                <span class="at-ico" style="background:${t.tint};">${t.icon}</span>
+                <span style="flex:1; min-width:0;">
+                    <span class="at-name" style="display:block;">${t.name}</span>
+                    <span class="at-desc" style="display:block;">${t.desc}</span>
+                </span>
+                <span class="at-star ${on ? '' : 'off'}" role="button" title="즐겨찾기 토글" onclick="toggleFav('${t.id}', event)">⭐</span>
+            </button>`;
+        }).join('');
+    }
+    window.openAllToolsModal = function () {
+        openModal('🛠️ 전체 도구', `
+            <p style="margin:0 0 14px; font-size:0.82rem; color:var(--text-5);">⭐를 눌러 홈 즐겨찾기에 담거나 뺄 수 있어요. 도구 이름을 누르면 바로 열려요.</p>
+            <div class="all-tools-list" id="all-tools-list"></div>
+        `, 'alltools');
+        setTimeout(renderAllToolsList, 0);
+    };
+
     // 히어로 검색: 단어장 모달을 열고 검색어를 그대로 넘겨서 바로 필터링
     window.homeSearch = function (ev) {
         if (ev) ev.preventDefault();
@@ -6103,6 +6184,7 @@ try {
         initHeaderButtons();
         initNewsletterReader();
         renderRecentTools();
+        renderFavGrid();
         initHomeGreeting();
         initHomeDailyWord();
         loadHomeQnaPreview();
@@ -6114,6 +6196,7 @@ try {
         window._modalRegistry = {
             'newsletter':   () => window.openNewsletterSubModal && window.openNewsletterSubModal(),
             'request':      () => { const b = document.getElementById('open-request-modal'); if (b) b.click(); },
+            'alltools':     () => window.openAllToolsModal && window.openAllToolsModal(),
             'eligibility':  () => { const b = document.getElementById('calc-eligibility'); if (b) b.click(); },
             'ltc':          () => { const b = document.getElementById('open-dashboard'); if (b) b.click(); },
             'prompt':       () => { const b = document.getElementById('open-ai-prompter'); if (b) b.click(); },

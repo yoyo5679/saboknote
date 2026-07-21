@@ -107,18 +107,19 @@
 
     <div id="app">
 
-        <!-- ===== HEADER ===== -->
+        <!-- ===== HEADER (클로드 디자인 개선안) ===== -->
         <header class="app-header">
             <div class="header-inner">
                 <div class="header-logo" id="header-logo"
-                    style="cursor:pointer; display:flex; align-items:center; gap:6px; flex: 1; justify-content: center;"
+                    style="cursor:pointer; display:flex; align-items:center; gap:8px;"
                     onclick="document.getElementById('nav-home').click()">
-                    <span class="logo-icon">📔</span>
-                    <span class="logo-text">사회복지사 비밀노트</span>
+                    <span class="logo-badge">🌿</span>
+                    <span class="logo-text">사복노트</span>
                 </div>
-                <div class="header-icons" style="position: absolute; right: 18px;">
+                <div class="header-icons" style="display:flex; align-items:center; gap:6px;">
                     <button class="icon-btn" aria-label="알림">🔔</button>
                     <button class="icon-btn" onclick="openModal('⚙️ 설정', '...') ">⚙️</button>
+                    <button class="header-shred-btn" onclick="switchView('shredder')">🗑️ 감정 파쇄</button>
                 </div>
             </div>
         </header>
@@ -142,19 +143,13 @@
                     </div>
                 </div>
 
-                <!-- ②-1 최근 사용 도구 (재방문자용, 사용 이력 없으면 숨김) -->
-                <div id="recent-tools-row"
-                    style="display:none; align-items:center; gap:8px; padding:14px 13px 0; overflow-x:auto; -webkit-overflow-scrolling:touch;">
-                    <span
-                        style="font-size:0.72rem; font-weight:800; color:var(--text-6); white-space:nowrap; flex-shrink:0;">🕐
-                        최근 사용</span>
-                    <div id="recent-tools-chips" style="display:flex; gap:8px;"></div>
-                </div>
-
-                <!-- ② 비밀 프롬프트 바로가기 칩 -->
+                <!-- ② 비밀 프롬프트 -->
                 <section class="sec">
                     <div class="sec-head">
-                        <span class="sec-title">🪄 비밀 프롬프트</span>
+                        <div class="sec-head-l">
+                            <span class="sec-title">🪄 비밀 프롬프트</span>
+                            <span class="sec-sub">카테고리를 눌러 바로 열기</span>
+                        </div>
                         <button class="sec-link" onclick="homeOpenPrompt()">전체 보기 →</button>
                     </div>
                     <div class="chip-row">
@@ -164,52 +159,30 @@
                     </div>
                 </section>
 
-                <!-- ③ 자주 쓰는 도구 (카드 그리드) -->
-                <section class="sec">
+                <!-- ③ 최근 사용 (이력 있을 때만 표시) -->
+                <section class="sec" id="recent-sec" style="display:none;">
                     <div class="sec-head">
-                        <span class="sec-title">⭐ 자주 쓰는 도구</span>
-                    </div>
-                    <div class="fav-grid">
-                        <div class="fav-card" id="open-ai-prompter">
-                            <div class="fav-ico" style="background:#eef2ff;">🪄</div>
-                            <div class="fav-name">비밀 프롬프트</div>
-                            <div class="fav-desc">사례기록·보고서 AI 주문</div>
-                        </div>
-                        <div class="fav-card" id="open-admin-calc">
-                            <div class="fav-ico" style="background:#ecfdf5;">💸</div>
-                            <div class="fav-name">행정/회계 마스터</div>
-                            <div class="fav-desc">12가지 계산 1초 컷</div>
-                        </div>
-                        <div class="fav-card" id="open-voca-dict">
-                            <div class="fav-ico" style="background:#fffbeb;">📖</div>
-                            <div class="fav-name">생존 단어장</div>
-                            <div class="fav-desc">초보 복지사 용어 사전</div>
-                        </div>
-                        <div class="fav-card" id="calc-eligibility">
-                            <div class="fav-ico" style="background:#fef2f2;">💰</div>
-                            <div class="fav-name">수급판정 계산</div>
-                            <div class="fav-desc">기초수급·차상위 기준</div>
-                        </div>
-                        <div class="fav-card" id="open-dashboard">
-                            <div class="fav-ico" style="background:#f1f5f9;">📊</div>
-                            <div class="fav-name">핵심 지표</div>
-                            <div class="fav-desc">중위소득·장기요양 수가</div>
-                        </div>
-                        <a href="https://bok-jumoney.vercel.app" target="_blank" class="fav-card"
-                            style="text-decoration:none;">
-                            <div class="fav-ico" style="background:#eff6ff;">🔍</div>
-                            <div class="fav-name">지원정보 찾기</div>
-                            <div class="fav-desc">맞춤형 복지서비스 검색</div>
-                        </a>
-                        <div class="fav-card" id="open-newsletter-read">
-                            <div class="fav-ico" style="background:#f5f3ff;">💌</div>
-                            <div class="fav-name">비밀 편지</div>
-                            <div class="fav-desc">사복천재의 뉴스레터</div>
+                        <div class="sec-head-l">
+                            <span class="sec-title">🕐 최근 사용</span>
+                            <span class="sec-sub">이어서 바로 시작하세요</span>
                         </div>
                     </div>
+                    <div class="chip-row" id="recent-tools-chips"></div>
                 </section>
 
-                <!-- ④ 도와줘요 미리보기 + 오늘의 생존단어 + 지표 -->
+                <!-- ④ 즐겨찾는 도구 (별 토글로 나만의 홈 꾸미기) -->
+                <section class="sec">
+                    <div class="sec-head">
+                        <div class="sec-head-l">
+                            <span class="sec-title">⭐ 즐겨찾는 도구</span>
+                            <span class="sec-sub">별을 눌러 나만의 홈을 꾸며요</span>
+                        </div>
+                        <button class="sec-link" onclick="openAllToolsModal()">전체 도구 →</button>
+                    </div>
+                    <div class="fav-grid" id="fav-grid"><!-- JS 렌더 --></div>
+                </section>
+
+                <!-- ⑤ 도와줘요 Q&A + 오늘의 생존단어 + 지표 -->
                 <section class="sec">
                     <div class="home-card" id="home-qa-card" style="display:none;">
                         <div class="home-card-head">
@@ -239,7 +212,7 @@
                     </div>
                 </section>
 
-                <!-- ④-1 사복놀이터 배너 -->
+                <!-- ⑥ 사복놀이터 배너 -->
                 <section class="sec" style="padding-bottom: 0;">
                     <button class="playground-banner" onclick="switchView('playground')">
                         <span style="font-size:1.7rem;">🎢</span>
@@ -251,23 +224,8 @@
                     </button>
                 </section>
 
-                <!-- ⑤ 무엇이든 물어보살 (사용자 요청) -->
-                <section class="sec" style="padding-bottom: 0;">
-                    <div class="svc-card" id="open-request-modal"
-                        style="background:linear-gradient(135deg,#fef3c7 0%,#fde68a 100%); border:1.5px solid #fcd34d; grid-column: span 2; display:flex; flex-direction:row; align-items:center; justify-content:space-between; padding: 20px;">
-                        <div>
-                            <div class="svc-tag"
-                                style="background:#f59e0b;color:#ffffff; display:inline-block; margin-bottom:8px;">요청하기
-                            </div>
-                            <div class="svc-title" style="font-size:1.1rem; margin-bottom:4px;">"사복천재님, 이것 좀 만들어주세요!"
-                            </div>
-                            <div class="svc-desc" style="font-size:0.85rem; color:#b45309;">필요한 프롬프트나 생존단어가 있다면 쓱-
-                                남겨주세요.
-                            </div>
-                        </div>
-                        <div style="font-size:2.5rem; animation: bounce 2s infinite">🪄</div>
-                    </div>
-                </section>
+                <!-- 숨김: 요청하기 진입점 (전체 도구 목록에서 노출) -->
+                <div id="open-request-modal" style="display:none;"></div>
 
                 <!-- PWA 홍보 배너 (하단 배치 - 한 줄 버전) -->
                 <section id="pwa-promo-banner" class="sec" style="padding-bottom: 0; display: none;">
@@ -1375,7 +1333,7 @@
 
     </div><!-- /#app -->
 
-    <script src="index.js?v=20" charset="utf-8"></script>
+    <script src="index.js?v=21" charset="utf-8"></script>
     <script>
         // PWA Service Worker Registration
         if ('serviceWorker' in navigator) {
