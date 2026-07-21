@@ -2036,3 +2036,71 @@ html.dark-mode .request-card-arrow { color: var(--teal-300); }
   /* 데스크톱에서 홈 즐겨찾기 카드를 3열로 (넓은 폭 활용) */
   .fav-grid { grid-template-columns: repeat(3, 1fr); }
 }
+
+/* ============================================
+   비밀 프롬프트 피처 배너 (핵심 기능 부각)
+   ============================================ */
+.prompt-feature {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  text-align: left;
+  border: none;
+  border-radius: var(--radius-lg);
+  padding: 18px 20px;
+  cursor: pointer;
+  font-family: inherit;
+  color: #fff;
+  background: linear-gradient(120deg, #4338ca 0%, #6366f1 55%, #818cf8 100%);
+  box-shadow: 0 8px 24px rgba(79, 70, 229, 0.3);
+  transition: transform 0.12s, box-shadow 0.2s;
+}
+.prompt-feature:active { transform: scale(0.99); }
+.prompt-feature-glow {
+  position: absolute;
+  right: -40px;
+  top: -50px;
+  width: 170px;
+  height: 170px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.13);
+  pointer-events: none;
+}
+.prompt-feature-emoji {
+  flex: none;
+  width: 54px;
+  height: 54px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.7rem;
+}
+.prompt-feature-body { position: relative; min-width: 0; }
+.prompt-feature-kicker {
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.72);
+  margin-bottom: 3px;
+}
+.prompt-feature-title { font-size: 1.08rem; font-weight: 900; margin-bottom: 4px; letter-spacing: -0.01em; }
+.prompt-feature-desc {
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.45;
+  margin-bottom: 10px;
+}
+.prompt-feature-cta {
+  display: inline-block;
+  background: #fff;
+  color: #4338ca;
+  font-size: 0.78rem;
+  font-weight: 800;
+  padding: 7px 14px;
+  border-radius: 999px;
+}

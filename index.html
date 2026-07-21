@@ -177,16 +177,20 @@
                     </div>
                 </div>
 
-                <!-- ② 비밀 프롬프트 -->
+                <!-- ② 비밀 프롬프트 (핵심 기능 — 전용 배너로 부각) -->
                 <section class="sec">
-                    <div class="sec-head">
-                        <div class="sec-head-l">
-                            <span class="sec-title">🪄 비밀 프롬프트</span>
-                            <span class="sec-sub">카테고리를 눌러 바로 열기</span>
+                    <button class="prompt-feature" onclick="homeOpenPrompt()">
+                        <div class="prompt-feature-glow"></div>
+                        <div class="prompt-feature-emoji">🪄</div>
+                        <div class="prompt-feature-body">
+                            <div class="prompt-feature-kicker">사복노트 핵심 기능</div>
+                            <div class="prompt-feature-title">사복천재의 비밀 프롬프트</div>
+                            <div class="prompt-feature-desc">복사해서 ChatGPT·Claude에 붙이면 끝! 사례기록·보고서·사업계획서가 1분 컷 ✨
+                            </div>
+                            <span class="prompt-feature-cta">프롬프트 보러가기 →</span>
                         </div>
-                        <button class="sec-link" onclick="homeOpenPrompt()">전체 보기 →</button>
-                    </div>
-                    <div class="chip-row chip-row-3">
+                    </button>
+                    <div class="chip-row chip-row-3" style="margin-top:10px;">
                         <button class="prompt-chip" onclick="homeOpenPrompt('counsel')">📋 사례관리·상담</button>
                         <button class="prompt-chip" onclick="homeOpenPrompt('admin')">📈 사업기획·행정</button>
                         <button class="prompt-chip" onclick="homeOpenPrompt('marketing')">📣 홍보·마케팅</button>
@@ -1396,7 +1400,7 @@
 
     </div><!-- /#app -->
 
-    <script src="index.js?v=27" charset="utf-8"></script>
+    <script src="index.js?v=28" charset="utf-8"></script>
     <script>
         // PWA Service Worker Registration
         if ('serviceWorker' in navigator) {
