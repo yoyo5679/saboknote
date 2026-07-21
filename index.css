@@ -1890,3 +1890,42 @@ html.dark-mode .logo-badge { background: rgba(59, 130, 246, 0.22); }
   font-size: 1rem; cursor: pointer; padding: 6px; line-height: 1; flex: none;
 }
 .all-tool-row .at-star.off { filter: grayscale(1); opacity: 0.35; }
+
+/* 무엇이든 물어보살 — 기능·프롬프트 요청 카드 (클로드 디자인 톤) */
+.request-card {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  background: var(--teal-100);
+  border: 1px solid var(--teal-300);
+  border-radius: var(--radius-lg);
+  padding: 16px 18px;
+  cursor: pointer;
+  transition: box-shadow 0.15s, transform 0.1s;
+}
+.request-card:active { transform: scale(0.98); }
+.request-card-icon {
+  width: 44px;
+  height: 44px;
+  flex: none;
+  border-radius: 999px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+}
+.request-card-title {
+  font-weight: 800;
+  font-size: 0.92rem;
+  color: var(--teal-800);
+  margin-bottom: 2px;
+  line-height: 1.35;
+}
+.request-card-desc { font-size: 0.76rem; color: var(--teal-700); line-height: 1.4; }
+.request-card-arrow { font-size: 1rem; color: var(--teal-700); flex: none; }
+html.dark-mode .request-card { background: rgba(12, 114, 108, 0.16); border-color: rgba(143, 221, 214, 0.3); }
+html.dark-mode .request-card-icon { background: var(--surface-3); }
+html.dark-mode .request-card-title,
+html.dark-mode .request-card-desc,
+html.dark-mode .request-card-arrow { color: var(--teal-300); }
