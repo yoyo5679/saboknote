@@ -182,6 +182,17 @@
                     <div class="fav-grid" id="fav-grid"><!-- JS 렌더 --></div>
                 </section>
 
+                <!-- 숨김 트리거: 각 도구 모달의 실제 진입 요소.
+                     init 함수들이 이 id에 클릭 핸들러를 바인딩하고, 즐겨찾기 카드·검색·지표 등에서 .click()로 호출한다. -->
+                <div id="tool-triggers" style="display:none;">
+                    <div id="open-ai-prompter"></div>
+                    <div id="open-admin-calc"></div>
+                    <div id="open-voca-dict"></div>
+                    <div id="calc-eligibility"></div>
+                    <div id="open-dashboard"></div>
+                    <div id="open-newsletter-read"></div>
+                </div>
+
                 <!-- ⑤ 도와줘요 Q&A + 오늘의 생존단어 + 지표 -->
                 <section class="sec">
                     <div class="home-card" id="home-qa-card" style="display:none;">
@@ -1351,7 +1362,7 @@
 
     </div><!-- /#app -->
 
-    <script src="index.js?v=22" charset="utf-8"></script>
+    <script src="index.js?v=23" charset="utf-8"></script>
     <script>
         // PWA Service Worker Registration
         if ('serviceWorker' in navigator) {
