@@ -983,7 +983,7 @@ try {
     }
     syncSabokAccount();
 
-    /* --- User Request Modal (무엇이든 물어보살) --- */
+    /* --- User Request Modal (무엇이든 요청해보살) --- */
     function initRequestModal() {
         const btn = document.getElementById('open-request-modal');
         if (btn) {
@@ -991,7 +991,7 @@ try {
                 const content = `
                 <div style="text-align:center; padding: 10px 0;">
                     <div style="font-size:3rem; margin-bottom:12px; animation: float 3s ease-in-out infinite">🪄</div>
-                    <h3 style="font-size:1.3rem; color:var(--text-dark); margin-bottom:8px; font-weight:900">무엇이든 물어보살</h3>
+                    <h3 style="font-size:1.3rem; color:var(--text-dark); margin-bottom:8px; font-weight:900">무엇이든 요청해보살</h3>
                     <p style="font-size:0.9rem; color:var(--text-5); margin-bottom:24px; line-height:1.5;">필요한 프롬프트나 헷갈리는 사회복지 용어가 있나요?<br>사복천재에게 남겨주시면 다음 업데이트 때 쓱- 추가해 드릴게요!</p>
                     
                     <div style="text-align:left; margin-bottom:20px;">
@@ -1009,7 +1009,7 @@ try {
                         <textarea id="request-content" class="calc-input" placeholder="예: 사례관리 기록할 때 쓸 수 있는 프롬프트 좀 만들어주세요!&#10;예: '결연후원' 정확한 행정 처리 뜻이 뭔가요?" style="height:120px; font-size:0.95rem; padding:14px; border:1px solid var(--border-strong); border-radius:10px; resize:none;"></textarea>
                     </div>
 
-                    <button class="btn-primary" style="width:100%; background:linear-gradient(135deg, #f59e0b 0%, #d97706 100%); padding:16px; font-size:1.1rem; border-radius:12px; box-shadow:0 4px 14px rgba(245,158,11,0.3); border:none;" onclick="submitRequest()">램프 문지르기 (요청 전송)</button>
+                    <button class="btn-primary" style="width:100%; background:linear-gradient(135deg, #f59e0b 0%, #d97706 100%); padding:16px; font-size:1.1rem; border-radius:12px; box-shadow:0 4px 14px rgba(245,158,11,0.3); border:none;" onclick="submitRequest()">🪔 램프 문지르기 (요청 전송)</button>
                 </div>
             `;
                 openModal('사복천재 소환하기', content, 'request');
@@ -1122,7 +1122,7 @@ try {
             }
         } catch (err) {
             console.error('Request submit error:', err);
-            if (btn) { btn.innerHTML = '램프 문지르기 (요청 전송)'; btn.disabled = false; btn.style.opacity = '1'; }
+            if (btn) { btn.innerHTML = '🪔 램프 문지르기 (요청 전송)'; btn.disabled = false; btn.style.opacity = '1'; }
             alert('전송 중 오류가 발생했어요. 잠시 후 다시 시도해주세요.');
         }
     };
