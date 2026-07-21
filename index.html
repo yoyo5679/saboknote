@@ -126,15 +126,20 @@
         <main class="app-main">
 
             <div id="view-home" class="view-content active">
-                <!-- ① 히어로 배너 (사진 느낌의 풀블리드) -->
-                <div class="hero-banner">
-                    <div class="hero-overlay"></div>
-                    <div class="hero-content">
-                        <div class="hero-eyebrow-sm">✨ 사회복지사가 행복해야 현장이 행복합니다!</div>
-                        <div class="hero-title">AI 프롬프트로 서류 뚝딱,<br><strong>행정/회계 계산은 1초 컷!</strong></div>
-                        <div class="hero-pwa-badge" onclick="showPWAInstallGuide()">1초 만에 바탕화면에 꺼내기 ✨</div>
+                <!-- ① 히어로 (클로드 디자인 개선안: 인사 + 검색) -->
+                <div class="hero-v2">
+                    <div class="hero-v2-circle"></div>
+                    <div class="hero-v2-inner">
+                        <div class="hero-v2-eyebrow">✨ 사회복지사가 행복해야 현장이 행복합니다</div>
+                        <h2 class="hero-v2-title">안녕하세요, <span id="home-nick">사복인</span>님 🌿</h2>
+                        <p class="hero-v2-sub">AI 프롬프트로 서류 뚝딱, 행정/회계 계산은 1초 컷!</p>
+                        <form class="hero-v2-search" onsubmit="return homeSearch(event)">
+                            <input id="home-search-input" type="search" placeholder="🔍 복지 용어 검색 (예: 품의서, 수급판정)"
+                                autocomplete="off">
+                            <button type="submit">검색</button>
+                        </form>
+                        <div class="hero-v2-badge" onclick="showPWAInstallGuide()">📱 1초 만에 바탕화면에 꺼내기</div>
                     </div>
-                    <div class="hero-illustration">📔</div>
                 </div>
 
                 <!-- ②-1 최근 사용 도구 (재방문자용, 사용 이력 없으면 숨김) -->
@@ -146,147 +151,104 @@
                     <div id="recent-tools-chips" style="display:flex; gap:8px;"></div>
                 </div>
 
-                <!-- ③ 자주 쓰는 도구 -->
+                <!-- ② 비밀 프롬프트 바로가기 칩 -->
                 <section class="sec">
                     <div class="sec-head">
-                        <span class="sec-title">자주 쓰는 도구</span>
+                        <span class="sec-title">🪄 비밀 프롬프트</span>
+                        <button class="sec-link" onclick="homeOpenPrompt()">전체 보기 →</button>
                     </div>
-                    <div class="icon-row">
+                    <div class="chip-row">
+                        <button class="prompt-chip" onclick="homeOpenPrompt('counsel')">📋 사례관리·상담</button>
+                        <button class="prompt-chip" onclick="homeOpenPrompt('admin')">📈 사업기획·행정</button>
+                        <button class="prompt-chip" onclick="homeOpenPrompt('marketing')">📣 홍보·마케팅</button>
+                    </div>
+                </section>
 
-                        <!-- 1. 사복천재 비밀 프롬프트 -->
-                        <div class="icon-item" id="open-ai-prompter">
-                            <div class="icon-bubble" style="background:linear-gradient(135deg,#6366f1,#4338ca);">
-                                <span>🪄</span>
-                            </div>
-                            <div class="icon-label">비밀<br>프롬프트</div>
+                <!-- ③ 자주 쓰는 도구 (카드 그리드) -->
+                <section class="sec">
+                    <div class="sec-head">
+                        <span class="sec-title">⭐ 자주 쓰는 도구</span>
+                    </div>
+                    <div class="fav-grid">
+                        <div class="fav-card" id="open-ai-prompter">
+                            <div class="fav-ico" style="background:#eef2ff;">🪄</div>
+                            <div class="fav-name">비밀 프롬프트</div>
+                            <div class="fav-desc">사례기록·보고서 AI 주문</div>
                         </div>
-
-                        <!-- 2. 행정/회계 마스터 -->
-                        <div class="icon-item" id="open-admin-calc">
-                            <div class="icon-bubble" style="background:linear-gradient(135deg,#10b981,#059669);">
-                                <span>💸</span>
-                            </div>
-                            <div class="icon-label">행정/회계<br>마스터</div>
+                        <div class="fav-card" id="open-admin-calc">
+                            <div class="fav-ico" style="background:#ecfdf5;">💸</div>
+                            <div class="fav-name">행정/회계 마스터</div>
+                            <div class="fav-desc">12가지 계산 1초 컷</div>
                         </div>
-
-                        <!-- 3. 지원정보 찾기 (외부링크) -->
-                        <a href="https://bok-jumoney.vercel.app" target="_blank" class="icon-item"
+                        <div class="fav-card" id="open-voca-dict">
+                            <div class="fav-ico" style="background:#fffbeb;">📖</div>
+                            <div class="fav-name">생존 단어장</div>
+                            <div class="fav-desc">초보 복지사 용어 사전</div>
+                        </div>
+                        <div class="fav-card" id="calc-eligibility">
+                            <div class="fav-ico" style="background:#fef2f2;">💰</div>
+                            <div class="fav-name">수급판정 계산</div>
+                            <div class="fav-desc">기초수급·차상위 기준</div>
+                        </div>
+                        <div class="fav-card" id="open-dashboard">
+                            <div class="fav-ico" style="background:#f1f5f9;">📊</div>
+                            <div class="fav-name">핵심 지표</div>
+                            <div class="fav-desc">중위소득·장기요양 수가</div>
+                        </div>
+                        <a href="https://bok-jumoney.vercel.app" target="_blank" class="fav-card"
                             style="text-decoration:none;">
-                            <div class="icon-bubble" style="background:linear-gradient(135deg,#3b82f6,#2563eb);">
-                                <span>🔍</span>
-                            </div>
-                            <div class="icon-label">지원정보<br>찾기</div>
+                            <div class="fav-ico" style="background:#eff6ff;">🔍</div>
+                            <div class="fav-name">지원정보 찾기</div>
+                            <div class="fav-desc">맞춤형 복지서비스 검색</div>
                         </a>
-
-                        <!-- 4. 복지사 생존 단어장 -->
-                        <div class="icon-item" id="open-voca-dict">
-                            <div class="icon-bubble" style="background:linear-gradient(135deg,#f59e0b,#d97706);">
-                                <span>📖</span>
-                            </div>
-                            <div class="icon-label">초보복지사<br>생존단어장</div>
+                        <div class="fav-card" id="open-newsletter-read">
+                            <div class="fav-ico" style="background:#f5f3ff;">💌</div>
+                            <div class="fav-name">비밀 편지</div>
+                            <div class="fav-desc">사복천재의 뉴스레터</div>
                         </div>
-
-                        <!-- 5. 수급판정 계산 -->
-                        <div class="icon-item" id="calc-eligibility">
-                            <div class="icon-bubble" style="background:linear-gradient(135deg,#ef4444,#dc2626);">
-                                <span>💰</span>
-                            </div>
-                            <div class="icon-label">수급판정<br>계산</div>
-                        </div>
-
-                        <!-- 6. 핵심 지표 -->
-                        <div class="icon-item" id="open-dashboard">
-                            <div class="icon-bubble" style="background:linear-gradient(135deg,#64748b,#475569);">
-                                <span>📊</span>
-                            </div>
-                            <div class="icon-label">핵심<br>지표</div>
-                        </div>
-
-                        <!-- 7. 비밀 편지 (뉴스레터 읽기) -->
-                        <div class="icon-item" id="open-newsletter-read">
-                            <div class="icon-bubble"
-                                style="background:linear-gradient(135deg,#8b5cf6,#6d28d9); box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);">
-                                <span>💌</span>
-                            </div>
-                            <div class="icon-label">비밀<br>편지</div>
-                        </div>
-
-                        <!-- 9. 뉴스레터 작성기 (마스터룸) - 기본적으로 숨김 처리 -->
-                        <!-- <div class="icon-item" id="open-newsletter" style="display: none;">
-                            <div class="icon-bubble"
-                                style="background:linear-gradient(135deg,#db2777,#be185d); box-shadow: 0 4px 12px rgba(219, 39, 119, 0.3);">
-                                <span>✍️</span>
-                            </div>
-                            <div class="icon-label">뉴스레터<br>작성기</div>
-                        </div> -->
-
                     </div>
                 </section>
 
-                <!-- ③-1 검색 + 액션 버튼 바 (코어 기능 아님 — 도구 아래로) -->
-                <div class="search-bar-wrap">
-                    <div class="search-bar" onclick="document.getElementById('open-voca-dict').click()">
-                        <span class="search-ico">🔍</span>
-                        <span class="search-hint">복지 용어 검색...</span>
-                    </div>
-                    <button class="action-chip" onclick="document.getElementById('open-dashboard').click()">📊
-                        지표</button>
-                    <button class="action-chip" onclick="document.getElementById('calc-eligibility').click()">💰
-                        수급</button>
-                </div>
-
-                <!-- ④ 주요 서비스 (이미지형 가로 배너 2열) -->
+                <!-- ④ 도와줘요 미리보기 + 오늘의 생존단어 + 지표 -->
                 <section class="sec">
-                    <div class="sec-head">
-                        <span class="sec-title">주요 서비스</span>
+                    <div class="home-card" id="home-qa-card" style="display:none;">
+                        <div class="home-card-head">
+                            <span>🆘 도와줘요 Q&A</span>
+                            <button class="sec-link" onclick="switchView('record')">더보기 →</button>
+                        </div>
+                        <div id="home-qa-list"></div>
                     </div>
 
-                    <!-- 상단: 사복천재의 비밀 프롬프트 (와이드, 핵심기능) -->
-                    <div class="svc-wide" id="open-ai-prompter-2">
-                        <div class="svc-wide-bg"
-                            style="background:linear-gradient(120deg,#4338ca 0%,#6366f1 60%,#818cf8 100%);"></div>
-                        <div class="svc-wide-content">
-                            <div class="svc-tag" style="background:rgba(255,255,255,0.25);color:#fff;">PROMPT</div>
-                            <div class="svc-wide-title">사복천재의 비밀 프롬프트</div>
-                            <div class="svc-wide-desc">사회복지 전문가 AI로 변신하는 마법의 주문</div>
-                        </div>
-                        <div class="svc-wide-emoji">🪄</div>
+                    <div class="home-word-card">
+                        <div class="home-word-label">오늘의 생존단어</div>
+                        <div class="home-word" id="home-word">사례회의</div>
+                        <div class="home-word-meaning" id="home-word-meaning"></div>
+                        <p class="home-word-desc" id="home-word-desc"></p>
+                        <button class="home-word-btn"
+                            onclick="document.getElementById('open-voca-dict').click()">📖 단어장 열기</button>
                     </div>
 
-                    <!-- 하단: 행정/회계 마스터 (핵심기능) + 지원정보 찾기 (외부링크) -->
-                    <div class="svc-row">
-
-                        <div class="svc-card" id="open-admin-calc-2"
-                            style="background:linear-gradient(135deg,#f0fdf4 0%,#dcfce7 100%); border:1.5px solid #bbf7d0; grid-column: span 2;">
-                            <div class="svc-tag" style="background:#bbf7d0;color:#15803d;">계산</div>
-                            <div class="svc-icon">💸</div>
-                            <div class="svc-title">행정/회계 마스터</div>
-                            <div class="svc-desc">부가세부터 급여정산까지, 12가지 필수계산 1초 컷! ⚡</div>
+                    <div class="home-metric-card">
+                        <span style="font-size:1.5rem;">📊</span>
+                        <div style="flex:1; min-width:0;">
+                            <div class="hm-k">2026 기준 중위소득 (1인)</div>
+                            <div class="hm-v">2,564,238원</div>
                         </div>
-
-                        <a href="https://bok-jumoney.vercel.app" target="_blank" class="svc-card"
-                            style="background:linear-gradient(135deg,#eff6ff 0%,#dbeafe 100%); border:1.5px solid #bfdbfe; text-decoration:none;">
-                            <div class="svc-tag" style="background:#bfdbfe;color:#1e40af;">외부링크</div>
-                            <div class="svc-icon">🔍</div>
-                            <div class="svc-title">지원정보<br>찾기</div>
-                            <div class="svc-desc">맞춤형 복지 서비스를 빠르게</div>
-                        </a>
-
+                        <button class="sec-link"
+                            onclick="document.getElementById('open-dashboard').click()">지표 보기</button>
                     </div>
                 </section>
 
-                <!-- ④-1 사복놀이터 (하단 탭에서 이동) -->
+                <!-- ④-1 사복놀이터 배너 -->
                 <section class="sec" style="padding-bottom: 0;">
-                    <div class="svc-card" onclick="switchView('playground')"
-                        style="background:linear-gradient(135deg,#f5f3ff 0%,#ede9fe 100%); border:1.5px solid #ddd6fe; grid-column: span 2; display:flex; flex-direction:row; align-items:center; justify-content:space-between; padding: 20px;">
-                        <div>
-                            <div class="svc-tag" style="background:#6c63ff;color:#ffffff; display:inline-block; margin-bottom:8px;">놀이터
-                            </div>
-                            <div class="svc-title" style="font-size:1.1rem; margin-bottom:4px;">나는 어떤 유형의 사회복지사?</div>
-                            <div class="svc-desc" style="font-size:0.85rem; color:#5b21b6;">심리테스트 · 공감 빙고 · 사다리타기 한 번에</div>
-                        </div>
-                        <div style="font-size:2.5rem;">🎢</div>
-                    </div>
+                    <button class="playground-banner" onclick="switchView('playground')">
+                        <span style="font-size:1.7rem;">🎢</span>
+                        <span style="flex:1; text-align:left;">
+                            <span class="pb-title">잠깐 쉬어갈까요? 사복놀이터</span>
+                            <span class="pb-desc">심리테스트 · 공감 빙고 · 점심 메뉴 추천</span>
+                        </span>
+                        <span style="font-size:1rem; color:var(--text-6);">→</span>
+                    </button>
                 </section>
 
                 <!-- ⑤ 무엇이든 물어보살 (사용자 요청) -->
@@ -1413,7 +1375,7 @@
 
     </div><!-- /#app -->
 
-    <script src="index.js?v=19" charset="utf-8"></script>
+    <script src="index.js?v=20" charset="utf-8"></script>
     <script>
         // PWA Service Worker Registration
         if ('serviceWorker' in navigator) {

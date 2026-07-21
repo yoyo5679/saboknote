@@ -3501,6 +3501,82 @@ try {
         if (typeof switchAdminTab === 'function') switchAdminTab(tabName);
     };
 
+    /* ============================================================
+       HOME V2 — 클로드 디자인 개선안 훅
+       ============================================================ */
+    // 히어로 검색: 단어장 모달을 열고 검색어를 그대로 넘겨서 바로 필터링
+    window.homeSearch = function (ev) {
+        if (ev) ev.preventDefault();
+        const input = document.getElementById('home-search-input');
+        const q = input ? input.value.trim() : '';
+        const b = document.getElementById('open-voca-dict');
+        if (b) b.click();
+        if (q) {
+            setTimeout(() => {
+                const si = document.getElementById('voca-search');
+                if (si) {
+                    si.value = q;
+                    if (window.filterVocaDict) window.filterVocaDict();
+                }
+            }, 300);
+        }
+        return false;
+    };
+
+    // 프롬프트 칩: 모달을 열고 해당 카테고리 탭으로 바로 이동
+    window.homeOpenPrompt = function (tab) {
+        const b = document.getElementById('open-ai-prompter');
+        if (b) b.click();
+        if (tab) {
+            setTimeout(() => {
+                if (window.switchPrompterTab) window.switchPrompterTab(tab);
+            }, 250);
+        }
+    };
+
+    // 히어로 인사말에 익명 닉네임 반영
+    function initHomeGreeting() {
+        const el = document.getElementById('home-nick');
+        if (!el) return;
+        const name = localStorage.getItem('saboks_anonymous_name');
+        if (name) el.innerText = name;
+    }
+
+    // 오늘의 생존단어: 날짜 기준으로 단어장에서 하나 선정 (매일 자동 교체)
+    function initHomeDailyWord() {
+        const wordEl = document.getElementById('home-word');
+        if (!wordEl || typeof VOCABULARY_DATA === 'undefined' || !VOCABULARY_DATA.length) return;
+        const day = Math.floor(Date.now() / 86400000);
+        const item = VOCABULARY_DATA[day % VOCABULARY_DATA.length];
+        wordEl.innerText = item.icon + ' ' + item.word;
+        const meaningEl = document.getElementById('home-word-meaning');
+        if (meaningEl) meaningEl.innerText = item.meaning;
+        const descEl = document.getElementById('home-word-desc');
+        if (descEl) descEl.innerText = item.desc;
+    }
+
+    // 도와줘요 최근 질문 3개 미리보기 (없거나 실패하면 카드 자체를 숨김)
+    async function loadHomeQnaPreview() {
+        const card = document.getElementById('home-qa-card');
+        const list = document.getElementById('home-qa-list');
+        if (!card || !list) return;
+        if (!supabase) { card.style.display = 'none'; return; }
+        try {
+            const { data, error } = await withTimeout(
+                supabase.from('posts').select('title, category').order('created_at', { ascending: false }).limit(3)
+            );
+            if (error || !data || data.length === 0) { card.style.display = 'none'; return; }
+            list.innerHTML = data.map(p => `
+                <button class="home-qa-row" onclick="switchView('record')">
+                    <span class="home-qa-tag">${escapeHtml(p.category) || '일반'}</span>
+                    <span class="home-qa-title">${escapeHtml(p.title)}</span>
+                </button>`).join('');
+            card.style.display = 'block';
+        } catch (e) {
+            card.style.display = 'none';
+        }
+    }
+
     window.switchAdminTab = function (tabName, fromUserClick = true) {
         if (fromUserClick) recordToolUsage(tabName);
         const contentVat = document.getElementById('admin-content-vat');
@@ -6027,6 +6103,9 @@ try {
         initHeaderButtons();
         initNewsletterReader();
         renderRecentTools();
+        initHomeGreeting();
+        initHomeDailyWord();
+        loadHomeQnaPreview();
 
         // URL 해시로 초기 뷰 + 모달 결정 (공유 링크 지원)
         const validViews = ['home', 'record', 'community', 'mypage', 'shredder', 'playground', 'treasure'];
