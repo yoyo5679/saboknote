@@ -224,8 +224,17 @@
                     </button>
                 </section>
 
-                <!-- 숨김: 요청하기 진입점 (전체 도구 목록에서 노출) -->
-                <div id="open-request-modal" style="display:none;"></div>
+                <!-- ⑦ 무엇이든 물어보살 (기능·프롬프트 요청) -->
+                <section class="sec" style="padding-bottom: 0;">
+                    <div class="request-card" id="open-request-modal">
+                        <div class="request-card-icon">🙋</div>
+                        <div style="flex:1; min-width:0;">
+                            <div class="request-card-title">"사복천재님, 이것 좀 만들어주세요!"</div>
+                            <div class="request-card-desc">필요한 프롬프트나 헷갈리는 용어가 있다면 쓱- 남겨주세요.</div>
+                        </div>
+                        <span class="request-card-arrow">→</span>
+                    </div>
+                </section>
 
                 <!-- PWA 홍보 배너 (하단 배치 - 한 줄 버전) -->
                 <section id="pwa-promo-banner" class="sec" style="padding-bottom: 0; display: none;">
