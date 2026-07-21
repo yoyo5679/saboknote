@@ -1784,3 +1784,109 @@ select:focus {
 /* 다크모드 보정 */
 html.dark-mode .fav-ico { background: var(--surface-3) !important; }
 html.dark-mode .hero-v2 { box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45); }
+
+/* ============================================
+   HEADER V2 (클로드 디자인 개선안)
+   ============================================ */
+.logo-badge {
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  background: var(--color-accent-200, #d3e2fd);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+html.dark-mode .logo-badge { background: rgba(59, 130, 246, 0.22); }
+
+.header-shred-btn {
+  border: none;
+  border-radius: 999px;
+  background: var(--teal-700);
+  color: #fff;
+  font-family: inherit;
+  font-weight: 800;
+  font-size: 0.72rem;
+  padding: 7px 12px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.header-shred-btn:active { background: var(--teal-800); }
+.app-header .icon-btn { width: 32px; height: 32px; font-size: 17px; }
+
+/* 섹션 헤더 부제 */
+.sec-head-l { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; min-width: 0; }
+.sec-sub { font-size: 0.72rem; color: var(--text-5); }
+
+/* 즐겨찾기 별 토글 */
+.fav-card .fav-star {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background: none;
+  border: none;
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 5px;
+  line-height: 1;
+}
+.fav-card .fav-star.off { filter: grayscale(1); opacity: 0.35; }
+.fav-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 22px 16px;
+  font-size: 0.82rem;
+  color: var(--text-5);
+  background: var(--surface-2);
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-md);
+}
+
+/* 최근 사용 칩 */
+.recent-chip {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  color: var(--text-2);
+}
+.recent-chip .rc-when { color: var(--text-6); font-size: 0.68rem; font-weight: 600; }
+
+/* 전체 도구 모달 리스트 */
+.all-tools-list { display: flex; flex-direction: column; gap: 8px; }
+.all-tool-row {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 11px 12px;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+  width: 100%;
+  color: var(--text-2);
+}
+.all-tool-row .at-ico {
+  width: 36px; height: 36px; flex: none;
+  border-radius: 999px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.05rem;
+}
+.all-tool-row .at-name { font-weight: 800; font-size: 0.85rem; color: var(--text-1); }
+.all-tool-row .at-desc { font-size: 0.72rem; color: var(--text-5); }
+.all-tool-row .at-star {
+  margin-left: auto; background: none; border: none;
+  font-size: 1rem; cursor: pointer; padding: 6px; line-height: 1; flex: none;
+}
+.all-tool-row .at-star.off { filter: grayscale(1); opacity: 0.35; }

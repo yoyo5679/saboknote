@@ -107,18 +107,19 @@
 
     <div id="app">
 
-        <!-- ===== HEADER ===== -->
+        <!-- ===== HEADER (클로드 디자인 개선안) ===== -->
         <header class="app-header">
             <div class="header-inner">
                 <div class="header-logo" id="header-logo"
-                    style="cursor:pointer; display:flex; align-items:center; gap:6px; flex: 1; justify-content: center;"
+                    style="cursor:pointer; display:flex; align-items:center; gap:8px;"
                     onclick="document.getElementById('nav-home').click()">
-                    <span class="logo-icon">📔</span>
-                    <span class="logo-text">사회복지사 비밀노트</span>
+                    <span class="logo-badge">🌿</span>
+                    <span class="logo-text">사복노트</span>
                 </div>
-                <div class="header-icons" style="position: absolute; right: 18px;">
+                <div class="header-icons" style="display:flex; align-items:center; gap:6px;">
                     <button class="icon-btn" aria-label="알림">🔔</button>
                     <button class="icon-btn" onclick="openModal('⚙️ 설정', '...') ">⚙️</button>
+                    <button class="header-shred-btn" onclick="switchView('shredder')">🗑️ 감정 파쇄</button>
                 </div>
             </div>
         </header>
@@ -142,19 +143,13 @@
                     </div>
                 </div>
 
-                <!-- ②-1 최근 사용 도구 (재방문자용, 사용 이력 없으면 숨김) -->
-                <div id="recent-tools-row"
-                    style="display:none; align-items:center; gap:8px; padding:14px 13px 0; overflow-x:auto; -webkit-overflow-scrolling:touch;">
-                    <span
-                        style="font-size:0.72rem; font-weight:800; color:var(--text-6); white-space:nowrap; flex-shrink:0;">🕐
-                        최근 사용</span>
-                    <div id="recent-tools-chips" style="display:flex; gap:8px;"></div>
-                </div>
-
-                <!-- ② 비밀 프롬프트 바로가기 칩 -->
+                <!-- ② 비밀 프롬프트 -->
                 <section class="sec">
                     <div class="sec-head">
-                        <span class="sec-title">🪄 비밀 프롬프트</span>
+                        <div class="sec-head-l">
+                            <span class="sec-title">🪄 비밀 프롬프트</span>
+                            <span class="sec-sub">카테고리를 눌러 바로 열기</span>
+                        </div>
                         <button class="sec-link" onclick="homeOpenPrompt()">전체 보기 →</button>
                     </div>
                     <div class="chip-row">
@@ -164,52 +159,30 @@
                     </div>
                 </section>
 
-                <!-- ③ 자주 쓰는 도구 (카드 그리드) -->
-                <section class="sec">
+                <!-- ③ 최근 사용 (이력 있을 때만 표시) -->
+                <section class="sec" id="recent-sec" style="display:none;">
                     <div class="sec-head">
-                        <span class="sec-title">⭐ 자주 쓰는 도구</span>
-                    </div>
-                    <div class="fav-grid">
-                        <div class="fav-card" id="open-ai-prompter">
-                            <div class="fav-ico" style="background:#eef2ff;">🪄</div>
-                            <div class="fav-name">비밀 프롬프트</div>
-                            <div class="fav-desc">사례기록·보고서 AI 주문</div>
-                        </div>
-                        <div class="fav-card" id="open-admin-calc">
-                            <div class="fav-ico" style="background:#ecfdf5;">💸</div>
-                            <div class="fav-name">행정/회계 마스터</div>
-                            <div class="fav-desc">12가지 계산 1초 컷</div>
-                        </div>
-                        <div class="fav-card" id="open-voca-dict">
-                            <div class="fav-ico" style="background:#fffbeb;">📖</div>
-                            <div class="fav-name">생존 단어장</div>
-                            <div class="fav-desc">초보 복지사 용어 사전</div>
-                        </div>
-                        <div class="fav-card" id="calc-eligibility">
-                            <div class="fav-ico" style="background:#fef2f2;">💰</div>
-                            <div class="fav-name">수급판정 계산</div>
-                            <div class="fav-desc">기초수급·차상위 기준</div>
-                        </div>
-                        <div class="fav-card" id="open-dashboard">
-                            <div class="fav-ico" style="background:#f1f5f9;">📊</div>
-                            <div class="fav-name">핵심 지표</div>
-                            <div class="fav-desc">중위소득·장기요양 수가</div>
-                        </div>
-                        <a href="https://bok-jumoney.vercel.app" target="_blank" class="fav-card"
-                            style="text-decoration:none;">
-                            <div class="fav-ico" style="background:#eff6ff;">🔍</div>
-                            <div class="fav-name">지원정보 찾기</div>
-                            <div class="fav-desc">맞춤형 복지서비스 검색</div>
-                        </a>
-                        <div class="fav-card" id="open-newsletter-read">
-                            <div class="fav-ico" style="background:#f5f3ff;">💌</div>
-                            <div class="fav-name">비밀 편지</div>
-                            <div class="fav-desc">사복천재의 뉴스레터</div>
+                        <div class="sec-head-l">
+                            <span class="sec-title">🕐 최근 사용</span>
+                            <span class="sec-sub">이어서 바로 시작하세요</span>
                         </div>
                     </div>
+                    <div class="chip-row" id="recent-tools-chips"></div>
                 </section>
 
-                <!-- ④ 도와줘요 미리보기 + 오늘의 생존단어 + 지표 -->
+                <!-- ④ 즐겨찾는 도구 (별 토글로 나만의 홈 꾸미기) -->
+                <section class="sec">
+                    <div class="sec-head">
+                        <div class="sec-head-l">
+                            <span class="sec-title">⭐ 즐겨찾는 도구</span>
+                            <span class="sec-sub">별을 눌러 나만의 홈을 꾸며요</span>
+                        </div>
+                        <button class="sec-link" onclick="openAllToolsModal()">전체 도구 →</button>
+                    </div>
+                    <div class="fav-grid" id="fav-grid"><!-- JS 렌더 --></div>
+                </section>
+
+                <!-- ⑤ 도와줘요 Q&A + 오늘의 생존단어 + 지표 -->
                 <section class="sec">
                     <div class="home-card" id="home-qa-card" style="display:none;">
                         <div class="home-card-head">
@@ -239,7 +212,7 @@
                     </div>
                 </section>
 
-                <!-- ④-1 사복놀이터 배너 -->
+                <!-- ⑥ 사복놀이터 배너 -->
                 <section class="sec" style="padding-bottom: 0;">
                     <button class="playground-banner" onclick="switchView('playground')">
                         <span style="font-size:1.7rem;">🎢</span>
@@ -251,23 +224,8 @@
                     </button>
                 </section>
 
-                <!-- ⑤ 무엇이든 물어보살 (사용자 요청) -->
-                <section class="sec" style="padding-bottom: 0;">
-                    <div class="svc-card" id="open-request-modal"
-                        style="background:linear-gradient(135deg,#fef3c7 0%,#fde68a 100%); border:1.5px solid #fcd34d; grid-column: span 2; display:flex; flex-direction:row; align-items:center; justify-content:space-between; padding: 20px;">
-                        <div>
-                            <div class="svc-tag"
-                                style="background:#f59e0b;color:#ffffff; display:inline-block; margin-bottom:8px;">요청하기
-                            </div>
-                            <div class="svc-title" style="font-size:1.1rem; margin-bottom:4px;">"사복천재님, 이것 좀 만들어주세요!"
-                            </div>
-                            <div class="svc-desc" style="font-size:0.85rem; color:#b45309;">필요한 프롬프트나 생존단어가 있다면 쓱-
-                                남겨주세요.
-                            </div>
-                        </div>
-                        <div style="font-size:2.5rem; animation: bounce 2s infinite">🪄</div>
-                    </div>
-                </section>
+                <!-- 숨김: 요청하기 진입점 (전체 도구 목록에서 노출) -->
+                <div id="open-request-modal" style="display:none;"></div>
 
                 <!-- PWA 홍보 배너 (하단 배치 - 한 줄 버전) -->
                 <section id="pwa-promo-banner" class="sec" style="padding-bottom: 0; display: none;">
@@ -314,8 +272,10 @@
                         </button>
                     </div>
 
-                    <p style="font-size:0.85rem; color:var(--text-5); line-height:1.5; margin-bottom:24px;">실무하다 멘붕 온 순간? 혼자
-                        끙끙대지 말고 냅다 익명으로 털어놔요! 🦊<br>전국구 고인물 사복샘들이 영혼을 갈아 넣은 미친 꿀팁을 떠먹여 드립니다 ✨</p>
+                    <!-- 안내 배너 (클로드 디자인 개선안) -->
+                    <div style="background:var(--teal-100); border-radius:14px; padding:12px 16px; font-size:0.8rem; color:var(--teal-800); line-height:1.5; margin-bottom:20px;">
+                        🆘 실무하다 멘붕 온 순간, 혼자 끙끙대지 말고 익명으로 털어놔요! 전국구 사복샘들이 꿀팁을 떠먹여 드려요 ✨
+                    </div>
 
                     <!-- Dummy Q&A List -->
                     <div id="qa-list" style="display:flex; flex-direction:column; gap:16px;">
@@ -366,6 +326,11 @@
                             style="white-space:nowrap; flex-shrink:0; width:auto; padding:8px 14px; border-radius:20px; font-size:0.85rem; margin:0; box-shadow:0 4px 12px rgba(37,99,235,0.2);">
                             ✏️ 글쓰기
                         </button>
+                    </div>
+
+                    <!-- 안내 배너 (클로드 디자인 개선안) -->
+                    <div style="background:var(--teal-100); border-radius:14px; padding:12px 16px; font-size:0.8rem; color:var(--teal-800); line-height:1.5; margin-bottom:16px;">
+                        🌿 익명이지만 따뜻하게! 조언은 참고용이에요 — 최종 판단은 선생님의 멋진 감각을 믿어주세요.
                     </div>
 
                     <!-- 카테고리 탭 -->
@@ -430,13 +395,13 @@
                                 내 정보 👤</h2>
                         </div>
                         <div id="mypage-header-emoji"
-                            style="flex-shrink:0; width:52px; height:52px; background:linear-gradient(135deg,#6366f1,#8b5cf6); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.6rem; box-shadow:0 4px 12px rgba(99,102,241,0.3);">
+                            style="flex-shrink:0; width:52px; height:52px; background:var(--color-accent-600,#2563eb); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.6rem; box-shadow:0 4px 12px rgba(37,99,235,0.3);">
                             🦊</div>
                     </div>
 
                     <!-- 프로필 카드 -->
                     <div
-                        style="background:linear-gradient(135deg,#6366f1,#8b5cf6); border-radius:20px; padding:20px; color:#fff; margin-bottom:16px; display:flex; align-items:center; gap:16px;">
+                        style="background:var(--color-accent-600,#2563eb); border-radius:20px; padding:20px; color:#fff; margin-bottom:16px; display:flex; align-items:center; gap:16px;">
                         <div id="mypage-profile-emoji"
                             style="width:56px; height:56px; background:rgba(255,255,255,0.2); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.8rem; flex-shrink:0;">
                             🦊</div>
@@ -485,7 +450,7 @@
                                 <div
                                     style="width:100%; height:8px; background:var(--surface-3); border-radius:4px; overflow:hidden;">
                                     <div id="mypage-exp-bar"
-                                        style="height:100%; width:0%; background:linear-gradient(90deg, #6366f1, #8b5cf6); border-radius:4px; transition:width 0.5s ease;">
+                                        style="height:100%; width:0%; background:linear-gradient(90deg, var(--color-accent-500,#3b7bef), var(--color-accent-700,#1d4fc4)); border-radius:4px; transition:width 0.5s ease;">
                                     </div>
                                 </div>
                             </div>
@@ -1049,7 +1014,7 @@
                         <div id="shredder-strips"
                             style="display: none; gap: 4px; justify-content: center; margin: 16px 0;"></div>
                         <button id="comfort-btn" onclick="startComfort()"
-                            style="width: 100%; padding: 18px; background: linear-gradient(135deg, #16a34a, #15803d); color: white; border: none; border-radius: 16px; font-size: 1.1rem; font-weight: 800; cursor: pointer; margin-top: 16px; transition: transform 0.1s, box-shadow 0.2s; box-shadow: 0 4px 14px rgba(22,163,74,0.3);">💬
+                            style="width: 100%; padding: 18px; background: var(--teal-700); color: white; border: none; border-radius: 16px; font-size: 1.1rem; font-weight: 800; cursor: pointer; margin-top: 16px; transition: transform 0.1s, box-shadow 0.2s; box-shadow: 0 4px 14px rgba(12,114,108,0.3);">💬
                             선배에게 털어놓고 파쇄하기</button>
                         <button id="shredder-btn" onclick="doShred()"
                             style="width: 100%; padding: 13px; background: none; color: #b91c1c; border: 1.5px solid #fca5a5; border-radius: 14px; font-size: 0.95rem; font-weight: 700; cursor: pointer; margin-top: 10px;">🗑️
@@ -1127,11 +1092,13 @@
                 <div style="width:100%; max-width:480px; margin: 0 auto; padding: 20px;">
                     <!-- MENU STEP -->
                     <div id="pg-step-menu"
-                        style="display:block; text-align:center; animation:fadeUp 0.6s ease; padding-top: 32px; padding-bottom: 40px;">
-                        <div style="font-size:64px; margin-bottom:10px; animation:bounce 2s infinite;">🎪</div>
-                        <h2 style="font-size:26px; font-weight:900; color:var(--text-2); margin-bottom:6px;">사복놀이터</h2>
-                        <p style="color:var(--text-5); font-size:14px; margin-bottom:28px; line-height:1.6;">머리 아픈 서류 작업은 잠시
-                            안녕! 👋<br>동료들과 함께 재미있는 콘텐츠로 힐링해요 🎉</p>
+                        style="display:block; text-align:left; animation:fadeUp 0.6s ease; padding-top: 8px; padding-bottom: 40px;">
+                        <div
+                            style="background:var(--teal-700); border-radius:20px; padding:22px 24px; margin-bottom:24px; box-shadow:0 6px 20px rgba(12,114,108,0.25);">
+                            <h2 style="font-size:22px; font-weight:900; color:#fff; margin-bottom:4px;">사복놀이터 🎪</h2>
+                            <p style="color:var(--teal-100); font-size:13.5px; line-height:1.5; margin:0;">머리 아픈 서류는 잠시 안녕! 👋
+                                동료들과 재미있는 콘텐츠로 힐링해요.</p>
+                        </div>
 
                         <!-- 섹션 레이블 -->
                         <div
@@ -1375,7 +1342,7 @@
 
     </div><!-- /#app -->
 
-    <script src="index.js?v=20" charset="utf-8"></script>
+    <script src="index.js?v=22" charset="utf-8"></script>
     <script>
         // PWA Service Worker Registration
         if ('serviceWorker' in navigator) {
