@@ -1506,11 +1506,13 @@ select:focus {
 }
 
 .hero-v2-title {
+  /* 닉네임 길이와 무관하게 항상 한 줄 — 넘치면 JS(fitGreeting)가 폰트를 줄여 딱 맞춤 */
   font-size: 1.35rem;
   font-weight: 900;
   color: #fff;
   margin: 0 0 4px;
   letter-spacing: -0.02em;
+  white-space: nowrap;
 }
 
 .hero-v2-sub {
