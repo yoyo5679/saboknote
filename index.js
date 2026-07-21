@@ -113,6 +113,7 @@ try {
         const newName = getRandomAnonymousName();
         // Force refresh UI components
         if (typeof initMypage === 'function') initMypage();
+        if (typeof initHomeGreeting === 'function') initHomeGreeting();
         alert('새로운 닉네임이 생성되었습니다! ✨\n' + newName);
     };
 
@@ -3625,7 +3626,27 @@ try {
         if (!el) return;
         const name = localStorage.getItem('saboks_anonymous_name');
         if (name) el.innerText = name;
+        fitGreeting();
     }
+
+    // 인사말이 어떤 닉네임 길이에도 항상 한 줄에 들어가도록 폰트 크기를 자동 축소
+    function fitGreeting() {
+        const el = document.querySelector('.hero-v2-title');
+        if (!el) return;
+        const MAX = 1.35, MIN = 0.66;   // rem
+        let size = MAX;
+        el.style.fontSize = size + 'rem';
+        // 컨텐츠 폭(scrollWidth)이 가용 폭(clientWidth)보다 크면 단계적으로 축소
+        let guard = 0;
+        while (el.scrollWidth > el.clientWidth + 1 && size > MIN && guard < 80) {
+            size -= 0.015;
+            el.style.fontSize = size + 'rem';
+            guard++;
+        }
+    }
+    window.fitGreeting = fitGreeting;
+    // 회전·리사이즈 시 다시 맞춤
+    window.addEventListener('resize', () => { if (window.fitGreeting) window.fitGreeting(); });
 
     // 오늘의 생존단어: 날짜 기준으로 단어장에서 하나 선정 (매일 자동 교체)
     function initHomeDailyWord() {
