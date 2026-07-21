@@ -1929,3 +1929,23 @@ html.dark-mode .request-card-icon { background: var(--surface-3); }
 html.dark-mode .request-card-title,
 html.dark-mode .request-card-desc,
 html.dark-mode .request-card-arrow { color: var(--teal-300); }
+
+/* 비밀 프롬프트 칩 3개를 항상 한 줄에 균등 배치 (모바일 줄바꿈 방지) */
+.chip-row-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 7px;
+  flex-wrap: nowrap;
+}
+.chip-row-3 .prompt-chip {
+  justify-content: center;
+  gap: 4px;
+  padding: 9px 4px;
+  font-size: 0.76rem;
+  white-space: nowrap;
+  overflow: hidden;
+}
+/* 아주 좁은 화면(약 360px 이하)에서 글자만 살짝 더 축소 */
+@media (max-width: 380px) {
+  .chip-row-3 .prompt-chip { font-size: 0.7rem; padding: 9px 2px; letter-spacing: -0.02em; }
+}
