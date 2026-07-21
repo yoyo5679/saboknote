@@ -990,9 +990,13 @@ try {
             btn.onclick = () => {
                 const content = `
                 <div style="text-align:center; padding: 10px 0;">
-                    <div style="font-size:3rem; margin-bottom:12px; animation: float 3s ease-in-out infinite">🪄</div>
-                    <h3 style="font-size:1.3rem; color:var(--text-dark); margin-bottom:8px; font-weight:900">무엇이든 요청해보살</h3>
-                    <p style="font-size:0.9rem; color:var(--text-5); margin-bottom:24px; line-height:1.5;">필요한 프롬프트나 헷갈리는 사회복지 용어가 있나요?<br>사복천재에게 남겨주시면 다음 업데이트 때 쓱- 추가해 드릴게요!</p>
+                    <div style="font-size:3rem; margin-bottom:12px; animation: float 3s ease-in-out infinite">🪔</div>
+                    <h3 style="font-size:1.3rem; color:var(--text-dark); margin-bottom:8px; font-weight:900">사복 지니에게 소원 빌기</h3>
+                    <p style="font-size:0.9rem; color:var(--text-5); margin-bottom:24px; line-height:1.7;">
+                        필요한 프롬프트, 헷갈리는 복지 용어…<br>
+                        무엇이든 소원을 말해보세요. ✨<br>
+                        다음 업데이트 때 <strong style="color:var(--text-3);">사복 지니</strong>가 쓱- 들어드릴게요!
+                    </p>
                     
                     <div style="text-align:left; margin-bottom:20px;">
                         <label style="font-size:0.85rem; font-weight:800; color:var(--text-4); display:block; margin-bottom:8px;">어떤 카테고리의 요청인가요?</label>
