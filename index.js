@@ -3510,18 +3510,40 @@ try {
        HOME V2 — 클로드 디자인 개선안 훅
        ============================================================ */
     /* 즐겨찾는 도구 — 별 토글로 홈을 개인화 (localStorage 저장) */
+    // 행정/회계 마스터 안의 12개 계산기 (개별 즐겨찾기 가능 — 해당 탭으로 바로 열림)
+    const ADMIN_SUBTOOLS = [
+        { key: 'vat', name: '부가세 계산기', desc: '공급가액·부가세 10% 역산', tint: '#ecfeff' },
+        { key: 'budget', name: '단가 계산', desc: '재료비·간식비 단가 산출', tint: '#eff6ff' },
+        { key: 'tax', name: '강사료 계산', desc: '3.3%·8.8% 원천징수 실수령액', tint: '#fdf4ff' },
+        { key: 'payroll', name: '급여 일할정산', desc: '중도 입·퇴사 일할 계산', tint: '#f0fdf4' },
+        { key: 'percent', name: '퍼센트 계산', desc: '달성률·증감률·비율 3종', tint: '#fefce8' },
+        { key: 'target', name: '목표달성률', desc: '사업 실적 달성률 즉시 확인', tint: '#fff7ed' },
+        { key: 'ltc', name: '장기요양 한도', desc: '등급별 한도·본인부담금', tint: '#ecfeff' },
+        { key: 'youth', name: '자립청년 연령', desc: '보호종료·자립수당 기준', tint: '#f0fdf4' },
+        { key: 'mosaic', name: '사진 모자이크', desc: '개인정보 가리기(기기 처리)', tint: '#f5f3ff' },
+        { key: 'compressor', name: '사진 압축', desc: '첨부용 이미지 용량 줄이기', tint: '#eff6ff' },
+        { key: 'converter', name: '포맷 변환', desc: 'HEIC·PNG·JPG 상호 변환', tint: '#fdf4ff' },
+        { key: 'pdf', name: 'PDF 압축', desc: '공문·첨부 파일 용량 줄이기', tint: '#fef2f2' },
+    ];
     const ALL_TOOLS = [
-        { id: 'prompter', icon: '🪄', name: '비밀 프롬프트', desc: '사례기록·보고서 AI 주문', tint: '#eef2ff', act: () => document.getElementById('open-ai-prompter').click() },
-        { id: 'admin', icon: '💸', name: '행정/회계 마스터', desc: '12가지 계산 1초 컷', tint: '#ecfdf5', act: () => document.getElementById('open-admin-calc').click() },
-        { id: 'voca', icon: '📖', name: '생존 단어장', desc: '초보 복지사 용어 사전', tint: '#fffbeb', act: () => document.getElementById('open-voca-dict').click() },
-        { id: 'eligibility', icon: '💰', name: '수급판정 계산', desc: '기초수급·차상위 기준', tint: '#fef2f2', act: () => document.getElementById('calc-eligibility').click() },
-        { id: 'dashboard', icon: '📊', name: '핵심 지표', desc: '중위소득·장기요양 수가', tint: '#f1f5f9', act: () => document.getElementById('open-dashboard').click() },
-        { id: 'newsletter', icon: '💌', name: '비밀 편지', desc: '사복천재의 뉴스레터', tint: '#f5f3ff', act: () => document.getElementById('open-newsletter-read').click() },
-        { id: 'support', icon: '🔍', name: '지원정보 찾기', desc: '맞춤형 복지서비스 검색', tint: '#eff6ff', act: () => window.open('https://bok-jumoney.vercel.app', '_blank') },
-        { id: 'vat', icon: '🧾', name: '부가세 계산기', desc: '공급가액·부가세 역산', tint: '#ecfeff', act: () => window.open('/tools/vat.html', '_blank') },
-        { id: 'lecture', icon: '👛', name: '강사료 계산기', desc: '3.3%·8.8% 실수령액', tint: '#fdf4ff', act: () => window.open('/tools/lecture-fee.html', '_blank') },
-        { id: 'ltc', icon: '🏥', name: '장기요양 한도', desc: '2026 등급별 한도·수가', tint: '#fff7ed', act: () => window.open('/tools/ltc-limit.html', '_blank') },
-        { id: 'request', icon: '🙋', name: '요청하기', desc: '필요한 프롬프트·용어 요청', tint: '#fefce8', act: () => document.getElementById('open-request-modal').click() },
+        { id: 'prompter', group: '주요 도구', icon: '🪄', name: '비밀 프롬프트', desc: '사례기록·보고서 AI 주문', tint: '#eef2ff', act: () => document.getElementById('open-ai-prompter').click() },
+        { id: 'admin', group: '주요 도구', icon: '💸', name: '행정/회계 마스터', desc: '12가지 계산기 모두 열기', tint: '#ecfdf5', act: () => document.getElementById('open-admin-calc').click() },
+        { id: 'voca', group: '주요 도구', icon: '📖', name: '생존 단어장', desc: '초보 복지사 용어 사전', tint: '#fffbeb', act: () => document.getElementById('open-voca-dict').click() },
+        { id: 'eligibility', group: '주요 도구', icon: '💰', name: '수급판정 계산', desc: '기초수급·차상위 기준', tint: '#fef2f2', act: () => document.getElementById('calc-eligibility').click() },
+        { id: 'dashboard', group: '주요 도구', icon: '📊', name: '핵심 지표', desc: '중위소득·장기요양 수가', tint: '#f1f5f9', act: () => document.getElementById('open-dashboard').click() },
+        { id: 'newsletter', group: '주요 도구', icon: '💌', name: '비밀 편지', desc: '사복천재의 뉴스레터', tint: '#f5f3ff', act: () => document.getElementById('open-newsletter-read').click() },
+        { id: 'support', group: '주요 도구', icon: '🔍', name: '지원정보 찾기', desc: '맞춤형 복지서비스 검색', tint: '#eff6ff', act: () => window.open('https://bok-jumoney.vercel.app', '_blank') },
+        { id: 'request', group: '주요 도구', icon: '🙋', name: '요청하기', desc: '필요한 프롬프트·용어 요청', tint: '#fefce8', act: () => document.getElementById('open-request-modal').click() },
+        // 행정/회계 마스터 12개 계산기 (그룹으로 표시)
+        ...ADMIN_SUBTOOLS.map(s => ({
+            id: 'adm-' + s.key,
+            group: '행정/회계 계산기',
+            icon: (ADMIN_TOOL_META[s.key] && ADMIN_TOOL_META[s.key].icon) || '🧮',
+            name: s.name,
+            desc: s.desc,
+            tint: s.tint,
+            act: () => openAdminToolDirect(s.key),
+        })),
     ];
     const FAV_KEY = 'sabok_fav_tools';
     const DEFAULT_FAVS = ['prompter', 'admin', 'voca', 'eligibility', 'dashboard', 'support'];
@@ -3570,7 +3592,7 @@ try {
         const list = document.getElementById('all-tools-list');
         if (!list) return;
         const favs = getFavs();
-        list.innerHTML = ALL_TOOLS.map(t => {
+        const rowHtml = (t) => {
             const on = favs.includes(t.id);
             return `<button class="all-tool-row" onclick="toolAct('${t.id}'); closeModal();">
                 <span class="at-ico" style="background:${t.tint};">${t.icon}</span>
@@ -3580,6 +3602,13 @@ try {
                 </span>
                 <span class="at-star ${on ? '' : 'off'}" role="button" title="즐겨찾기 토글" onclick="toggleFav('${t.id}', event)">⭐</span>
             </button>`;
+        };
+        // 그룹 순서 유지하며 섹션 헤더와 함께 렌더
+        const groups = [];
+        ALL_TOOLS.forEach(t => { const g = t.group || '도구'; if (!groups.includes(g)) groups.push(g); });
+        list.innerHTML = groups.map(g => {
+            const rows = ALL_TOOLS.filter(t => (t.group || '도구') === g).map(rowHtml).join('');
+            return `<div class="at-group-title">${g}</div>${rows}`;
         }).join('');
     }
     window.openAllToolsModal = function () {
