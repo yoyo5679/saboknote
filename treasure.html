@@ -17,218 +17,281 @@
   --gem1: #4285f4;--gem2: #9b72cb;
 }
 body{font-family:'Noto Sans KR',sans-serif;background:var(--g5);color:var(--text);padding:0 0 40px;}
-.hero{background:linear-gradient(125deg, #0f2d6b 0%, #1e4eb5 45%, #3b7ef8 100%);padding:36px 24px 28px;text-align:center;position:relative;overflow:hidden;}
+
+/* hero */
+.hero{background:linear-gradient(125deg, #0f2d6b 0%, #1e4eb5 45%, #3b7ef8 100%);padding:34px 24px 26px;text-align:center;position:relative;overflow:hidden;}
 .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 50%,rgba(59,130,246,0.3) 0%,transparent 60%),radial-gradient(ellipse at 80% 20%,rgba(96,165,250,0.15) 0%,transparent 50%);}
 .hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);border-radius:20px;padding:5px 14px;font-size:12px;color:rgba(255,255,255,0.9);margin-bottom:14px;position:relative;z-index:1;}
-.hero-title{font-family:'Gaegu',cursive;font-size:34px;font-weight:700;color:#ffffff;position:relative;z-index:1;line-height:1.2;margin-bottom:8px;}
+.hero-title{font-family:'Gaegu',cursive;font-size:33px;font-weight:700;color:#ffffff;position:relative;z-index:1;line-height:1.2;margin-bottom:8px;}
 .hero-title span{color:#93c5fd;}
-.hero-sub{font-size:14px;color:rgba(255,255,255,0.75);position:relative;z-index:1;line-height:1.6;}
-.hero-emojis{font-size:28px;position:relative;z-index:1;margin-bottom:12px;letter-spacing:4px;}
+.hero-sub{font-size:14px;color:rgba(255,255,255,0.78);position:relative;z-index:1;line-height:1.6;}
+.hero-emojis{font-size:26px;position:relative;z-index:1;margin-bottom:12px;letter-spacing:4px;}
+
+/* stat bar */
 .stat-bar{display:flex;gap:0;background:#fff;border-bottom:1.5px solid var(--g3);padding:14px 20px;}
 .stat{flex:1;text-align:center;border-right:1px solid var(--g3);}
 .stat:last-child{border-right:none;}
-.stat-num{font-size:20px;font-weight:700;color:var(--g);font-family:'Gaegu',cursive;}
+.stat-num{font-size:19px;font-weight:700;color:var(--g);font-family:'Gaegu',cursive;}
 .stat-label{font-size:11px;color:var(--sub);margin-top:2px;}
 
-/* section heading */
-.sec-head{padding:22px 20px 4px;}
+/* category nav */
+.cat-nav{position:sticky;top:0;z-index:15;display:flex;gap:8px;padding:12px 16px;overflow-x:auto;background:rgba(255,255,255,0.96);backdrop-filter:blur(8px);border-bottom:1.5px solid var(--g4);scrollbar-width:none;}
+.cat-nav::-webkit-scrollbar{display:none;}
+.cat-chip{flex:0 0 auto;display:inline-flex;align-items:center;gap:5px;padding:8px 15px;font-size:13px;font-weight:700;border:1.5px solid var(--g3);background:#fff;color:var(--sub);border-radius:999px;cursor:pointer;white-space:nowrap;font-family:'Noto Sans KR',sans-serif;transition:all .18s;}
+.cat-chip.active{background:var(--g);border-color:var(--g);color:#fff;box-shadow:0 4px 12px rgba(37,99,235,0.28);}
+.cat-chip:not(.active):hover{background:var(--g5);color:var(--g);border-color:var(--g2);}
+.cat-chip .cnt{font-size:11px;opacity:.75;}
+
+/* section */
+.cat-section{padding:8px 0 0;}
+.sec-head{padding:20px 20px 2px;display:flex;align-items:baseline;gap:8px;}
 .sec-head h2{font-size:17px;color:var(--text);display:flex;align-items:center;gap:8px;}
-.sec-head p{font-size:12.5px;color:var(--sub);margin-top:4px;line-height:1.6;}
+.sec-head .sec-cnt{font-size:12px;color:var(--sub);margin-left:auto;}
+.sec-desc{font-size:12.5px;color:var(--sub);padding:2px 20px 0;line-height:1.6;}
 
-/* featured card */
-.featured{margin:14px 20px 4px;border-radius:20px;overflow:hidden;border:2px solid var(--gem2);background:#fff;box-shadow:0 10px 30px rgba(107,63,181,0.14);cursor:pointer;transition:transform .2s,box-shadow .2s;}
-.featured:hover{transform:translateY(-3px);box-shadow:0 16px 38px rgba(107,63,181,0.22);}
-.featured-top{background:linear-gradient(125deg, #1b1b3a 0%, #3a2f7a 45%, #4285f4 100%);padding:20px 22px 18px;color:#fff;position:relative;overflow:hidden;}
-.featured-top::before{content:'';position:absolute;right:-30px;top:-30px;width:130px;height:130px;border-radius:50%;background:rgba(255,255,255,0.08);}
-.ft-badges{display:flex;gap:6px;margin-bottom:12px;position:relative;z-index:1;flex-wrap:wrap;}
-.ft-badge{font-size:11px;font-weight:700;border-radius:20px;padding:4px 11px;}
-.ft-badge.new{background:#fff;color:#6b3fb5;}
-.ft-badge.free{background:rgba(255,255,255,0.18);color:#fff;border:1px solid rgba(255,255,255,0.3);}
-.ft-badge.rename{background:rgba(255,255,255,0.12);color:#e9d5ff;border:1px solid rgba(255,255,255,0.25);}
-.ft-emoji{font-size:38px;position:relative;z-index:1;}
-.ft-title{font-family:'Gaegu',cursive;font-size:26px;line-height:1.25;margin:6px 0 6px;position:relative;z-index:1;}
-.ft-title small{display:block;font-family:'Noto Sans KR';font-size:12.5px;font-weight:500;color:rgba(255,255,255,0.75);margin-top:4px;}
-.ft-desc{font-size:13.5px;color:rgba(255,255,255,0.88);line-height:1.65;position:relative;z-index:1;}
-.featured-body{padding:16px 22px 18px;}
-.ft-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;}
-.ft-tag{font-size:11px;background:#f5edff;color:#6b3fb5;border:1px solid #e0cffa;border-radius:8px;padding:3px 9px;}
-.ft-points{list-style:none;margin:0 0 16px;padding:0;}
-.ft-points li{font-size:13px;color:var(--text);padding:5px 0 5px 24px;position:relative;line-height:1.5;}
-.ft-points li::before{content:'✅';position:absolute;left:0;top:5px;font-size:12px;}
-.ft-cta{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
-.ft-btn{flex:1;min-width:200px;display:inline-flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(135deg,#4285f4,#9b72cb);color:#fff;border:none;border-radius:12px;padding:14px 18px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:transform .2s,filter .2s;}
-.ft-btn:hover{transform:scale(1.02);filter:brightness(1.06);}
+/* ===== COURSE (클래스) ===== */
+.course{margin:14px 20px 6px;border-radius:20px;overflow:hidden;border:1.5px solid var(--g3);background:#fff;box-shadow:0 8px 26px rgba(37,99,235,0.10);}
+.course-thumb{background:linear-gradient(125deg, #1b1b3a 0%, #3a2f7a 45%, #4285f4 100%);padding:22px 22px 20px;color:#fff;position:relative;overflow:hidden;}
+.course-thumb::before{content:'';position:absolute;right:-34px;top:-34px;width:150px;height:150px;border-radius:50%;background:rgba(255,255,255,0.08);}
+.ct-badges{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;position:relative;z-index:1;}
+.ct-badge{font-size:11px;font-weight:700;border-radius:20px;padding:4px 11px;}
+.ct-badge.new{background:#fff;color:#6b3fb5;}
+.ct-badge.free{background:rgba(255,255,255,0.18);color:#fff;border:1px solid rgba(255,255,255,0.3);}
+.ct-badge.rename{background:rgba(255,255,255,0.12);color:#e9d5ff;border:1px solid rgba(255,255,255,0.25);}
+.ct-emoji{font-size:34px;position:relative;z-index:1;}
+.ct-title{font-family:'Gaegu',cursive;font-size:25px;line-height:1.25;margin:4px 0 5px;position:relative;z-index:1;}
+.ct-sub{font-size:12.5px;color:rgba(255,255,255,0.78);position:relative;z-index:1;line-height:1.55;margin-bottom:14px;}
+.ct-meta{display:flex;gap:14px;flex-wrap:wrap;position:relative;z-index:1;}
+.ct-meta span{font-size:12px;color:rgba(255,255,255,0.9);display:inline-flex;align-items:center;gap:5px;}
 
-/* series grid */
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px;padding:12px 20px 8px;}
-.card{border-radius:var(--radius);border:1.5px solid var(--g3);background:var(--card);overflow:hidden;transition:transform .2s,box-shadow .2s;cursor:pointer;display:flex;flex-direction:column;}
-.card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(37,99,235,0.14);border-color:var(--g2);}
-.card-top{padding:16px 16px 12px;flex:1;}
-.card-num{display:inline-block;font-size:11px;font-weight:700;color:var(--g);background:var(--g5);border:1px solid var(--g3);border-radius:8px;padding:2px 9px;margin-bottom:9px;}
-.card-emoji{font-size:26px;margin-bottom:6px;display:block;}
-.card-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:6px;line-height:1.35;}
-.card-desc{font-size:12.5px;color:var(--sub);line-height:1.55;}
-.card-footer{border-top:1.5px solid var(--g4);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;}
-.btn-open{display:inline-flex;align-items:center;gap:5px;background:var(--g);color:#fff;border:none;border-radius:10px;padding:7px 14px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:background .2s,transform .2s;}
-.btn-open:hover{background:#1e40af;transform:scale(1.03);}
-.page-count{font-size:11.5px;color:var(--sub);background:var(--g5);border-radius:8px;padding:3px 9px;}
+/* curriculum */
+.curriculum{padding:6px 8px 10px;}
+.cur-head{display:flex;align-items:center;gap:8px;padding:12px 14px 8px;font-size:13px;font-weight:700;color:var(--text);}
+.cur-head .tag{margin-left:auto;font-size:11px;font-weight:700;color:var(--g);background:var(--g5);border:1px solid var(--g3);border-radius:8px;padding:3px 9px;}
+.lesson{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;cursor:pointer;transition:background .16s;border:1px solid transparent;}
+.lesson:hover{background:var(--g5);border-color:var(--g3);}
+.lesson-no{flex:0 0 auto;width:38px;height:38px;border-radius:10px;background:var(--g5);border:1px solid var(--g3);color:var(--g);font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;font-family:'Gaegu',cursive;}
+.lesson.rep .lesson-no{background:linear-gradient(135deg,#4285f4,#9b72cb);border:none;color:#fff;font-size:11px;font-family:'Noto Sans KR';}
+.lesson-body{flex:1;min-width:0;}
+.lesson-title{font-size:14px;font-weight:700;color:var(--text);line-height:1.35;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.lesson-title .mini{font-size:10px;font-weight:700;border-radius:6px;padding:1px 6px;}
+.mini.rep{background:#f5edff;color:#6b3fb5;border:1px solid #e0cffa;}
+.mini.lv{background:var(--g5);color:var(--g);border:1px solid var(--g3);}
+.lesson-sub{font-size:12px;color:var(--sub);margin-top:2px;line-height:1.4;}
+.lesson-go{flex:0 0 auto;width:30px;height:30px;border-radius:50%;background:#fff;border:1.5px solid var(--g3);color:var(--g);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;}
+.lesson:hover .lesson-go{background:var(--g);border-color:var(--g);color:#fff;}
+.lesson + .lesson{border-top:1px dashed var(--g4);border-radius:12px;}
 
-.note-old{margin:6px 20px 0;font-size:12px;color:var(--sub);background:#fff;border:1px dashed var(--g3);border-radius:12px;padding:11px 14px;line-height:1.6;}
+.note-old{margin:6px 20px 4px;font-size:12px;color:var(--sub);background:#fff;border:1px dashed var(--g3);border-radius:12px;padding:11px 14px;line-height:1.6;}
 .note-old b{color:var(--g);}
 
+/* coming soon */
+.soon{margin:14px 20px 6px;border-radius:18px;border:1.5px dashed var(--g3);background:#fff;padding:26px 22px;text-align:center;}
+.soon-emoji{font-size:34px;margin-bottom:10px;filter:grayscale(.2);}
+.soon h3{font-size:16px;color:var(--text);margin-bottom:6px;}
+.soon p{font-size:13px;color:var(--sub);line-height:1.6;margin-bottom:14px;}
+.soon-btn{display:inline-flex;align-items:center;gap:6px;background:var(--g5);color:var(--g);border:1.5px solid var(--g3);border-radius:999px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:all .18s;}
+.soon-btn:hover{background:var(--g);color:#fff;border-color:var(--g);}
+.soon-tags{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:14px;}
+.soon-tag{font-size:11px;color:var(--sub);background:var(--g5);border:1px solid var(--g3);border-radius:8px;padding:3px 10px;}
+
+/* subscribe */
 .subscribe-box{margin:20px 20px;background:linear-gradient(135deg,#1e40af,#2563eb);border-radius:var(--radius);padding:24px 22px;color:#fff;position:relative;overflow:hidden;}
 .subscribe-box::before{content:'';position:absolute;top:-30px;right:-30px;width:120px;height:120px;background:rgba(255,255,255,0.05);border-radius:50%;}
 .sub-title{font-family:'Gaegu',cursive;font-size:20px;font-weight:700;margin-bottom:6px;color:#93c5fd;}
 .sub-desc{font-size:13px;color:rgba(255,255,255,0.8);line-height:1.6;margin-bottom:16px;}
 .sub-perks{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px;}
 .perk{display:flex;align-items:center;gap:5px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:20px;padding:4px 12px;font-size:12px;color:rgba(255,255,255,0.9);}
-.sub-btn{padding:14px;border-radius:10px;background:var(--amber);border:none;color:#fff;font-weight:700;font-size:15px;cursor:pointer;white-space:nowrap;font-family:'Noto Sans KR',sans-serif;transition:background .2s,transform .2s;width:100%;}
+.sub-btn{padding:14px;border-radius:10px;background:var(--amber);border:none;color:#fff;font-weight:700;font-size:15px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:background .2s,transform .2s;width:100%;}
 .sub-btn:hover{background:#e8893a;transform:scale(1.02);}
 </style>
 </head>
 <body>
 
 <div class="hero">
-  <div class="hero-badge">📚 사복노트 비밀 창고</div>
+  <div class="hero-badge">🎓 사복노트 클래스룸</div>
   <div class="hero-emojis">🦊✨🌿</div>
   <div class="hero-title">사복쌤들의<br><span>꿀자료 보물창고</span> 🍯</div>
-  <div class="hero-sub">현장에서 바로 쓰는 실무 자료 무료 공개<br>비밀편지 구독하면 더 많은 보물이 기다려요!</div>
+  <div class="hero-sub">현장에서 바로 쓰는 실무 클래스, 무료로 정주행<br>비밀편지 구독하면 새 클래스를 가장 먼저!</div>
 </div>
 
 <div class="stat-bar">
-  <div class="stat"><div class="stat-num">8종</div><div class="stat-label">현재 자료</div></div>
-  <div class="stat"><div class="stat-num">무료</div><div class="stat-label">모두 0원</div></div>
+  <div class="stat"><div class="stat-num">8강</div><div class="stat-label">공개 강의</div></div>
+  <div class="stat"><div class="stat-num">무료</div><div class="stat-label">전 강좌 0원</div></div>
   <div class="stat"><div class="stat-num">2026</div><div class="stat-label">최신 반영</div></div>
 </div>
 
-<!-- ===== 대표 가이드 ===== -->
-<div class="sec-head">
-  <h2>⭐ 이달의 대표 자료</h2>
-  <p>구글 <b style="color:var(--gem2)">제미나이 노트북</b>(구 NotebookLM), 2026 최신 기능까지 한 권에 담았어요.</p>
+<!-- 카테고리 -->
+<div class="cat-nav" id="catNav">
+  <button class="cat-chip active" data-cat="all" onclick="filterCat('all',this)">🗂️ 전체</button>
+  <button class="cat-chip" data-cat="ai" onclick="filterCat('ai',this)">🤖 AI 활용 <span class="cnt">8</span></button>
+  <button class="cat-chip" data-cat="form" onclick="filterCat('form',this)">📋 사복 서식 <span class="cnt">준비중</span></button>
+  <button class="cat-chip" data-cat="tip" onclick="filterCat('tip',this)">💡 실무 꿀팁 <span class="cnt">준비중</span></button>
+  <button class="cat-chip" data-cat="care" onclick="filterCat('care',this)">🌿 마음 충전 <span class="cnt">준비중</span></button>
 </div>
 
-<div class="featured" onclick="window.open('./honeydata/notebooklm_2026_guide.html','_blank')">
-  <div class="featured-top">
-    <div class="ft-badges">
-      <span class="ft-badge new">🆕 2026 최신판</span>
-      <span class="ft-badge free">무료</span>
-      <span class="ft-badge rename">✨ 이름 변경 반영</span>
-    </div>
-    <span class="ft-emoji">📓</span>
-    <div class="ft-title">제미나이 노트북 완전정복
-      <small>구 NotebookLM · 사복쌤 최신판</small>
-    </div>
-    <div class="ft-desc">지침서 찾다 퇴근하던 시대 끝. 요약·비교·기록정리부터 오디오·비디오 개요, 플래시카드·퀴즈, 데이터 분석까지 12챕터로 정리했어요.</div>
+<!-- ===== AI 활용 ===== -->
+<div class="cat-section" data-cat="ai">
+  <div class="sec-head">
+    <h2>🤖 AI 활용 클래스</h2>
+    <span class="sec-cnt">1개 클래스 · 8강</span>
   </div>
-  <div class="featured-body">
-    <div class="ft-tags">
-      <span class="ft-tag">AI 활용</span>
-      <span class="ft-tag">2026 리브랜딩</span>
-      <span class="ft-tag">개인정보 보호</span>
-      <span class="ft-tag">복사용 프롬프트</span>
-      <span class="ft-tag">초보 OK</span>
+  <div class="sec-desc">서류의 늪에서 칼퇴하는 그날까지, AI를 실무에 녹이는 법.</div>
+
+  <div class="course">
+    <div class="course-thumb">
+      <div class="ct-badges">
+        <span class="ct-badge new">🆕 2026 최신</span>
+        <span class="ct-badge free">무료</span>
+        <span class="ct-badge rename">✨ 이름 변경 반영</span>
+      </div>
+      <span class="ct-emoji">📓</span>
+      <div class="ct-title">제미나이 노트북 마스터 클래스</div>
+      <div class="ct-sub">구 NotebookLM · 사복쌤 맞춤 완전정복<br>입문부터 심화 6편까지, 순서대로 정주행하세요.</div>
+      <div class="ct-meta">
+        <span>🎬 총 8강</span><span>⏱️ 강당 10~15분</span><span>🐣 왕초보 OK</span>
+      </div>
     </div>
-    <ul class="ft-points">
-      <li>NotebookLM → <b>제미나이 노트북</b> 이름 변경 & 신기능 총정리</li>
-      <li>🎬 비디오·숏폼 · 🎙️ 인터랙티브 오디오 · 🃏 플래시카드·퀴즈</li>
-      <li>⚠️ 클라이언트 정보 <b>비식별화</b>부터 연도별 지침 비교까지</li>
-    </ul>
-    <div class="ft-cta">
-      <button class="ft-btn" onclick="event.stopPropagation();window.open('./honeydata/notebooklm_2026_guide.html','_blank')">📖 지금 바로 읽기</button>
+
+    <div class="curriculum">
+      <div class="cur-head">📚 커리큘럼 <span class="tag">총 8강 · 무료</span></div>
+
+      <div class="lesson rep" onclick="go('./honeydata/notebooklm_2026_guide.html')">
+        <div class="lesson-no">대표</div>
+        <div class="lesson-body">
+          <div class="lesson-title">완전정복 통합본 (2026 최신) <span class="mini rep">추천 시작점</span></div>
+          <div class="lesson-sub">이름 변경·신기능 총정리 · 비디오/오디오 개요, 퀴즈, 데이터 분석까지 12챕터</div>
+        </div>
+        <div class="lesson-go">▶</div>
+      </div>
+
+      <div class="lesson" onclick="go('./honeydata/NotebookLM Basic Guide.html')">
+        <div class="lesson-no">01</div>
+        <div class="lesson-body">
+          <div class="lesson-title">기초편 — 서류의 늪에서 구출 <span class="mini lv">입문</span></div>
+          <div class="lesson-sub">소스 올리기부터 3초 검색까지, 손에 익히는 첫걸음</div>
+        </div>
+        <div class="lesson-go">▶</div>
+      </div>
+
+      <div class="lesson" onclick="go('./honeydata/notebooklm_advanced1.html')">
+        <div class="lesson-no">02</div>
+        <div class="lesson-body">
+          <div class="lesson-title">보고서·슬라이드 자동 초안 <span class="mini lv">심화</span></div>
+          <div class="lesson-sub">브리핑 문서·발표 슬라이드 초안을 AI가 대신 써주는 법</div>
+        </div>
+        <div class="lesson-go">▶</div>
+      </div>
+
+      <div class="lesson" onclick="go('./honeydata/notebooklm_advanced2.html')">
+        <div class="lesson-no">03</div>
+        <div class="lesson-body">
+          <div class="lesson-title">마인드맵 & 브리핑 문서 <span class="mini lv">심화</span></div>
+          <div class="lesson-sub">복잡한 사업안내를 한눈에 지도화하고 팀 공유용으로 정리</div>
+        </div>
+        <div class="lesson-go">▶</div>
+      </div>
+
+      <div class="lesson" onclick="go('./honeydata/notebooklm_advanced3.html')">
+        <div class="lesson-no">04</div>
+        <div class="lesson-body">
+          <div class="lesson-title">연도별 지침서 비교 분석 <span class="mini lv">심화</span></div>
+          <div class="lesson-sub">"작년이랑 뭐가 달라졌지?" 바뀐 점만 표로 뽑아내기</div>
+        </div>
+        <div class="lesson-go">▶</div>
+      </div>
+
+      <div class="lesson" onclick="go('./honeydata/notebooklm_advanced4.html')">
+        <div class="lesson-no">05</div>
+        <div class="lesson-body">
+          <div class="lesson-title">팀 협업 & 노트북 공유 <span class="mini lv">심화</span></div>
+          <div class="lesson-sub">부서 지식창고 만들기, 권한 설정, 안전하게 공유하는 법</div>
+        </div>
+        <div class="lesson-go">▶</div>
+      </div>
+
+      <div class="lesson" onclick="go('./honeydata/notebooklm_advanced5.html')">
+        <div class="lesson-no">06</div>
+        <div class="lesson-body">
+          <div class="lesson-title">음성 녹음 & 유튜브 영상 분석 <span class="mini lv">심화</span></div>
+          <div class="lesson-sub">회의 녹음·교육 영상을 소스로 넣고 요약·질문하기</div>
+        </div>
+        <div class="lesson-go">▶</div>
+      </div>
+
+      <div class="lesson" onclick="go('./honeydata/notebooklm_advanced6.html')">
+        <div class="lesson-no">07</div>
+        <div class="lesson-body">
+          <div class="lesson-title">사례관리 특화 활용 <span class="mini lv">심화</span></div>
+          <div class="lesson-sub">비식별화 원칙 아래 사례 기록을 똑똑하게 정리·검색하기</div>
+        </div>
+        <div class="lesson-go">▶</div>
+      </div>
     </div>
+  </div>
+
+  <div class="note-old">💡 이 클래스는 이전 이름(<b>NotebookLM</b>) 기준으로 만든 강의를 포함하고 있어요. 2026년 7월 <b>제미나이 노트북</b>으로 이름이 바뀌었지만 <b>같은 제품·같은 기능</b>이라 내용은 그대로 유효해요. 최신 기능·새 이름은 <b>대표 통합본</b>에서 확인하세요!</div>
+</div>
+
+<!-- ===== 사복 서식 ===== -->
+<div class="cat-section" data-cat="form" style="display:none;">
+  <div class="sec-head"><h2>📋 사복 서식 클래스</h2></div>
+  <div class="soon">
+    <div class="soon-emoji">🗂️</div>
+    <h3>바로 쓰는 서식·양식, 준비 중이에요</h3>
+    <p>상담일지·사례관리 기록지·사업계획서 템플릿까지,<br>복붙만 하면 끝나는 서식을 모으고 있어요.</p>
+    <button class="soon-btn" onclick="parent.postMessage('openNewsletterModal', '*');">📬 출시되면 알림 받기</button>
+    <div class="soon-tags"><span class="soon-tag">상담일지</span><span class="soon-tag">사례관리</span><span class="soon-tag">사업계획서</span><span class="soon-tag">결과보고</span></div>
   </div>
 </div>
 
-<!-- ===== 심화 시리즈 ===== -->
-<div class="sec-head" style="padding-top:26px;">
-  <h2>📚 주제별 심화 시리즈</h2>
-  <p>대표 가이드로 감을 잡았다면, 필요한 주제만 골라 더 깊이 파보세요.</p>
-</div>
-
-<div class="grid">
-  <div class="card" onclick="window.open('./honeydata/NotebookLM Basic Guide.html','_blank')">
-    <div class="card-top">
-      <span class="card-num">입문</span>
-      <span class="card-emoji">🐣</span>
-      <div class="card-title">서류의 늪에서 구출 — 기초편</div>
-      <div class="card-desc">완전 처음이어도 OK. 소스 올리기부터 3초 검색까지, 손에 익히는 첫걸음.</div>
-    </div>
-    <div class="card-footer"><span class="page-count">HTML</span><button class="btn-open" onclick="event.stopPropagation();window.open('./honeydata/NotebookLM Basic Guide.html','_blank')">열기 →</button></div>
-  </div>
-
-  <div class="card" onclick="window.open('./honeydata/notebooklm_advanced1.html','_blank')">
-    <div class="card-top">
-      <span class="card-num">심화 1</span>
-      <span class="card-emoji">📝</span>
-      <div class="card-title">보고서·슬라이드 자동 초안</div>
-      <div class="card-desc">브리핑 문서, 발표 슬라이드 초안을 AI가 대신 써주는 법.</div>
-    </div>
-    <div class="card-footer"><span class="page-count">HTML</span><button class="btn-open" onclick="event.stopPropagation();window.open('./honeydata/notebooklm_advanced1.html','_blank')">열기 →</button></div>
-  </div>
-
-  <div class="card" onclick="window.open('./honeydata/notebooklm_advanced2.html','_blank')">
-    <div class="card-top">
-      <span class="card-num">심화 2</span>
-      <span class="card-emoji">🧠</span>
-      <div class="card-title">마인드맵 & 브리핑 문서</div>
-      <div class="card-desc">복잡한 사업안내를 한눈에 지도화하고, 팀 공유용으로 정리.</div>
-    </div>
-    <div class="card-footer"><span class="page-count">HTML</span><button class="btn-open" onclick="event.stopPropagation();window.open('./honeydata/notebooklm_advanced2.html','_blank')">열기 →</button></div>
-  </div>
-
-  <div class="card" onclick="window.open('./honeydata/notebooklm_advanced3.html','_blank')">
-    <div class="card-top">
-      <span class="card-num">심화 3</span>
-      <span class="card-emoji">📅</span>
-      <div class="card-title">연도별 지침서 비교 분석</div>
-      <div class="card-desc">"작년이랑 뭐가 달라졌지?" 바뀐 점만 표로 뽑아내기.</div>
-    </div>
-    <div class="card-footer"><span class="page-count">HTML</span><button class="btn-open" onclick="event.stopPropagation();window.open('./honeydata/notebooklm_advanced3.html','_blank')">열기 →</button></div>
-  </div>
-
-  <div class="card" onclick="window.open('./honeydata/notebooklm_advanced4.html','_blank')">
-    <div class="card-top">
-      <span class="card-num">심화 4</span>
-      <span class="card-emoji">🤝</span>
-      <div class="card-title">팀 협업 & 노트북 공유</div>
-      <div class="card-desc">부서 지식창고 만들기, 권한 설정, 안전하게 공유하는 법.</div>
-    </div>
-    <div class="card-footer"><span class="page-count">HTML</span><button class="btn-open" onclick="event.stopPropagation();window.open('./honeydata/notebooklm_advanced4.html','_blank')">열기 →</button></div>
-  </div>
-
-  <div class="card" onclick="window.open('./honeydata/notebooklm_advanced5.html','_blank')">
-    <div class="card-top">
-      <span class="card-num">심화 5</span>
-      <span class="card-emoji">🎧</span>
-      <div class="card-title">음성 녹음 & 유튜브 영상 분석</div>
-      <div class="card-desc">회의 녹음·교육 영상을 소스로 넣고 요약·질문하기.</div>
-    </div>
-    <div class="card-footer"><span class="page-count">HTML</span><button class="btn-open" onclick="event.stopPropagation();window.open('./honeydata/notebooklm_advanced5.html','_blank')">열기 →</button></div>
-  </div>
-
-  <div class="card" onclick="window.open('./honeydata/notebooklm_advanced6.html','_blank')">
-    <div class="card-top">
-      <span class="card-num">심화 6</span>
-      <span class="card-emoji">💙</span>
-      <div class="card-title">사례관리 특화 활용</div>
-      <div class="card-desc">비식별화 원칙 아래 사례 기록을 똑똑하게 정리·검색하기.</div>
-    </div>
-    <div class="card-footer"><span class="page-count">HTML</span><button class="btn-open" onclick="event.stopPropagation();window.open('./honeydata/notebooklm_advanced6.html','_blank')">열기 →</button></div>
+<!-- ===== 실무 꿀팁 ===== -->
+<div class="cat-section" data-cat="tip" style="display:none;">
+  <div class="sec-head"><h2>💡 실무 꿀팁 클래스</h2></div>
+  <div class="soon">
+    <div class="soon-emoji">💡</div>
+    <h3>현장 꿀팁 강의, 준비 중이에요</h3>
+    <p>지원사업 신청 노하우, 예산·정산 실수 방지법,<br>민원 응대 스크립트까지 알짜배기만 담을게요.</p>
+    <button class="soon-btn" onclick="parent.postMessage('openNewsletterModal', '*');">📬 출시되면 알림 받기</button>
+    <div class="soon-tags"><span class="soon-tag">지원사업</span><span class="soon-tag">예산·정산</span><span class="soon-tag">민원 응대</span></div>
   </div>
 </div>
 
-<div class="note-old">💡 위 <b>심화 시리즈</b>는 이전 이름(<b>NotebookLM</b>) 기준으로 작성됐어요. 2026년 7월 <b>제미나이 노트북</b>으로 이름이 바뀌었지만, <b>같은 제품·같은 기능</b>이라 내용은 그대로 유효해요. 최신 기능·새 이름은 위 대표 가이드에서 확인하세요!</div>
+<!-- ===== 마음 충전 ===== -->
+<div class="cat-section" data-cat="care" style="display:none;">
+  <div class="sec-head"><h2>🌿 마음 충전 클래스</h2></div>
+  <div class="soon">
+    <div class="soon-emoji">🌿</div>
+    <h3>사복쌤 마음 돌봄, 준비 중이에요</h3>
+    <p>소진 예방, 감정노동 회복 루틴, 동료와 나누는 이야기.<br>"사회복지사가 행복해야 현장이 행복합니다."</p>
+    <button class="soon-btn" onclick="parent.postMessage('openNewsletterModal', '*');">📬 출시되면 알림 받기</button>
+    <div class="soon-tags"><span class="soon-tag">소진 예방</span><span class="soon-tag">회복 루틴</span><span class="soon-tag">셀프 케어</span></div>
+  </div>
+</div>
 
 <div class="subscribe-box">
   <div class="sub-title">💌 팀장님 몰래 보는 비밀편지</div>
-  <div class="sub-desc"><strong>"쉿! 새로운 보물이 이메일로 직접 배달 갑니다."</strong><br>막히는 서류 업무 뚫어주는 AI 꼼수부터 최신 복장 트렌드까지! 출퇴근길 3분이면 칼퇴 쌉가능 😎 메일 주소를 남겨주시면 신규 자료를 가장 먼저 보내드려요!</div>
+  <div class="sub-desc"><strong>"쉿! 새로운 클래스가 이메일로 직접 배달 갑니다."</strong><br>막히는 서류 업무 뚫어주는 AI 꼼수부터 최신 복지 트렌드까지! 출퇴근길 3분이면 칼퇴 쌉가능 😎 메일 주소를 남겨주시면 신규 자료를 가장 먼저 보내드려요!</div>
   <div class="sub-perks">
-    <div class="perk">📬 신규 자료 출시 알림</div>
+    <div class="perk">📬 신규 클래스 출시 알림</div>
     <div class="perk">✉️ 사복쌤 전용 비밀편지</div>
   </div>
   <button class="sub-btn" onclick="parent.postMessage('openNewsletterModal', '*');">구독하기 🌿</button>
   <div style="font-size:11px;color:rgba(255,255,255,0.7);margin-top:10px;">스팸 절대 없음 · 언제든 구독 취소 가능 · 사복쌤만을 위한 편지예요 💚</div>
 </div>
+
+<script>
+function go(url){ window.open(url, '_blank'); }
+
+function filterCat(cat, btn){
+  document.querySelectorAll('.cat-chip').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.cat-section').forEach(sec => {
+    sec.style.display = (cat === 'all' || sec.getAttribute('data-cat') === cat) ? 'block' : 'none';
+  });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
 
 </body>
 </html>
