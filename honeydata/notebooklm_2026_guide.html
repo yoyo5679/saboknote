@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>제미나이 노트북(구 NotebookLM) 2026 완전정복 — 사복쌤 최신판 🍯</title>
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📓</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Noto+Sans+KR:wght@400;500;700;900&display=swap"
+        rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        :root {
+            --g: #2563eb; --g2: #3b7ef8; --g3: #bfdbfe; --g4: #dbeafe; --g5: #eff6ff;
+            --ink: #0f2d6b; --text: #1e293b; --sub: #64748b; --line: #e2e8f0;
+            --card: #ffffff; --warm: #fff8ec; --amber: #f59e0b; --amber-d: #b45309;
+            --green: #0c726c; --green-l: #e4faf8; --red: #dc2626; --radius: 18px;
+            --gem1: #4285f4; --gem2: #9b72cb; --gem3: #d96570;
+        }
+        body { font-family: 'Noto Sans KR', sans-serif; background: var(--g5); color: var(--text); line-height: 1.7; }
+        .wrap { max-width: 760px; margin: 0 auto; padding: 0 0 60px; }
+
+        /* top bar */
+        .topbar { position: sticky; top: 0; z-index: 20; background: rgba(255,255,255,0.92); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); padding: 10px 16px; display: flex; align-items: center; gap: 8px; }
+        .back-btn { border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 7px 14px; font-size: 13px; font-weight: 700; color: var(--g); cursor: pointer; font-family: inherit; }
+        .topbar-title { font-size: 13px; color: var(--sub); font-weight: 700; }
+
+        /* hero */
+        .hero { background: linear-gradient(125deg, #1b1b3a 0%, #3a2f7a 42%, #4285f4 100%); color: #fff; padding: 40px 24px 34px; text-align: center; position: relative; overflow: hidden; }
+        .hero::before { content: ''; position: absolute; right: -40px; top: -40px; width: 200px; height: 200px; border-radius: 50%; background: rgba(255,255,255,0.08); }
+        .hero-badge { display: inline-block; background: rgba(255,255,255,0.16); border: 1px solid rgba(255,255,255,0.28); border-radius: 999px; padding: 5px 14px; font-size: 12px; font-weight: 700; margin-bottom: 14px; position: relative; }
+        .hero h1 { font-family: 'Gaegu', cursive; font-size: 33px; line-height: 1.25; margin-bottom: 10px; position: relative; }
+        .hero h1 span { background: linear-gradient(90deg, #8ab4f8, #c9a7f0); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: #c9a7f0; }
+        .hero .oldname { display: inline-block; font-family: 'Noto Sans KR'; font-size: 13px; font-weight: 500; background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.24); border-radius: 999px; padding: 3px 12px; margin-bottom: 12px; position: relative; }
+        .hero p { font-size: 14.5px; color: rgba(255,255,255,0.85); position: relative; }
+        .hero-meta { margin-top: 16px; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; position: relative; }
+        .hero-meta span { background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); border-radius: 999px; padding: 4px 12px; font-size: 12px; }
+
+        /* 리브랜딩 안내 배너 */
+        .rename { margin: 20px 16px 0; background: linear-gradient(135deg, #eef2ff, #f5edff); border: 1.5px solid #d6c4f5; border-radius: var(--radius); padding: 18px 20px; }
+        .rename h3 { font-size: 16px; color: #6b3fb5; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+        .rename p { font-size: 13.8px; color: #4a3a6b; }
+        .rename b { color: #5a2ea6; }
+
+        /* 업데이트 요약 배너 */
+        .whatsnew { margin: 16px 16px 0; background: var(--warm); border: 1.5px solid #fde68a; border-radius: var(--radius); padding: 18px 20px; }
+        .whatsnew h3 { font-size: 16px; color: var(--amber-d); margin-bottom: 12px; }
+        .nu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+        .nu { background: #fff; border: 1px solid #fde68a; border-radius: 12px; padding: 12px; }
+        .nu b { display: block; font-size: 13.5px; color: var(--text); margin-bottom: 2px; }
+        .nu small { font-size: 12px; color: var(--sub); }
+
+        /* 목차 */
+        .toc { margin: 20px 16px 0; background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 18px; }
+        .toc h4 { font-size: 13px; color: var(--sub); margin-bottom: 10px; letter-spacing: 0.03em; }
+        .toc ol { margin: 0; padding-left: 20px; }
+        .toc li { font-size: 14px; margin-bottom: 5px; }
+        .toc a { color: var(--g); text-decoration: none; font-weight: 500; }
+        .toc a:hover { text-decoration: underline; }
+
+        /* 섹션 */
+        section { margin: 26px 16px 0; background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 22px 20px; scroll-margin-top: 60px; }
+        section > h2 { font-size: 20px; color: var(--ink); margin-bottom: 6px; display: flex; align-items: center; gap: 9px; }
+        section > .lead { font-size: 14px; color: var(--sub); margin-bottom: 16px; }
+        h3.blk { font-size: 15.5px; color: var(--g); margin: 18px 0 8px; }
+        p.body { font-size: 14.5px; margin-bottom: 12px; }
+        ul.dots { margin: 0 0 12px; padding-left: 4px; list-style: none; }
+        ul.dots li { position: relative; padding-left: 20px; font-size: 14px; margin-bottom: 7px; }
+        ul.dots li::before { content: '·'; position: absolute; left: 6px; color: var(--g2); font-weight: 900; }
+        strong { color: var(--ink); }
+        .hl { background: linear-gradient(transparent 60%, #bfdbfe 60%); font-weight: 700; }
+
+        /* step */
+        .steps { counter-reset: s; margin: 8px 0 4px; }
+        .step { counter-increment: s; position: relative; padding: 10px 0 10px 44px; border-bottom: 1px dashed var(--line); }
+        .step:last-child { border-bottom: none; }
+        .step::before { content: counter(s); position: absolute; left: 0; top: 10px; width: 28px; height: 28px; background: var(--g); color: #fff; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; }
+        .step b { display: block; font-size: 14.5px; }
+        .step small { font-size: 13px; color: var(--sub); }
+
+        /* prompt box */
+        .prompt { background: #0f172a; border-radius: 12px; padding: 14px 14px 12px; margin: 10px 0 14px; position: relative; }
+        .prompt pre { color: #e2e8f0; font-size: 13px; line-height: 1.6; white-space: pre-wrap; word-break: break-word; font-family: 'Noto Sans KR', monospace; }
+        .copy-btn { position: absolute; top: 10px; right: 10px; background: #334155; color: #fff; border: none; border-radius: 8px; padding: 5px 10px; font-size: 12px; font-weight: 700; cursor: pointer; font-family: inherit; }
+        .copy-btn:active { background: #1e40af; }
+        .prompt-label { font-size: 12px; color: var(--g); font-weight: 700; margin-bottom: 6px; }
+
+        /* callouts */
+        .note { border-radius: 12px; padding: 14px 16px; margin: 12px 0; font-size: 13.5px; line-height: 1.65; }
+        .note.tip { background: var(--g5); border: 1px solid var(--g3); }
+        .note.warn { background: #fef2f2; border: 1px solid #fecaca; color: #7f1d1d; }
+        .note.warn b { color: #b91c1c; }
+        .note.good { background: var(--green-l); border: 1px solid #b5e5df; }
+        .note b { color: inherit; }
+
+        /* table */
+        .tbl { width: 100%; border-collapse: collapse; font-size: 13.5px; margin: 8px 0 14px; }
+        .tbl th, .tbl td { border: 1px solid var(--line); padding: 9px 11px; text-align: left; }
+        .tbl th { background: var(--g5); font-weight: 700; color: var(--ink); }
+        .tbl td.c { text-align: center; }
+
+        /* footer */
+        .end { margin: 30px 16px 0; background: linear-gradient(135deg, #3a2f7a, #4285f4); border-radius: var(--radius); padding: 26px 22px; color: #fff; text-align: center; }
+        .end h3 { font-family: 'Gaegu', cursive; font-size: 24px; color: #c9a7f0; margin-bottom: 8px; }
+        .end p { font-size: 14px; color: rgba(255,255,255,0.85); margin-bottom: 16px; }
+        .end a { display: inline-block; background: #fff; color: var(--g); text-decoration: none; font-weight: 700; border-radius: 999px; padding: 11px 22px; font-size: 14px; }
+        .disclaimer { margin: 18px 16px 0; font-size: 11.5px; color: var(--sub); text-align: center; line-height: 1.6; }
+    </style>
+</head>
+
+<body>
+    <div class="topbar">
+        <button class="back-btn" onclick="history.length>1?history.back():location.href='../treasure.html'">← 보물창고</button>
+        <span class="topbar-title">사복쌤 제미나이 노트북 최신 가이드</span>
+    </div>
+
+    <div class="hero">
+        <span class="hero-badge">🆕 2026 최신 리브랜딩·기능 반영판</span>
+        <span class="oldname">구 NotebookLM → 이름이 바뀌었어요</span>
+        <h1>제미나이 노트북 <span>완전정복</span><br>사복쌤 최신판 📓</h1>
+        <p>지침서 찾다 퇴근하던 시대 끝. 구글 AI 하나로<br>요약·비교·기록정리·교육자료까지 한 번에.</p>
+        <div class="hero-meta"><span>⏱️ 15분이면 입문</span><span>💸 무료로 충분</span><span>📱 모바일 앱 지원</span></div>
+    </div>
+
+    <div class="wrap">
+
+        <div class="rename">
+            <h3>📢 잠깐, 이름이 바뀌었어요!</h3>
+            <p><b>NotebookLM</b>이 <b>2026년 7월</b>부터 <b>제미나이 노트북(Gemini Notebook)</b>으로 이름이 바뀌었어요. 구글의 AI 브랜드 '제미나이'와 한 식구가 된 거예요. <strong>같은 제품, 같은 내 노트북 그대로</strong>예요 — 자료를 옮기거나 새로 만들 필요 없고, 기존 링크·공유 노트북도 자동으로 연결돼요. (로고만 파랑·보라 제미나이 색으로 바뀌었어요.) 이 가이드에선 새 이름 <b>'제미나이 노트북'</b>으로 부를게요. 검색하실 땐 아직 'NotebookLM'으로도 찾을 수 있어요.</p>
+        </div>
+
+        <div class="whatsnew">
+            <h3>⚡ 2026, 이게 새로 생겼어요</h3>
+            <div class="nu-grid">
+                <div class="nu"><b>🎬 비디오 개요</b><small>소스를 나레이션 슬라이드 영상으로 자동 제작</small></div>
+                <div class="nu"><b>📱 숏폼 영상</b><small>60초 세로형 요약 영상도 생성</small></div>
+                <div class="nu"><b>🎙️ 인터랙티브 오디오</b><small>AI 팟캐스트에 끼어들어 질문까지</small></div>
+                <div class="nu"><b>🃏 플래시카드·퀴즈</b><small>자료로 학습카드·문제 자동 생성</small></div>
+                <div class="nu"><b>💻 코드 실행 분석</b><small>표·데이터를 직접 계산해 차트·표로</small></div>
+                <div class="nu"><b>🔎 소스 자동 찾기</b><small>주제만 말하면 웹에서 자료 추천</small></div>
+                <div class="nu"><b>📲 모바일 앱</b><small>iOS·안드로이드에서 이동 중 활용</small></div>
+                <div class="nu"><b>🗂️ 스튜디오 개편</b><small>오디오·영상·보고서 여러 개 보관</small></div>
+            </div>
+        </div>
+
+        <div class="toc">
+            <h4>목차</h4>
+            <ol>
+                <li><a href="#s1">제미나이 노트북이 대체 뭔가요?</a></li>
+                <li><a href="#s2">무료 vs 유료, 뭘 써야 하나요?</a></li>
+                <li><a href="#s3">3분 만에 시작하기 (소스 올리기)</a></li>
+                <li><a href="#s4">⚠️ 사복쌤 1순위 — 개인정보 비식별화</a></li>
+                <li><a href="#s5">채팅 Q&A — 지침 3초 검색</a></li>
+                <li><a href="#s6">🎙️ 오디오 개요 — 이동 중에 귀로 듣기</a></li>
+                <li><a href="#s7">🎬 비디오 개요 — 교육자료 뚝딱</a></li>
+                <li><a href="#s8">🧠 마인드맵·보고서·타임라인</a></li>
+                <li><a href="#s9">🃏 플래시카드·퀴즈 — 교육·평가 대비</a></li>
+                <li><a href="#s10">💻 코드 실행 — 표·데이터 분석</a></li>
+                <li><a href="#s11">📅 연도별 지침 비교 & 팀 협업</a></li>
+                <li><a href="#s12">자주 겪는 문제 & 꿀팁</a></li>
+            </ol>
+        </div>
+
+        <!-- 1 -->
+        <section id="s1">
+            <h2>1. 제미나이 노트북이 대체 뭔가요?</h2>
+            <p class="lead">구글이 만든 <strong>"내 자료 전용 AI 비서"</strong>예요. (예전 이름 NotebookLM)</p>
+            <p class="body">ChatGPT 같은 일반 AI는 인터넷 전체를 근거로 답해서 가끔 엉뚱한 소리(환각)를 해요. 반면 제미나이 노트북은 <span class="hl">선생님이 올린 파일 안에서만</span> 답을 찾아주고, <strong>답변마다 "몇 페이지에서 가져왔는지" 출처(인용)를 달아줘요.</strong> 그래서 지침서·매뉴얼처럼 "정확한 근거"가 중요한 복지 실무에 딱이에요.</p>
+            <ul class="dots">
+                <li><strong>올릴 수 있는 자료:</strong> PDF·워드·구글 문서/슬라이드·웹페이지 주소·유튜브 영상·음성 파일·복사한 텍스트</li>
+                <li><strong>해주는 일:</strong> 요약 · 질문답변(출처 포함) · 오디오/비디오 개요 · 마인드맵 · 보고서 초안 · 학습카드·퀴즈 · 데이터 계산</li>
+                <li><strong>엔진:</strong> 구글의 최신 Gemini 모델 기반</li>
+            </ul>
+            <div class="note good">💡 <b>사복쌤 한 줄 정의:</b> "내가 올린 지침서·기록만 읽고, 근거까지 짚어주는 똑똑한 신입 팀원."</div>
+        </section>
+
+        <!-- 2 -->
+        <section id="s2">
+            <h2>2. 무료 vs 유료, 뭘 써야 하나요?</h2>
+            <p class="lead">결론부터: <strong>대부분 사복쌤은 무료로 충분해요.</strong> 구글 계정만 있으면 됩니다.</p>
+            <table class="tbl">
+                <tr><th>항목</th><th>무료</th><th>유료(Plus·Pro)</th></tr>
+                <tr><td>노트북 개수</td><td class="c">넉넉</td><td class="c">더 넉넉</td></tr>
+                <tr><td>노트북당 소스(자료)</td><td class="c">수십 개</td><td class="c">수백 개</td></tr>
+                <tr><td>하루 채팅·생성 한도</td><td class="c">일상 사용엔 충분</td><td class="c">대량 사용 가능</td></tr>
+                <tr><td>맞춤 설정·고급 분석·팀 관리</td><td class="c">–</td><td class="c">✔</td></tr>
+            </table>
+            <div class="note tip">📌 <b>유료는 언제?</b> 기관 차원에서 여러 명이 대량으로 쓰거나, 자료가 아주 많을 때요. 유료 기능은 <strong>구글 AI Pro/Ultra 요금제나 구글 워크스페이스</strong>에 포함돼 제공돼요. <br><span style="color:var(--sub);font-size:12.5px;">※ 구체적 개수·요금은 구글 정책에 따라 수시로 바뀌어요(가격은 지역·환율에 따라 다름). 최종 한도는 제미나이 노트북 화면에서 확인하세요.</span></div>
+        </section>
+
+        <!-- 3 -->
+        <section id="s3">
+            <h2>3. 3분 만에 시작하기</h2>
+            <p class="lead">notebooklm.google.com 접속 → 구글 로그인 → 끝. (기존 주소도 새 서비스로 자동 연결돼요. 앱은 스토어에서 "NotebookLM / Gemini Notebook" 검색)</p>
+            <div class="steps">
+                <div class="step"><b>[+ 새로 만들기] 클릭</b><small>빈 노트북이 생겨요. 노트북 = 하나의 주제 폴더라고 생각하세요.</small></div>
+                <div class="step"><b>소스(자료) 업로드</b><small>PDF·워드·구글문서·웹주소·유튜브·음성 등 끌어다 놓거나 선택. 한 노트북에 여러 개 넣으면 통합 분석돼요.</small></div>
+                <div class="step"><b>자료 못 찾겠으면 "소스 찾기(Discover)"</b><small>주제만 입력하면 제미나이 노트북이 관련 웹 자료를 찾아 추천해줘요. (예: "2026 노인맞춤돌봄서비스 사업안내")</small></div>
+                <div class="step"><b>이름 알아보기 쉽게 짓기</b><small>"2026 시설평가 키트"처럼. 노트북이 쌓여도 안 헷갈려요.</small></div>
+                <div class="step"><b>이제 질문하거나 스튜디오에서 결과물 만들기</b><small>채팅창에 질문 / 오른쪽 스튜디오에서 오디오·영상·보고서 생성.</small></div>
+            </div>
+            <div class="note tip">📎 <b>스캔 PDF 팁:</b> 글자를 복사할 수 없는 "사진처럼 스캔된 문서"는 AI가 잘 못 읽어요. 가능하면 <strong>텍스트가 살아있는 원본 PDF</strong>를 올리세요. (해결법은 12번 참고)</div>
+        </section>
+
+        <!-- 4 -->
+        <section id="s4">
+            <h2>4. ⚠️ 사복쌤 1순위 — 개인정보 비식별화</h2>
+            <p class="lead" style="color:var(--red);font-weight:700;">이 챕터만은 꼭 읽어주세요. 클라이언트 정보 보호가 최우선이에요.</p>
+            <div class="note warn">
+                <b>🚫 실명·주민번호·전화번호·상세주소가 담긴 원본을 그대로 올리지 마세요.</b><br>
+                업로드 전에 반드시 <strong>비식별화(가명 처리)</strong> 하세요.
+            </div>
+            <h3 class="blk">가장 빠른 비식별화 방법</h3>
+            <div class="steps">
+                <div class="step"><b>한글/워드에서 Ctrl + H (찾아 바꾸기)</b><small>실명 "홍길동" → "클라이언트A", 주소·연락처도 일괄 치환.</small></div>
+                <div class="step"><b>치환 끝난 사본을 새 파일로 저장</b><small>원본은 절대 건드리지 말고 "업로드용 사본"을 따로 만드세요.</small></div>
+                <div class="step"><b>그 사본만 업로드</b><small>이름을 지웠으니 안심하고 사례 통합 분석을 돌릴 수 있어요.</small></div>
+            </div>
+            <div class="note tip">🔐 <b>참고:</b> 구글은 개인 노트북에 올린 자료를 <strong>모델 학습에 사용하지 않는다</strong>고 안내하고 있어요. 그래도 기관 지침·개인정보보호법이 우선이니, 민감정보는 비식별화가 원칙입니다.</div>
+        </section>
+
+        <!-- 5 -->
+        <section id="s5">
+            <h2>5. 채팅 Q&A — 지침 3초 검색</h2>
+            <p class="lead">두꺼운 사업안내에서 "그 조항 어디였더라…" 찾느라 스크롤하지 마세요. 그냥 물어보면 돼요.</p>
+            <p class="body">채팅창에 질문하면 <strong>올린 자료 안에서만</strong> 답하고, 문장 끝의 <strong>① ② 숫자(인용)를 누르면 원문 위치로 이동</strong>해요. 근거를 눈으로 확인할 수 있으니 결재·상담에 바로 씁니다.</p>
+            <div class="prompt-label">복사해서 바로 쓰는 프롬프트</div>
+            <div class="prompt"><button class="copy-btn" onclick="cp(this)">📋 복사</button><pre>이 사업안내에서 '대상자 선정 기준'과 '제외 대상'만 표로 정리해줘. 각 항목이 몇 페이지에 나오는지 출처도 함께 표시해줘.</pre></div>
+            <div class="prompt"><button class="copy-btn" onclick="cp(this)">📋 복사</button><pre>내가 올린 지침 기준으로, 다음 상황이 지원 대상에 해당하는지 판단하고 근거 조항을 인용해줘: [상황을 여기에 비식별화해서 적기]</pre></div>
+            <div class="note tip">💬 <b>꿀팁:</b> 채팅은 이어서 물을수록 똑똑해져요. "방금 표에서 소득 기준만 더 자세히", "그럼 신청 서류는?" 처럼 대화하듯 파고드세요. 마음에 드는 답은 <strong>메모(Note)로 저장</strong>해두면 나중에 보고서 재료가 돼요.</div>
+        </section>
+
+        <!-- 6 -->
+        <section id="s6">
+            <h2>6. 🎙️ 오디오 개요 — 이동 중에 귀로 듣기</h2>
+            <p class="lead">올린 자료를 <strong>두 명의 AI 진행자가 팟캐스트처럼 대화로 설명</strong>해주는 기능. 한국어 지원!</p>
+            <div class="steps">
+                <div class="step"><b>스튜디오에서 [오디오 개요] 선택</b><small>원하면 "무엇에 집중해서 만들지" 지시도 넣을 수 있어요.</small></div>
+                <div class="step"><b>길이·언어 설정 후 생성</b><small>짧게/보통/길게 선택, 언어는 한국어로.</small></div>
+                <div class="step"><b>재생하거나 다운로드</b><small>출퇴근·가정방문 이동 중, 신규직원 온보딩 자료로 딱.</small></div>
+            </div>
+            <div class="note good">🆕 <b>인터랙티브 모드:</b> 재생 중 <strong>"대화 참여"를 누르면 내가 직접 끼어들어 질문</strong>할 수 있어요. "방금 그 기준 예시 하나만 들어줘" 하면 진행자가 답해줍니다. 라이브 스터디처럼요.</div>
+            <div class="note tip">🎧 <b>이럴 때 최고:</b> 40페이지 지침을 통독할 시간이 없을 때, 큰 맥락과 흐름을 귀로 먼저 잡고 세부는 채팅으로 확인하는 조합.</div>
+        </section>
+
+        <!-- 7 -->
+        <section id="s7">
+            <h2>7. 🎬 비디오 개요 — 교육자료 뚝딱</h2>
+            <p class="lead">2026 신기능! 자료를 <strong>나레이션이 깔린 슬라이드 영상</strong>으로 자동 제작해줘요.</p>
+            <ul class="dots">
+                <li>핵심 내용을 <strong>시각 슬라이드 + 음성 설명</strong>으로 요약 — 글보다 이해가 빨라요.</li>
+                <li><strong>신규 직원 교육</strong>, 어르신·보호자 대상 <strong>사업 설명 영상</strong>, 팀 회의 브리핑에 활용.</li>
+                <li>🆕 <strong>숏폼(60초 세로 영상)</strong>도 만들 수 있어요 — 카톡·인스타로 홍보·안내할 때 딱.</li>
+                <li>스튜디오에서 [비디오 개요] 선택 → 집중 주제/대상 지정 → 생성 → 공유.</li>
+            </ul>
+            <div class="prompt-label">비디오 개요 지시 예시</div>
+            <div class="prompt"><button class="copy-btn" onclick="cp(this)">📋 복사</button><pre>이 사업안내를 '올해 처음 온 신규 사회복지사'가 5분 안에 이해할 수 있게, 꼭 알아야 할 대상·급여·신청절차 중심으로 쉬운 말로 영상 만들어줘.</pre></div>
+            <div class="note tip">🎬 <b>팁:</b> 오디오는 "귀", 비디오는 "눈+귀". 대면 교육·발표엔 비디오, 이동 중 학습엔 오디오가 좋아요.</div>
+        </section>
+
+        <!-- 8 -->
+        <section id="s8">
+            <h2>8. 🧠 마인드맵 · 보고서 · 타임라인</h2>
+            <h3 class="blk">마인드맵 — 사업 구조 한눈에</h3>
+            <p class="body">복잡한 사업안내를 <strong>가지치기 지도</strong>로 그려줘요. 노드를 누르면 그 주제로 더 깊이 파고들 수 있어, 전체 구조를 잡을 때 최고예요.</p>
+            <h3 class="blk">보고서 — 초안을 대신 써줘요</h3>
+            <p class="body">스튜디오의 <strong>보고서</strong> 기능은 브리핑 문서, FAQ, 학습 가이드, 타임라인 등 다양한 형식을 자동으로 만들어줘요. 제미나이 노트북이 자료에 맞는 형식을 <strong>추천</strong>해주기도 하고, 원하는 형식을 직접 지시할 수도 있어요.</p>
+            <div class="prompt-label">회의록·브리핑 프롬프트</div>
+            <div class="prompt"><button class="copy-btn" onclick="cp(this)">📋 복사</button><pre>이 자료들을 바탕으로 팀 공유용 '브리핑 문서'를 만들어줘. [배경 / 핵심 변경사항 / 우리 기관 영향 / 다음 할 일] 순서로, 각 항목당 3줄 이내로.</pre></div>
+            <div class="prompt-label">타임라인(연혁) 프롬프트</div>
+            <div class="prompt"><button class="copy-btn" onclick="cp(this)">📋 복사</button><pre>이 지침의 개정 이력과 주요 변경 시점을 시간 순 타임라인으로 정리해줘.</pre></div>
+        </section>
+
+        <!-- 9 -->
+        <section id="s9">
+            <h2>9. 🃏 플래시카드 · 퀴즈 — 교육·평가 대비</h2>
+            <p class="lead">2026 신기능! 올린 자료로 <strong>학습 카드와 퀴즈 문제를 자동 생성</strong>해줘요.</p>
+            <ul class="dots">
+                <li><strong>신규 직원 교육:</strong> 지침 핵심을 플래시카드로 만들어 스스로 익히게. (맞힌 카드·아직 못 외운 카드가 따로 관리돼 진도가 남아요.)</li>
+                <li><strong>시설평가·감사 대비:</strong> 지표 내용을 퀴즈로 만들어 팀이 함께 점검.</li>
+                <li><strong>자격·보수교육 복습:</strong> 교재를 넣고 예상문제로 셀프 테스트.</li>
+            </ul>
+            <div class="prompt"><button class="copy-btn" onclick="cp(this)">📋 복사</button><pre>이 지침에서 실무자가 자주 틀리는 부분 위주로 O/X와 사지선다 퀴즈 10문제를 만들고, 정답과 근거 조항도 함께 알려줘.</pre></div>
+        </section>
+
+        <!-- 10 -->
+        <section id="s10">
+            <h2>10. 💻 코드 실행 — 표·데이터 분석</h2>
+            <p class="lead">2026 신기능! 이제 제미나이 노트북이 <strong>표·데이터를 직접 계산</strong>해서 차트·표로 만들어줘요.</p>
+            <p class="body">예전엔 AI가 숫자 계산에 약했지만, 이제는 <strong>안전한 클라우드 환경에서 코드를 직접 돌려</strong> 데이터를 분석해요. 엑셀·CSV 같은 표 자료를 올리고 물어보면, 합계·평균·추이 그래프를 뽑아줍니다.</p>
+            <div class="prompt-label">데이터 분석 프롬프트</div>
+            <div class="prompt"><button class="copy-btn" onclick="cp(this)">📋 복사</button><pre>이 이용자 현황표에서 월별 신규 이용자 수 추이를 그래프로 그려주고, 가장 많이 늘어난 달과 그 원인으로 볼 만한 항목을 짚어줘.</pre></div>
+            <div class="note warn"><b>그래도 결재용 정산은 교차확인!</b> 자동 분석이 편해졌지만, 예산·보조금 정산처럼 <strong>틀리면 안 되는 금액</strong>은 사복노트 <strong>행정/회계 마스터</strong>로 다시 검산하세요. 그리고 표에 개인정보가 있으면 올리기 전 비식별화(4번 참고).</div>
+        </section>
+
+        <!-- 11 -->
+        <section id="s11">
+            <h2>11. 📅 연도별 지침 비교 & 🤝 팀 협업</h2>
+            <h3 class="blk">연도별 지침 비교 — "작년이랑 뭐가 달라졌지?"</h3>
+            <p class="body">한 노트북에 <strong>연도별 사업안내를 함께 올리고</strong> 물어보면 끝.</p>
+            <div class="prompt-label">비교 프롬프트</div>
+            <div class="prompt"><button class="copy-btn" onclick="cp(this)">📋 복사</button><pre>2025년과 2026년 사업안내를 비교해서, '바뀐 점'만 [대상자 / 지원금액 / 신청절차 / 서류] 항목별로 표로 정리해줘. 각 변경 내용의 출처 페이지도 표시해줘.</pre></div>
+            <div class="note tip">📌 <b>팁:</b> 파일 이름에 연도를 꼭 넣으세요("2025_사업안내", "2026_사업안내"). AI가 어느 해 자료인지 헷갈리지 않아요.</div>
+            <h3 class="blk">팀 협업 & 공유</h3>
+            <ul class="dots">
+                <li><strong>노트북 공유:</strong> 링크로 동료를 초대해 함께 보거나 편집할 수 있어요. (읽기 전용/편집 권한 선택)</li>
+                <li><strong>공용 지식창고:</strong> 부서 지침·매뉴얼을 한 노트북에 모아두면, 신규자가 질문만으로 업무를 익혀요.</li>
+                <li><strong>공개 공유:</strong> 민감정보가 없는 자료는 공개 링크로 널리 나눌 수도 있어요.</li>
+            </ul>
+            <div class="note warn"><b>공유 전 체크:</b> 공유하는 노트북 안에 비식별화 안 된 클라이언트 정보가 없는지 반드시 확인하세요.</div>
+        </section>
+
+        <!-- 12 -->
+        <section id="s12">
+            <h2>12. 자주 겪는 문제 & 꿀팁</h2>
+            <h3 class="blk">🚨 계산은 코드 실행으로, 정산은 전용 계산기로</h3>
+            <p class="body">코드 실행(10번)으로 데이터 계산이 좋아졌지만, <strong>보조금·예산 정산처럼 틀리면 안 되는 금액</strong>은 사복노트 <strong>행정/회계 마스터</strong> 같은 전용 계산기로 꼭 교차확인하세요.</p>
+            <h3 class="blk">🔍 환각(엉뚱한 답) 크로스체크</h3>
+            <p class="body">출처가 안 달린 답, 애매한 답은 <strong>인용 번호를 눌러 원문을 직접 확인</strong>하세요. "이 내용 출처가 정확히 어디야?"라고 되물어도 좋아요.</p>
+            <h3 class="blk">🖼️ 스캔 PDF가 안 읽힐 때</h3>
+            <ul class="dots">
+                <li><strong>해결법 ①</strong> 원본 문서를 "다른 이름으로 저장 → PDF"로 다시 만들어 텍스트를 살리기.</li>
+                <li><strong>해결법 ②</strong> 구글 문서로 열면 자동 문자인식(OCR)이 되기도 해요. 구글 드라이브에 올려 구글 문서로 열고, 그 문서를 소스로 추가.</li>
+            </ul>
+            <h3 class="blk">🔄 답이 이상하면 새 채팅</h3>
+            <p class="body">대화가 길어져 맥락이 꼬이면, <strong>새 채팅</strong>으로 초기화하고 다시 질문하면 깔끔해져요.</p>
+        </section>
+
+        <div class="end">
+            <h3>단순 서류는 AI에게, 사복쌤은 사람에게 🌿</h3>
+            <p>반복 업무는 우아하게 위임하고,<br>선생님의 시간은 클라이언트에게 쓰세요.</p>
+            <a href="https://saboknote.com" target="_blank">사복노트 바로가기 →</a>
+        </div>
+
+        <p class="disclaimer">본 가이드는 사복노트가 사회복지 현장 맞춤으로 정리한 자료입니다. 제미나이 노트북(구 NotebookLM)의 기능·화면·이용 한도·요금은 구글 정책에 따라 수시로 바뀔 수 있으니, 세부 사항은 공식 화면에서 확인해 주세요. · saboknote.com</p>
+    </div>
+
+    <script>
+        function cp(btn) {
+            const pre = btn.parentElement.querySelector('pre');
+            const text = pre.innerText;
+            const done = () => { const o = btn.innerText; btn.innerText = '✅ 복사됨'; setTimeout(() => btn.innerText = o, 1500); };
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(done).catch(() => fallback(text, done));
+            } else { fallback(text, done); }
+        }
+        function fallback(text, done) {
+            const ta = document.createElement('textarea');
+            ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+            document.body.appendChild(ta); ta.select();
+            try { document.execCommand('copy'); done(); } catch (e) { }
+            document.body.removeChild(ta);
+        }
+    </script>
+</body>
+
+</html>
