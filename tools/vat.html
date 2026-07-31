@@ -121,6 +121,12 @@
             <p>공급가액은 원 단위 절사(내림), 부가세는 총액에서 공급가액을 뺀 값으로 계산합니다. 실제 세금계산서의 단수 처리는 거래처 약정에 따라 다를 수 있으니 발행된 세금계산서 기준으로 최종 확인하세요.</p>
         </div>
 
+                <div class="card" style="text-align:center;">
+            <h2 style="margin-bottom:6px;">👥 동료에게도 알려주세요</h2>
+            <p style="font-size:0.88rem; color:#475569; margin-bottom:12px;">복지관 단톡방에 링크 하나면 팀 전체가 편해져요</p>
+            <button onclick="shareTool(this)" style="width:100%; background:#FEE500; color:#181600; border:none; border-radius:14px; padding:14px; font-size:0.95rem; font-weight:800; cursor:pointer;">💬 카톡·메신저로 공유하기</button>
+        </div>
+
         <div class="card links">
             <h2>관련 도구</h2>
             <a href="/tools/lecture-fee.html">👛 강사료 원천징수 계산기</a>
@@ -148,6 +154,20 @@
             var tax = Math.floor(supply * 0.1);
             t.innerText = tax.toLocaleString() + '원';
             o.innerText = (supply + tax).toLocaleString() + '원';
+        }
+            function shareTool(btn) {
+            var url = location.href.split('#')[0];
+            var title = document.title.split('|')[0].trim();
+            if (navigator.share) {
+                navigator.share({ title: title, text: '사복쌤 실무 계산기 공유해요 — ' + title, url: url }).catch(function () { });
+            } else if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(url).then(function () {
+                    var o = btn.innerHTML; btn.innerHTML = '✅ 링크 복사됨! 붙여넣기 하세요';
+                    setTimeout(function () { btn.innerHTML = o; }, 2000);
+                });
+            } else {
+                window.prompt('이 링크를 복사해서 공유하세요', url);
+            }
         }
     </script>
 </body>

@@ -151,6 +151,12 @@
             <p>네, 기관의 인력 배치 등에 따른 가산율이 수가에 곱해집니다. 가산율까지 반영한 모의계산은 사복노트 앱의 장기요양 계산기에서 할 수 있어요.</p>
         </div>
 
+                <div class="card" style="text-align:center;">
+            <h2 style="margin-bottom:6px;">👥 동료에게도 알려주세요</h2>
+            <p style="font-size:0.88rem; color:#475569; margin-bottom:12px;">복지관 단톡방에 링크 하나면 팀 전체가 편해져요</p>
+            <button onclick="shareTool(this)" style="width:100%; background:#FEE500; color:#181600; border:none; border-radius:14px; padding:14px; font-size:0.95rem; font-weight:800; cursor:pointer;">💬 카톡·메신저로 공유하기</button>
+        </div>
+
         <div class="card links">
             <h2>관련 도구</h2>
             <a href="/tools/vat.html">🧾 부가세 계산기</a>
@@ -174,6 +180,20 @@
             document.getElementById('out-fund').innerText = (limit - copay).toLocaleString() + '원';
         }
         calc();
+            function shareTool(btn) {
+            var url = location.href.split('#')[0];
+            var title = document.title.split('|')[0].trim();
+            if (navigator.share) {
+                navigator.share({ title: title, text: '사복쌤 실무 계산기 공유해요 — ' + title, url: url }).catch(function () { });
+            } else if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(url).then(function () {
+                    var o = btn.innerHTML; btn.innerHTML = '✅ 링크 복사됨! 붙여넣기 하세요';
+                    setTimeout(function () { btn.innerHTML = o; }, 2000);
+                });
+            } else {
+                window.prompt('이 링크를 복사해서 공유하세요', url);
+            }
+        }
     </script>
 </body>
 

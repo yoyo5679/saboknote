@@ -7341,8 +7341,13 @@ try {
         ctx.restore();
     }
 
+    /* 공유 이미지용 QR — 테스트 시작 URL. 캔버스 오염 없이 그리려 data-URI로 프리로드 */
+    const PG_QR_URI = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAYwAAAGMAQMAAADz9wcJAAAABlBMVEUeKTv///93/s7jAAABp0lEQVR42u2cSw7DIAxErV4g978lN6CfgG2cboq9aNUXRRWteJtoZA8DqfRPryYgICAg34aIXscYjx8fX8/bTejtJh9fIP+MvOR0DMWdgyEqrzc/AY2BbGlMq5Yvbo+BVTOdgMZAchozac2OGUWIxkCSGnuqSOyzd+oYSK0fM/OvZQ0/BpLXmF9Xvr1ZV4LkNOavIaSX8w9FbMYdPGSQzV4ZnL81yjATjYHsaaytC0nfHDu9EqTAj41MbIrtHJxLy1Dr0BjItsY0rzADNmW2zuEhg+z0yiUK09bZrHvafigaA9nOLlzu6hN+/BhIQXbRFj82WuRlRUDOD5LMxxZvJqY0VSB+DCTVK9XwuwTDZIYfA6nQWMgrfJUbY+oYSKJXijstZp1x3WnCj4HkNbasK0Meix8DyWcXEneOwml/cn6QmnMXhxl+3RxnLwmksI7Fgz3CeX6QCo1dPJglsYevYGQXIEXn+S95rLdnaAwkqTG/keT1xnl+kDKNXZy/hvwzx+Ahg+T8WLfXw3Wj3N67RGMgRetKFdWaWuDHQAryMf6FBgQE5NeQO/13OdJyoKO6AAAAAElFTkSuQmCC";
+    const pgQrImg = new Image();
+    pgQrImg.src = PG_QR_URI;
+
     function pgGenerateResultCanvas(t) {
-        const W = 800, H = 800;
+        const W = 800, H = 940;
         const canvas = document.createElement("canvas");
         canvas.width = W; canvas.height = H;
         const ctx = canvas.getContext("2d");
@@ -7407,8 +7412,27 @@ try {
         ctx.font = "20px Arial"; ctx.fillStyle = "rgba(255,255,255,0.88)";
         ctx.fillText(t.message, cx, 741);
 
-        ctx.font = "18px Arial"; ctx.fillStyle = "rgba(255,255,255,0.38)";
-        ctx.fillText("saboknote.com", cx, H - 16);
+        // ── 공유 유입 푸터: QR + CTA (스크린샷으로 퍼져도 바로 접속) ──
+        const fY = 794, fH = 118, fX = 60, fW = W - 120;
+        ctx.fillStyle = "rgba(255,255,255,0.96)";
+        roundRect(ctx, fX, fY, fW, fH, 20); ctx.fill();
+
+        const qrS = 92, qrX = fX + 16, qrY = fY + (fH - qrS) / 2;
+        let hasQr = false;
+        try {
+            if (pgQrImg && pgQrImg.complete && pgQrImg.naturalWidth) {
+                ctx.drawImage(pgQrImg, qrX, qrY, qrS, qrS);
+                hasQr = true;
+            }
+        } catch (_) { /* noop */ }
+
+        const tX = hasQr ? (qrX + qrS + 22) : (fX + 30);
+        ctx.textAlign = "left";
+        ctx.font = "bold 27px Arial"; ctx.fillStyle = "#1e293b";
+        ctx.fillText("나도 내 유형 궁금하다면?", tX, fY + 50);
+        ctx.font = "22px Arial"; ctx.fillStyle = "#2563eb";
+        ctx.fillText(hasQr ? "📷 QR 스캔 · saboknote.com" : "👉 saboknote.com", tX, fY + 86);
+        ctx.textAlign = "center";
 
         return canvas;
     }
