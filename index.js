@@ -6315,6 +6315,10 @@ try {
                 window.open('./sabok-game/sabok-escape/overtime-escape.html', '_blank');
                 return;
             }
+            if (type === 'mvote') {
+                window.open('https://mvote.vercel.app/', '_blank');
+                return;
+            }
             if (type === 'quiz') {
                 pgShowAllSteps('intro');
                 return;
