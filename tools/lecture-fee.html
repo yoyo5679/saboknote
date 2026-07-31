@@ -124,6 +124,12 @@
             <p>네, 원천징수 후 다음 달 10일까지 원천세 신고·납부하고, 소득 종류에 따라 지급명세서를 기한 내 제출해야 합니다. 기관 세무 일정에 맞춰 확인하세요.</p>
         </div>
 
+                <div class="card" style="text-align:center;">
+            <h2 style="margin-bottom:6px;">👥 동료에게도 알려주세요</h2>
+            <p style="font-size:0.88rem; color:#475569; margin-bottom:12px;">복지관 단톡방에 링크 하나면 팀 전체가 편해져요</p>
+            <button onclick="shareTool(this)" style="width:100%; background:#FEE500; color:#181600; border:none; border-radius:14px; padding:14px; font-size:0.95rem; font-weight:800; cursor:pointer;">💬 카톡·메신저로 공유하기</button>
+        </div>
+
         <div class="card links">
             <h2>관련 도구</h2>
             <a href="/tools/vat.html">🧾 부가세 계산기</a>
@@ -156,6 +162,20 @@
             }
             t.innerText = tax.toLocaleString() + '원';
             n.innerText = net.toLocaleString() + '원';
+        }
+            function shareTool(btn) {
+            var url = location.href.split('#')[0];
+            var title = document.title.split('|')[0].trim();
+            if (navigator.share) {
+                navigator.share({ title: title, text: '사복쌤 실무 계산기 공유해요 — ' + title, url: url }).catch(function () { });
+            } else if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(url).then(function () {
+                    var o = btn.innerHTML; btn.innerHTML = '✅ 링크 복사됨! 붙여넣기 하세요';
+                    setTimeout(function () { btn.innerHTML = o; }, 2000);
+                });
+            } else {
+                window.prompt('이 링크를 복사해서 공유하세요', url);
+            }
         }
     </script>
 </body>
