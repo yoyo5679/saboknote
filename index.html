@@ -732,8 +732,8 @@
                                             맞춤형 프롬프트 복사 기능을 제공합니다.</li>
                                         <li><strong>행정/회계 마스터:</strong> 부가세, 강사료 세금, 급여 정산 등 복잡한 계산을 1초 만에 해결해주는 12가지 필수
                                             마법 도구입니다.</li>
-                                        <li><strong>감정 파쇄기:</strong> 힘든 순간을 익명으로 털어놓으면 선배 사복샘의 위로 답장을 받고, '성장 궤적'에서
-                                            내 마음이 어떻게 변해왔는지 흐름으로 돌아볼 수 있어요.</li>
+                                        <li><strong>감정 파쇄기:</strong> 힘든 순간을 익명으로 적고 파쇄하면 흔적 없이 사라져요. 쓴 글은 어디에도
+                                            저장되지 않아, 마음 놓고 털어내는 나만의 해우소예요.</li>
                                         <li><strong>사복 놀이터:</strong> '내 안의 사복캐 찾기' 심리테스트, 실시간 랭킹 '야근탈출 게임', 사다리 타기, AI 점심
                                             메뉴 추천까지 — 잠깐 머리 식히기 좋은 힐링 콘텐츠 모음이에요.</li>
                                         <li><strong>보물창고:</strong> 사례관리 기록 자동화, AI 활용법 등 현장에 바로 써먹는 꿀자료를 모아둔 자료실입니다.</li>
@@ -1061,8 +1061,7 @@
                         <h2 style="font-size:1.4rem; font-weight:900; color:var(--text-2); margin-bottom:8px;">감정 파쇄기</h2>
                         <p style="font-size:0.95rem; color:var(--text-5); line-height:1.5;">
                             오늘 겪은 힘든 일, 다 적어보세요.<br>
-                            현장을 지나온 <strong style="color:#16a34a;">선배가 먼저 읽고</strong>,
-                            <strong style="color:#ef4444;">파쇄</strong>하면 영원히 사라져요. (쓴 글은 서버 저장 안 됨)
+                            <strong style="color:#ef4444;">파쇄</strong>하면 흔적 없이 사라져요. (쓴 글은 서버에 저장 안 됨)
                         </p>
                     </div>
                     <div id="shredder-write-area" style="width: 100%; max-width: 400px;">
@@ -1071,20 +1070,12 @@
                             style="width: 100%; height: 180px; border: 2px dashed #fca5a5; border-radius: 16px; padding: 20px; font-size: 1rem; color: var(--text-3); background: #fff5f5; resize: none; transition: all 0.3s; outline: none; line-height: 1.6;"></textarea>
                         <div id="shredder-strips"
                             style="display: none; gap: 4px; justify-content: center; margin: 16px 0;"></div>
-                        <button id="comfort-btn" onclick="startComfort()"
-                            style="width: 100%; padding: 18px; background: var(--teal-700); color: white; border: none; border-radius: 16px; font-size: 1.1rem; font-weight: 800; cursor: pointer; margin-top: 16px; transition: transform 0.1s, box-shadow 0.2s; box-shadow: 0 4px 14px rgba(12,114,108,0.3);">💬
-                            선배에게 털어놓고 파쇄하기</button>
                         <button id="shredder-btn" onclick="doShred()"
-                            style="width: 100%; padding: 13px; background: none; color: #b91c1c; border: 1.5px solid #fca5a5; border-radius: 14px; font-size: 0.95rem; font-weight: 700; cursor: pointer; margin-top: 10px;">🗑️
-                            위로 없이 바로 파쇄하기</button>
-                        <div style="text-align:center; margin-top:12px;">
-                            <button onclick="openGrowthView()"
-                                style="background:none; border:none; color:var(--text-5); font-size:0.85rem; font-weight:700; cursor:pointer; text-decoration:underline;">🌱
-                                나의 성장 궤적 보기</button>
-                        </div>
+                            style="width: 100%; padding: 18px; background: linear-gradient(135deg,#ef4444,#dc2626); color: white; border: none; border-radius: 16px; font-size: 1.1rem; font-weight: 800; cursor: pointer; margin-top: 16px; transition: transform 0.1s, box-shadow 0.2s; box-shadow: 0 4px 14px rgba(220,38,38,0.28);">🗑️
+                            감정 파쇄하기</button>
                         <p
-                            style="text-align:center; font-size:0.72rem; color:var(--text-6); margin-top:12px; line-height:1.5;">
-                            이 기능은 전문 심리상담을 대체하지 않습니다.<br>쓴 글은 저장되지 않고, 그날의 흔적(힘듦 정도·주제·위로 한 줄)만 남아요.</p>
+                            style="text-align:center; font-size:0.72rem; color:var(--text-6); margin-top:14px; line-height:1.5;">
+                            이 기능은 전문 심리상담을 대체하지 않습니다.<br>쓴 글은 어디에도 저장되지 않고, 파쇄하는 순간 완전히 사라져요.</p>
                     </div>
                     <div id="shredder-success"
                         style="display: none; text-align: center; padding: 20px 0; width: 100%; max-width: 400px;">
@@ -1111,8 +1102,6 @@
                     </div>
 
                     <div style="height:0px;"></div>
-                </div>
-                <div id="growth-view" style="display:none; padding: 20px 16px 120px; max-width: 440px; margin: 0 auto;">
                 </div>
             </div>
 
@@ -1400,7 +1389,7 @@
 
     </div><!-- /#app -->
 
-    <script src="index.js?v=29" charset="utf-8"></script>
+    <script src="index.js?v=30" charset="utf-8"></script>
     <script>
         // PWA Service Worker Registration
         if ('serviceWorker' in navigator) {
