@@ -258,8 +258,6 @@ try {
         if (stripped) { stripped.style.display = 'none'; stripped.innerHTML = ''; }
         if (writeArea) writeArea.style.display = 'block';
         if (successArea) { successArea.style.display = 'none'; successArea.innerHTML = ''; }
-        const btn = document.getElementById('comfort-btn');
-        if (btn) { btn.disabled = false; btn.innerHTML = '💬 선배에게 털어놓고 파쇄하기'; }
     };
 
     function validateShredInput() {
