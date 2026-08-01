@@ -131,7 +131,7 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--g5);color:var(--text
 </div>
 
 <div class="stat-bar">
-  <div class="stat"><div class="stat-num">8강</div><div class="stat-label">공개 강의</div></div>
+  <div class="stat"><div class="stat-num">9강</div><div class="stat-label">공개 강의</div></div>
   <div class="stat"><div class="stat-num">무료</div><div class="stat-label">전 강좌 0원</div></div>
   <div class="stat"><div class="stat-num">2026</div><div class="stat-label">최신 반영</div></div>
 </div>
@@ -139,7 +139,7 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--g5);color:var(--text
 <!-- 카테고리 -->
 <div class="cat-nav" id="catNav">
   <button class="cat-chip active" data-cat="all" onclick="filterCat('all',this)">🗂️ 전체</button>
-  <button class="cat-chip" data-cat="ai" onclick="filterCat('ai',this)">🤖 AI 활용 <span class="cnt">8</span></button>
+  <button class="cat-chip" data-cat="ai" onclick="filterCat('ai',this)">🤖 AI 활용 <span class="cnt">9</span></button>
   <button class="cat-chip" data-cat="form" onclick="filterCat('form',this)">📋 사복 서식 <span class="cnt">준비중</span></button>
   <button class="cat-chip" data-cat="tip" onclick="filterCat('tip',this)">💡 실무 꿀팁 <span class="cnt">준비중</span></button>
   <button class="cat-chip" data-cat="care" onclick="filterCat('care',this)">🌿 마음 충전 <span class="cnt">준비중</span></button>
@@ -149,7 +149,7 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--g5);color:var(--text
 <div class="cat-section" data-cat="ai">
   <div class="sec-head">
     <h2>🤖 AI 활용 클래스</h2>
-    <span class="sec-cnt">1개 클래스 · 8강</span>
+    <span class="sec-cnt">2개 클래스 · 9강</span>
   </div>
   <div class="sec-desc">서류의 늪에서 칼퇴하는 그날까지, AI를 실무에 녹이는 법.</div>
 
@@ -252,6 +252,88 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--g5);color:var(--text
   </div>
 
   <div class="note-old">💡 이 클래스는 이전 이름(<b>NotebookLM</b>) 기준으로 만든 강의를 포함하고 있어요. 2026년 7월 <b>제미나이 노트북</b>으로 이름이 바뀌었지만 <b>같은 제품·같은 기능</b>이라 내용은 그대로 유효해요. 최신 기능·새 이름은 <b>대표 통합본</b>에서 확인하세요!</div>
+
+  <div class="course">
+    <div class="course-thumb" style="background:linear-gradient(140deg,#060818 0%,#241a52 45%,#5b21b6 100%);">
+      <div class="ct-badges">
+        <span class="ct-badge new">🆕 2026 최신</span>
+        <span class="ct-badge free">무료</span>
+        <span class="ct-badge rename">🚀 신도구 입문</span>
+      </div>
+      <span class="ct-emoji">🚀</span>
+      <div class="ct-title">구글 안티그래비티 입문 클래스</div>
+      <div class="ct-sub">Google Antigravity · 말로 시켜서 나만의 실무 도구 만들기<br>코딩 몰라도 OK! 겁먹지 말고 맛보기부터 👇</div>
+      <div class="ct-meta">
+        <span>📖 통합 가이드</span><span>⏱️ 20분 입문</span><span>🧗 한 단계 위 도전</span>
+      </div>
+      <button class="ct-cta" onclick="go('./honeydata/antigravity_guide.html')">📖 무료로 시작하기 <span class="arw">→</span></button>
+      <div class="ct-hint">노트북LM 다음 단계 — AI가 대신 만들어주는 신세계</div>
+    </div>
+
+    <button class="cur-toggle" onclick="toggleCur(this)" aria-expanded="false">
+      <span>📚 전체 목차 펼쳐보기</span>
+      <span class="ct-count">11챕터 · 무료</span>
+      <span class="chev">▾</span>
+    </button>
+    <div class="curriculum" hidden>
+
+      <div class="lesson rep" onclick="go('./honeydata/antigravity_guide.html')">
+        <div class="lesson-no">대표</div>
+        <div class="lesson-body">
+          <div class="lesson-title">안티그래비티 완전정복 (입문판) <span class="mini rep">추천 시작점</span></div>
+          <div class="lesson-sub">정체·시작법·화면구성·첫 작업·안전수칙까지 11챕터 통합본</div>
+        </div>
+        <div class="lesson-go">▶</div>
+      </div>
+
+      <div class="lesson" onclick="go('./honeydata/antigravity_guide.html#s2')">
+        <div class="lesson-no">01</div>
+        <div class="lesson-body">
+          <div class="lesson-title">노트북LM이랑 뭐가 다른가요? <span class="mini lv">입문</span></div>
+          <div class="lesson-sub">읽고 정리는 노트북LM, 만들기는 안티그래비티 — 한 표로 비교</div>
+        </div>
+        <div class="lesson-go">▶</div>
+      </div>
+
+      <div class="lesson" onclick="go('./honeydata/antigravity_guide.html#s3')">
+        <div class="lesson-no">02</div>
+        <div class="lesson-body">
+          <div class="lesson-title">사복쌤이 이걸로 뭘 만들 수 있나 <span class="mini lv">입문</span></div>
+          <div class="lesson-sub">기관 전용 미니 웹도구·데이터 정리·안내 페이지 실전 예시</div>
+        </div>
+        <div class="lesson-go">▶</div>
+      </div>
+
+      <div class="lesson" onclick="go('./honeydata/antigravity_guide.html#s4')">
+        <div class="lesson-no">03</div>
+        <div class="lesson-body">
+          <div class="lesson-title">시작하기 — 다운로드 & 로그인 <span class="mini lv">입문</span></div>
+          <div class="lesson-sub">설치부터 구글 로그인, 연습용 폴더 준비까지</div>
+        </div>
+        <div class="lesson-go">▶</div>
+      </div>
+
+      <div class="lesson" onclick="go('./honeydata/antigravity_guide.html#s6')">
+        <div class="lesson-no">04</div>
+        <div class="lesson-body">
+          <div class="lesson-title">첫 작업 돌려보기 (말로 시키기) <span class="mini lv">실전</span></div>
+          <div class="lesson-sub">복붙 프롬프트로 한 장짜리 안내 페이지·데이터 그래프 만들기</div>
+        </div>
+        <div class="lesson-go">▶</div>
+      </div>
+
+      <div class="lesson" onclick="go('./honeydata/antigravity_guide.html#s10')">
+        <div class="lesson-no">05</div>
+        <div class="lesson-body">
+          <div class="lesson-title">⚠️ 안전·개인정보·비용 필독 <span class="mini lv">필수</span></div>
+          <div class="lesson-sub">비식별화, 내 PC 실행 주의, 요금 정책, 결과 교차확인</div>
+        </div>
+        <div class="lesson-go">▶</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="note-old">🚀 <b>안티그래비티</b>는 원래 개발자용 도구라 노트북LM보다 문턱이 조금 높아요. 하지만 <b>코딩을 몰라도 한국어로 시켜서</b> 간단한 도구를 만들 수 있어요. 완벽히 다루기보다 <b>"이런 게 있구나" 감 잡기</b>부터 편하게 시작하세요!</div>
 </div>
 
 <!-- ===== 사복 서식 ===== -->

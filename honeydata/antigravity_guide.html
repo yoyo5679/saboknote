@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>구글 안티그래비티 완전정복 — 사복쌤 입문판 🚀</title>
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Noto+Sans+KR:wght@400;500;700;900&display=swap"
+        rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        :root {
+            --g: #6d28d9; --g2: #7c3aed; --g3: #ddd6fe; --g4: #ede9fe; --g5: #f5f3ff;
+            --ink: #2e1065; --text: #1e293b; --sub: #64748b; --line: #e6e2f2;
+            --card: #ffffff; --warm: #fff8ec; --amber: #f59e0b; --amber-d: #b45309;
+            --green: #0c726c; --green-l: #e4faf8; --red: #dc2626; --radius: 18px;
+        }
+        body { font-family: 'Noto Sans KR', sans-serif; background: var(--g5); color: var(--text); line-height: 1.7; }
+        .wrap { max-width: 760px; margin: 0 auto; padding: 0 0 60px; }
+
+        /* top bar */
+        .topbar { position: sticky; top: 0; z-index: 20; background: rgba(255,255,255,0.92); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); padding: 10px 16px; display: flex; align-items: center; gap: 8px; }
+        .back-btn { border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 7px 14px; font-size: 13px; font-weight: 700; color: var(--g); cursor: pointer; font-family: inherit; }
+        .topbar-title { font-size: 13px; color: var(--sub); font-weight: 700; }
+
+        /* hero */
+        .hero { background: linear-gradient(140deg, #060818 0%, #241a52 45%, #5b21b6 100%); color: #fff; padding: 40px 24px 34px; text-align: center; position: relative; overflow: hidden; }
+        .hero::before { content: ''; position: absolute; right: -40px; top: -40px; width: 200px; height: 200px; border-radius: 50%; background: rgba(139,92,246,0.22); }
+        .hero::after { content: '✦ · ✧ · ✦ · ✧'; position: absolute; left: 0; top: 14px; width: 100%; text-align: center; color: rgba(255,255,255,0.18); font-size: 12px; letter-spacing: 6px; }
+        .hero-badge { display: inline-block; background: rgba(255,255,255,0.16); border: 1px solid rgba(255,255,255,0.28); border-radius: 999px; padding: 5px 14px; font-size: 12px; font-weight: 700; margin-bottom: 14px; position: relative; }
+        .hero h1 { font-family: 'Gaegu', cursive; font-size: 33px; line-height: 1.25; margin-bottom: 10px; position: relative; }
+        .hero h1 span { background: linear-gradient(90deg, #a78bfa, #67e8f9); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: #a78bfa; }
+        .hero .oldname { display: inline-block; font-family: 'Noto Sans KR'; font-size: 13px; font-weight: 500; background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.24); border-radius: 999px; padding: 3px 12px; margin-bottom: 12px; position: relative; }
+        .hero p { font-size: 14.5px; color: rgba(255,255,255,0.85); position: relative; }
+        .hero-meta { margin-top: 16px; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; position: relative; }
+        .hero-meta span { background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); border-radius: 999px; padding: 4px 12px; font-size: 12px; }
+
+        /* 눈높이 안내 배너 */
+        .rename { margin: 20px 16px 0; background: linear-gradient(135deg, #f5f3ff, #ede9fe); border: 1.5px solid #d6c4f5; border-radius: var(--radius); padding: 18px 20px; }
+        .rename h3 { font-size: 16px; color: #6b3fb5; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+        .rename p { font-size: 13.8px; color: #4a3a6b; }
+        .rename b { color: #5a2ea6; }
+
+        /* 업데이트 요약 배너 */
+        .whatsnew { margin: 16px 16px 0; background: var(--warm); border: 1.5px solid #fde68a; border-radius: var(--radius); padding: 18px 20px; }
+        .whatsnew h3 { font-size: 16px; color: var(--amber-d); margin-bottom: 12px; }
+        .nu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+        .nu { background: #fff; border: 1px solid #fde68a; border-radius: 12px; padding: 12px; }
+        .nu b { display: block; font-size: 13.5px; color: var(--text); margin-bottom: 2px; }
+        .nu small { font-size: 12px; color: var(--sub); }
+
+        /* 목차 */
+        .toc { margin: 20px 16px 0; background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 18px; }
+        .toc h4 { font-size: 13px; color: var(--sub); margin-bottom: 10px; letter-spacing: 0.03em; }
+        .toc ol { margin: 0; padding-left: 20px; }
+        .toc li { font-size: 14px; margin-bottom: 5px; }
+        .toc a { color: var(--g); text-decoration: none; font-weight: 500; }
+        .toc a:hover { text-decoration: underline; }
+
+        /* 섹션 */
+        section { margin: 26px 16px 0; background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 22px 20px; scroll-margin-top: 60px; }
+        section > h2 { font-size: 20px; color: var(--ink); margin-bottom: 6px; display: flex; align-items: center; gap: 9px; }
+        section > .lead { font-size: 14px; color: var(--sub); margin-bottom: 16px; }
+        h3.blk { font-size: 15.5px; color: var(--g); margin: 18px 0 8px; }
+        p.body { font-size: 14.5px; margin-bottom: 12px; }
+        ul.dots { margin: 0 0 12px; padding-left: 4px; list-style: none; }
+        ul.dots li { position: relative; padding-left: 20px; font-size: 14px; margin-bottom: 7px; }
+        ul.dots li::before { content: '·'; position: absolute; left: 6px; color: var(--g2); font-weight: 900; }
+        strong { color: var(--ink); }
+        .hl { background: linear-gradient(transparent 60%, #ddd6fe 60%); font-weight: 700; }
+
+        /* step */
+        .steps { counter-reset: s; margin: 8px 0 4px; }
+        .step { counter-increment: s; position: relative; padding: 10px 0 10px 44px; border-bottom: 1px dashed var(--line); }
+        .step:last-child { border-bottom: none; }
+        .step::before { content: counter(s); position: absolute; left: 0; top: 10px; width: 28px; height: 28px; background: var(--g); color: #fff; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; }
+        .step b { display: block; font-size: 14.5px; }
+        .step small { font-size: 13px; color: var(--sub); }
+
+        /* prompt box */
+        .prompt { background: #0f172a; border-radius: 12px; padding: 12px 14px 13px; margin: 10px 0 14px; display: flex; flex-direction: column; }
+        .prompt pre { color: #e2e8f0; font-size: 13px; line-height: 1.6; white-space: pre-wrap; word-break: break-word; font-family: 'Noto Sans KR', monospace; }
+        .copy-btn { align-self: flex-end; margin-bottom: 9px; background: #334155; color: #fff; border: none; border-radius: 8px; padding: 5px 12px; font-size: 12px; font-weight: 700; cursor: pointer; font-family: inherit; }
+        .copy-btn:active { background: #6d28d9; }
+        .prompt-label { font-size: 12px; color: var(--g); font-weight: 700; margin-bottom: 6px; }
+
+        /* callouts */
+        .note { border-radius: 12px; padding: 14px 16px; margin: 12px 0; font-size: 13.5px; line-height: 1.65; }
+        .note.tip { background: var(--g5); border: 1px solid var(--g3); }
+        .note.warn { background: #fef2f2; border: 1px solid #fecaca; color: #7f1d1d; }
+        .note.warn b { color: #b91c1c; }
+        .note.good { background: var(--green-l); border: 1px solid #b5e5df; }
+        .note b { color: inherit; }
+
+        /* table */
+        .tbl { width: 100%; border-collapse: collapse; font-size: 13.5px; margin: 8px 0 14px; }
+        .tbl th, .tbl td { border: 1px solid var(--line); padding: 9px 11px; text-align: left; }
+        .tbl th { background: var(--g5); font-weight: 700; color: var(--ink); }
+        .tbl td.c { text-align: center; }
+
+        /* footer */
+        .end { margin: 30px 16px 0; background: linear-gradient(135deg, #241a52, #6d28d9); border-radius: var(--radius); padding: 26px 22px; color: #fff; text-align: center; }
+        .end h3 { font-family: 'Gaegu', cursive; font-size: 24px; color: #a78bfa; margin-bottom: 8px; }
+        .end p { font-size: 14px; color: rgba(255,255,255,0.85); margin-bottom: 16px; }
+        .end a { display: inline-block; background: #fff; color: var(--g); text-decoration: none; font-weight: 700; border-radius: 999px; padding: 11px 22px; font-size: 14px; }
+        .disclaimer { margin: 18px 16px 0; font-size: 11.5px; color: var(--sub); text-align: center; line-height: 1.6; }
+    </style>
+</head>
+
+<body>
+    <div class="topbar">
+        <button class="back-btn" onclick="history.length>1?history.back():location.href='../treasure.html'">← 보물창고</button>
+        <span class="topbar-title">사복쌤 구글 안티그래비티 입문 가이드</span>
+    </div>
+
+    <div class="hero">
+        <span class="hero-badge">🆕 2026 최신 · 안티그래비티 2.0 반영판</span>
+        <span class="oldname">Google Antigravity · 구글의 AI 에이전트 개발 플랫폼</span>
+        <h1>구글 안티그래비티 <span>완전정복</span><br>사복쌤 입문판 🚀</h1>
+        <p>코딩 1도 몰라도, 말로 시켜서 나만의 실무 도구를.<br>AI가 대신 만들어주는 신세계, 딱 필요한 만큼만 배워요.</p>
+        <div class="hero-meta"><span>⏱️ 20분 입문</span><span>💸 프리뷰 무료</span><span>💻 PC 전용</span></div>
+    </div>
+
+    <div class="wrap">
+
+        <div class="rename">
+            <h3>📢 먼저, 솔직하게 말할게요</h3>
+            <p>안티그래비티는 원래 <b>개발자용 도구</b>예요. 노트북LM(제미나이 노트북)이 "자료 읽어주는 AI 비서"라면, 이건 <b>"내 컴퓨터에서 프로그램·웹페이지를 대신 만들어주는 AI 팀"</b>이에요. 그래서 노트북LM보다 <b>한 단계 문턱이 높아요.</b> 하지만 <strong>코딩을 몰라도 "말(한국어)로 시켜서" 간단한 도구를 만들 수 있는</strong> 시대가 열렸고, 이 강의는 사복쌤이 겁먹지 않고 <b>맛보기·입문</b>할 수 있게 딱 필요한 것만 담았어요. 완벽히 다루는 게 목표가 아니라, <b>"아, 이런 거구나" 감 잡기</b>가 목표예요. 🌿</p>
+        </div>
+
+        <div class="whatsnew">
+            <h3>⚡ 안티그래비티, 한마디로 이런 거예요</h3>
+            <div class="nu-grid">
+                <div class="nu"><b>🤖 에이전트가 대신 일함</b><small>내가 시키면 AI가 계획·작성·검증까지 스스로</small></div>
+                <div class="nu"><b>🗣️ 한국어로 지시</b><small>"이런 거 만들어줘" 말로 시키면 됨</small></div>
+                <div class="nu"><b>🧩 에디터+터미널+브라우저</b><small>AI가 이 셋을 오가며 실제로 만들고 테스트</small></div>
+                <div class="nu"><b>🧾 아티팩트(작업 영수증)</b><small>AI가 한 일을 계획·스샷으로 눈에 보이게</small></div>
+                <div class="nu"><b>👥 여러 에이전트 동시에</b><small>2.0 신기능 — 여러 작업 병렬 처리</small></div>
+                <div class="nu"><b>⏰ 예약 작업</b><small>정해둔 시각에 백그라운드로 자동 실행</small></div>
+                <div class="nu"><b>🧠 모델 골라 쓰기</b><small>제미나이·클로드·오픈모델 중 선택</small></div>
+                <div class="nu"><b>💸 프리뷰 무료</b><small>공개 미리보기 기간이라 지금은 0원</small></div>
+            </div>
+        </div>
+
+        <div class="toc">
+            <h4>목차</h4>
+            <ol>
+                <li><a href="#s1">안티그래비티가 대체 뭔가요?</a></li>
+                <li><a href="#s2">노트북LM이랑 뭐가 다른가요?</a></li>
+                <li><a href="#s3">사복쌤이 이걸로 뭘 할 수 있나요?</a></li>
+                <li><a href="#s4">시작하기 — 다운로드 & 로그인</a></li>
+                <li><a href="#s5">화면 구성 — 에이전트 매니저 vs 에디터</a></li>
+                <li><a href="#s6">첫 작업 돌려보기 (말로 시키기)</a></li>
+                <li><a href="#s7">🧾 아티팩트 — AI가 한 일 검증하기</a></li>
+                <li><a href="#s8">👥 멀티 에이전트 & 예약 작업 (2.0)</a></li>
+                <li><a href="#s9">🧠 어떤 AI 모델을 쓸까?</a></li>
+                <li><a href="#s10">⚠️ 사복쌤 필독 — 안전·개인정보·비용</a></li>
+                <li><a href="#s11">자주 겪는 문제 & 꿀팁</a></li>
+            </ol>
+        </div>
+
+        <!-- 1 -->
+        <section id="s1">
+            <h2>1. 안티그래비티가 대체 뭔가요?</h2>
+            <p class="lead">구글이 만든 <strong>"AI 에이전트에게 일을 시키는 개발 플랫폼"</strong>이에요.</p>
+            <p class="body">노트북LM한테는 "이 자료 요약해줘"라고 물어봤죠. 안티그래비티한테는 <span class="hl">"이런 걸 만들어줘"라고 시켜요.</span> 그럼 AI가 사람 팀원처럼 <strong>①계획을 세우고 → ②직접 만들고 → ③잘 됐는지 스스로 확인</strong>까지 해줘요. 내가 옆에서 계속 붙어 있지 않아도 알아서 진행하고, 다 되면 결과를 보여줍니다.</p>
+            <ul class="dots">
+                <li><strong>정체:</strong> 에이전트 우선(agent-first) 개발 도구. 구글이 2025년 말 공개, 2026년 5월 <strong>2.0</strong>으로 크게 업그레이드.</li>
+                <li><strong>해주는 일:</strong> 웹페이지·간단한 앱·자동화 스크립트 만들기, 데이터 정리, 문서 변환 등 "컴퓨터로 하는 일"을 대신.</li>
+                <li><strong>특징:</strong> AI가 <strong>에디터(글 쓰는 곳)·터미널(명령 실행)·브라우저(웹 확인)</strong>를 스스로 오가며 실제로 만들고 눈으로 검증까지 함.</li>
+            </ul>
+            <div class="note good">💡 <b>사복쌤 한 줄 정의:</b> "말로 시키면 프로그램을 대신 만들어주는, 시키는 대로 척척 하는 AI 개발팀."</div>
+        </section>
+
+        <!-- 2 -->
+        <section id="s2">
+            <h2>2. 노트북LM이랑 뭐가 다른가요?</h2>
+            <p class="lead">둘 다 구글 AI지만 <strong>쓰임새가 완전히 달라요.</strong> 헷갈리지 마세요.</p>
+            <table class="tbl">
+                <tr><th>비교</th><th>📓 노트북LM (제미나이 노트북)</th><th>🚀 안티그래비티</th></tr>
+                <tr><td>한마디로</td><td>내 자료 읽어주는 AI 비서</td><td>프로그램 만들어주는 AI 개발팀</td></tr>
+                <tr><td>시키는 것</td><td>"요약해줘 / 찾아줘 / 비교해줘"</td><td>"이런 도구·페이지 만들어줘"</td></tr>
+                <tr><td>결과물</td><td>요약·오디오·영상·퀴즈</td><td>웹페이지·앱·자동화·데이터 처리</td></tr>
+                <tr><td>난이도</td><td class="c">🐣 왕초보 OK</td><td class="c">🧗 한 단계 위</td></tr>
+                <tr><td>어디서</td><td>웹·모바일 앱</td><td>PC에 설치하는 프로그램</td></tr>
+            </table>
+            <div class="note tip">📌 <b>정리:</b> <strong>읽고 정리</strong>는 노트북LM, <strong>만들기</strong>는 안티그래비티. 사복쌤 대부분은 노트북LM이 주력이고, 안티그래비티는 "나만의 도구를 직접 만들어보고 싶을 때" 도전하는 <strong>다음 단계</strong>예요.</div>
+        </section>
+
+        <!-- 3 -->
+        <section id="s3">
+            <h2>3. 사복쌤이 이걸로 뭘 할 수 있나요?</h2>
+            <p class="lead">"개발자도 아닌데 이걸 왜?" 싶죠. 현장에서 이런 걸 만들 수 있어요.</p>
+            <ul class="dots">
+                <li><strong>우리 기관 전용 미니 웹도구:</strong> 대상자 선정 체크리스트, 간단한 자격 판정기, 신청서류 안내 페이지.</li>
+                <li><strong>반복 문서 자동 정리:</strong> 여러 엑셀 파일을 하나로 합치기, 이름·형식 일괄 정리.</li>
+                <li><strong>데이터 표·그래프:</strong> 이용자 현황 엑셀을 넣고 "월별 추이 그래프로 만들어줘".</li>
+                <li><strong>안내용 랜딩페이지:</strong> 프로그램 참가 신청 안내, 행사 소개 한 장짜리 웹페이지.</li>
+                <li><strong>배움 그 자체:</strong> "AI 시대에 이런 게 있구나"를 몸으로 익혀두면, 강의·콘텐츠 소재로도 훌륭해요.</li>
+            </ul>
+            <div class="note warn"><b>솔직한 눈높이:</b> 처음부터 완벽한 프로그램을 뽑겠다기보다, <strong>작고 간단한 것 하나</strong>부터 시작하세요. 복잡한 걸 시키면 초보에겐 어려워요. "한 장짜리 안내 페이지"처럼 <strong>범위를 좁게</strong> 잡는 게 성공 비결이에요.</div>
+        </section>
+
+        <!-- 4 -->
+        <section id="s4">
+            <h2>4. 시작하기 — 다운로드 & 로그인</h2>
+            <p class="lead">노트북LM은 웹으로 바로 썼지만, 안티그래비티는 <strong>PC에 프로그램을 설치</strong>해요.</p>
+            <div class="steps">
+                <div class="step"><b>공식 사이트 접속</b><small>antigravity.google 에 들어가요. (검색창에 "Google Antigravity")</small></div>
+                <div class="step"><b>내 컴퓨터용 설치파일 다운로드</b><small>윈도우·맥·리눅스 지원. 내 PC에 맞는 걸 받아 설치해요. (스마트폰은 지원 안 해요, PC 전용)</small></div>
+                <div class="step"><b>구글 계정으로 로그인</b><small>노트북LM 쓰던 그 구글 계정 그대로 로그인하면 돼요.</small></div>
+                <div class="step"><b>프리뷰 = 무료</b><small>공개 미리보기 기간이라 지금은 무료로 쓸 수 있어요. (정책·한도는 바뀔 수 있으니 화면에서 확인)</small></div>
+                <div class="step"><b>작업 폴더(워크스페이스) 하나 정하기</b><small>결과물이 저장될 폴더예요. 바탕화면에 "안티그래비티_연습" 폴더 하나 만들어 지정하면 깔끔해요.</small></div>
+            </div>
+            <div class="note tip">💻 <b>참고:</b> 설치·요금·화면은 구글 정책에 따라 자주 바뀌어요. 이 강의는 큰 흐름을 잡는 용도이고, 세부 버튼 위치는 실제 화면 기준으로 봐 주세요.</div>
+        </section>
+
+        <!-- 5 -->
+        <section id="s5">
+            <h2>5. 화면 구성 — 에이전트 매니저 vs 에디터</h2>
+            <p class="lead">안티그래비티엔 화면(모드)이 <strong>두 개</strong> 있어요. 이것만 알면 안 헤매요.</p>
+            <h3 class="blk">🗂️ 에이전트 매니저 — "관리자 책상"</h3>
+            <p class="body">처음 켜면 여기부터 보여요. <strong>AI 팀원에게 일을 맡기고, 진행 상황을 지켜보고, 결과를 검토</strong>하는 곳이에요. 팀장이 "이거 해줘" 시켜놓고 다른 일 하다가 결과 확인하듯, <span class="hl">여러 작업을 동시에 맡겨두는</span> 데 좋아요.</p>
+            <h3 class="blk">📝 에디터 — "실제 작업 화면"</h3>
+            <p class="body">우리가 흔히 아는 코드 편집 화면이에요. 파일 목록, 글 쓰는 공간, 명령 실행하는 터미널이 다 있어요. AI가 만든 결과를 <strong>직접 들여다보고 고칠 때</strong> 써요. 초보는 여길 자세히 몰라도 괜찮아요 — 눈으로 결과만 확인하는 정도면 충분.</p>
+            <div class="note tip">🔀 <b>전환 방법:</b> 화면 오른쪽 위 <strong>[에디터 열기]/[에이전트 매니저 열기]</strong> 버튼으로 오가요. 단축키는 <strong>Cmd(또는 Ctrl) + E</strong>. 초보는 <strong>에이전트 매니저에서 시키고 결과만 보기</strong>부터 시작하세요.</div>
+        </section>
+
+        <!-- 6 -->
+        <section id="s6">
+            <h2>6. 첫 작업 돌려보기 (말로 시키기)</h2>
+            <p class="lead">가장 중요한 챕터! 실제로 <strong>한국어로 시키는</strong> 흐름이에요.</p>
+            <div class="steps">
+                <div class="step"><b>에이전트 매니저에서 새 작업 시작</b><small>지시를 입력하는 칸에 "무엇을 만들고 싶은지" 한국어로 적어요.</small></div>
+                <div class="step"><b>AI가 '실행 계획'을 먼저 보여줌</b><small>바로 만들지 않고 "이렇게 만들게요" 계획(아티팩트)을 제시해요. 읽어보고 맞으면 진행.</small></div>
+                <div class="step"><b>AI가 알아서 만들기 시작</b><small>에디터·터미널·브라우저를 오가며 실제로 제작·테스트해요. 지켜만 봐도 돼요.</small></div>
+                <div class="step"><b>결과 확인 & 추가 요청</b><small>"글씨 더 크게", "색을 초록으로", "이 항목 하나 추가" 처럼 대화하듯 고쳐나가요.</small></div>
+            </div>
+            <div class="prompt-label">복사해서 바로 쓰는 첫 프롬프트 (아주 쉬운 것부터!)</div>
+            <div class="prompt"><button class="copy-btn" onclick="cp(this)">📋 복사</button><pre>사회복지관 프로그램 참가 신청 안내용 '한 장짜리 웹페이지'를 만들어줘.
+- 제목, 프로그램 소개 3줄, 일정, 신청방법, 문의 전화 칸이 들어가게
+- 따뜻하고 깔끔한 초록 톤으로, 스마트폰에서도 잘 보이게
+- 어려운 설명 말고, 초보도 이해할 수 있게 단계별로 진행해줘</pre></div>
+            <div class="prompt-label">데이터 정리 예시 (내 엑셀 넣고)</div>
+            <div class="prompt"><button class="copy-btn" onclick="cp(this)">📋 복사</button><pre>이 이용자 현황 엑셀을 읽어서, 월별 신규 이용자 수를 막대그래프로 그려주고
+가장 많이 늘어난 달을 알려줘. 개인정보(이름·연락처) 칸은 빼고 숫자만 다뤄줘.</pre></div>
+            <div class="note good">🌱 <b>초보 성공 비결:</b> ① 범위를 <strong>작게</strong> ② <strong>한국어로 편하게</strong> ③ 한 번에 완벽 대신 <strong>대화하며 조금씩</strong>. AI가 어려운 용어를 쓰면 "쉽게 설명해줘"라고 되물으면 돼요.</div>
+        </section>
+
+        <!-- 7 -->
+        <section id="s7">
+            <h2>7. 🧾 아티팩트 — AI가 한 일 검증하기</h2>
+            <p class="lead">안티그래비티의 최고 장점! AI가 한 일을 <strong>눈으로 확인</strong>할 수 있어요.</p>
+            <p class="body">보통 AI는 결과만 툭 내놓지만, 안티그래비티는 단계마다 <strong>'아티팩트(작업 영수증)'</strong>를 남겨요. 복잡한 기록을 안 읽어도, <span class="hl">한눈에 "AI가 뭘 하려는지, 뭘 했는지"</span> 확인할 수 있어요.</p>
+            <ul class="dots">
+                <li><strong>실행 계획:</strong> 만들기 전 "이렇게 할게요" 설계도. → 여기서 방향이 틀리면 미리 잡아요.</li>
+                <li><strong>할 일 목록:</strong> 어떤 작업을 순서대로 하는지 체크리스트로.</li>
+                <li><strong>스크린샷·브라우저 녹화:</strong> 만든 결과가 실제로 어떻게 보이는지 이미지·영상으로.</li>
+            </ul>
+            <div class="note tip">🔍 <b>초보 활용법:</b> 코드를 몰라도 <strong>실행 계획과 스크린샷만 확인</strong>하면 돼요. "계획이 내 의도랑 맞나?", "결과 화면이 원하는 모양인가?"만 봐도 충분히 검수할 수 있어요.</div>
+        </section>
+
+        <!-- 8 -->
+        <section id="s8">
+            <h2>8. 👥 멀티 에이전트 & 예약 작업 (2.0 신기능)</h2>
+            <p class="lead">2026년 5월 <strong>2.0</strong>에서 크게 강해진 부분이에요. 초보는 "이런 것도 되는구나" 정도만.</p>
+            <ul class="dots">
+                <li><strong>여러 에이전트 동시에:</strong> AI 팀원 여러 명에게 각자 다른 일을 <strong>병렬</strong>로 맡길 수 있어요. (예: 하나는 안내 페이지, 하나는 데이터 정리)</li>
+                <li><strong>예약 작업:</strong> 매번 직접 시키지 않아도, <strong>정해둔 시각에 자동 실행</strong>. "매주 월요일 아침 지난주 데이터 정리" 같은 반복 일에 좋아요.</li>
+                <li><strong>CLI·SDK:</strong> 명령어로 다루거나, 나만의 맞춤 에이전트를 만드는 <strong>전문가용</strong> 기능도 생겼어요. (사복쌤 입문 단계에선 몰라도 됨)</li>
+            </ul>
+            <div class="note tip">🌟 <b>지금은?</b> 입문 단계에선 "에이전트 하나에게 작은 일 하나 시키기"만 잘해도 충분해요. 멀티·예약은 익숙해진 다음 천천히.</div>
+        </section>
+
+        <!-- 9 -->
+        <section id="s9">
+            <h2>9. 🧠 어떤 AI 모델을 쓸까?</h2>
+            <p class="lead">안티그래비티는 <strong>여러 회사의 AI를 골라서</strong> 쓸 수 있어요.</p>
+            <ul class="dots">
+                <li><strong>구글 제미나이</strong> (Gemini 3.5 Flash / 3.1 Pro) — 기본이자 무난한 선택.</li>
+                <li><strong>앤트로픽 클로드</strong> (Claude Sonnet 4.6 / Opus 4.6) — 꼼꼼한 작업·글쓰기에 강점.</li>
+                <li><strong>오픈 모델</strong> (GPT-OSS-120B) — 개방형 모델 옵션.</li>
+            </ul>
+            <div class="note good">🎯 <b>초보 추천:</b> 처음엔 <strong>기본값 그대로</strong> 쓰세요. 익숙해진 뒤 "결과가 아쉬우면 다른 모델로 바꿔보기" 정도면 충분해요. 모델 종류·이름은 계속 업데이트되니 화면에서 확인하세요.</div>
+        </section>
+
+        <!-- 10 -->
+        <section id="s10">
+            <h2>10. ⚠️ 사복쌤 필독 — 안전·개인정보·비용</h2>
+            <p class="lead" style="color:var(--red);font-weight:700;">편리한 만큼, 이 세 가지는 꼭 지켜주세요.</p>
+            <div class="note warn">
+                <b>🚫 클라이언트 개인정보를 그대로 넣지 마세요.</b><br>
+                실명·주민번호·연락처·상세주소가 담긴 원본은 <strong>비식별화(가명 처리)</strong> 후에만 사용하세요. (노트북LM 가이드 4번과 동일 원칙)
+            </div>
+            <h3 class="blk">🖥️ '내 컴퓨터에서 실제로 실행'된다는 점</h3>
+            <p class="body">안티그래비티는 AI가 <strong>실제 명령을 내 PC에서 돌려요.</strong> 그래서 잘 모르는 명령을 무작정 승인하지 말고, <strong>연습용 폴더</strong>에서만 실습하세요. 중요한 업무 파일이 든 폴더는 피하는 게 안전해요.</p>
+            <h3 class="blk">💸 지금은 무료, 하지만…</h3>
+            <p class="body">공개 프리뷰라 <strong>현재 무료</strong>지만, 정식 출시되면 <strong>유료·사용 한도</strong>가 생길 수 있어요. 강의·홍보에 쓸 땐 "요금 정책은 바뀔 수 있음"을 꼭 표시하세요.</p>
+            <h3 class="blk">✅ 결과는 항상 사람이 확인</h3>
+            <p class="body">AI가 만든 계산·판정 로직은 <strong>틀릴 수 있어요.</strong> 특히 예산·정산·자격판정처럼 <strong>틀리면 안 되는 것</strong>은 사복노트 <strong>행정/회계 마스터</strong> 같은 전용 계산기로 꼭 교차확인하세요.</p>
+        </section>
+
+        <!-- 11 -->
+        <section id="s11">
+            <h2>11. 자주 겪는 문제 & 꿀팁</h2>
+            <h3 class="blk">😵 "결과가 너무 복잡하게 나와요"</h3>
+            <p class="body">범위를 너무 크게 시킨 거예요. <strong>"더 간단하게, 핵심만"</strong>이라고 다시 시키거나, 작업을 잘게 쪼개서 하나씩 요청하세요.</p>
+            <h3 class="blk">🈶 "영어 용어가 튀어나와요"</h3>
+            <p class="body">"방금 내용을 <strong>초보도 이해할 수 있게 쉬운 한국어로</strong> 다시 설명해줘"라고 하면 돼요. 눈치 볼 필요 없어요.</p>
+            <h3 class="blk">🔁 "중간에 꼬였어요"</h3>
+            <p class="body">대화가 길어져 엉키면 <strong>새 작업(새 세션)</strong>으로 초기화하고, 목표를 처음부터 명확히 다시 적으세요.</p>
+            <h3 class="blk">🐣 "노트북LM만으로 충분하지 않나요?"</h3>
+            <p class="body">맞아요! 대부분의 일상 업무는 노트북LM으로 충분해요. 안티그래비티는 <strong>"직접 도구를 만들어보고 싶을 때"</strong> 도전하는 거예요. 부담 갖지 말고 <strong>호기심으로 맛보기</strong>부터 하세요. 🌿</p>
+            <div class="note good">💚 <b>마음가짐:</b> 실패해도 괜찮아요. "AI에게 시켜서 뭔가 만들어봤다"는 경험 자체가, 요즘 세상에서 큰 자산이에요.</div>
+        </section>
+
+        <div class="end">
+            <h3>어려운 건 AI에게, 사복쌤은 사람에게 🚀</h3>
+            <p>겁먹지 말고 작은 것 하나부터.<br>만들어보는 재미가 곧 실력이 돼요.</p>
+            <a href="https://saboknote.com" target="_blank">사복노트 바로가기 →</a>
+        </div>
+
+        <p class="disclaimer">본 가이드는 사복노트가 사회복지 현장 눈높이로 정리한 입문 자료입니다. 구글 안티그래비티(Google Antigravity)는 빠르게 업데이트되는 프리뷰 단계 제품으로, 기능·화면·설치 방법·이용 한도·요금은 구글 정책에 따라 수시로 바뀔 수 있으니 세부 사항은 공식 화면(antigravity.google)에서 확인해 주세요. · saboknote.com</p>
+    </div>
+
+    <script>
+        function cp(btn) {
+            const pre = btn.parentElement.querySelector('pre');
+            const text = pre.innerText;
+            const done = () => { const o = btn.innerText; btn.innerText = '✅ 복사됨'; setTimeout(() => btn.innerText = o, 1500); };
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(done).catch(() => fallback(text, done));
+            } else { fallback(text, done); }
+        }
+        function fallback(text, done) {
+            const ta = document.createElement('textarea');
+            ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+            document.body.appendChild(ta); ta.select();
+            try { document.execCommand('copy'); done(); } catch (e) { }
+            document.body.removeChild(ta);
+        }
+    </script>
+</body>
+
+</html>
