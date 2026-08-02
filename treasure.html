@@ -131,7 +131,7 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--g5);color:var(--text
 </div>
 
 <div class="stat-bar">
-  <div class="stat"><div class="stat-num">13강</div><div class="stat-label">공개 강의</div></div>
+  <div class="stat"><div class="stat-num">14강</div><div class="stat-label">공개 강의</div></div>
   <div class="stat"><div class="stat-num">무료</div><div class="stat-label">전 강좌 0원</div></div>
   <div class="stat"><div class="stat-num">2026</div><div class="stat-label">최신 반영</div></div>
 </div>
@@ -139,7 +139,7 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--g5);color:var(--text
 <!-- 카테고리 -->
 <div class="cat-nav" id="catNav">
   <button class="cat-chip active" data-cat="all" onclick="filterCat('all',this)">🗂️ 전체</button>
-  <button class="cat-chip" data-cat="ai" onclick="filterCat('ai',this)">🤖 AI 활용 <span class="cnt">8</span></button>
+  <button class="cat-chip" data-cat="ai" onclick="filterCat('ai',this)">🤖 AI 활용 <span class="cnt">9</span></button>
   <button class="cat-chip" data-cat="form" onclick="filterCat('form',this)">📋 사복 서식 <span class="cnt">1</span></button>
   <button class="cat-chip" data-cat="tip" onclick="filterCat('tip',this)">💡 실무 꿀팁 <span class="cnt">5</span></button>
   <button class="cat-chip" data-cat="care" onclick="filterCat('care',this)">🌿 마음 충전 <span class="cnt">준비중</span></button>
@@ -149,7 +149,7 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--g5);color:var(--text
 <div class="cat-section" data-cat="ai">
   <div class="sec-head">
     <h2>🤖 AI 활용 클래스</h2>
-    <span class="sec-cnt">1개 클래스 · 8강 · 1개 공개 예정</span>
+    <span class="sec-cnt">2개 클래스 · 무료 9강 ＋ 프리미엄</span>
   </div>
   <div class="sec-desc">서류의 늪에서 칼퇴하는 그날까지, AI를 실무에 녹이는 법.</div>
 
@@ -256,84 +256,58 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--g5);color:var(--text
   <div class="course">
     <div class="course-thumb" style="background:linear-gradient(140deg,#060818 0%,#241a52 45%,#5b21b6 100%);">
       <div class="ct-badges">
-        <span class="ct-badge new">🔜 COMING SOON</span>
+        <span class="ct-badge new">🎁 무료 입문 공개</span>
         <span class="ct-badge rename">🚀 신도구</span>
-        <span class="ct-badge free">공개 예정</span>
+        <span class="ct-badge free">＋프리미엄</span>
       </div>
       <span class="ct-emoji">🚀</span>
-      <div class="ct-title">구글 안티그래비티 입문 클래스</div>
-      <div class="ct-sub">Google Antigravity · 말로 시켜서 나만의 실무 도구 만들기<br><b style="color:#fff;">가장 핫한 AI 개발툴, 사복쌤 버전으로 곧 찾아와요 🔥</b></div>
+      <div class="ct-title">구글 안티그래비티 (사복쌤용)</div>
+      <div class="ct-sub">노트북LM 다음 단계 — AI에게 시켜서 나만의 업무 도구 만들기<br>먼저 <b style="color:#fff;">무료 입문편</b>으로 맛보고, 실전은 프리미엄으로 🔥</div>
       <div class="ct-meta">
-        <span>📖 통합 가이드</span><span>⏱️ 20분 입문</span><span>🧗 한 단계 위 도전</span>
+        <span>🎁 무료 입문</span><span>🔒 실전 레시피 8</span><span>🧗 따라하기</span>
       </div>
-      <button class="ct-cta" onclick="parent.postMessage('openNewsletterModal', '*');">🔔 출시되면 가장 먼저 알림 받기 <span class="arw">→</span></button>
-      <div class="ct-hint">노트북LM 다음 단계 — 구독해두면 오픈 소식을 콕 찍어 보내드려요</div>
+      <button class="ct-cta" onclick="go('./honeydata/antigravity_guide.html')">📖 무료 입문편 열기 <span class="arw">→</span></button>
+      <div class="ct-hint">코딩 몰라도 OK · 지금 무료로 바로 시작하세요</div>
+    </div>
+
+    <!-- 프리미엄 상품 배너 -->
+    <div style="margin:4px 14px 8px; background:linear-gradient(135deg,#1e1147,#5b21b6); border-radius:14px; padding:16px 16px 14px; color:#fff;">
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:5px;">
+        <span style="font-size:11px;font-weight:800;background:#c4b5fd;color:#2e1065;border-radius:20px;padding:3px 9px;">🔒 PREMIUM</span>
+        <span style="font-size:14px;font-weight:800;">실전 활용 가이드 · 레시피 8</span>
+      </div>
+      <div style="font-size:11.5px;opacity:.86;line-height:1.55;margin-bottom:12px;">신청 웹페이지·명단 자동취합·통계 그래프·만족도 집계·결과보고서 초안까지, <b style="color:#e9d5ff;">업무에 바로 쓰는 실전 레시피 8개</b> (Word 전자책). 복붙 프롬프트 포함, 결제 후 파일로 보내드려요.</div>
+      <button class="ct-cta" id="agCta" style="margin:0;" onclick="parent.postMessage('openNewsletterModal', '*');">🔔 출시 알림 받기 <span class="arw">→</span></button>
     </div>
 
     <button class="cur-toggle" onclick="toggleCur(this)" aria-expanded="false">
-      <span>👀 공개 예정 커리큘럼 미리보기</span>
-      <span class="ct-count">11챕터 · 곧 공개</span>
+      <span>📚 전체 커리큘럼 (무료 + 프리미엄)</span>
+      <span class="ct-count">무료 입문 ＋ 레시피 8</span>
       <span class="chev">▾</span>
     </button>
-    <div class="curriculum" hidden style="opacity:.82;">
+    <div class="curriculum" hidden>
 
-      <div class="lesson rep" style="cursor:default;">
-        <div class="lesson-no">대표</div>
+      <div class="lesson rep" onclick="go('./honeydata/antigravity_guide.html')">
+        <div class="lesson-no" style="background:linear-gradient(135deg,#12a594,#0c726c);">무료</div>
         <div class="lesson-body">
-          <div class="lesson-title">안티그래비티 완전정복 (입문판) <span class="mini rep">공개 예정</span></div>
-          <div class="lesson-sub">정체·시작법·화면구성·첫 작업·안전수칙까지 11챕터 통합본</div>
+          <div class="lesson-title">입문편 — 안티그래비티 완전정복 <span class="mini rep" style="background:#e4faf8;color:#0c726c;border-color:#b5e5df;">무료 공개</span></div>
+          <div class="lesson-sub">정체·노트북LM 비교·시작법·화면구성·첫 작업·안전수칙 11챕터 (지금 무료)</div>
         </div>
-        <div class="lesson-go">🔒</div>
+        <div class="lesson-go">▶</div>
       </div>
 
-      <div class="lesson" style="cursor:default;">
-        <div class="lesson-no">01</div>
-        <div class="lesson-body">
-          <div class="lesson-title">노트북LM이랑 뭐가 다른가요? <span class="mini lv">입문</span></div>
-          <div class="lesson-sub">읽고 정리는 노트북LM, 만들기는 안티그래비티 — 한 표로 비교</div>
-        </div>
-        <div class="lesson-go">🔒</div>
-      </div>
-
-      <div class="lesson" style="cursor:default;">
-        <div class="lesson-no">02</div>
-        <div class="lesson-body">
-          <div class="lesson-title">사복쌤이 이걸로 뭘 만들 수 있나 <span class="mini lv">입문</span></div>
-          <div class="lesson-sub">기관 전용 미니 웹도구·데이터 정리·안내 페이지 실전 예시</div>
-        </div>
-        <div class="lesson-go">🔒</div>
-      </div>
-
-      <div class="lesson" style="cursor:default;">
-        <div class="lesson-no">03</div>
-        <div class="lesson-body">
-          <div class="lesson-title">시작하기 — 다운로드 & 로그인 <span class="mini lv">입문</span></div>
-          <div class="lesson-sub">설치부터 구글 로그인, 연습용 폴더 준비까지</div>
-        </div>
-        <div class="lesson-go">🔒</div>
-      </div>
-
-      <div class="lesson" style="cursor:default;">
-        <div class="lesson-no">04</div>
-        <div class="lesson-body">
-          <div class="lesson-title">첫 작업 돌려보기 (말로 시키기) <span class="mini lv">실전</span></div>
-          <div class="lesson-sub">복붙 프롬프트로 한 장짜리 안내 페이지·데이터 그래프 만들기</div>
-        </div>
-        <div class="lesson-go">🔒</div>
-      </div>
-
-      <div class="lesson" style="cursor:default;">
-        <div class="lesson-no">05</div>
-        <div class="lesson-body">
-          <div class="lesson-title">⚠️ 안전·개인정보·비용 필독 <span class="mini lv">필수</span></div>
-          <div class="lesson-sub">비식별화, 내 PC 실행 주의, 요금 정책, 결과 교차확인</div>
-        </div>
-        <div class="lesson-go">🔒</div>
-      </div>
+      <div class="lesson" style="cursor:default;"><div class="lesson-no">R1</div><div class="lesson-body"><div class="lesson-title">프로그램 신청 안내 웹페이지 <span class="mini lv">프리미엄</span></div><div class="lesson-sub">카톡 링크로 홍보 + 무료 배포법</div></div><div class="lesson-go">🔒</div></div>
+      <div class="lesson" style="cursor:default;"><div class="lesson-no">R2</div><div class="lesson-body"><div class="lesson-title">대상자 선정 자가진단 도구 <span class="mini lv">프리미엄</span></div><div class="lesson-sub">문의전화·헛걸음 줄이기</div></div><div class="lesson-go">🔒</div></div>
+      <div class="lesson" style="cursor:default;"><div class="lesson-no">R3</div><div class="lesson-body"><div class="lesson-title">흩어진 명단·엑셀 자동 취합 <span class="mini lv">프리미엄</span></div><div class="lesson-sub">중복 제거·형식 통일 자동화</div></div><div class="lesson-go">🔒</div></div>
+      <div class="lesson" style="cursor:default;"><div class="lesson-no">R4</div><div class="lesson-body"><div class="lesson-title">이용자 현황 → 월간 통계 그래프 <span class="mini lv">프리미엄</span></div><div class="lesson-sub">보고서용 그래프 자동 생성</div></div><div class="lesson-go">🔒</div></div>
+      <div class="lesson" style="cursor:default;"><div class="lesson-no">R5</div><div class="lesson-body"><div class="lesson-title">만족도 설문 자동 집계 리포트 <span class="mini lv">프리미엄</span></div><div class="lesson-sub">평균·분포·주관식 요약 자동</div></div><div class="lesson-go">🔒</div></div>
+      <div class="lesson" style="cursor:default;"><div class="lesson-no">R6</div><div class="lesson-body"><div class="lesson-title">반복 안내문·공문 자동 생성기 <span class="mini lv">프리미엄</span></div><div class="lesson-sub">이름·날짜만 바꿔 한 번에</div></div><div class="lesson-go">🔒</div></div>
+      <div class="lesson" style="cursor:default;"><div class="lesson-no">R7</div><div class="lesson-body"><div class="lesson-title">후원자 감사 문자·메일 일괄 생성 <span class="mini lv">프리미엄</span></div><div class="lesson-sub">후원내용 맞춤 진심 메시지</div></div><div class="lesson-go">🔒</div></div>
+      <div class="lesson" style="cursor:default;"><div class="lesson-no">R8</div><div class="lesson-body"><div class="lesson-title">사업 결과보고서 초안 자동화 <span class="mini lv">프리미엄</span></div><div class="lesson-sub">백지 부담 제거 + 부록 프롬프트집</div></div><div class="lesson-go">🔒</div></div>
     </div>
   </div>
 
-  <div class="note-old">🚀 <b>구글 안티그래비티 입문 클래스</b>가 곧 공개돼요! 노트북LM 다음 단계로 <b>"AI에게 시켜서 나만의 도구 만들기"</b>를 사복쌤 눈높이로 준비 중이에요. <b>비밀편지를 구독</b>해두면 오픈 소식을 가장 먼저 받아보실 수 있어요. 조금만 기대해주세요 😉</div>
+  <div class="note-old" id="agOwnerNote">🎁 <b>무료 입문편</b>은 지금 바로 열람할 수 있어요. <b>프리미엄 실전편(레시피 8)</b>은 사장님이 스크립트의 <b>PRODUCTS.antigravity.paymentLink</b>에 결제 링크를 넣으면 '구매하기'로 전환돼요.</div>
 </div>
 
 <!-- ===== 사복 서식 ===== -->
@@ -497,7 +471,7 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--g5);color:var(--text
     <div class="pay-steps">
       <div class="pay-step"><b>1</b><span>아래 <b>결제하기</b>를 눌러 안전하게 결제해요 (새 창)</span></div>
       <div class="pay-step"><b>2</b><span>결제 완료 화면(또는 영수증)을 캡처해 두세요</span></div>
-      <div class="pay-step"><b>3</b><span><b>이메일·카톡</b>으로 서식 파일을 보내드려요 — 빠르게 전달돼요</span></div>
+      <div class="pay-step"><b>3</b><span><b>이메일·카톡</b>으로 자료 파일을 보내드려요 — 빠르게 전달돼요</span></div>
     </div>
     <button class="pay-go" id="payGo" onclick="pay()">💳 결제하기</button>
     <div class="pay-note" id="payNote">결제 전 상품·환불 안내를 확인해 주세요 · 문의는 사복노트 채널로</div>
@@ -525,41 +499,55 @@ function filterCat(cat, btn){
 
 /* ============================================================
    💳 유료 상품 설정 (결제링크 MVP)
-   ─ 사장님: 아래 paymentLink 에 토스/카카오페이/페이앱 결제 링크만 붙여넣으면
-     서식 팩 카드가 자동으로 '구매하기'로 바뀌어 판매가 시작돼요.
-     비워두면 지금처럼 '출시 알림' 상태로 안전하게 노출됩니다.
+   ─ 사장님: 각 상품의 paymentLink 에 토스/카카오페이/페이앱 결제 링크만
+     붙여넣으면 해당 카드가 자동으로 '구매하기'로 바뀌어 판매가 시작돼요.
+     비워두면 '출시 알림' 상태로 안전하게 노출됩니다.
    ============================================================ */
-const PURCHASE = {
-  paymentLink: '',                       // 예: 'https://toss.me/...' 또는 페이앱/카카오 결제 링크
-  productName: '사복쌤 서식 팩 · 사업계획서 + 결과보고서',
-  price: '9,900',                        // 표시 가격 (원)
-  contact: '사복노트 카카오채널 / saboknote.com'
+const PRODUCTS = {
+  seosik: {
+    paymentLink: '',                     // ← 서식 팩 결제 링크
+    productName: '사복쌤 서식 팩 · 사회복지 실무 양식 22종',
+    price: '19,900',
+    contact: '사복노트 카카오채널 / saboknote.com'
+  },
+  antigravity: {
+    paymentLink: '',                     // ← 안티그래비티 실전 강의 결제 링크
+    productName: '[프리미엄] 안티그래비티 실전 활용 가이드 · 레시피 8',
+    price: '14,900',
+    contact: '사복노트 카카오채널 / saboknote.com'
+  }
 };
+let _curProduct = 'seosik';
 
 function initPremium(){
-  const cta = document.getElementById('premCta');
-  const badge = document.getElementById('premBadge');
+  applyProductBtn('seosik', 'premCta', 'premBadge', 'premOwnerNote');
+  applyProductBtn('antigravity', 'agCta', null, 'agOwnerNote');
+}
+function applyProductBtn(key, ctaId, badgeId, ownerNoteId){
+  const cta = document.getElementById(ctaId);
   if(!cta) return;
-  if(PURCHASE.paymentLink && PURCHASE.paymentLink.trim()){
-    // 판매 중 상태로 전환
-    badge.textContent = '🔒 유료';
-    cta.innerHTML = '🛒 ₩' + PURCHASE.price + ' · 구매하기 <span class="arw">→</span>';
-    cta.setAttribute('onclick', 'openPurchase()');
-    const owner = document.getElementById('premOwnerNote');
-    if(owner) owner.style.display = 'none';
+  const p = PRODUCTS[key];
+  if(p.paymentLink && p.paymentLink.trim()){
+    if(badgeId){ const b=document.getElementById(badgeId); if(b) b.textContent='🔒 유료'; }
+    cta.innerHTML = '🛒 ₩' + p.price + ' · 구매하기 <span class="arw">→</span>';
+    cta.setAttribute('onclick', "openPurchase('" + key + "')");
+    if(ownerNoteId){ const o=document.getElementById(ownerNoteId); if(o) o.style.display='none'; }
   }
   // 링크 없으면 HTML 기본값(출시 알림) 그대로 유지
 }
 
-function openPurchase(){
-  document.getElementById('payTitle').textContent = PURCHASE.productName;
-  document.getElementById('payPrice').textContent = '₩' + PURCHASE.price;
-  document.getElementById('payNote').innerHTML = '결제 전 상품·환불 안내를 확인해 주세요 · 문의: ' + PURCHASE.contact;
+function openPurchase(key){
+  _curProduct = key || 'seosik';
+  const p = PRODUCTS[_curProduct];
+  document.getElementById('payTitle').textContent = p.productName;
+  document.getElementById('payPrice').textContent = '₩' + p.price;
+  document.getElementById('payNote').innerHTML = '결제 전 상품·환불 안내를 확인해 주세요 · 문의: ' + p.contact;
   document.getElementById('payOverlay').classList.add('on');
 }
 function closePurchase(){ document.getElementById('payOverlay').classList.remove('on'); }
 function pay(){
-  if(PURCHASE.paymentLink){ window.open(PURCHASE.paymentLink, '_blank'); }
+  const p = PRODUCTS[_curProduct];
+  if(p && p.paymentLink){ window.open(p.paymentLink, '_blank'); }
 }
 
 document.addEventListener('DOMContentLoaded', initPremium);
