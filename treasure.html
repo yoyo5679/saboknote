@@ -131,7 +131,7 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--g5);color:var(--text
 </div>
 
 <div class="stat-bar">
-  <div class="stat"><div class="stat-num">8강</div><div class="stat-label">공개 강의</div></div>
+  <div class="stat"><div class="stat-num">13강</div><div class="stat-label">공개 강의</div></div>
   <div class="stat"><div class="stat-num">무료</div><div class="stat-label">전 강좌 0원</div></div>
   <div class="stat"><div class="stat-num">2026</div><div class="stat-label">최신 반영</div></div>
 </div>
@@ -141,7 +141,7 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--g5);color:var(--text
   <button class="cat-chip active" data-cat="all" onclick="filterCat('all',this)">🗂️ 전체</button>
   <button class="cat-chip" data-cat="ai" onclick="filterCat('ai',this)">🤖 AI 활용 <span class="cnt">8</span></button>
   <button class="cat-chip" data-cat="form" onclick="filterCat('form',this)">📋 사복 서식 <span class="cnt">준비중</span></button>
-  <button class="cat-chip" data-cat="tip" onclick="filterCat('tip',this)">💡 실무 꿀팁 <span class="cnt">준비중</span></button>
+  <button class="cat-chip" data-cat="tip" onclick="filterCat('tip',this)">💡 실무 꿀팁 <span class="cnt">5</span></button>
   <button class="cat-chip" data-cat="care" onclick="filterCat('care',this)">🌿 마음 충전 <span class="cnt">준비중</span></button>
 </div>
 
@@ -350,14 +350,84 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--g5);color:var(--text
 
 <!-- ===== 실무 꿀팁 ===== -->
 <div class="cat-section" data-cat="tip" style="display:none;">
-  <div class="sec-head"><h2>💡 실무 꿀팁 클래스</h2></div>
-  <div class="soon">
-    <div class="soon-emoji">💡</div>
-    <h3>현장 꿀팁 강의, 준비 중이에요</h3>
-    <p>지원사업 신청 노하우, 예산·정산 실수 방지법,<br>민원 응대 스크립트까지 알짜배기만 담을게요.</p>
-    <button class="soon-btn" onclick="parent.postMessage('openNewsletterModal', '*');">📬 출시되면 알림 받기</button>
-    <div class="soon-tags"><span class="soon-tag">지원사업</span><span class="soon-tag">예산·정산</span><span class="soon-tag">민원 응대</span></div>
+  <div class="sec-head">
+    <h2>💡 실무 꿀팁 클래스</h2>
+    <span class="sec-cnt">1개 클래스 · 5강</span>
   </div>
+  <div class="sec-desc">"이거 얼마 떼지?" 매번 헷갈리던 돈·세금·정산, 앱 계산기랑 묶어서 한 방에.</div>
+
+  <div class="course">
+    <div class="course-thumb" style="background:linear-gradient(135deg,#7c2d12 0%,#b45309 45%,#f59e0b 100%);">
+      <div class="ct-badges">
+        <span class="ct-badge new">🆕 2026 최신</span>
+        <span class="ct-badge free">무료</span>
+        <span class="ct-badge rename">🧮 계산기 연동</span>
+      </div>
+      <span class="ct-emoji">💰</span>
+      <div class="ct-title">사복쌤 돈·세금·정산 실무 꿀팁</div>
+      <div class="ct-sub">강사료·부가세·장기요양·보조금 정산까지<br>매번 헷갈리던 것만 콕 집어 정리했어요 👇</div>
+      <div class="ct-meta">
+        <span>💵 돈 편</span><span>⏱️ 15분 정리</span><span>🧮 계산기 바로가기</span>
+      </div>
+      <button class="ct-cta" onclick="go('./honeydata/finance_tips_guide.html')">📖 무료로 시작하기 <span class="arw">→</span></button>
+      <div class="ct-hint">강의 보고 → 앱 계산기로 바로 계산까지</div>
+    </div>
+
+    <button class="cur-toggle" onclick="toggleCur(this)" aria-expanded="false">
+      <span>📚 전체 목차 펼쳐보기</span>
+      <span class="ct-count">5강 · 무료</span>
+      <span class="chev">▾</span>
+    </button>
+    <div class="curriculum" hidden>
+
+      <div class="lesson rep" onclick="go('./honeydata/finance_tips_guide.html')">
+        <div class="lesson-no">대표</div>
+        <div class="lesson-body">
+          <div class="lesson-title">돈·세금·정산 완전정리 (통합본) <span class="mini rep">추천 시작점</span></div>
+          <div class="lesson-sub">강사료·부가세·장기요양·보조금 정산 한 번에</div>
+        </div>
+        <div class="lesson-go">▶</div>
+      </div>
+
+      <div class="lesson" onclick="go('./honeydata/finance_tips_guide.html#s1')">
+        <div class="lesson-no">01</div>
+        <div class="lesson-body">
+          <div class="lesson-title">강사료·자문료 세금 — 3.3% vs 8.8% <span class="mini lv">세금</span></div>
+          <div class="lesson-sub">반복=사업소득 3.3%, 일시=기타소득 8.8% 완벽 구분</div>
+        </div>
+        <div class="lesson-go">▶</div>
+      </div>
+
+      <div class="lesson" onclick="go('./honeydata/finance_tips_guide.html#s2')">
+        <div class="lesson-no">02</div>
+        <div class="lesson-body">
+          <div class="lesson-title">부가세·사업소득 신고 <span class="mini lv">세금</span></div>
+          <div class="lesson-sub">프리랜서 사복쌤 부가세 면세·5월 종합소득세 흐름</div>
+        </div>
+        <div class="lesson-go">▶</div>
+      </div>
+
+      <div class="lesson" onclick="go('./honeydata/finance_tips_guide.html#s3')">
+        <div class="lesson-no">03</div>
+        <div class="lesson-body">
+          <div class="lesson-title">장기요양 등급·수가·본인부담 <span class="mini lv">실무</span></div>
+          <div class="lesson-sub">등급 체계·월 한도·본인부담률(재가15%·시설20%)</div>
+        </div>
+        <div class="lesson-go">▶</div>
+      </div>
+
+      <div class="lesson" onclick="go('./honeydata/finance_tips_guide.html#s4')">
+        <div class="lesson-no">04</div>
+        <div class="lesson-body">
+          <div class="lesson-title">보조금 정산 실수 방지 체크리스트 <span class="mini lv">필수</span></div>
+          <div class="lesson-sub">목적 외 사용·증빙·전용카드·잔액 반납까지 8대 체크</div>
+        </div>
+        <div class="lesson-go">▶</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="note-old">💡 세율·수가·정산 기준은 <b>해마다 바뀌어요.</b> 이 강의는 흐름을 잡는 용도이고, <b>정확한 금액은 앱 계산기와 홈택스·건강보험공단·소관 지침</b>에서 최종 확인하세요. 곧 <b>지원사업 신청 노하우·민원 응대</b> 편도 추가될 예정이에요!</div>
 </div>
 
 <!-- ===== 마음 충전 ===== -->

@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>사복쌤 돈·세금·정산 실무 꿀팁 — 강사료·부가세·장기요양·보조금 💰</title>
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💰</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Noto+Sans+KR:wght@400;500;700;900&display=swap"
+        rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        :root {
+            --g: #b45309; --g2: #d97706; --g3: #fde68a; --g4: #fef3c7; --g5: #fffbeb;
+            --ink: #7c2d12; --text: #1e293b; --sub: #78716c; --line: #eee3cf;
+            --card: #ffffff; --warm: #fff8ec; --amber: #f59e0b; --amber-d: #b45309;
+            --green: #0c726c; --green-l: #e4faf8; --red: #dc2626; --radius: 18px;
+        }
+        body { font-family: 'Noto Sans KR', sans-serif; background: var(--g5); color: var(--text); line-height: 1.7; }
+        .wrap { max-width: 760px; margin: 0 auto; padding: 0 0 60px; }
+
+        /* top bar */
+        .topbar { position: sticky; top: 0; z-index: 20; background: rgba(255,255,255,0.92); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); padding: 10px 16px; display: flex; align-items: center; gap: 8px; }
+        .back-btn { border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 7px 14px; font-size: 13px; font-weight: 700; color: var(--g); cursor: pointer; font-family: inherit; }
+        .topbar-title { font-size: 13px; color: var(--sub); font-weight: 700; }
+
+        /* hero */
+        .hero { background: linear-gradient(135deg, #7c2d12 0%, #b45309 45%, #f59e0b 100%); color: #fff; padding: 40px 24px 34px; text-align: center; position: relative; overflow: hidden; }
+        .hero::before { content: ''; position: absolute; right: -40px; top: -40px; width: 200px; height: 200px; border-radius: 50%; background: rgba(255,255,255,0.10); }
+        .hero-badge { display: inline-block; background: rgba(255,255,255,0.16); border: 1px solid rgba(255,255,255,0.28); border-radius: 999px; padding: 5px 14px; font-size: 12px; font-weight: 700; margin-bottom: 14px; position: relative; }
+        .hero h1 { font-family: 'Gaegu', cursive; font-size: 32px; line-height: 1.25; margin-bottom: 10px; position: relative; }
+        .hero h1 span { background: linear-gradient(90deg, #fde68a, #fff7cc); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: #fde68a; }
+        .hero .oldname { display: inline-block; font-family: 'Noto Sans KR'; font-size: 13px; font-weight: 500; background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.24); border-radius: 999px; padding: 3px 12px; margin-bottom: 12px; position: relative; }
+        .hero p { font-size: 14.5px; color: rgba(255,255,255,0.9); position: relative; }
+        .hero-meta { margin-top: 16px; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; position: relative; }
+        .hero-meta span { background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.24); border-radius: 999px; padding: 4px 12px; font-size: 12px; }
+
+        /* 안내 배너 */
+        .rename { margin: 20px 16px 0; background: linear-gradient(135deg, #fff8ec, #fef3c7); border: 1.5px solid #fcd97a; border-radius: var(--radius); padding: 18px 20px; }
+        .rename h3 { font-size: 16px; color: var(--amber-d); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+        .rename p { font-size: 13.8px; color: #6b4a2b; }
+        .rename b { color: #92400e; }
+
+        /* 요약 배너 */
+        .whatsnew { margin: 16px 16px 0; background: var(--green-l); border: 1.5px solid #b5e5df; border-radius: var(--radius); padding: 18px 20px; }
+        .whatsnew h3 { font-size: 16px; color: var(--green); margin-bottom: 12px; }
+        .nu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+        .nu { background: #fff; border: 1px solid #b5e5df; border-radius: 12px; padding: 12px; }
+        .nu b { display: block; font-size: 13.5px; color: var(--text); margin-bottom: 2px; }
+        .nu small { font-size: 12px; color: var(--sub); }
+
+        /* 목차 */
+        .toc { margin: 20px 16px 0; background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 18px; }
+        .toc h4 { font-size: 13px; color: var(--sub); margin-bottom: 10px; letter-spacing: 0.03em; }
+        .toc ol { margin: 0; padding-left: 20px; }
+        .toc li { font-size: 14px; margin-bottom: 5px; }
+        .toc a { color: var(--g); text-decoration: none; font-weight: 500; }
+        .toc a:hover { text-decoration: underline; }
+
+        /* 섹션 */
+        section { margin: 26px 16px 0; background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 22px 20px; scroll-margin-top: 60px; }
+        section > h2 { font-size: 20px; color: var(--ink); margin-bottom: 6px; display: flex; align-items: center; gap: 9px; }
+        section > .lead { font-size: 14px; color: var(--sub); margin-bottom: 16px; }
+        h3.blk { font-size: 15.5px; color: var(--g); margin: 18px 0 8px; }
+        p.body { font-size: 14.5px; margin-bottom: 12px; }
+        ul.dots { margin: 0 0 12px; padding-left: 4px; list-style: none; }
+        ul.dots li { position: relative; padding-left: 20px; font-size: 14px; margin-bottom: 7px; }
+        ul.dots li::before { content: '·'; position: absolute; left: 6px; color: var(--g2); font-weight: 900; }
+        strong { color: var(--ink); }
+        .hl { background: linear-gradient(transparent 60%, #fde68a 60%); font-weight: 700; }
+
+        /* step */
+        .steps { counter-reset: s; margin: 8px 0 4px; }
+        .step { counter-increment: s; position: relative; padding: 10px 0 10px 44px; border-bottom: 1px dashed var(--line); }
+        .step:last-child { border-bottom: none; }
+        .step::before { content: counter(s); position: absolute; left: 0; top: 10px; width: 28px; height: 28px; background: var(--g); color: #fff; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; }
+        .step b { display: block; font-size: 14.5px; }
+        .step small { font-size: 13px; color: var(--sub); }
+
+        /* 체크리스트 */
+        .check { list-style: none; margin: 8px 0 12px; padding: 0; }
+        .check li { position: relative; padding: 9px 12px 9px 38px; font-size: 14px; border: 1px solid var(--line); border-radius: 10px; margin-bottom: 7px; background: var(--g5); }
+        .check li::before { content: '✅'; position: absolute; left: 11px; top: 9px; font-size: 14px; }
+        .check li b { color: var(--ink); }
+
+        /* callouts */
+        .note { border-radius: 12px; padding: 14px 16px; margin: 12px 0; font-size: 13.5px; line-height: 1.65; }
+        .note.tip { background: var(--g5); border: 1px solid var(--g3); }
+        .note.warn { background: #fef2f2; border: 1px solid #fecaca; color: #7f1d1d; }
+        .note.warn b { color: #b91c1c; }
+        .note.good { background: var(--green-l); border: 1px solid #b5e5df; }
+        .note b { color: inherit; }
+
+        /* 계산기 연결 버튼 */
+        .calc { display: flex; align-items: center; gap: 12px; background: linear-gradient(135deg, #fff8ec, #fef3c7); border: 1.5px solid #fcd97a; border-radius: 14px; padding: 13px 15px; margin: 12px 0; text-decoration: none; color: inherit; }
+        .calc .ci { font-size: 26px; flex-shrink: 0; }
+        .calc .cb { flex: 1; }
+        .calc .cb b { display: block; font-size: 14px; color: var(--ink); }
+        .calc .cb small { font-size: 12px; color: var(--sub); }
+        .calc .cg { font-size: 13px; font-weight: 800; color: var(--g); }
+
+        /* table */
+        .tbl { width: 100%; border-collapse: collapse; font-size: 13.5px; margin: 8px 0 14px; }
+        .tbl th, .tbl td { border: 1px solid var(--line); padding: 9px 11px; text-align: left; }
+        .tbl th { background: var(--g5); font-weight: 700; color: var(--ink); }
+        .tbl td.c { text-align: center; }
+
+        /* footer */
+        .end { margin: 30px 16px 0; background: linear-gradient(135deg, #b45309, #f59e0b); border-radius: var(--radius); padding: 26px 22px; color: #fff; text-align: center; }
+        .end h3 { font-family: 'Gaegu', cursive; font-size: 24px; color: #fff7cc; margin-bottom: 8px; }
+        .end p { font-size: 14px; color: rgba(255,255,255,0.9); margin-bottom: 16px; }
+        .end a { display: inline-block; background: #fff; color: var(--g); text-decoration: none; font-weight: 700; border-radius: 999px; padding: 11px 22px; font-size: 14px; }
+        .disclaimer { margin: 18px 16px 0; font-size: 11.5px; color: var(--sub); text-align: center; line-height: 1.6; }
+    </style>
+</head>
+
+<body>
+    <div class="topbar">
+        <button class="back-btn" onclick="history.length>1?history.back():location.href='../treasure.html'">← 보물창고</button>
+        <span class="topbar-title">사복쌤 돈·세금·정산 실무 꿀팁</span>
+    </div>
+
+    <div class="hero">
+        <span class="hero-badge">💡 실무 꿀팁 · 돈 편</span>
+        <span class="oldname">강사료 · 부가세 · 장기요양 · 보조금 정산</span>
+        <h1>사복쌤 돈·세금·정산 <span>실무 꿀팁</span> 💰</h1>
+        <p>"이거 얼마 떼지?" 매번 헷갈리던 것들,<br>딱 필요한 것만 정리했어요. 앱 계산기로 바로 연결까지.</p>
+        <div class="hero-meta"><span>⏱️ 15분 정리</span><span>🧮 계산기 연동</span><span>🛡️ 실수 방지</span></div>
+    </div>
+
+    <div class="wrap">
+
+        <div class="rename">
+            <h3>📢 먼저 읽어주세요</h3>
+            <p>세금·수가·정산 기준은 <b>해마다, 지자체마다 바뀌어요.</b> 이 강의는 <b>큰 원리와 흐름을 잡아주는 용도</b>예요. <strong>정확한 세율·한도·금액은 반드시</strong> 사복노트 <b>계산기</b>와 <b>홈택스·국민건강보험공단·소관 부처 지침</b>에서 최종 확인하세요. 애매하면 <b>세무사·회계 담당</b>과 상의하는 게 안전해요. 🌿</p>
+        </div>
+
+        <div class="whatsnew">
+            <h3>⚡ 이 강의 한 장 요약</h3>
+            <div class="nu-grid">
+                <div class="nu"><b>🎤 강사료</b><small>반복=사업소득 3.3% / 일시=기타소득 8.8%</small></div>
+                <div class="nu"><b>🧾 부가세</b><small>강사 개인 강의는 대개 면세, 사업자면 신고</small></div>
+                <div class="nu"><b>👵 장기요양</b><small>등급별 월 한도 + 본인부담(재가15%·시설20%)</small></div>
+                <div class="nu"><b>💸 보조금 정산</b><small>목적 외 사용 금지·증빙·전용카드가 핵심</small></div>
+            </div>
+        </div>
+
+        <div class="toc">
+            <h4>목차</h4>
+            <ol>
+                <li><a href="#s1">🎤 강사료·자문료 세금 — 3.3% vs 8.8%</a></li>
+                <li><a href="#s2">🧾 부가세·사업소득 신고 — 프리랜서 사복쌤 편</a></li>
+                <li><a href="#s3">👵 장기요양 등급·수가·본인부담 실무</a></li>
+                <li><a href="#s4">💸 보조금 정산 실수 방지 체크리스트</a></li>
+                <li><a href="#s5">자주 묻는 질문 & 꿀팁</a></li>
+            </ol>
+        </div>
+
+        <!-- 1 -->
+        <section id="s1">
+            <h2>1. 🎤 강사료·자문료 세금 — 3.3% vs 8.8%</h2>
+            <p class="lead">외부 강사·자문위원에게 지급할 때, 또는 내가 강의비를 받을 때. <strong>딱 두 갈래</strong>만 기억하세요.</p>
+            <table class="tbl">
+                <tr><th>구분</th><th>사업소득 (3.3%)</th><th>기타소득 (8.8%)</th></tr>
+                <tr><td>언제?</td><td><strong>계속·반복적</strong>으로 강의 (직업)</td><td><strong>일시적·우발적</strong>으로 한 번</td></tr>
+                <tr><td>원천징수</td><td class="c">지급액의 <strong>3.3%</strong></td><td class="c">지급액의 <strong>8.8%</strong></td></tr>
+                <tr><td>계산 방식</td><td>지급액 전액 × 3.3%<br><small>(소득세 3% + 지방세 0.3%)</small></td><td>필요경비 60% 빼고<br>남은 40%에 22% 과세</td></tr>
+                <tr><td>연말 정산</td><td>다음 해 5월 종합소득세 신고</td><td>연 기타소득금액 300만원 초과 시 종합과세</td></tr>
+            </table>
+            <div class="note tip">🧭 <b>핵심 판단:</b> "이 사람이 <strong>강의를 업(業)으로</strong> 반복해서 하나?" → <strong>예면 사업소득 3.3%</strong>, "어쩌다 특강 한 번?" → <strong>기타소득 8.8%</strong>. 강사 본인의 활동 성격으로 판단해요. (헷갈리면 세무 담당·세무사 확인)</div>
+            <div class="note warn"><b>실무 주의:</b> 지방소득세(0.3%·2.2%)는 <strong>따로 신고·납부</strong>해요. 원천징수한 세금은 <strong>지급한 달의 다음 달 10일까지</strong> 신고·납부가 원칙이에요. 지급명세서 제출 기한도 놓치지 마세요.</div>
+            <a class="calc" href="/tools/lecture-fee.html" target="_blank">
+                <span class="ci">🧮</span>
+                <span class="cb"><b>강사료 원천징수 계산기</b><small>지급액만 넣으면 3.3%·8.8% 실수령액 자동 계산</small></span>
+                <span class="cg">열기 →</span>
+            </a>
+        </section>
+
+        <!-- 2 -->
+        <section id="s2">
+            <h2>2. 🧾 부가세·사업소득 신고 — 프리랜서 사복쌤 편</h2>
+            <p class="lead">강의·자문·원고로 부수입이 생긴 사복쌤이 가장 많이 묻는 것. 겁먹지 말고 흐름만 잡아요.</p>
+            <h3 class="blk">부가세, 나도 내야 하나요?</h3>
+            <ul class="dots">
+                <li><strong>강사 개인이 제공하는 강의(인적용역)</strong>는 대체로 <span class="hl">부가가치세 면세</span>예요. → 개인 강사는 보통 부가세 신고 걱정이 크지 않아요.</li>
+                <li>다만 <strong>사업자등록을 하고 물품·과세용역을 파는 경우</strong>엔 부가세 대상이 될 수 있어요. (일반과세 vs 간이과세 구분)</li>
+                <li>기관이 물품·공사를 계약할 때 <strong>총액에서 공급가액·부가세 10%를 분리</strong>하는 건 자주 하는 계산이에요.</li>
+            </ul>
+            <a class="calc" href="/tools/vat.html" target="_blank">
+                <span class="ci">🧾</span>
+                <span class="cb"><b>부가세 계산기</b><small>총액 → 공급가액 + 부가세 10% 즉시 역산</small></span>
+                <span class="cg">열기 →</span>
+            </a>
+            <h3 class="blk">사업소득(3.3%) 뗀 강의비, 그냥 두면 되나요?</h3>
+            <p class="body">아니요! 3.3%는 <strong>미리 떼둔 것</strong>일 뿐이에요. <strong>다음 해 5월 종합소득세 신고</strong>로 정산해야 해요. 소득이 적으면 <span class="hl">오히려 환급</span>받는 경우도 많아요.</p>
+            <div class="steps">
+                <div class="step"><b>지급명세서·원천징수영수증 챙기기</b><small>강의비 준 곳에서 받거나, 홈택스에서 조회돼요.</small></div>
+                <div class="step"><b>5월 종합소득세 신고</b><small>홈택스에서 안내되는 대로. 소득이 단순하면 모두채움(간편) 신고로 끝나기도 해요.</small></div>
+                <div class="step"><b>경비·공제 챙기기</b><small>단순경비율/기준경비율, 인적공제 등. 애매하면 세무사 상담이 이득일 수 있어요.</small></div>
+            </div>
+            <div class="note tip">💡 <b>초보 팁:</b> 부업 소득이 커지기 전엔 홈택스 <strong>모두채움 신고</strong>로 충분한 경우가 많아요. 소득이 커지거나 여러 곳에서 받으면 <strong>세무사 기장</strong>을 고려하세요.</div>
+        </section>
+
+        <!-- 3 -->
+        <section id="s3">
+            <h2>3. 👵 장기요양 등급·수가·본인부담 실무</h2>
+            <p class="lead">어르신·보호자 상담에서 자주 나오는 "등급 받으면 얼마 지원돼요?" 질문, 이렇게 답해요.</p>
+            <h3 class="blk">등급 체계 (요약)</h3>
+            <ul class="dots">
+                <li><strong>1~5등급 + 인지지원등급</strong>으로 판정돼요. 숫자가 작을수록(1등급) 중증.</li>
+                <li>등급마다 <strong>월 이용 한도액</strong>이 정해져 있고, 이 한도 안에서 재가·시설 급여를 이용해요.</li>
+                <li>한도액·수가는 <strong>매년 보건복지부·건강보험공단이 고시</strong>해서 바뀌어요.</li>
+            </ul>
+            <h3 class="blk">본인부담률 (일반 기준)</h3>
+            <table class="tbl">
+                <tr><th>구분</th><th>본인부담률</th></tr>
+                <tr><td>재가급여(방문요양 등)</td><td class="c"><strong>15%</strong></td></tr>
+                <tr><td>시설급여(요양원 등)</td><td class="c"><strong>20%</strong></td></tr>
+                <tr><td>감경 대상</td><td class="c">40%·60% 경감 (소득 기준)</td></tr>
+                <tr><td>기초생활수급자</td><td class="c">본인부담 <strong>면제(0%)</strong></td></tr>
+            </table>
+            <div class="note warn"><b>꼭 확인:</b> 등급별 <strong>정확한 한도액·수가·감경 기준</strong>은 해마다 달라져요. 상담 시엔 반드시 <strong>최신 고시</strong>와 아래 계산기로 확인하세요.</div>
+            <a class="calc" href="/tools/ltc-limit.html" target="_blank">
+                <span class="ci">👵</span>
+                <span class="cb"><b>장기요양 등급별 한도액·본인부담 계산기</b><small>최신 기준 등급별 한도·본인부담금 확인</small></span>
+                <span class="cg">열기 →</span>
+            </a>
+        </section>
+
+        <!-- 4 -->
+        <section id="s4">
+            <h2>4. 💸 보조금 정산 실수 방지 체크리스트</h2>
+            <p class="lead">정산 시즌마다 식은땀 나는 그것. <strong>이것만 지켜도 사고 90%는 예방</strong>돼요.</p>
+            <ul class="check">
+                <li><b>목적 외 사용 금지:</b> 교부 목적·승인된 예산 항목대로만 집행. 비목 간 임의 전용 ❌</li>
+                <li><b>전용 통장·전용 카드 사용:</b> 보조금은 별도 계좌로. 개인카드·현금 지출은 최대한 피하기</li>
+                <li><b>증빙 원본 보관:</b> 세금계산서·카드전표·영수증·거래명세서 + 지출결의서 세트로</li>
+                <li><b>계약·견적 절차 준수:</b> 일정 금액 이상은 견적 비교·계약서. 수의계약 기준 확인</li>
+                <li><b>인건비 지급 근거:</b> 근로계약서·급여대장·이체내역·4대보험 납부 확인</li>
+                <li><b>자부담(매칭) 비율 준수:</b> 매칭 조건 있으면 자부담분도 증빙 남기기</li>
+                <li><b>집행 잔액 처리:</b> 이월 가능 여부 확인, 불가하면 <b>기한 내 반납 + 이자</b>까지</li>
+                <li><b>정산보고 기한 엄수:</b> 마감 임박 몰림 방지 — 월별로 미리 정리</li>
+            </ul>
+            <div class="note warn"><b>특히 조심:</b> 상품권·기프트카드 구매, 3만원 초과 접대성 경비, 회식비, 개인 물품 구매는 <strong>지적 단골</strong>이에요. 애매하면 집행 전에 <strong>주무관·회계 담당에게 먼저 확인</strong>하세요.</div>
+            <div class="note good">🧾 <b>실무 루틴:</b> "집행할 때마다 바로 증빙 스캔 → 폴더에 월별 정리"만 습관 들여도 정산이 3배 편해져요. 몰아서 하면 꼭 하나 빠져요.</div>
+        </section>
+
+        <!-- 5 -->
+        <section id="s5">
+            <h2>5. 자주 묻는 질문 & 꿀팁</h2>
+            <h3 class="blk">Q. 자원봉사자에게 준 활동비도 세금 떼야 하나요?</h3>
+            <p class="body">실비 보전(교통비·식비 등) 성격이면 사안에 따라 달라요. 강의·용역 대가 성격이면 원천징수 대상일 수 있어요. <strong>지급 성격</strong>에 따라 다르니 회계 담당·세무사와 확인하세요.</p>
+            <h3 class="blk">Q. 8.8%랑 3.3%, 아무거나 떼도 되나요?</h3>
+            <p class="body">안 돼요. <strong>소득의 성격(반복성)</strong>에 따라 정해져요. 반복적 강의를 기타소득으로 잘못 처리하면 나중에 문제될 수 있어요. 판단이 서지 않으면 사업소득/기타소득 여부를 <strong>세무 담당에게 확인</strong>하세요.</p>
+            <h3 class="blk">Q. 계산이 자꾸 헷갈려요</h3>
+            <p class="body">숫자는 손으로 하지 말고 <strong>사복노트 계산기</strong>에 맡기세요. 강사료·부가세·장기요양은 전용 계산기가 있고, 급여정산·단가·퍼센트 등은 앱 홈의 <strong>💸 행정/회계 마스터</strong>(12가지 계산기)에서 한 번에 해결돼요.</p>
+            <div class="note warn"><b>마지막 당부:</b> 이 강의의 세율·비율은 <strong>이해를 돕는 일반 기준</strong>이에요. 실제 신고·정산은 <strong>그 해 최신 법령과 지자체 지침</strong>이 우선이며, 금액이 크거나 애매하면 <strong>세무·회계 전문가</strong>에게 확인하는 게 가장 안전해요.</div>
+        </section>
+
+        <div class="end">
+            <h3>숫자는 계산기에게, 사복쌤은 사람에게 💰</h3>
+            <p>세금·정산 스트레스는 도구에 맡기고,<br>선생님의 에너지는 현장에 쓰세요.</p>
+            <a href="https://saboknote.com" target="_blank">사복노트 계산기 쓰러 가기 →</a>
+        </div>
+
+        <p class="disclaimer">본 가이드는 사복노트가 사회복지 현장 눈높이로 정리한 실무 참고 자료입니다. 세율·수가·한도·정산 기준은 관련 법령 및 소관 부처·지자체 지침에 따라 수시로 바뀔 수 있으며, 본 자료는 세무·법률 자문을 대체하지 않습니다. 실제 적용 전 홈택스·국민건강보험공단·소관 부처 및 세무·회계 전문가를 통해 최종 확인하세요. · saboknote.com</p>
+    </div>
+</body>
+
+</html>
