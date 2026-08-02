@@ -140,7 +140,7 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--g5);color:var(--text
 <div class="cat-nav" id="catNav">
   <button class="cat-chip active" data-cat="all" onclick="filterCat('all',this)">🗂️ 전체</button>
   <button class="cat-chip" data-cat="ai" onclick="filterCat('ai',this)">🤖 AI 활용 <span class="cnt">8</span></button>
-  <button class="cat-chip" data-cat="form" onclick="filterCat('form',this)">📋 사복 서식 <span class="cnt">준비중</span></button>
+  <button class="cat-chip" data-cat="form" onclick="filterCat('form',this)">📋 사복 서식 <span class="cnt">1</span></button>
   <button class="cat-chip" data-cat="tip" onclick="filterCat('tip',this)">💡 실무 꿀팁 <span class="cnt">5</span></button>
   <button class="cat-chip" data-cat="care" onclick="filterCat('care',this)">🌿 마음 충전 <span class="cnt">준비중</span></button>
 </div>
@@ -338,14 +338,30 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--g5);color:var(--text
 
 <!-- ===== 사복 서식 ===== -->
 <div class="cat-section" data-cat="form" style="display:none;">
-  <div class="sec-head"><h2>📋 사복 서식 클래스</h2></div>
-  <div class="soon">
-    <div class="soon-emoji">🗂️</div>
-    <h3>바로 쓰는 서식·양식, 준비 중이에요</h3>
-    <p>상담일지·사례관리 기록지·사업계획서 템플릿까지,<br>복붙만 하면 끝나는 서식을 모으고 있어요.</p>
-    <button class="soon-btn" onclick="parent.postMessage('openNewsletterModal', '*');">📬 출시되면 알림 받기</button>
-    <div class="soon-tags"><span class="soon-tag">상담일지</span><span class="soon-tag">사례관리</span><span class="soon-tag">사업계획서</span><span class="soon-tag">결과보고</span></div>
+  <div class="sec-head">
+    <h2>📋 사복 서식 클래스</h2>
+    <span class="sec-cnt">유료 · 즉시 다운</span>
   </div>
+  <div class="sec-desc">복붙만 하면 끝나는 완성형 서식. 야근 줄여주는 실무 템플릿을 합리적인 가격에.</div>
+
+  <div class="course" id="premCard">
+    <div class="course-thumb" style="background:linear-gradient(135deg,#064e3b 0%,#0c726c 45%,#10b981 100%);">
+      <div class="ct-badges">
+        <span class="ct-badge new" id="premBadge">🔜 판매 예정</span>
+        <span class="ct-badge rename">📋 서식 팩</span>
+      </div>
+      <span class="ct-emoji">🗂️</span>
+      <div class="ct-title">사복쌤 서식 팩 · 사업계획서 + 결과보고서</div>
+      <div class="ct-sub">막막한 백지 대신, 바로 채워 쓰는 완성형 템플릿<br>예시 문구까지 들어있어 시간을 확 아껴줘요 👇</div>
+      <div class="ct-meta">
+        <span>📄 즉시 사용</span><span>✍️ 예시 포함</span><span>♻️ 계속 재사용</span>
+      </div>
+      <button class="ct-cta" id="premCta" onclick="parent.postMessage('openNewsletterModal', '*');">🔔 출시되면 알림 받기 <span class="arw">→</span></button>
+      <div class="ct-hint" id="premHint">결제 후 이메일·카톡으로 파일을 보내드려요</div>
+    </div>
+  </div>
+
+  <div class="note-old" id="premOwnerNote">💳 <b>사장님용 안내:</b> 아래 스크립트의 <b>PURCHASE.paymentLink</b>에 결제 링크(토스·카카오페이·페이앱)를 넣으면, 이 카드가 자동으로 <b>'구매하기'</b>로 바뀌어요. 링크가 비어 있으면 지금처럼 '출시 알림'으로 안전하게 노출돼요.</div>
 </div>
 
 <!-- ===== 실무 꿀팁 ===== -->
@@ -453,6 +469,41 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--g5);color:var(--text
   <div style="font-size:11px;color:rgba(255,255,255,0.7);margin-top:10px;">스팸 절대 없음 · 언제든 구독 취소 가능 · 사복쌤만을 위한 편지예요 💚</div>
 </div>
 
+<!-- ===== 구매 모달 ===== -->
+<style>
+.pay-overlay{position:fixed;inset:0;background:rgba(15,23,42,0.55);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;z-index:50;padding:20px;}
+.pay-overlay.on{display:flex;}
+.pay-modal{background:#fff;border-radius:20px;max-width:400px;width:100%;padding:26px 22px 22px;position:relative;box-shadow:0 20px 60px rgba(0,0,0,0.3);text-align:center;animation:payin .22s ease;}
+@keyframes payin{from{opacity:0;transform:translateY(14px) scale(.97);}to{opacity:1;transform:none;}}
+.pay-x{position:absolute;top:12px;right:14px;background:none;border:none;font-size:18px;color:var(--sub);cursor:pointer;}
+.pay-emoji{font-size:38px;margin-bottom:6px;}
+.pay-title{font-size:18px;font-weight:800;color:var(--text);margin-bottom:4px;line-height:1.3;}
+.pay-price{font-family:'Gaegu',cursive;font-size:30px;font-weight:700;color:#0c726c;margin-bottom:16px;}
+.pay-steps{text-align:left;background:var(--g5);border:1px solid var(--g3);border-radius:12px;padding:14px 15px;margin-bottom:16px;}
+.pay-step{font-size:13px;color:var(--text);line-height:1.55;display:flex;gap:9px;align-items:flex-start;margin-bottom:8px;}
+.pay-step:last-child{margin-bottom:0;}
+.pay-step > b{flex:0 0 auto;width:20px;height:20px;background:#0c726c;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;margin-top:1px;}
+.pay-step span b{color:#0c726c;}
+.pay-go{width:100%;background:linear-gradient(135deg,#0c726c,#10b981);color:#fff;border:none;border-radius:12px;padding:14px;font-size:16px;font-weight:800;cursor:pointer;font-family:'Noto Sans KR',sans-serif;box-shadow:0 6px 18px rgba(16,185,129,0.32);}
+.pay-go:active{transform:scale(.98);}
+.pay-note{font-size:11.5px;color:var(--sub);margin-top:12px;line-height:1.55;}
+</style>
+<div class="pay-overlay" id="payOverlay" onclick="if(event.target===this)closePurchase()">
+  <div class="pay-modal">
+    <button class="pay-x" onclick="closePurchase()" aria-label="닫기">✕</button>
+    <div class="pay-emoji">🗂️</div>
+    <div class="pay-title" id="payTitle">사복쌤 서식 팩</div>
+    <div class="pay-price" id="payPrice">₩9,900</div>
+    <div class="pay-steps">
+      <div class="pay-step"><b>1</b><span>아래 <b>결제하기</b>를 눌러 안전하게 결제해요 (새 창)</span></div>
+      <div class="pay-step"><b>2</b><span>결제 완료 화면(또는 영수증)을 캡처해 두세요</span></div>
+      <div class="pay-step"><b>3</b><span><b>이메일·카톡</b>으로 서식 파일을 보내드려요 — 빠르게 전달돼요</span></div>
+    </div>
+    <button class="pay-go" id="payGo" onclick="pay()">💳 결제하기</button>
+    <div class="pay-note" id="payNote">결제 전 상품·환불 안내를 확인해 주세요 · 문의는 사복노트 채널로</div>
+  </div>
+</div>
+
 <script>
 function go(url){ window.open(url, '_blank'); }
 
@@ -471,6 +522,47 @@ function filterCat(cat, btn){
   });
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
+
+/* ============================================================
+   💳 유료 상품 설정 (결제링크 MVP)
+   ─ 사장님: 아래 paymentLink 에 토스/카카오페이/페이앱 결제 링크만 붙여넣으면
+     서식 팩 카드가 자동으로 '구매하기'로 바뀌어 판매가 시작돼요.
+     비워두면 지금처럼 '출시 알림' 상태로 안전하게 노출됩니다.
+   ============================================================ */
+const PURCHASE = {
+  paymentLink: '',                       // 예: 'https://toss.me/...' 또는 페이앱/카카오 결제 링크
+  productName: '사복쌤 서식 팩 · 사업계획서 + 결과보고서',
+  price: '9,900',                        // 표시 가격 (원)
+  contact: '사복노트 카카오채널 / saboknote.com'
+};
+
+function initPremium(){
+  const cta = document.getElementById('premCta');
+  const badge = document.getElementById('premBadge');
+  if(!cta) return;
+  if(PURCHASE.paymentLink && PURCHASE.paymentLink.trim()){
+    // 판매 중 상태로 전환
+    badge.textContent = '🔒 유료';
+    cta.innerHTML = '🛒 ₩' + PURCHASE.price + ' · 구매하기 <span class="arw">→</span>';
+    cta.setAttribute('onclick', 'openPurchase()');
+    const owner = document.getElementById('premOwnerNote');
+    if(owner) owner.style.display = 'none';
+  }
+  // 링크 없으면 HTML 기본값(출시 알림) 그대로 유지
+}
+
+function openPurchase(){
+  document.getElementById('payTitle').textContent = PURCHASE.productName;
+  document.getElementById('payPrice').textContent = '₩' + PURCHASE.price;
+  document.getElementById('payNote').innerHTML = '결제 전 상품·환불 안내를 확인해 주세요 · 문의: ' + PURCHASE.contact;
+  document.getElementById('payOverlay').classList.add('on');
+}
+function closePurchase(){ document.getElementById('payOverlay').classList.remove('on'); }
+function pay(){
+  if(PURCHASE.paymentLink){ window.open(PURCHASE.paymentLink, '_blank'); }
+}
+
+document.addEventListener('DOMContentLoaded', initPremium);
 </script>
 
 </body>
