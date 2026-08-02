@@ -12,8 +12,8 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         :root {
-            --g: #6d28d9; --g2: #7c3aed; --g3: #ddd6fe; --g4: #ede9fe; --g5: #f5f3ff;
-            --ink: #2e1065; --text: #1e293b; --sub: #64748b; --line: #e6e2f2;
+            --g: #1e40af; --g2: #2563eb; --g3: #bfdbfe; --g4: #dbeafe; --g5: #eff6ff;
+            --ink: #0f2d6b; --text: #1e293b; --sub: #64748b; --line: #e6e2f2;
             --card: #ffffff; --warm: #fff8ec; --amber: #f59e0b; --amber-d: #b45309;
             --green: #0c726c; --green-l: #e4faf8; --red: #dc2626; --radius: 18px;
         }
@@ -26,22 +26,22 @@
         .topbar-title { font-size: 13px; color: var(--sub); font-weight: 700; }
 
         /* hero */
-        .hero { background: linear-gradient(140deg, #060818 0%, #241a52 45%, #5b21b6 100%); color: #fff; padding: 40px 24px 34px; text-align: center; position: relative; overflow: hidden; }
-        .hero::before { content: ''; position: absolute; right: -40px; top: -40px; width: 200px; height: 200px; border-radius: 50%; background: rgba(139,92,246,0.22); }
+        .hero { background: linear-gradient(140deg, #071a33 0%, #0e3a6e 45%, #2563eb 100%); color: #fff; padding: 40px 24px 34px; text-align: center; position: relative; overflow: hidden; }
+        .hero::before { content: ''; position: absolute; right: -40px; top: -40px; width: 200px; height: 200px; border-radius: 50%; background: rgba(59,130,246,0.22); }
         .hero::after { content: '✦ · ✧ · ✦ · ✧'; position: absolute; left: 0; top: 14px; width: 100%; text-align: center; color: rgba(255,255,255,0.18); font-size: 12px; letter-spacing: 6px; }
         .hero-badge { display: inline-block; background: rgba(255,255,255,0.16); border: 1px solid rgba(255,255,255,0.28); border-radius: 999px; padding: 5px 14px; font-size: 12px; font-weight: 700; margin-bottom: 14px; position: relative; }
         .hero h1 { font-family: 'Gaegu', cursive; font-size: 33px; line-height: 1.25; margin-bottom: 10px; position: relative; }
-        .hero h1 span { background: linear-gradient(90deg, #a78bfa, #67e8f9); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: #a78bfa; }
+        .hero h1 span { background: linear-gradient(90deg, #93c5fd, #67e8f9); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: #93c5fd; }
         .hero .oldname { display: inline-block; font-family: 'Noto Sans KR'; font-size: 13px; font-weight: 500; background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.24); border-radius: 999px; padding: 3px 12px; margin-bottom: 12px; position: relative; }
         .hero p { font-size: 14.5px; color: rgba(255,255,255,0.85); position: relative; }
         .hero-meta { margin-top: 16px; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; position: relative; }
         .hero-meta span { background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); border-radius: 999px; padding: 4px 12px; font-size: 12px; }
 
         /* 눈높이 안내 배너 */
-        .rename { margin: 20px 16px 0; background: linear-gradient(135deg, #f5f3ff, #ede9fe); border: 1.5px solid #d6c4f5; border-radius: var(--radius); padding: 18px 20px; }
-        .rename h3 { font-size: 16px; color: #6b3fb5; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
-        .rename p { font-size: 13.8px; color: #4a3a6b; }
-        .rename b { color: #5a2ea6; }
+        .rename { margin: 20px 16px 0; background: linear-gradient(135deg, #eff6ff, #dbeafe); border: 1.5px solid #bcd3f5; border-radius: var(--radius); padding: 18px 20px; }
+        .rename h3 { font-size: 16px; color: #1e40af; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+        .rename p { font-size: 13.8px; color: #33456b; }
+        .rename b { color: #1e40af; }
 
         /* 업데이트 요약 배너 */
         .whatsnew { margin: 16px 16px 0; background: var(--warm); border: 1.5px solid #fde68a; border-radius: var(--radius); padding: 18px 20px; }
@@ -69,7 +69,7 @@
         ul.dots li { position: relative; padding-left: 20px; font-size: 14px; margin-bottom: 7px; }
         ul.dots li::before { content: '·'; position: absolute; left: 6px; color: var(--g2); font-weight: 900; }
         strong { color: var(--ink); }
-        .hl { background: linear-gradient(transparent 60%, #ddd6fe 60%); font-weight: 700; }
+        .hl { background: linear-gradient(transparent 60%, #bfdbfe 60%); font-weight: 700; }
 
         /* step */
         .steps { counter-reset: s; margin: 8px 0 4px; }
@@ -83,7 +83,7 @@
         .prompt { background: #0f172a; border-radius: 12px; padding: 12px 14px 13px; margin: 10px 0 14px; display: flex; flex-direction: column; }
         .prompt pre { color: #e2e8f0; font-size: 13px; line-height: 1.6; white-space: pre-wrap; word-break: break-word; font-family: 'Noto Sans KR', monospace; }
         .copy-btn { align-self: flex-end; margin-bottom: 9px; background: #334155; color: #fff; border: none; border-radius: 8px; padding: 5px 12px; font-size: 12px; font-weight: 700; cursor: pointer; font-family: inherit; }
-        .copy-btn:active { background: #6d28d9; }
+        .copy-btn:active { background: #1e40af; }
         .prompt-label { font-size: 12px; color: var(--g); font-weight: 700; margin-bottom: 6px; }
 
         /* callouts */
@@ -101,8 +101,8 @@
         .tbl td.c { text-align: center; }
 
         /* footer */
-        .end { margin: 30px 16px 0; background: linear-gradient(135deg, #241a52, #6d28d9); border-radius: var(--radius); padding: 26px 22px; color: #fff; text-align: center; }
-        .end h3 { font-family: 'Gaegu', cursive; font-size: 24px; color: #a78bfa; margin-bottom: 8px; }
+        .end { margin: 30px 16px 0; background: linear-gradient(135deg, #0e3a6e, #1e40af); border-radius: var(--radius); padding: 26px 22px; color: #fff; text-align: center; }
+        .end h3 { font-family: 'Gaegu', cursive; font-size: 24px; color: #93c5fd; margin-bottom: 8px; }
         .end p { font-size: 14px; color: rgba(255,255,255,0.85); margin-bottom: 16px; }
         .end a { display: inline-block; background: #fff; color: var(--g); text-decoration: none; font-weight: 700; border-radius: 999px; padding: 11px 22px; font-size: 14px; }
         .disclaimer { margin: 18px 16px 0; font-size: 11.5px; color: var(--sub); text-align: center; line-height: 1.6; }
