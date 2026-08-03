@@ -2105,6 +2105,13 @@ html.dark-mode .request-card-arrow { color: var(--teal-300); }
   border-radius: 999px;
 }
 
+/* 행정/회계 마스터 전용 배너 (청록 브랜드 톤) */
+.prompt-feature.admin-feature {
+  background: linear-gradient(120deg, #065f5b 0%, #0c9488 55%, #10b981 100%);
+  box-shadow: 0 8px 24px rgba(12, 148, 136, 0.3);
+}
+.prompt-feature.admin-feature .prompt-feature-cta { color: #0c726c; }
+
 /* 전체 도구 모달 — 그룹 헤더 */
 .at-group-title {
   font-size: 0.72rem;
