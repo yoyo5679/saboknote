@@ -3716,6 +3716,15 @@ try {
         }
     }
 
+    // 홈 배너 칩 → 행정/회계 마스터를 특정 탭으로 바로 열기
+    window.openAdminTab = function (tabName) {
+        const b = document.getElementById('open-admin-calc');
+        if (b) b.click();
+        setTimeout(function () {
+            if (typeof switchAdminTab === 'function') switchAdminTab(tabName);
+        }, 140);
+    };
+
     window.switchAdminTab = function (tabName, fromUserClick = true) {
         if (fromUserClick) recordToolUsage(tabName);
         const contentVat = document.getElementById('admin-content-vat');
