@@ -3033,15 +3033,20 @@ try {
                         </div>
                         
                         <div class="mosaic-toolbar">
-                            <div style="width:100%; text-align:center; margin-bottom:4px; font-size:0.85rem; font-weight:700; color:var(--text-4);">브러시 설정</div>
-                            <button class="btn-tool" id="btnMosModeBlur" style="background:#8b5cf6; color:white;">블러(흐리게)</button>
-                            <button class="btn-tool" id="btnMosModePixel">모자이크</button>
-                            <div style="width:1px; background:#cbd5e1; margin:0 4px;"></div>
+                            <div style="width:100%; text-align:center; margin-bottom:4px; font-size:0.85rem; font-weight:700; color:var(--text-4);">가리기 방식</div>
+                            <button class="btn-tool" id="btnMosModeBlack" style="background:#111827; color:white;">■ 완전가림</button>
+                            <button class="btn-tool" id="btnMosModePixel">모자이크(강)</button>
+                            <button class="btn-tool" id="btnMosModeBlur">블러</button>
+                        </div>
+                        <div style="width:100%; text-align:center; font-size:0.72rem; color:#dc2626; font-weight:600; margin-top:6px;">🔒 주민번호·실명 등은 <b>완전가림</b>을 쓰세요 (블러·모자이크는 복원 위험)</div>
+                        <div class="mosaic-toolbar" style="margin-top:10px;">
+                            <div style="width:100%; text-align:center; margin-bottom:4px; font-size:0.85rem; font-weight:700; color:var(--text-4);">브러시 굵기</div>
                             <button class="btn-tool" id="btnMosSizeS">얇게</button>
                             <button class="btn-tool" id="btnMosSizeM" style="background:#8b5cf6; color:white;">보통</button>
                             <button class="btn-tool" id="btnMosSizeL">두껍게</button>
+                            <button class="btn-tool" id="btnMosSizeXL">아주 두껍게</button>
                         </div>
-                        
+
                         <div class="mosaic-toolbar" style="margin-top:12px;">
                             <button class="btn-tool" id="btnMosUndo">↩️ 되돌리기</button>
                             <button class="btn-tool" id="btnMosClear">🗑️ 전체 초기화</button>
@@ -7685,9 +7690,11 @@ try {
         
         const btnBlur = document.getElementById('btnMosModeBlur');
         const btnPixel = document.getElementById('btnMosModePixel');
+        const btnBlack = document.getElementById('btnMosModeBlack');
         const btnSizeS = document.getElementById('btnMosSizeS');
         const btnSizeM = document.getElementById('btnMosSizeM');
         const btnSizeL = document.getElementById('btnMosSizeL');
+        const btnSizeXL = document.getElementById('btnMosSizeXL');
         const btnUndo = document.getElementById('btnMosUndo');
         const btnClear = document.getElementById('btnMosClear');
         const btnSave = document.getElementById('btnMosSave');
@@ -7699,7 +7706,7 @@ try {
         let originalImg = new Image();
         let isDrawing = false;
         let lastX = 0, lastY = 0;
-        let mode = 'blur'; // 'blur' or 'pixel'
+        let mode = 'black'; // 'black'(완전가림) | 'pixel' | 'blur'
         let brushSize = 25;
         let history = [];
         let blurredCanvas = null;
@@ -7763,21 +7770,22 @@ try {
             const bctx = c.getContext('2d');
 
             if (supportsCanvasFilter()) {
-                bctx.filter = 'blur(8px)';
-                bctx.drawImage(originalImg, 0, 0, width, height);
-                bctx.drawImage(originalImg, 0, 0, width, height);
+                // 강한 블러: 이미지 크기 비례 반경(최소 16px) + 다중 패스로 텍스트 판독 방지
+                const radius = Math.max(16, Math.round(width / 40));
+                bctx.filter = 'blur(' + radius + 'px)';
+                for (let i = 0; i < 3; i++) bctx.drawImage(originalImg, 0, 0, width, height);
                 bctx.filter = 'none';
                 return c;
             }
 
-            // Fallback: iOS Safari 등 ctx.filter 미지원 브라우저 → 축소-확대 방식 블러
+            // Fallback: iOS Safari 등 ctx.filter 미지원 브라우저 → 축소-확대 방식 블러(강)
             let tmp = document.createElement('canvas');
             tmp.width = width;
             tmp.height = height;
             tmp.getContext('2d').drawImage(originalImg, 0, 0, width, height);
             let w = width, h = height;
 
-            for (let i = 0; i < 3; i++) { // 반씩 3회 축소 (≈ 1/8)
+            for (let i = 0; i < 5; i++) { // 반씩 5회 축소 (≈ 1/32) — 훨씬 강한 블러
                 const nw = Math.max(1, Math.floor(w / 2));
                 const nh = Math.max(1, Math.floor(h / 2));
                 const next = document.createElement('canvas');
@@ -7864,22 +7872,27 @@ try {
             ctx.clip();
 
             ctx.filter = 'none';
-            if (mode === 'blur') {
+            if (mode === 'black') {
+                // 완전가림: 불투명 검정으로 덮음(복원 불가) — 원 클립 범위를 꽉 채움
+                ctx.fillStyle = '#111827';
+                ctx.fillRect(x - brushSize, y - brushSize, brushSize * 2, brushSize * 2);
+            } else if (mode === 'blur') {
                 if (blurredCanvas) {
                     ctx.drawImage(blurredCanvas, 0, 0, canvas.width, canvas.height);
                 }
             } else {
+                // 모자이크(강): 블록을 크게 하여 글자 판독 방지
                 ctx.imageSmoothingEnabled = false;
                 const srcX = Math.max(0, x - brushSize);
                 const srcY = Math.max(0, y - brushSize);
                 const size = brushSize * 2;
-                
+
                 const off = document.createElement('canvas');
-                off.width = size / 10;
-                off.height = size / 10;
+                off.width = Math.max(1, Math.round(size / 22));
+                off.height = Math.max(1, Math.round(size / 22));
                 const octx = off.getContext('2d');
                 octx.drawImage(originalImg, srcX * (originalImg.width / canvas.width), srcY * (originalImg.height / canvas.height), size * (originalImg.width / canvas.width), size * (originalImg.height / canvas.height), 0, 0, off.width, off.height);
-                
+
                 ctx.filter = 'none';
                 ctx.drawImage(off, 0, 0, off.width, off.height, srcX, srcY, size, size);
             }
@@ -7906,12 +7919,22 @@ try {
             btn.style.color = 'white';
         };
 
-        btnBlur.onclick = () => { mode = 'blur'; setToolActive(btnBlur, [btnBlur, btnPixel]); };
-        btnPixel.onclick = () => { mode = 'pixel'; setToolActive(btnPixel, [btnBlur, btnPixel]); };
+        const modeGroup = [btnBlack, btnPixel, btnBlur];
+        const setModeActive = (btn) => {
+            modeGroup.forEach(b => { if (!b) return; b.style.background = 'var(--surface-4)'; b.style.color = 'var(--text-4)'; });
+            // 완전가림은 검정, 나머지는 보라로 활성 표시
+            btn.style.background = (btn === btnBlack) ? '#111827' : '#8b5cf6';
+            btn.style.color = 'white';
+        };
+        if (btnBlack) btnBlack.onclick = () => { mode = 'black'; setModeActive(btnBlack); };
+        if (btnPixel) btnPixel.onclick = () => { mode = 'pixel'; setModeActive(btnPixel); };
+        if (btnBlur) btnBlur.onclick = () => { mode = 'blur'; setModeActive(btnBlur); };
 
-        btnSizeS.onclick = () => { brushSize = 10; setToolActive(btnSizeS, [btnSizeS, btnSizeM, btnSizeL]); };
-        btnSizeM.onclick = () => { brushSize = 25; setToolActive(btnSizeM, [btnSizeS, btnSizeM, btnSizeL]); };
-        btnSizeL.onclick = () => { brushSize = 45; setToolActive(btnSizeL, [btnSizeS, btnSizeM, btnSizeL]); };
+        const sizeGroup = [btnSizeS, btnSizeM, btnSizeL, btnSizeXL];
+        btnSizeS.onclick = () => { brushSize = 10; setToolActive(btnSizeS, sizeGroup); };
+        btnSizeM.onclick = () => { brushSize = 25; setToolActive(btnSizeM, sizeGroup); };
+        btnSizeL.onclick = () => { brushSize = 45; setToolActive(btnSizeL, sizeGroup); };
+        if (btnSizeXL) btnSizeXL.onclick = () => { brushSize = 75; setToolActive(btnSizeXL, sizeGroup); };
 
         btnUndo.onclick = () => {
             if (history.length > 1) {
