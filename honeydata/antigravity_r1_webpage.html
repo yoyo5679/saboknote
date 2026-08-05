@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>레시피 1: 5분 만에 만드는 카톡 공유용 모바일 신청 웹페이지 — 안티그래비티 IDE 🔒</title>
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Noto+Sans+KR:wght@400;500;700;900&display=swap"
+        rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        :root {
+            --g: #1e40af; --g2: #2563eb; --g3: #bfdbfe; --g4: #dbeafe; --g5: #eff6ff;
+            --ink: #0f2d6b; --text: #1e293b; --sub: #64748b; --line: #e6e2f2;
+            --card: #ffffff; --warm: #fff8ec; --amber: #f59e0b; --amber-d: #b45309;
+            --green: #0c726c; --green-l: #e4faf8; --red: #dc2626; --radius: 18px;
+        }
+        body { font-family: 'Noto Sans KR', sans-serif; background: var(--g5); color: var(--text); line-height: 1.75; }
+        .wrap { max-width: 800px; margin: 0 auto; padding: 0 0 60px; }
+
+        .topbar { position: sticky; top: 0; z-index: 20; background: rgba(255,255,255,0.92); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); padding: 10px 16px; display: flex; align-items: center; gap: 8px; }
+        .back-btn { border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 7px 14px; font-size: 13px; font-weight: 700; color: var(--g); cursor: pointer; font-family: inherit; }
+        .topbar-title { font-size: 13px; color: var(--sub); font-weight: 700; }
+
+        .hero { background: linear-gradient(140deg, #071a33 0%, #0e3a6e 45%, #2563eb 100%); color: #fff; padding: 42px 24px 36px; text-align: center; position: relative; overflow: hidden; }
+        .hero-badge { display: inline-block; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.3); border-radius: 999px; padding: 4px 14px; font-size: 12개의; font-weight: 800; margin-bottom: 12px; letter-spacing: 0.5px; }
+        .hero h1 { font-family: 'Gaegu', cursive; font-size: 34px; line-height: 1.25; margin-bottom: 10px; }
+        .hero h1 span { background: linear-gradient(90deg, #93c5fd, #67e8f9); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero p { font-size: 15px; color: rgba(255,255,255,0.92); }
+
+        section { margin: 24px 16px 0; background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 26px 24px; }
+        section > h2 { font-size: 21px; color: var(--ink); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+        section > .lead { font-size: 14.5px; color: var(--sub); margin-bottom: 18px; }
+        h3.blk { font-size: 16px; color: var(--g); margin: 22px 0 12px; display: flex; align-items: center; gap: 6px; }
+        p.body { font-size: 14.8px; margin-bottom: 14px; line-height: 1.75; }
+        ul.dots { margin: 0 0 14px; padding-left: 4px; list-style: none; }
+        ul.dots li { position: relative; padding-left: 22px; font-size: 14.5px; margin-bottom: 8px; }
+        ul.dots li::before { content: '·'; position: absolute; left: 6px; color: var(--g2); font-weight: 900; font-size: 18px; }
+
+        .steps { counter-reset: s; margin: 12px 0 8px; }
+        .step { counter-increment: s; position: relative; padding: 14px 0 14px 50px; border-bottom: 1px dashed var(--line); }
+        .step:last-child { border-bottom: none; }
+        .step::before { content: counter(s); position: absolute; left: 0; top: 14px; width: 32px; height: 32px; background: var(--g); color: #fff; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; }
+        .step b { display: block; font-size: 15.5px; color: var(--ink); margin-bottom: 3px; }
+        .step small { font-size: 13.5px; color: var(--sub); line-height: 1.6; display: block; }
+
+        .prompt { background: #0f172a; border-radius: 14px; padding: 16px 18px; margin: 12px 0 18px; display: flex; flex-direction: column; box-shadow: inset 0 2px 6px rgba(0,0,0,0.3); }
+        .prompt pre { color: #f1f5f9; font-size: 13.8px; line-height: 1.7; white-space: pre-wrap; word-break: break-word; font-family: 'Noto Sans KR', monospace; }
+        .copy-btn { align-self: flex-end; margin-bottom: 10px; background: #2563eb; color: #fff; border: none; border-radius: 8px; padding: 7px 16px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; transition: all 0.2s; }
+        .copy-btn:hover { background: #1d4ed8; }
+
+        .note { border-radius: 14px; padding: 16px 18px; margin: 14px 0; font-size: 14px; line-height: 1.65; }
+        .note.tip { background: var(--g5); border: 1.5px solid var(--g3); color: #1e3a8a; }
+        .note.good { background: var(--green-l); border: 1.5px solid #b5e5df; color: #044e4a; }
+        .note.warn { background: #fef2f2; border: 1.5px solid #fecaca; color: #7f1d1d; }
+        .note b { font-weight: 800; }
+
+        .badge-tag { display: inline-block; background: #dbeafe; color: #1e40af; border-radius: 6px; padding: 2px 8px; font-size: 12px; font-weight: 700; margin-right: 6px; }
+
+        /* 결과물 미리보기 박스 */
+        .preview-box { background: #f8fafc; border: 2px dashed #94a3b8; border-radius: 16px; padding: 20px; margin: 18px 0; }
+        .preview-header { font-size: 13px; font-weight: 800; color: #475569; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+        .phone-mockup { max-width: 360px; margin: 0 auto; background: #fff; border: 3px solid #334155; border-radius: 28px; padding: 18px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .phone-header { background: #0c726c; color: #fff; border-radius: 14px; padding: 14px; text-align: center; margin-bottom: 14px; }
+        .phone-card { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 12px; margin-bottom: 10px; font-size: 13px; color: #166534; }
+        .phone-btn { display: block; background: #16a34a; color: #fff; text-align: center; font-weight: 800; padding: 12px; border-radius: 12px; text-decoration: none; margin-top: 14px; font-size: 14px; }
+
+        .end { margin: 34px 16px 0; background: linear-gradient(135deg, #0e3a6e, #1e40af); border-radius: var(--radius); padding: 30px 24px; color: #fff; text-align: center; }
+        .end h3 { font-family: 'Gaegu', cursive; font-size: 27px; color: #93c5fd; margin-bottom: 8px; }
+        .end p { font-size: 14.5px; color: rgba(255,255,255,0.88); margin-bottom: 20px; }
+        .end a { display: inline-block; background: #fff; color: var(--g); text-decoration: none; font-weight: 800; border-radius: 999px; padding: 13px 26px; font-size: 14.5px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+    </style>
+</head>
+
+<body>
+    <div class="topbar">
+        <button class="back-btn" onclick="history.length>1?history.back():location.href='../treasure.html'">← 보물창고</button>
+        <span class="topbar-title">안티그래비티 IDE 실전 마스터 · 레시피 R1</span>
+    </div>
+
+    <div class="hero">
+        <span class="hero-badge">🔒 PREMIUM MASTERCLASS R1</span>
+        <h1>프로그램 신청 안내 <span>모바일 웹페이지</span> 📱</h1>
+        <p>복잡한 종이 포스터 대신, 카톡에 주소 링크 하나로 전송하는<br>어르신 맞춤 모바일 홍보 페이지를 말 한마디로 만드세요.</p>
+    </div>
+
+    <div class="wrap">
+
+        <section>
+            <h2>🌿 1. 사복쌤, 이럴 때 꼭 쓰세요! (왜 필요한가요?)</h2>
+            <p class="body">
+                <b>현장의 현실:</b> "김 대리님, 이번 어르신 정보화 교실 모집 종이 포스터 만들어서 복지관 로비에 붙여주세요!"<br>
+                하지만 포스터를 종이로 인쇄하면 비용도 들고, 단톡방에 사진으로 올리면 글씨가 너무 작아서 어르신들이 <i>"선생님, 글자가 하나도 안 보여요~"</i> 하고 전화를 주시죠.
+            </p>
+            <p class="body">
+                <b>이 레시피를 쓰면 일어나는 기적:</b><br>
+                AI에게 말 한마디만 시키면, 글씨가 큼직하고 아래에 <b>[전화로 바로 신청하기]</b> 버튼이 있는 전용 인터넷 페이지가 뚝딱 만들어집니다. 카톡으로 이 주소만 보내면 어르신이 버튼 한 번 터치로 바로 전화를 거실 수 있어요!
+            </p>
+        </section>
+
+        <!-- 완성 미리보기 -->
+        <section>
+            <h2>🖼️ 2. 완성되면 스마트폰에 어떻게 보이나요? (미리보기)</h2>
+            <p class="lead">아래 3단계 명령을 다 치고 나면, 어르신들 스마트폰 화면에 이렇게 예쁘게 뜹니다!</p>
+            
+            <div class="preview-box">
+                <div class="preview-header">📱 완성된 모바일 안내 페이지 모습</div>
+                <div class="phone-mockup">
+                    <div class="phone-header">
+                        <h4 style="font-size:16px;">2026 청춘 스마트폰 교실</h4>
+                        <p style="font-size:12px; opacity:0.9;">어르신을 위한 1:1 맞춤 교육</p>
+                    </div>
+                    <div class="phone-card">
+                        <b>📅 일시:</b> 매주 화요일 10시~12시<br>
+                        <b>📍 장소:</b> 복지관 2층 컴퓨터실<br>
+                        <b>💰 수강료:</b> 전액 무료 (선착순 15명)
+                    </div>
+                    <div class="phone-card" style="background:#eff6ff; border-color:#bfdbfe; color:#1e40af;">
+                        <b>💡 1회차:</b> 카톡 사진 보내기<br>
+                        <b>💡 2회차:</b> 버스 도착 시간 확인<br>
+                        <b>💡 3회차:</b> 병원 예약하기
+                    </div>
+                    <a href="#" class="phone-btn" onclick="alert('실제 어르신 휴대폰에서는 복지관 전화 연결창이 뜹니다!'); return false;">📞 전화로 바로 신청하기 (터치)</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- 프롬프트 복붙 -->
+        <section>
+            <h2>💬 3. 따라하기 — 채팅창에 복붙만 하세요!</h2>
+            <p class="lead">안티그래비티 IDE의 <b>오른쪽 채팅창</b>에 아래 1차 프롬프트를 복사해서 붙여넣으세요.</p>
+
+            <h3 class="blk"><span class="badge-tag">STEP 1</span> 1차 프롬프트 (기본 뼈대 만들기)</h3>
+            <div class="prompt-label">📋 [복사] 버튼을 누르고 오른쪽 채팅창에 붙여넣고 엔터를 치세요</div>
+            <div class="prompt">
+                <button class="copy-btn" onclick="cp(this)">📋 1차 프롬프트 복사</button>
+                <pre>사회복지관 '2026 청춘 스마트폰 교실' 참가자 모집을 위한 모바일 안내 웹페이지(index.html)를 만들어줘.
+
+[포함할 내용]
+1. 제목: "2026 청춘 스마트폰 교실" (파스텔 초록색 바탕에 큼직한 글자)
+2. 정보: 일시(매주 화요일 10시), 장소(복지관 2층 컴퓨터실), 대상(65세 이상 15명 선착순), 수강료(무료)
+3. 교육 내용: 1회차 카톡 사진 공유, 2회차 버스 도착 확인, 3회차 병원 예약
+4. 하단 버튼: "📞 전화로 바로 신청하기" (클릭 시 02-1234-5678 전화 연결)
+5. 한 개의 index.html 파일 안에 글자 크기를 어르신이 보기 쉽게 큼직하게 만들어줘.</pre>
+            </div>
+
+            <div class="steps">
+                <div class="step">
+                    <b>1. 오른쪽 채팅창에 붙여넣고 엔터</b>
+                    <small>오른쪽 채팅창 하단 박스에 프롬프트를 넣고 엔터를 누릅니다.</small>
+                </div>
+                <div class="step">
+                    <b>2. 보라색 [Approve] 승인 버튼 클릭!</b>
+                    <small>AI가 "index.html 파일을 만듭니다"라고 계획을 제시하면 [Approve] 승인 버튼을 누르세요. 왼쪽 화면에서 코드가 써지는 것을 구경하시면 됩니다!</small>
+                </div>
+            </div>
+
+            <h3 class="blk"><span class="badge-tag">STEP 2</span> 2차 프롬프트 (카톡 글자 크기 & 색상 예쁘게 다듬기)</h3>
+            <div class="prompt-label">📋 코드가 다 써진 후 채팅창에 이어서 적으세요</div>
+            <div class="prompt">
+                <button class="copy-btn" onclick="cp(this)">📋 2차 프롬프트 복사</button>
+                <pre>방금 만든 index.html을 어르신들이 더 잘 볼 수 있게 수정해줘.
+
+1. 글자 크기를 전체적으로 더 큼직하게 키우고, 중요한 '무료', '선착순 15명' 문구는 노란색 형광펜 강조 효과를 줘.
+2. 전화걸기 버튼을 녹색 큰 버튼으로 바꿔서 눈에 제일 잘 띄게 해줘.</pre>
+            </div>
+        </section>
+
+        <!-- 배포하기 -->
+        <section>
+            <h2>🌐 4. 만든 페이지를 카톡으로 보내는 1분 비법 (0원)</h2>
+            <p class="lead">내 컴퓨터에 만든 `index.html` 파일을 카톡 전송용 인터넷 주소(URL)로 바꾸는 법입니다.</p>
+
+            <div class="steps">
+                <div class="step">
+                    <b>1. 인터넷 창에서 `app.netlify.com/drop` 접속</b>
+                    <small>무료로 인터넷 주소를 만들어주는 아주 고마운 웹사이트입니다.</small>
+                </div>
+                <div class="step">
+                    <b>2. 내 폴더의 `index.html` 파일을 마우스로 마우스 드래그</b>
+                    <small>안티그래비티 연습 폴더에 있는 `index.html` 파일을 끌어다 놓습니다.</small>
+                </div>
+                <div class="step">
+                    <b>3. 생성된 주소를 카톡 단톡방에 전송!</b>
+                    <small>`https://random-name.netlify.app` 같은 전용 주소가 바로 생성됩니다. 이 링크를 카톡에 전송하면 어르신 안내가 끝납니다!</small>
+                </div>
+            </div>
+        </section>
+
+        <div class="end">
+            <h3>레시피 1 마스터 완료! 🚀</h3>
+            <p>포스터 인쇄비 0원! 업무 시간 대폭 절약! 어르신 맞춤 모바일 안내 페이지를 자유롭게 만드세요.</p>
+            <a href="../treasure.html">← 보물창고 커리큘럼으로 돌아가기</a>
+        </div>
+
+    </div>
+
+    <script>
+        function cp(btn) {
+            const pre = btn.parentElement.querySelector('pre');
+            const text = pre.innerText;
+            const done = () => { const o = btn.innerText; btn.innerText = '✅ 복사됨'; setTimeout(() => btn.innerText = o, 1500); };
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(done).catch(() => fallback(text, done));
+            } else { fallback(text, done); }
+        }
+        function fallback(text, done) {
+            const ta = document.createElement('textarea');
+            ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+            document.body.appendChild(ta); ta.select();
+            try { document.execCommand('copy'); done(); } catch (e) { }
+            document.body.removeChild(ta);
+        }
+    </script>
+</body>
+
+</html>

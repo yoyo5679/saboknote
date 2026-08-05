@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>레시피 3: 흩어진 명단·엑셀 3초 자동 취합 — 안티그래비티 IDE 🔒</title>
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Noto+Sans+KR:wght@400;500;700;900&display=swap"
+        rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        :root {
+            --g: #1e40af; --g2: #2563eb; --g3: #bfdbfe; --g4: #dbeafe; --g5: #eff6ff;
+            --ink: #0f2d6b; --text: #1e293b; --sub: #64748b; --line: #e6e2f2;
+            --card: #ffffff; --warm: #fff8ec; --amber: #f59e0b; --amber-d: #b45309;
+            --green: #0c726c; --green-l: #e4faf8; --red: #dc2626; --radius: 18px;
+        }
+        body { font-family: 'Noto Sans KR', sans-serif; background: var(--g5); color: var(--text); line-height: 1.75; }
+        .wrap { max-width: 800px; margin: 0 auto; padding: 0 0 60px; }
+
+        .topbar { position: sticky; top: 0; z-index: 20; background: rgba(255,255,255,0.92); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); padding: 10px 16px; display: flex; align-items: center; gap: 8px; }
+        .back-btn { border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 7px 14px; font-size: 13px; font-weight: 700; color: var(--g); cursor: pointer; font-family: inherit; }
+        .topbar-title { font-size: 13px; color: var(--sub); font-weight: 700; }
+
+        .hero { background: linear-gradient(140deg, #071a33 0%, #0e3a6e 45%, #2563eb 100%); color: #fff; padding: 42px 24px 36px; text-align: center; position: relative; overflow: hidden; }
+        .hero-badge { display: inline-block; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.3); border-radius: 999px; padding: 4px 14px; font-size: 12px; font-weight: 800; margin-bottom: 12px; letter-spacing: 0.5px; }
+        .hero h1 { font-family: 'Gaegu', cursive; font-size: 34px; line-height: 1.25; margin-bottom: 10px; }
+        .hero h1 span { background: linear-gradient(90deg, #93c5fd, #67e8f9); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero p { font-size: 15px; color: rgba(255,255,255,0.92); }
+
+        section { margin: 24px 16px 0; background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 26px 24px; }
+        section > h2 { font-size: 21px; color: var(--ink); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+        section > .lead { font-size: 14.5px; color: var(--sub); margin-bottom: 18px; }
+        h3.blk { font-size: 16px; color: var(--g); margin: 22px 0 12px; display: flex; align-items: center; gap: 6px; }
+        p.body { font-size: 14.8px; margin-bottom: 14px; line-height: 1.75; }
+
+        .steps { counter-reset: s; margin: 12px 0 8px; }
+        .step { counter-increment: s; position: relative; padding: 14px 0 14px 50px; border-bottom: 1px dashed var(--line); }
+        .step:last-child { border-bottom: none; }
+        .step::before { content: counter(s); position: absolute; left: 0; top: 14px; width: 32px; height: 32px; background: var(--g); color: #fff; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; }
+        .step b { display: block; font-size: 15.5px; color: var(--ink); margin-bottom: 3px; }
+        .step small { font-size: 13.5px; color: var(--sub); line-height: 1.6; display: block; }
+
+        .prompt { background: #0f172a; border-radius: 14px; padding: 16px 18px; margin: 12px 0 18px; display: flex; flex-direction: column; box-shadow: inset 0 2px 6px rgba(0,0,0,0.3); }
+        .prompt pre { color: #f1f5f9; font-size: 13.8px; line-height: 1.7; white-space: pre-wrap; word-break: break-word; font-family: 'Noto Sans KR', monospace; }
+        .copy-btn { align-self: flex-end; margin-bottom: 10px; background: #2563eb; color: #fff; border: none; border-radius: 8px; padding: 7px 16px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; transition: all 0.2s; }
+        .copy-btn:hover { background: #1d4ed8; }
+
+        .preview-box { background: #f8fafc; border: 2px dashed #94a3b8; border-radius: 16px; padding: 20px; margin: 18px 0; }
+        .preview-header { font-size: 13px; font-weight: 800; color: #475569; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
+
+        .excel-grid { width: 100%; border-collapse: collapse; font-size: 13px; background: #fff; border: 1px solid #cbd5e1; margin: 10px 0; }
+        .excel-grid th { background: #0c726c; color: #fff; padding: 8px; border: 1px solid #095450; font-weight: 800; }
+        .excel-grid td { padding: 8px; border: 1px solid #e2e8f0; text-align: center; }
+
+        .note { border-radius: 14px; padding: 16px 18px; margin: 14px 0; font-size: 14px; line-height: 1.65; }
+        .note.tip { background: var(--g5); border: 1.5px solid var(--g3); color: #1e3a8a; }
+        .note.good { background: var(--green-l); border: 1.5px solid #b5e5df; color: #044e4a; }
+        
+        .badge-tag { display: inline-block; background: #dbeafe; color: #1e40af; border-radius: 6px; padding: 2px 8px; font-size: 12px; font-weight: 700; margin-right: 6px; }
+
+        .end { margin: 34px 16px 0; background: linear-gradient(135deg, #0e3a6e, #1e40af); border-radius: var(--radius); padding: 30px 24px; color: #fff; text-align: center; }
+        .end h3 { font-family: 'Gaegu', cursive; font-size: 27px; color: #93c5fd; margin-bottom: 8px; }
+        .end p { font-size: 14.5px; color: rgba(255,255,255,0.88); margin-bottom: 20px; }
+        .end a { display: inline-block; background: #fff; color: var(--g); text-decoration: none; font-weight: 800; border-radius: 999px; padding: 13px 26px; font-size: 14.5px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+    </style>
+</head>
+
+<body>
+    <div class="topbar">
+        <button class="back-btn" onclick="history.length>1?history.back():location.href='../treasure.html'">← 보물창고</button>
+        <span class="topbar-title">안티그래비티 IDE 실전 마스터 · 레시피 R3</span>
+    </div>
+
+    <div class="hero">
+        <span class="hero-badge">🔒 PREMIUM MASTERCLASS R3</span>
+        <h1>흩어진 명단·엑셀 <span>3초 자동 취합</span> 📊</h1>
+        <p>1동부터 5동까지 따로 들어온 엑셀 명단 5개, 일일이 열어서 복붙하느라 칼퇴 못하셨나요?<br>한 폴더에 넣고 말 한마디면 중복까지 알아서 지워진 깔끔한 1개 파일이 완성됩니다.</p>
+    </div>
+
+    <div class="wrap">
+
+        <section>
+            <h2>🌿 1. 사복쌤, 이럴 때 꼭 쓰세요! (왜 필요한가요?)</h2>
+            <p class="body">
+                <b>현장의 현실:</b> "김 대리님, 5개 동 주민센터에서 보내온 어르신 밑반찬 신청 엑셀 명단 하나로 합쳐서 퇴근 전에 제출해 주세요!"<br>
+                어떤 동은 제목이 '성명', 어떤 동은 '이름'으로 다르고, 전화번호에 하이픈(-)이 빠진 경우도 태반이라 일일이 고치느라 2시간 동안 엑셀 화면만 붙잡고 계셨죠.
+            </p>
+            <p class="body">
+                <b>이 레시피를 쓰면 일어나는 기적:</b><br>
+                엑셀 파일 5개를 폴더 하나에 쏙 던져놓고 아래 프롬프트를 복사해 넣으면, AI가 알아서 제목을 통일하고, 전화번호 하이픈을 붙이고, 중복 신청자를 지워낸 <b>`통합명단_최종결과.xlsx`</b> 파일을 3초 만에 만들어냅니다!
+            </p>
+        </section>
+
+        <!-- 엑셀 만드는 법 1:1 유치원 가이드 -->
+        <section>
+            <h2>📁 2. 따라하기 1단계: 엑셀 샘플 파일 준비하기</h2>
+            <p class="lead">연습용으로 합쳐볼 엑셀 파일 2개를 직접 만들어보겠습니다. 1초도 헷갈리지 않게 알려드릴게요!</p>
+            
+            <p class="body"><b>① 첫 번째 파일 만들기:</b> 엑셀을 켜고 맨 위 1행 셀에 그대로 적으세요.</p>
+            <table class="excel-grid">
+                <thead>
+                    <tr>
+                        <th>A1 셀</th>
+                        <th>B1 셀</th>
+                        <th>C1 셀</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="background:#f0fdf4; font-weight:800;">
+                        <td>성명</td>
+                        <td>연락처</td>
+                        <td>신청일자</td>
+                    </tr>
+                    <tr>
+                        <td>홍길동</td>
+                        <td>010-1234-5678</td>
+                        <td>2026-04-01</td>
+                    </tr>
+                    <tr>
+                        <td>김철수</td>
+                        <td>01012345678</td>
+                        <td>2026-04-01</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p class="body">➔ **저장 위치:** 바탕화면 `안티그래비티_연습` 폴더 안에 **`data_files`** 라는 폴더를 새로 만들고, 그 안에 **`1팀명단.xlsx`** 이름으로 저장하세요.</p>
+
+            <p class="body" style="margin-top:20px;"><b>② 두 번째 파일 만들기:</b> 새 엑셀 창을 켜고 이번엔 열 이름을 살짝 다르게 적어보세요.</p>
+            <table class="excel-grid">
+                <thead>
+                    <tr>
+                        <th>A1 셀</th>
+                        <th>B1 셀</th>
+                        <th>C1 셀</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="background:#eff6ff; font-weight:800;">
+                        <td>신청자</td>
+                        <td>전화번호</td>
+                        <td>신청일자</td>
+                    </tr>
+                    <tr>
+                        <td>이영희</td>
+                        <td>010-9876-5432</td>
+                        <td>2026-04-02</td>
+                    </tr>
+                    <tr>
+                        <td>홍길동</td>
+                        <td>010-1234-5678</td>
+                        <td>2026-04-02</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p class="body">➔ **저장 위치:** 동일하게 `data_files` 폴더 안에 **`2팀명단.xlsx`** 이름으로 저장하세요.</p>
+        </section>
+
+        <!-- 프롬프트 복붙 -->
+        <section>
+            <h2>💬 3. 따라하기 2단계: 채팅창에 시키기</h2>
+            <p class="lead">IDE 오른쪽 채팅창에 아래 프롬프트를 그대로 복사해서 넣으세요.</p>
+
+            <h3 class="blk"><span class="badge-tag">STEP 1</span> 1차 프롬프트 (자동 취합 지시)</h3>
+            <div class="prompt-label">📋 아래 복사 버튼을 누르고 채팅창에 붙여넣으세요</div>
+            <div class="prompt">
+                <button class="copy-btn" onclick="cp(this)">📋 1차 프롬프트 복사</button>
+                <pre>`data_files/` 폴더 안의 모든 엑셀 파일들을 하나로 합쳐주는 스크립트(merge.py)를 만들어줘.
+
+1. '신청자', '이름', '성명' 이라고 되어 있는 열 제목을 모두 '성명' 으로 통일해줘.
+2. '전화번호', '핸드폰', '연락처' 라고 되어 있는 열 제목을 모두 '연락처' 로 통일해줘.
+3. 연락처에 하이픈(-)이 빠져 있으면 010-XXXX-XXXX 형식으로 자동으로 붙여줘.
+4. 성명과 연락처가 똑같은 중복 데이터는 하나만 남기고 삭제해줘.
+5. 최종 결과를 `통합명단_최종결과.xlsx` 파일로 저장하고 코드를 바로 실행해줘.</pre>
+            </div>
+
+            <div class="steps">
+                <div class="step">
+                    <b>1. 오른쪽 채팅창에 붙여넣고 엔터</b>
+                    <small>채팅창에 넣고 엔터를 칩니다.</small>
+                </div>
+                <div class="step">
+                    <b>2. 보라색 [Approve] 승인 버튼 클릭</b>
+                    <small>AI가 지시를 받아 들고 코드를 쓸 준비를 마치면 승인 버튼을 누르세요. 알아서 3초 만에 파일을 합쳐냅니다!</small>
+                </div>
+            </div>
+        </section>
+
+        <!-- 결과물 미리보기 -->
+        <section>
+            <h2>🎉 4. 결과물 확인 (내 폴더를 열어보세요!)</h2>
+            <p class="lead">작업이 끝나고 `안티그래비티_연습` 폴더를 보면 새 파일이 생겨 있습니다!</p>
+            
+            <div class="preview-box">
+                <div class="preview-header">📊 새로 생긴 `통합명단_최종결과.xlsx` 열었을 때 모습</div>
+                <table class="excel-grid">
+                    <thead>
+                        <tr>
+                            <th style="background:#22c55e;">성명 (통일됨)</th>
+                            <th style="background:#22c55e;">연락처 (하이픈 정제됨)</th>
+                            <th style="background:#22c55e;">신청일자</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><b>홍길동</b></td>
+                            <td>010-1234-5678</td>
+                            <td>2026-04-01 (중복 1건 자동 제거됨!)</td>
+                        </tr>
+                        <tr>
+                            <td><b>김철수</b></td>
+                            <td>010-1234-5678</td>
+                            <td>2026-04-01 (하이픈 자동 추가됨!)</td>
+                        </tr>
+                        <tr>
+                            <td><b>이영희</b></td>
+                            <td>010-9876-5432</td>
+                            <td>2026-04-02</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <div class="end">
+            <h3>레시피 3 마스터 완료! 🚀</h3>
+            <p>단순 복붙 수작업에서 완벽 해방! 엑셀 자동 취합으로 야근 없는 퇴근길을 만드세요.</p>
+            <a href="../treasure.html">← 보물창고 커리큘럼으로 돌아가기</a>
+        </div>
+
+    </div>
+
+    <script>
+        function cp(btn) {
+            const pre = btn.parentElement.querySelector('pre');
+            const text = pre.innerText;
+            const done = () => { const o = btn.innerText; btn.innerText = '✅ 복사됨'; setTimeout(() => btn.innerText = o, 1500); };
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(done).catch(() => fallback(text, done));
+            } else { fallback(text, done); }
+        }
+        function fallback(text, done) {
+            const ta = document.createElement('textarea');
+            ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+            document.body.appendChild(ta); ta.select();
+            try { document.execCommand('copy'); done(); } catch (e) { }
+            document.body.removeChild(ta);
+        }
+    </script>
+</body>
+
+</html>

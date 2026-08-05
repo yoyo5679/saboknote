@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>레시피 7: 후원자 감사 메시지 맞춤 대량 생성 — 안티그래비티 IDE 🔒</title>
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Noto+Sans+KR:wght@400;500;700;900&display=swap"
+        rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        :root {
+            --g: #1e40af; --g2: #2563eb; --g3: #bfdbfe; --g4: #dbeafe; --g5: #eff6ff;
+            --ink: #0f2d6b; --text: #1e293b; --sub: #64748b; --line: #e6e2f2;
+            --card: #ffffff; --warm: #fff8ec; --amber: #f59e0b; --amber-d: #b45309;
+            --green: #0c726c; --green-l: #e4faf8; --red: #dc2626; --radius: 18px;
+        }
+        body { font-family: 'Noto Sans KR', sans-serif; background: var(--g5); color: var(--text); line-height: 1.75; }
+        .wrap { max-width: 800px; margin: 0 auto; padding: 0 0 60px; }
+
+        .topbar { position: sticky; top: 0; z-index: 20; background: rgba(255,255,255,0.92); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); padding: 10px 16px; display: flex; align-items: center; gap: 8px; }
+        .back-btn { border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 7px 14px; font-size: 13px; font-weight: 700; color: var(--g); cursor: pointer; font-family: inherit; }
+        .topbar-title { font-size: 13px; color: var(--sub); font-weight: 700; }
+
+        .hero { background: linear-gradient(140deg, #071a33 0%, #0e3a6e 45%, #2563eb 100%); color: #fff; padding: 42px 24px 36px; text-align: center; position: relative; overflow: hidden; }
+        .hero-badge { display: inline-block; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.3); border-radius: 999px; padding: 4px 14px; font-size: 12px; font-weight: 800; margin-bottom: 12px; letter-spacing: 0.5px; }
+        .hero h1 { font-family: 'Gaegu', cursive; font-size: 34px; line-height: 1.25; margin-bottom: 10px; }
+        .hero h1 span { background: linear-gradient(90deg, #93c5fd, #67e8f9); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero p { font-size: 15px; color: rgba(255,255,255,0.92); }
+
+        section { margin: 24px 16px 0; background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 26px 24px; }
+        section > h2 { font-size: 21px; color: var(--ink); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+        section > .lead { font-size: 14.5px; color: var(--sub); margin-bottom: 18px; }
+        h3.blk { font-size: 16px; color: var(--g); margin: 22px 0 12px; display: flex; align-items: center; gap: 6px; }
+        p.body { font-size: 14.8px; margin-bottom: 14px; line-height: 1.75; }
+
+        .steps { counter-reset: s; margin: 12px 0 8px; }
+        .step { counter-increment: s; position: relative; padding: 14px 0 14px 50px; border-bottom: 1px dashed var(--line); }
+        .step:last-child { border-bottom: none; }
+        .step::before { content: counter(s); position: absolute; left: 0; top: 14px; width: 32px; height: 32px; background: var(--g); color: #fff; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; }
+        .step b { display: block; font-size: 15.5px; color: var(--ink); margin-bottom: 3px; }
+        .step small { font-size: 13.5px; color: var(--sub); line-height: 1.6; display: block; }
+
+        .prompt { background: #0f172a; border-radius: 14px; padding: 16px 18px; margin: 12px 0 18px; display: flex; flex-direction: column; box-shadow: inset 0 2px 6px rgba(0,0,0,0.3); }
+        .prompt pre { color: #f1f5f9; font-size: 13.8px; line-height: 1.7; white-space: pre-wrap; word-break: break-word; font-family: 'Noto Sans KR', monospace; }
+        .copy-btn { align-self: flex-end; margin-bottom: 10px; background: #2563eb; color: #fff; border: none; border-radius: 8px; padding: 7px 16px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; transition: all 0.2s; }
+        .copy-btn:hover { background: #1d4ed8; }
+
+        .preview-box { background: #f8fafc; border: 2px dashed #94a3b8; border-radius: 16px; padding: 20px; margin: 18px 0; }
+        .preview-header { font-size: 13px; font-weight: 800; color: #475569; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
+
+        .excel-grid { width: 100%; border-collapse: collapse; font-size: 13px; background: #fff; border: 1px solid #cbd5e1; margin: 10px 0; }
+        .excel-grid th { background: #1e40af; color: #fff; padding: 8px; border: 1px solid #1e3a8a; font-weight: 800; }
+        .excel-grid td { padding: 8px; border: 1px solid #e2e8f0; text-align: center; }
+
+        .note { border-radius: 14px; padding: 16px 18px; margin: 14px 0; font-size: 14px; line-height: 1.65; }
+        .note.tip { background: var(--g5); border: 1.5px solid var(--g3); color: #1e3a8a; }
+        .note.good { background: var(--green-l); border: 1.5px solid #b5e5df; color: #044e4a; }
+        
+        .badge-tag { display: inline-block; background: #dbeafe; color: #1e40af; border-radius: 6px; padding: 2px 8px; font-size: 12px; font-weight: 700; margin-right: 6px; }
+
+        .end { margin: 34px 16px 0; background: linear-gradient(135deg, #0e3a6e, #1e40af); border-radius: var(--radius); padding: 30px 24px; color: #fff; text-align: center; }
+        .end h3 { font-family: 'Gaegu', cursive; font-size: 27px; color: #93c5fd; margin-bottom: 8px; }
+        .end p { font-size: 14.5px; color: rgba(255,255,255,0.88); margin-bottom: 20px; }
+        .end a { display: inline-block; background: #fff; color: var(--g); text-decoration: none; font-weight: 800; border-radius: 999px; padding: 13px 26px; font-size: 14.5px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+    </style>
+</head>
+
+<body>
+    <div class="topbar">
+        <button class="back-btn" onclick="history.length>1?history.back():location.href='../treasure.html'">← 보물창고</button>
+        <span class="topbar-title">안티그래비티 IDE 실전 마스터 · 레시피 R7</span>
+    </div>
+
+    <div class="hero">
+        <span class="hero-badge">🔒 PREMIUM MASTERCLASS R7</span>
+        <h1>후원자 감사 메시지 <span>맞춤 대량 생성</span> 💌</h1>
+        <p>"똑같은 단체문자 말고, 내 후원 분야가 언급된 진짜 감동 문자!"<br>후원자 100명의 엑셀 내역을 바탕으로 개인화 감사 문구를 20초 만에 대량 생성합니다.</p>
+    </div>
+
+    <div class="wrap">
+
+        <section>
+            <h2>🌿 1. 사복쌤, 이럴 때 꼭 쓰세요! (왜 필요한가요?)</h2>
+            <p class="body">
+                <b>현장의 현실:</b> "선생님, 연말인데 후원자 100명에게 감사 문자 좀 보내주세요!"<br>
+                하지만 "감사합니다" 똑같은 문자를 보내면 스팸처럼 보여서 후원자 마음이 헛헛하셨죠. 그렇다고 100명 후원 분야(어르신, 아동 등)를 보며 문자를 다르게 적는 건 불가능했고요.
+            </p>
+            <p class="body">
+                <b>이 레시피를 쓰면 일어나는 기적:</b><br>
+                후원자 엑셀 명단만 넣어두고 시키면, <b>"김철수 후원자님, 어르신 반찬 후원금 5만원 덕분에..."</b> 하고 후원 내역이 콕 짚인 감동 문장이 작성된 문자발송용 엑셀 파일이 20초 만에 만들어집니다!
+            </p>
+        </section>
+
+        <!-- 엑셀 가이드 -->
+        <section>
+            <h2>📁 2. 따라하기 1단계: 엑셀 샘플 파일 준비하기</h2>
+            <p class="body"><b>엑셀을 켜고 맨 위 1행 셀에 그대로 적으세요:</b></p>
+            <table class="excel-grid">
+                <thead>
+                    <tr>
+                        <th>A1 셀</th>
+                        <th>B1 셀</th>
+                        <th>C1 셀</th>
+                        <th>D1 셀</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="background:#eff6ff; font-weight:800;">
+                        <td>성명</td>
+                        <td>후원분야</td>
+                        <td>후원금액</td>
+                        <td>연락처</td>
+                    </tr>
+                    <tr>
+                        <td>김철수</td>
+                        <td>독거어르신 반찬</td>
+                        <td>50,000</td>
+                        <td>010-1111-2222</td>
+                    </tr>
+                    <tr>
+                        <td>이영희</td>
+                        <td>결식아동 도시락</td>
+                        <td>100,000</td>
+                        <td>010-3333-4444</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p class="body">➔ **저장 위치:** 바탕화면 `안티그래비티_연습` 폴더 안에 **`후원자명단.xlsx`** 이름으로 저장하세요.</p>
+        </section>
+
+        <!-- 프롬프트 복붙 -->
+        <section>
+            <h2>💬 3. 따라하기 2단계: 채팅창에 시키기</h2>
+
+            <h3 class="blk"><span class="badge-tag">STEP 1</span> 1차 프롬프트 (개인화 감동 문구 엑셀 작성)</h3>
+            <div class="prompt-label">📋 아래 복사 버튼을 누르고 채팅창에 붙여넣으세요</div>
+            <div class="prompt">
+                <button class="copy-btn" onclick="cp(this)">📋 1차 프롬프트 복사</button>
+                <pre>`후원자명단.xlsx` 엑셀을 읽어서 후원자별 맞춤 감사 문구를 만드는 스크립트(make_msg.py)를 만들어줘.
+
+[문구 형식]
+"안녕하세요 [성명] 후원자님! ○○복지관입니다. 보내주신 [후원분야] 후원금 [후원금액]원 덕분에 이웃들에게 따뜻한 희망이 전달되었습니다. 진심으로 감사드립니다."
+
+문자 대량발송 사이트에 바로 올릴 수 있게 '수신번호', '메시지내용' 두 컬럼으로 구성된 `문자발송_업로드용.csv` 파일로 저장하고 실행해줘.</pre>
+            </div>
+        </section>
+
+        <!-- 결과물 미리보기 -->
+        <section>
+            <h2>🖼️ 4. 결과물 확인 (대량문자 사이트 올리는 파일)</h2>
+            <div class="preview-box">
+                <div class="preview-header">💌 새로 생성된 `문자발송_업로드용.csv` 예시</div>
+                <table class="excel-grid">
+                    <thead>
+                        <tr>
+                            <th style="background:#2563eb;">수신번호</th>
+                            <th style="background:#2563eb;">메시지내용 (맞춤 문구 자동 작성!)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>010-1111-2222</td>
+                            <td style="text-align:left; font-size:12px;">안녕하세요 김철수 후원자님! ○○복지관입니다. 보내주신 독거어르신 반찬 후원금 50,000원 덕분에...</td>
+                        </tr>
+                        <tr>
+                            <td>010-3333-4444</td>
+                            <td style="text-align:left; font-size:12px;">안녕하세요 이영희 후원자님! ○○복지관입니다. 보내주신 결식아동 도시락 후원금 100,000원 덕분에...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="note good">
+                <b>📌 대량 문자 발송 사이트 활용:</b><br>
+                생성된 `문자발송_업로드용.csv` 파일을 뿌리오, 알리고 등 대량 문자 사이트에서 [엑셀 업로드]로 올리면 100명 감사 문자 전송이 완료됩니다!
+            </div>
+        </section>
+
+        <div class="end">
+            <h3>레시피 7 마스터 완료! 🚀</h3>
+            <p>후원자 마음을 사로잡는 진심 어린 맞춤 문자로 후원 재유지율을 극대화하세요.</p>
+            <a href="../treasure.html">← 보물창고 커리큘럼으로 돌아가기</a>
+        </div>
+
+    </div>
+
+    <script>
+        function cp(btn) {
+            const pre = btn.parentElement.querySelector('pre');
+            const text = pre.innerText;
+            const done = () => { const o = btn.innerText; btn.innerText = '✅ 복사됨'; setTimeout(() => btn.innerText = o, 1500); };
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(done).catch(() => fallback(text, done));
+            } else { fallback(text, done); }
+        }
+        function fallback(text, done) {
+            const ta = document.createElement('textarea');
+            ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+            document.body.appendChild(ta); ta.select();
+            try { document.execCommand('copy'); done(); } catch (e) { }
+            document.body.removeChild(ta);
+        }
+    </script>
+</body>
+
+</html>

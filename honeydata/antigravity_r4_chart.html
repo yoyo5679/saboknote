@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>레시피 4: 이용자 현황 통계 그래프 자동 생성 — 안티그래비티 IDE 🔒</title>
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Noto+Sans+KR:wght@400;500;700;900&display=swap"
+        rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        :root {
+            --g: #1e40af; --g2: #2563eb; --g3: #bfdbfe; --g4: #dbeafe; --g5: #eff6ff;
+            --ink: #0f2d6b; --text: #1e293b; --sub: #64748b; --line: #e6e2f2;
+            --card: #ffffff; --warm: #fff8ec; --amber: #f59e0b; --amber-d: #b45309;
+            --green: #0c726c; --green-l: #e4faf8; --red: #dc2626; --radius: 18px;
+        }
+        body { font-family: 'Noto Sans KR', sans-serif; background: var(--g5); color: var(--text); line-height: 1.75; }
+        .wrap { max-width: 800px; margin: 0 auto; padding: 0 0 60px; }
+
+        .topbar { position: sticky; top: 0; z-index: 20; background: rgba(255,255,255,0.92); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); padding: 10px 16px; display: flex; align-items: center; gap: 8px; }
+        .back-btn { border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 7px 14px; font-size: 13px; font-weight: 700; color: var(--g); cursor: pointer; font-family: inherit; }
+        .topbar-title { font-size: 13px; color: var(--sub); font-weight: 700; }
+
+        .hero { background: linear-gradient(140deg, #071a33 0%, #0e3a6e 45%, #2563eb 100%); color: #fff; padding: 42px 24px 36px; text-align: center; position: relative; overflow: hidden; }
+        .hero-badge { display: inline-block; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.3); border-radius: 999px; padding: 4px 14px; font-size: 12px; font-weight: 800; margin-bottom: 12px; letter-spacing: 0.5px; }
+        .hero h1 { font-family: 'Gaegu', cursive; font-size: 34px; line-height: 1.25; margin-bottom: 10px; }
+        .hero h1 span { background: linear-gradient(90deg, #93c5fd, #67e8f9); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero p { font-size: 15px; color: rgba(255,255,255,0.92); }
+
+        section { margin: 24px 16px 0; background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 26px 24px; }
+        section > h2 { font-size: 21px; color: var(--ink); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+        section > .lead { font-size: 14.5px; color: var(--sub); margin-bottom: 18px; }
+        h3.blk { font-size: 16px; color: var(--g); margin: 22px 0 12px; display: flex; align-items: center; gap: 6px; }
+        p.body { font-size: 14.8px; margin-bottom: 14px; line-height: 1.75; }
+
+        .steps { counter-reset: s; margin: 12px 0 8px; }
+        .step { counter-increment: s; position: relative; padding: 14px 0 14px 50px; border-bottom: 1px dashed var(--line); }
+        .step:last-child { border-bottom: none; }
+        .step::before { content: counter(s); position: absolute; left: 0; top: 14px; width: 32px; height: 32px; background: var(--g); color: #fff; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; }
+        .step b { display: block; font-size: 15.5px; color: var(--ink); margin-bottom: 3px; }
+        .step small { font-size: 13.5px; color: var(--sub); line-height: 1.6; display: block; }
+
+        .prompt { background: #0f172a; border-radius: 14px; padding: 16px 18px; margin: 12px 0 18px; display: flex; flex-direction: column; box-shadow: inset 0 2px 6px rgba(0,0,0,0.3); }
+        .prompt pre { color: #f1f5f9; font-size: 13.8px; line-height: 1.7; white-space: pre-wrap; word-break: break-word; font-family: 'Noto Sans KR', monospace; }
+        .copy-btn { align-self: flex-end; margin-bottom: 10px; background: #2563eb; color: #fff; border: none; border-radius: 8px; padding: 7px 16px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; transition: all 0.2s; }
+        .copy-btn:hover { background: #1d4ed8; }
+
+        .preview-box { background: #f8fafc; border: 2px dashed #94a3b8; border-radius: 16px; padding: 20px; margin: 18px 0; }
+        .preview-header { font-size: 13px; font-weight: 800; color: #475569; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
+
+        .excel-grid { width: 100%; border-collapse: collapse; font-size: 13px; background: #fff; border: 1px solid #cbd5e1; margin: 10px 0; }
+        .excel-grid th { background: #1e40af; color: #fff; padding: 8px; border: 1px solid #1e3a8a; font-weight: 800; }
+        .excel-grid td { padding: 8px; border: 1px solid #e2e8f0; text-align: center; }
+
+        .chart-mockup { background: #fff; border: 1.5px solid #cbd5e1; border-radius: 12px; padding: 16px; text-align: center; }
+        .bar-wrap { display: flex; align-items: flex-end; justify-content: space-around; height: 110px; margin: 10px 0; border-bottom: 2px solid #64748b; }
+        .bar-single { width: 35px; background: #2563eb; border-radius: 4px 4px 0 0; }
+
+        .note { border-radius: 14px; padding: 16px 18px; margin: 14px 0; font-size: 14px; line-height: 1.65; }
+        .note.tip { background: var(--g5); border: 1.5px solid var(--g3); color: #1e3a8a; }
+        .note.good { background: var(--green-l); border: 1.5px solid #b5e5df; color: #044e4a; }
+        
+        .badge-tag { display: inline-block; background: #dbeafe; color: #1e40af; border-radius: 6px; padding: 2px 8px; font-size: 12px; font-weight: 700; margin-right: 6px; }
+
+        .end { margin: 34px 16px 0; background: linear-gradient(135deg, #0e3a6e, #1e40af); border-radius: var(--radius); padding: 30px 24px; color: #fff; text-align: center; }
+        .end h3 { font-family: 'Gaegu', cursive; font-size: 27px; color: #93c5fd; margin-bottom: 8px; }
+        .end p { font-size: 14.5px; color: rgba(255,255,255,0.88); margin-bottom: 20px; }
+        .end a { display: inline-block; background: #fff; color: var(--g); text-decoration: none; font-weight: 800; border-radius: 999px; padding: 13px 26px; font-size: 14.5px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+    </style>
+</head>
+
+<body>
+    <div class="topbar">
+        <button class="back-btn" onclick="history.length>1?history.back():location.href='../treasure.html'">← 보물창고</button>
+        <span class="topbar-title">안티그래비티 IDE 실전 마스터 · 레시피 R4</span>
+    </div>
+
+    <div class="hero">
+        <span class="hero-badge">🔒 PREMIUM MASTERCLASS R4</span>
+        <h1>이용자 현황 <span>통계 그래프 자동 생성</span> 📈</h1>
+        <p>엑셀 명단 파일 하나만 주면, 한글 보고서(HWP/Word)에 즉시 복붙 가능한<br>선명한 월별·연령별 시각화 그래프 이미지를 자동 생성합니다.</p>
+    </div>
+
+    <div class="wrap">
+
+        <section>
+            <h2>🌿 1. 사복쌤, 이럴 때 꼭 쓰세요! (왜 필요한가요?)</h2>
+            <p class="body">
+                <b>현장의 현실:</b> "김 대리님, 올해 상반기 서비스 이용자 현황 통계 차트 그리셔서 보고서에 넣으세요!"<br>
+                하지만 엑셀에서 피벗 테이블 만들고 차트 서식 맞추려면 2~3시간이 홀딱 지나가고, 겨우 캡처해서 한글(HWP)에 넣으면 글자가 뭉개지고 깨져서 속상하셨죠.
+            </p>
+            <p class="body">
+                <b>이 레시피를 쓰면 일어나는 기적:</b><br>
+                엑셀 데이터만 준비해두고 명령 한 줄만 치면, <b>한글 폰트가 절대 깨지지 않는 고화질 차트 이미지(`월별그래프.png`)</b>가 내 폴더에 10초 만에 딱 만들어집니다! 그대로 한글 문서에 복붙하면 끝납니다.
+            </p>
+        </section>
+
+        <!-- 엑셀 가이드 -->
+        <section>
+            <h2>📁 2. 따라하기 1단계: 엑셀 샘플 파일 준비하기</h2>
+            <p class="lead">연습용 엑셀 파일을 딱 1개 만듭니다.</p>
+
+            <p class="body"><b>엑셀을 켜고 맨 위 1행 셀에 그대로 적으세요:</b></p>
+            <table class="excel-grid">
+                <thead>
+                    <tr>
+                        <th>A1 셀</th>
+                        <th>B1 셀</th>
+                        <th>C1 셀</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="background:#eff6ff; font-weight:800;">
+                        <td>이용일자</td>
+                        <td>성별</td>
+                        <td>연령</td>
+                    </tr>
+                    <tr>
+                        <td>2026-01-15</td>
+                        <td>여</td>
+                        <td>68</td>
+                    </tr>
+                    <tr>
+                        <td>2026-02-10</td>
+                        <td>남</td>
+                        <td>75</td>
+                    </tr>
+                    <tr>
+                        <td>2026-03-05</td>
+                        <td>여</td>
+                        <td>82</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p class="body">➔ **저장 위치:** 바탕화면 `안티그래비티_연습` 폴더 안에 **`이용현황.xlsx`** 이름으로 저장하세요.</p>
+        </section>
+
+        <!-- 프롬프트 복붙 -->
+        <section>
+            <h2>💬 3. 따라하기 2단계: 채팅창에 시키기</h2>
+            <p class="lead">오른쪽 채팅창에 아래 프롬프트를 붙여넣으세요.</p>
+
+            <h3 class="blk"><span class="badge-tag">STEP 1</span> 1차 프롬프트 (그래프 이미지 자동 작성)</h3>
+            <div class="prompt-label">📋 아래 복사 버튼을 누르고 채팅창에 붙여넣으세요</div>
+            <div class="prompt">
+                <button class="copy-btn" onclick="cp(this)">📋 1차 프롬프트 복사</button>
+                <pre>`이용현황.xlsx` 파일 데이터를 기반으로 보고서용 그래프 이미지(make_chart.py)를 만들어줘.
+
+1. 월별 총 이용 건수 막대그래프 (`월별그래프.png` 파일로 저장)
+2. 이용자 수가 가장 많은 달의 막대는 주황색으로 강조해줘.
+3. 한글 글자가 깨지지 않도록 한글 폰트를 적용하고 선명한 고화질 이미지로 저장 후 코드를 실행해줘.</pre>
+            </div>
+        </section>
+
+        <!-- 결과물 미리보기 -->
+        <section>
+            <h2>🖼️ 4. 결과물 확인 (내 폴더에 생긴 이미지!)</h2>
+            <div class="preview-box">
+                <div class="preview-header">📈 내 폴더에 자동 저장된 `월별그래프.png` 예시</div>
+                <div class="chart-mockup">
+                    <h5 style="font-size:14px; color:#1e3a8a; margin-bottom:8px;">[ 2026년 상반기 월별 이용 현황 ]</h5>
+                    <div class="bar-wrap">
+                        <div style="display:flex; flex-direction:column; align-items:center;"><span style="font-size:11px;">40건</span><div class="bar-single" style="height:50px;"></div><span style="font-size:11px;">1월</span></div>
+                        <div style="display:flex; flex-direction:column; align-items:center;"><span style="font-size:11px;">60건</span><div class="bar-single" style="height:75px;"></div><span style="font-size:11px;">2월</span></div>
+                        <div style="display:flex; flex-direction:column; align-items:center;"><span style="font-size:11px; color:#b45309; font-weight:800;">90건★</span><div class="bar-single" style="height:100px; background:#f59e0b;"></div><span style="font-size:11px; font-weight:800;">3월(최대)</span></div>
+                    </div>
+                </div>
+            </div>
+            <div class="note good">
+                <b>📌 한글(HWP) 문서에 넣는 팁:</b><br>
+                생성된 `월별그래프.png` 파일을 한글 문서에서 `Ctrl + N, I` (그림 넣기)로 불러와 붙여넣으면 보고서 시각화가 완료됩니다!
+            </div>
+        </section>
+
+        <div class="end">
+            <h3>레시피 4 마스터 완료! 🚀</h3>
+            <p>보고서용 시각화 그래프 10초 완성! 깔끔하고 선명한 차트로 관장님 보고서의 격을 높이세요.</p>
+            <a href="../treasure.html">← 보물창고 커리큘럼으로 돌아가기</a>
+        </div>
+
+    </div>
+
+    <script>
+        function cp(btn) {
+            const pre = btn.parentElement.querySelector('pre');
+            const text = pre.innerText;
+            const done = () => { const o = btn.innerText; btn.innerText = '✅ 복사됨'; setTimeout(() => btn.innerText = o, 1500); };
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(done).catch(() => fallback(text, done));
+            } else { fallback(text, done); }
+        }
+        function fallback(text, done) {
+            const ta = document.createElement('textarea');
+            ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+            document.body.appendChild(ta); ta.select();
+            try { document.execCommand('copy'); done(); } catch (e) { }
+            document.body.removeChild(ta);
+        }
+    </script>
+</body>
+
+</html>

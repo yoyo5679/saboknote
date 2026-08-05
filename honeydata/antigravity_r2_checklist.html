@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>레시피 2: 대상자 선정 자가진단 셀프 도구 — 안티그래비티 IDE 🔒</title>
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Noto+Sans+KR:wght@400;500;700;900&display=swap"
+        rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        :root {
+            --g: #1e40af; --g2: #2563eb; --g3: #bfdbfe; --g4: #dbeafe; --g5: #eff6ff;
+            --ink: #0f2d6b; --text: #1e293b; --sub: #64748b; --line: #e6e2f2;
+            --card: #ffffff; --warm: #fff8ec; --amber: #f59e0b; --amber-d: #b45309;
+            --green: #0c726c; --green-l: #e4faf8; --red: #dc2626; --radius: 18px;
+        }
+        body { font-family: 'Noto Sans KR', sans-serif; background: var(--g5); color: var(--text); line-height: 1.75; }
+        .wrap { max-width: 800px; margin: 0 auto; padding: 0 0 60px; }
+
+        .topbar { position: sticky; top: 0; z-index: 20; background: rgba(255,255,255,0.92); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); padding: 10px 16px; display: flex; align-items: center; gap: 8px; }
+        .back-btn { border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 7px 14px; font-size: 13px; font-weight: 700; color: var(--g); cursor: pointer; font-family: inherit; }
+        .topbar-title { font-size: 13px; color: var(--sub); font-weight: 700; }
+
+        .hero { background: linear-gradient(140deg, #071a33 0%, #0e3a6e 45%, #2563eb 100%); color: #fff; padding: 42px 24px 36px; text-align: center; position: relative; overflow: hidden; }
+        .hero-badge { display: inline-block; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.3); border-radius: 999px; padding: 4px 14px; font-size: 12px; font-weight: 800; margin-bottom: 12px; letter-spacing: 0.5px; }
+        .hero h1 { font-family: 'Gaegu', cursive; font-size: 34px; line-height: 1.25; margin-bottom: 10px; }
+        .hero h1 span { background: linear-gradient(90deg, #93c5fd, #67e8f9); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero p { font-size: 15px; color: rgba(255,255,255,0.92); }
+
+        section { margin: 24px 16px 0; background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 26px 24px; }
+        section > h2 { font-size: 21px; color: var(--ink); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+        section > .lead { font-size: 14.5px; color: var(--sub); margin-bottom: 18px; }
+        h3.blk { font-size: 16px; color: var(--g); margin: 22px 0 12px; display: flex; align-items: center; gap: 6px; }
+        p.body { font-size: 14.8px; margin-bottom: 14px; line-height: 1.75; }
+
+        .steps { counter-reset: s; margin: 12px 0 8px; }
+        .step { counter-increment: s; position: relative; padding: 14px 0 14px 50px; border-bottom: 1px dashed var(--line); }
+        .step:last-child { border-bottom: none; }
+        .step::before { content: counter(s); position: absolute; left: 0; top: 14px; width: 32px; height: 32px; background: var(--g); color: #fff; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; }
+        .step b { display: block; font-size: 15.5px; color: var(--ink); margin-bottom: 3px; }
+        .step small { font-size: 13.5px; color: var(--sub); line-height: 1.6; display: block; }
+
+        .prompt { background: #0f172a; border-radius: 14px; padding: 16px 18px; margin: 12px 0 18px; display: flex; flex-direction: column; box-shadow: inset 0 2px 6px rgba(0,0,0,0.3); }
+        .prompt pre { color: #f1f5f9; font-size: 13.8px; line-height: 1.7; white-space: pre-wrap; word-break: break-word; font-family: 'Noto Sans KR', monospace; }
+        .copy-btn { align-self: flex-end; margin-bottom: 10px; background: #2563eb; color: #fff; border: none; border-radius: 8px; padding: 7px 16px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; transition: all 0.2s; }
+        .copy-btn:hover { background: #1d4ed8; }
+
+        .preview-box { background: #f8fafc; border: 2px dashed #94a3b8; border-radius: 16px; padding: 20px; margin: 18px 0; }
+        .preview-header { font-size: 13px; font-weight: 800; color: #475569; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
+        .phone-mockup { max-width: 360px; margin: 0 auto; background: #fff; border: 3px solid #334155; border-radius: 28px; padding: 18px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        
+        .badge-tag { display: inline-block; background: #dbeafe; color: #1e40af; border-radius: 6px; padding: 2px 8px; font-size: 12px; font-weight: 700; margin-right: 6px; }
+
+        .end { margin: 34px 16px 0; background: linear-gradient(135deg, #0e3a6e, #1e40af); border-radius: var(--radius); padding: 30px 24px; color: #fff; text-align: center; }
+        .end h3 { font-family: 'Gaegu', cursive; font-size: 27px; color: #93c5fd; margin-bottom: 8px; }
+        .end p { font-size: 14.5px; color: rgba(255,255,255,0.88); margin-bottom: 20px; }
+        .end a { display: inline-block; background: #fff; color: var(--g); text-decoration: none; font-weight: 800; border-radius: 999px; padding: 13px 26px; font-size: 14.5px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+    </style>
+</head>
+
+<body>
+    <div class="topbar">
+        <button class="back-btn" onclick="history.length>1?history.back():location.href='../treasure.html'">← 보물창고</button>
+        <span class="topbar-title">안티그래비티 IDE 실전 마스터 · 레시피 R2</span>
+    </div>
+
+    <div class="hero">
+        <span class="hero-badge">🔒 PREMIUM MASTERCLASS R2</span>
+        <h1>대상자 선정 <span>자가진단 셀프 도구</span> 🔍</h1>
+        <p>"제가 식사지원 대상이 되나요?" 매번 반복되는 단순 자격 문의 전화 80% 감소!<br>주민이 스마트폰으로 '예/아니오' 버튼만 누르면 자격을 자동 진단하는 도구 제작.</p>
+    </div>
+
+    <div class="wrap">
+
+        <section>
+            <h2>🌿 1. 사복쌤, 이럴 때 꼭 쓰세요! (왜 필요한가요?)</h2>
+            <p class="body">
+                <b>현장의 현실:</b> "선생님, 긴급 도시락 지원사업 신청하려고 서류 다 떼서 방문했는데요!"<br>
+                하지만 확인해 보니 '나이 미달'이나 '타 기관 이미 수혜 중'으로 지원 불가능한 경우... 주민분도 헛걸음하고, 사회복지사도 거절 설명하느라 죄송하고 안타까웠죠.
+            </p>
+            <p class="body">
+                <b>이 레시피를 쓰면 일어나는 기적:</b><br>
+                주민이 복지관 오시기 전이나 포스터의 QR코드를 스마트폰으로 찍어 <b>'예/아니오' 버튼 4개</b>만 누르면 <i>"지원 가능 대상입니다! 신분증과 등본을 지참하세요"</i>라고 알려주는 자동 진단 도구가 만들어집니다!
+            </p>
+        </section>
+
+        <!-- 완성 미리보기 -->
+        <section>
+            <h2>🖼️ 2. 완성되면 화면에 어떻게 보이나요? (미리보기)</h2>
+            <div class="preview-box">
+                <div class="preview-header">📱 질문 진행 카드 & 최종 합격 결과 화면 미리보기</div>
+                <div class="phone-mockup">
+                    <div style="font-size:12px; color:#64748b; text-align:center; margin-bottom:8px;">[ 질문 2 / 4 단계 ]</div>
+                    <div style="background:#f8fafc; border:1.5px solid #cbd5e1; border-radius:14px; padding:14px; text-align:center; margin-bottom:12px;">
+                        <h5 style="font-size:15px; color:#1e293b; margin-bottom:6px;">Q2. 연세가 만 65세 이상이신가요?</h5>
+                        <div style="display:flex; gap:8px; margin-top:10px;">
+                            <button style="flex:1; padding:10px; background:#22c55e; color:#fff; border:none; border-radius:8px; font-weight:800;">예 (터치)</button>
+                            <button style="flex:1; padding:10px; background:#e2e8f0; color:#475569; border:none; border-radius:8px; font-weight:800;">아니오</button>
+                        </div>
+                    </div>
+                    <div style="background:#f0fdf4; border:2px solid #22c55e; border-radius:14px; padding:14px; text-align:center; color:#15803d;">
+                        <h4 style="font-size:16px;">🎉 지원 가능 대상입니다! 🟢</h4>
+                        <p style="font-size:12px; color:#166534; margin-top:4px;">방문 시 필수 서류: 주민등록등본, 신분증</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 프롬프트 복붙 -->
+        <section>
+            <h2>💬 3. 따라하기 — 채팅창에 복붙만 하세요!</h2>
+
+            <h3 class="blk"><span class="badge-tag">STEP 1</span> 1차 프롬프트 (자가진단 질문 및 로직 생성)</h3>
+            <div class="prompt-label">📋 [복사] 버튼을 누르고 오른쪽 채팅창에 붙여넣고 엔터를 치세요</div>
+            <div class="prompt">
+                <button class="copy-btn" onclick="cp(this)">📋 1차 프롬프트 복사</button>
+                <pre>노인 식사지원 사업 대상자 자격 자가진단 웹 도구(index.html)를 작성해줘.
+
+[진단 질문 4가지]
+1단계: "현재 ○○구에 거주하고 계신가요?" (예/아니오)
+2단계: "연세가 만 65세 이상이신가요?" (예/아니오)
+3단계: "거동이 불편하여 스스로 식사 준비가 어려우신가요?" (예/아니오)
+4단계: "현재 다른 기관에서 도시락이나 반찬 지원을 받고 계신가요?" (예/아니오)
+
+[판정 로직]
+- 1, 2, 3단계가 모두 '예'이고, 4단계가 '아니오'인 경우:
+  -> [지원 가능 대상입니다! 🟢] 메시지와 함께 녹색 성공 카드 표시.
+- 그 외 경우:
+  -> [지원 기준을 확인해주세요 🟡] 메시지와 함께 주황색 안내 카드 표시.
+
+[UI] 질문이 카드 형태로 하나씩 보이고 버튼이 커서 누르기 쉽게 index.html 한 파일로 만들어줘.</pre>
+            </div>
+
+            <h3 class="blk"><span class="badge-tag">STEP 2</span> 2차 프롬프트 (필요 서류 안내 & 전화걸기 추가)</h3>
+            <div class="prompt-label">📋 코드가 다 써진 후 채팅창에 이어서 적으세요</div>
+            <div class="prompt">
+                <button class="copy-btn" onclick="cp(this)">📋 2차 프롬프트 복사</button>
+                <pre>진단 결과 화면을 업그레이드해줘.
+
+1. [지원 가능 대상] 카드 하단에 "💡 준비 서류: 신분증, 주민등록등본" 안내 박스를 추가해줘.
+2. "📞 담당 사회복지사와 전화 상담하기" 버튼(tel:02-1234-5678)을 크게 추가해줘.</pre>
+            </div>
+        </section>
+
+        <div class="end">
+            <h3>레시피 2 마스터 완료! 🚀</h3>
+            <p>헛걸음과 단순 문의 전화 스트레스 제로! 주민 셀프 자가진단 도구를 완성하세요.</p>
+            <a href="../treasure.html">← 보물창고 커리큘럼으로 돌아가기</a>
+        </div>
+
+    </div>
+
+    <script>
+        function cp(btn) {
+            const pre = btn.parentElement.querySelector('pre');
+            const text = pre.innerText;
+            const done = () => { const o = btn.innerText; btn.innerText = '✅ 복사됨'; setTimeout(() => btn.innerText = o, 1500); };
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(done).catch(() => fallback(text, done));
+            } else { fallback(text, done); }
+        }
+        function fallback(text, done) {
+            const ta = document.createElement('textarea');
+            ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+            document.body.appendChild(ta); ta.select();
+            try { document.execCommand('copy'); done(); } catch (e) { }
+            document.body.removeChild(ta);
+        }
+    </script>
+</body>
+
+</html>
