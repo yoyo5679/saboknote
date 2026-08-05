@@ -4604,6 +4604,22 @@ try {
             return;
         }
 
+        // 상단 고정 공지·사용법 카드 (글이 없어도 항상 노출)
+        const noticeCard = `
+                <div style="background:linear-gradient(135deg,#eef6ff,#e0ecff); border:1px solid #c7d8f5; border-radius:16px; padding:16px 18px; margin-bottom:14px;">
+                    <div style="display:flex; align-items:center; gap:7px; margin-bottom:9px;">
+                        <span style="background:#2563eb; color:#fff; font-size:0.66rem; font-weight:800; padding:3px 9px; border-radius:12px;">📌 공지 · 사용법</span>
+                        <span style="font-size:0.95rem; font-weight:800; color:#1e3a8a;">이렇게 이용해요</span>
+                    </div>
+                    <ul style="margin:0; padding:0; list-style:none; font-size:0.82rem; color:#334155; line-height:1.75;">
+                        <li>🙈 <b>완전 익명</b> — 닉네임·소속 없이 편하게 질문하고 답해요.</li>
+                        <li>💬 실무 고민·서류·사례관리·처우까지 무엇이든 물어보세요.</li>
+                        <li>🤝 서로 <b>존중</b>하며 따뜻하게. 비방·광고·도배는 삼가주세요.</li>
+                        <li>🔒 <b>개인정보 금지</b> — 실명·기관명·클라이언트 정보는 올리지 마세요.</li>
+                        <li>💡 답변은 참고용이에요. 최종 판단은 소속 기관 기준을 따라주세요.</li>
+                    </ul>
+                </div>`;
+
         // Show loading
         listContainer.innerHTML = '<div style="text-align:center; padding:40px 20px; color:var(--text-6);"><p style="font-size:0.9rem;">불러오는 중...</p></div>';
 
@@ -4615,8 +4631,8 @@ try {
             if (error) throw error;
 
             if (!data || data.length === 0) {
-                listContainer.innerHTML = `
-                <div style="text-align:center; padding:48px 20px;">
+                listContainer.innerHTML = noticeCard + `
+                <div style="text-align:center; padding:30px 20px 20px;">
                     <div style="font-size:3rem; margin-bottom:12px;">🦊</div>
                     <p style="font-size:1rem; font-weight:800; color:var(--text-3); margin-bottom:6px;">아직 조용하네요</p>
                     <p style="font-size:0.85rem; color:var(--text-6); margin-bottom:18px;">첫 질문의 주인공이 되어보세요!</p>
@@ -4627,7 +4643,7 @@ try {
                 return;
             }
 
-            let html = '';
+            let html = noticeCard;
             data.forEach(post => {
                 html += `
                 <div style="background:var(--surface); border-radius:16px; padding:18px; border:1px solid var(--border); box-shadow:var(--shadow-card); cursor:pointer;" onclick="openQaDetail('${post.id}')">
