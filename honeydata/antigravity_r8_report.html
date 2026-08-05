@@ -17,50 +17,57 @@
             --card: #ffffff; --warm: #fff8ec; --amber: #f59e0b; --amber-d: #b45309;
             --green: #0c726c; --green-l: #e4faf8; --red: #dc2626; --radius: 18px;
         }
-        body { font-family: 'Noto Sans KR', sans-serif; background: var(--g5); color: var(--text); line-height: 1.75; }
-        .wrap { max-width: 800px; margin: 0 auto; padding: 0 0 60px; }
+        body { font-family: 'Noto Sans KR', sans-serif; background: var(--g5); color: var(--text); line-height: 1.8; }
+        .wrap { max-width: 820px; margin: 0 auto; padding: 0 0 80px; }
 
         .topbar { position: sticky; top: 0; z-index: 20; background: rgba(255,255,255,0.92); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); padding: 10px 16px; display: flex; align-items: center; gap: 8px; }
         .back-btn { border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 7px 14px; font-size: 13px; font-weight: 700; color: var(--g); cursor: pointer; font-family: inherit; }
         .topbar-title { font-size: 13px; color: var(--sub); font-weight: 700; }
 
-        .hero { background: linear-gradient(140deg, #071a33 0%, #0e3a6e 45%, #2563eb 100%); color: #fff; padding: 42px 24px 36px; text-align: center; position: relative; overflow: hidden; }
-        .hero-badge { display: inline-block; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.3); border-radius: 999px; padding: 4px 14px; font-size: 12px; font-weight: 800; margin-bottom: 12px; letter-spacing: 0.5px; }
-        .hero h1 { font-family: 'Gaegu', cursive; font-size: 34px; line-height: 1.25; margin-bottom: 10px; }
+        .hero { background: linear-gradient(140deg, #071a33 0%, #0e3a6e 45%, #2563eb 100%); color: #fff; padding: 48px 24px 40px; text-align: center; position: relative; overflow: hidden; }
+        .hero-badge { display: inline-block; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.3); border-radius: 999px; padding: 4px 14px; font-size: 12px; font-weight: 800; margin-bottom: 14px; letter-spacing: 0.5px; }
+        .hero h1 { font-family: 'Gaegu', cursive; font-size: 36px; line-height: 1.25; margin-bottom: 12px; }
         .hero h1 span { background: linear-gradient(90deg, #93c5fd, #67e8f9); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
-        .hero p { font-size: 15px; color: rgba(255,255,255,0.92); }
+        .hero p { font-size: 15.5px; color: rgba(255,255,255,0.92); max-width: 650px; margin: 0 auto; }
+        .hero-meta { margin-top: 18px; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+        .hero-meta span { background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.22); border-radius: 999px; padding: 5px 14px; font-size: 12.5px; }
 
-        section { margin: 24px 16px 0; background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 26px 24px; }
-        section > h2 { font-size: 21px; color: var(--ink); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
-        section > .lead { font-size: 14.5px; color: var(--sub); margin-bottom: 18px; }
-        h3.blk { font-size: 16px; color: var(--g); margin: 22px 0 12px; display: flex; align-items: center; gap: 6px; }
-        p.body { font-size: 14.8px; margin-bottom: 14px; line-height: 1.75; }
+        section { margin: 26px 16px 0; background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 30px 26px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); }
+        section > h2 { font-size: 22px; color: var(--ink); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+        section > .lead { font-size: 15px; color: var(--sub); margin-bottom: 22px; }
+        h3.blk { font-size: 17px; color: var(--g); margin: 26px 0 14px; display: flex; align-items: center; gap: 6px; border-bottom: 2px solid var(--g4); padding-bottom: 6px; }
+        p.body { font-size: 15px; margin-bottom: 16px; line-height: 1.8; color: #334155; }
 
-        .steps { counter-reset: s; margin: 12px 0 8px; }
-        .step { counter-increment: s; position: relative; padding: 14px 0 14px 50px; border-bottom: 1px dashed var(--line); }
-        .step:last-child { border-bottom: none; }
-        .step::before { content: counter(s); position: absolute; left: 0; top: 14px; width: 32px; height: 32px; background: var(--g); color: #fff; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; }
-        .step b { display: block; font-size: 15.5px; color: var(--ink); margin-bottom: 3px; }
-        .step small { font-size: 13.5px; color: var(--sub); line-height: 1.6; display: block; }
+        .ba-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 16px 0 20px; }
+        @media (max-width: 600px) { .ba-grid { grid-template-columns: 1fr; } }
+        .ba-card { border-radius: 14px; padding: 18px; font-size: 14px; }
+        .ba-card.before { background: #fef2f2; border: 1.5px solid #fecaca; color: #991b1b; }
+        .ba-card.after { background: #f0fdf4; border: 1.5px solid #bbf7d0; color: #166534; }
+        .ba-card h4 { font-size: 16px; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
 
-        .prompt { background: #0f172a; border-radius: 14px; padding: 16px 18px; margin: 12px 0 18px; display: flex; flex-direction: column; box-shadow: inset 0 2px 6px rgba(0,0,0,0.3); }
-        .prompt pre { color: #f1f5f9; font-size: 13.8px; line-height: 1.7; white-space: pre-wrap; word-break: break-word; font-family: 'Noto Sans KR', monospace; }
-        .copy-btn { align-self: flex-end; margin-bottom: 10px; background: #2563eb; color: #fff; border: none; border-radius: 8px; padding: 7px 16px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; transition: all 0.2s; }
+        .prompt { background: #0f172a; border-radius: 16px; padding: 18px 20px; margin: 14px 0 20px; display: flex; flex-direction: column; box-shadow: inset 0 2px 6px rgba(0,0,0,0.3); }
+        .prompt pre { color: #f1f5f9; font-size: 14px; line-height: 1.75; white-space: pre-wrap; word-break: break-word; font-family: 'Noto Sans KR', monospace; }
+        .copy-btn { align-self: flex-end; margin-bottom: 12px; background: #2563eb; color: #fff; border: none; border-radius: 8px; padding: 8px 18px; font-size: 13.5px; font-weight: 700; cursor: pointer; font-family: inherit; transition: all 0.2s; }
         .copy-btn:hover { background: #1d4ed8; }
+        .prompt-label { font-size: 14px; color: var(--g); font-weight: 800; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
 
-        .preview-box { background: #f8fafc; border: 2px dashed #94a3b8; border-radius: 16px; padding: 20px; margin: 18px 0; }
-        .preview-header { font-size: 13px; font-weight: 800; color: #475569; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
+        .preview-box { background: #f8fafc; border: 2px dashed #94a3b8; border-radius: 18px; padding: 22px; margin: 20px 0; }
+        .preview-header { font-size: 13.5px; font-weight: 800; color: #475569; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px; }
 
-        .note { border-radius: 14px; padding: 16px 18px; margin: 14px 0; font-size: 14px; line-height: 1.65; }
+        .trouble-card { background: #fff8ec; border: 1.5px solid #fde68a; border-radius: 14px; padding: 18px; margin: 12px 0; }
+        .trouble-card b { color: #b45309; font-size: 15px; display: block; margin-bottom: 6px; }
+        .trouble-card p { font-size: 14px; color: #78350f; margin-bottom: 10px; }
+
+        .note { border-radius: 14px; padding: 18px 20px; margin: 16px 0; font-size: 14.5px; line-height: 1.7; }
         .note.tip { background: var(--g5); border: 1.5px solid var(--g3); color: #1e3a8a; }
         .note.good { background: var(--green-l); border: 1.5px solid #b5e5df; color: #044e4a; }
-        
-        .badge-tag { display: inline-block; background: #dbeafe; color: #1e40af; border-radius: 6px; padding: 2px 8px; font-size: 12px; font-weight: 700; margin-right: 6px; }
 
-        .end { margin: 34px 16px 0; background: linear-gradient(135deg, #0e3a6e, #1e40af); border-radius: var(--radius); padding: 30px 24px; color: #fff; text-align: center; }
-        .end h3 { font-family: 'Gaegu', cursive; font-size: 27px; color: #93c5fd; margin-bottom: 8px; }
-        .end p { font-size: 14.5px; color: rgba(255,255,255,0.88); margin-bottom: 20px; }
-        .end a { display: inline-block; background: #fff; color: var(--g); text-decoration: none; font-weight: 800; border-radius: 999px; padding: 13px 26px; font-size: 14.5px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .badge-tag { display: inline-block; background: #dbeafe; color: #1e40af; border-radius: 6px; padding: 3px 10px; font-size: 12.5px; font-weight: 800; margin-right: 6px; }
+
+        .end { margin: 40px 16px 0; background: linear-gradient(135deg, #0e3a6e, #1e40af); border-radius: var(--radius); padding: 36px 26px; color: #fff; text-align: center; }
+        .end h3 { font-family: 'Gaegu', cursive; font-size: 30px; color: #93c5fd; margin-bottom: 10px; }
+        .end p { font-size: 15px; color: rgba(255,255,255,0.88); margin-bottom: 22px; }
+        .end a { display: inline-block; background: #fff; color: var(--g); text-decoration: none; font-weight: 800; border-radius: 999px; padding: 14px 28px; font-size: 15px; box-shadow: 0 4px 14px rgba(0,0,0,0.18); }
     </style>
 </head>
 
@@ -71,31 +78,41 @@
     </div>
 
     <div class="hero">
-        <span class="hero-badge">🔒 PREMIUM MASTERCLASS R8</span>
+        <span class="hero-badge">🔒 PREMIUM MASTERCLASS R8 (초대형 완전판)</span>
         <h1>사업 결과보고서 초안 <span>1분 자동화</span> 📑</h1>
-        <p>"빈 모니터 앞에서 결과보고서 쓸 생각에 멍하셨나요?"<br>실적 인원·예산 집행률·만족도 점수만 텍스트로 던져주면 공동모금회 표준 양식 초안 완벽 생성!</p>
+        <p>"빈 모니터 앞에서 결과보고서 쓸 생각에 멍하하셨나요?"<br>실적 인원·예산 집행률·만족도 점수 몇 줄만 던져주면 공동모금회/지자체 표준 결과보고서 초안이 1분 만에 완성됩니다.</p>
+        <div class="hero-meta">
+            <span>⏱️ 보고서 고민 8시간 -> 1분</span>
+            <span>사회복지 표준 5대 목차 반영</span>
+            <span>HWP/Word 즉시 붙여넣기</span>
+        </div>
     </div>
 
     <div class="wrap">
 
+        <!-- 1. 비포 애프터 스토리 -->
         <section>
-            <h2>🌿 1. 사복쌤, 이럴 때 꼭 쓰세요! (왜 필요한가요?)</h2>
-            <p class="body">
-                <b>현장의 현실:</b> "김 대리님, 어제 끝난 2026 사업 결과보고서 10장짜리 초안 써서 내일까지 제출하세요!"<br>
-                빈 한글(HWP) 화면만 켜놓고 <i>"어디서부터 글을 시작해야 하나..."</i> 하고 커서만 깜빡이는 거 바라보며 한숨 쉰 적 많으시죠.
-            </p>
-            <p class="body">
-                <b>이 레시피를 쓰면 일어나는 기적:</b><br>
-                실적 숫 몇 개만 적어서 AI에게 던져주면, <b>사회복지 표준 5대 목차가 완벽히 정리된 보고서 문서(`2026_결과보고서.html`)</b>가 1분 만에 완성됩니다! 한글 문서로 복붙해서 숫자만 다듬으면 끝납니다.
-            </p>
+            <h2>🌿 1. 사복쌤, 이럴 때 꼭 쓰세요! (현장 비교)</h2>
+            <div class="ba-grid">
+                <div class="ba-card before">
+                    <h4>❌ 기존 결과보고서 (백지 공포증)</h4>
+                    · 빈 한글 파일 켜놓고 <i>"어디서부터 서술해야 하나..."</i> 한숨 쉬며 8시간 소모<br>
+                    · 실적표 그리느라 시간 다 지나가고 정성적 평가 어조 잡는 데 피로감 극대화
+                </div>
+                <div class="ba-card after">
+                    <h4>✨ 결과보고서 1분 초안 (이 기적!)</h4>
+                    · 팩트 숫자 5개만 써서 AI에게 던져주면 사회복지 표준 5대 목차 보고서 완성<br>
+                    · <b>`2026_결과보고서.html`</b> 완성본 생성 ➔ 한글 문서로 복붙해서 다듬으면 보고 끝!
+                </div>
+            </div>
         </section>
 
-        <!-- 기초 데이터 준비 -->
+        <!-- 2. 기초 데이터 가이드 -->
         <section>
-            <h2>📋 2. 따라하기 1단계: 팩트 데이터 적어두기</h2>
-            <p class="lead">내 사업의 기본 숫자 데이터 몇 개만 메모장에 준비하세요.</p>
+            <h2>📋 2. 메모장에 팩트 데이터 준비하기</h2>
+            <p class="lead">내 사업의 숫자 데이터 몇 개만 메모장에 적어두세요.</p>
             <div class="note tip">
-                <b>📌 준비할 데이터 예시 (복붙 준비!):</b><br>
+                <b>📌 준비할 실적 팩트 예시:</b><br>
                 · 사업명: 2026 어르신 디지털 정보화 교육<br>
                 · 사업기간: 2026.03.01 ~ 2026.11.30<br>
                 · 참여인원: 목표 100명 / 실적 124명 (124% 초과 달성)<br>
@@ -104,11 +121,11 @@
             </div>
         </section>
 
-        <!-- 프롬프트 복붙 -->
+        <!-- 3. 마스터 프롬프트 -->
         <section>
-            <h2>💬 3. 따라하기 2단계: 채팅창에 시키기</h2>
+            <h2>💬 3. 4단계 연속 마스터 프롬프트 (채팅창 복붙 풀패키지)</h2>
 
-            <h3 class="blk"><span class="badge-tag">STEP 1</span> 1차 프롬프트 (결과보고서 초안 작성)</h3>
+            <h3 class="blk"><span class="badge-tag">STEP 1</span> 1차 프롬프트 — 사회복지 표준 결과보고서 작성</h3>
             <div class="prompt-label">📋 아래 복사 버튼을 누르고 채팅창에 붙여넣으세요</div>
             <div class="prompt">
                 <button class="copy-btn" onclick="cp(this)">📋 1차 프롬프트 복사</button>
@@ -128,17 +145,24 @@
 4. 주요 사업 성과 및 사례
 5. 향후 발전 방향 및 제언
 
-사회복지 현장보고서의 정갈하고 공손한 어조로 작성해줘.</pre>
+사회복지 현장보고서의 정갈하고 공손한 어조로 풍부하게 작성해줘.</pre>
+            </div>
+
+            <h3 class="blk"><span class="badge-tag">STEP 2</span> 2차 프롬프트 — 성과 및 제언 항목 대폭 보강</h3>
+            <div class="prompt-label">📋 1차 초안 생성 후 더 깊이 있는 내용으로 보강하세요</div>
+            <div class="prompt">
+                <button class="copy-btn" onclick="cp(this)">📋 2차 프롬프트 복사</button>
+                <pre>`2026_결과보고서.html` 의 4번(주요 성과)과 5번(제언) 항목을 더 보강해줘. 정성적 변화 3가지와 차년도 사업 예산 증액 제언 2가지를 설득력 있게 적어줘.</pre>
             </div>
         </section>
 
-        <!-- 결과물 미리보기 -->
+        <!-- 4. 결과물 확인 -->
         <section>
             <h2>🖼️ 4. 결과물 확인 (보고서 초안 완성!)</h2>
             <div class="preview-box">
-                <div class="preview-header">📑 완벽히 작성된 `2026_결과보고서.html` 미리보기</div>
-                <div style="background:#fff; border:1px solid #cbd5e1; border-radius:10px; padding:18px; font-size:13px; line-height:1.7;">
-                    <h3 style="text-align:center; color:#0f2d6b; margin-bottom:12px;">[ 2026년 어르신 디지털 정보화 교육 사업 결과보고서 ]</h3>
+                <div class="preview-header">📑 새로 생성된 `2026_결과보고서.html` 미리보기</div>
+                <div style="background:#fff; border:1px solid #cbd5e1; border-radius:12px; padding:20px; font-size:13.5px; line-height:1.7;">
+                    <h3 style="text-align:center; color:#0f2d6b; margin-bottom:14px;">[ 2026년 어르신 디지털 정보화 교육 사업 결과보고서 ]</h3>
                     <h4 style="color:#1e40af; margin-top:10px;">1. 사업 개요</h4>
                     <p>본 사업은 관내 어르신들의 디지털 소외감을 해소하고 일상생활 자립성을 향상시키기 목적으로 수행되었습니다.</p>
                     <h4 style="color:#1e40af; margin-top:10px;">2. 사업 추진 실적</h4>
@@ -147,14 +171,23 @@
             </div>
             <div class="note good">
                 <b>📌 한글(HWP) 복붙 팁:</b><br>
-                완성된 HTML 내용을 전체 복사(`Ctrl + A` ➔ `Ctrl + C`) 후 한글 문서에 붙여넣기(`Ctrl + V`) 하면 제목 폰트 크기와 표 서식이 깔끔하게 복사됩니다!
+                완성된 웹페이지 내용을 전체 선택(`Ctrl + A`) 후 한글 문서에 붙여넣으면 표 서식과 제목 폰트 크기가 깔끔하게 유지됩니다!
+            </div>
+        </section>
+
+        <!-- 5. 트러블슈팅 FAQ -->
+        <section>
+            <h2>🚨 5. 막혔을 때 1초 해결사! (Troubleshooting)</h2>
+            <div class="trouble-card">
+                <b>Q. 예산 집행 표가 한글 문서로 복붙 시 선이 깨져서 나와요!</b>
+                <p>➔ 해결 프롬프트: "예산 집행 표의 CSS 테두리를 `border: 1px solid #000` 으로 명확하게 설정해서 복붙이 잘 되게 해줘."</p>
             </div>
         </section>
 
         <div class="end">
-            <h3>레시피 8 마스터 완료! 🚀</h3>
-            <p>축하합니다! 안티그래비티 IDE 실전 활용 가이드의 모든 레시피를 완수하셨습니다.<br>AI 에이전트와 함께 사회복지 현장의 영웅이 되세요!</p>
-            <a href="../treasure.html">← 보물창고 커리큘럼으로 돌아가기</a>
+            <h3>레시피 8 마스터 완수! 🚀</h3>
+            <p>축하합니다! 안티그래비티 IDE 실전 활용 가이드의 모든 프리미엄 레시피를 마스터하셨습니다.<br>AI 에이전트와 함께 사회복지 현장의 영웅이 되세요!</p>
+            <a href="../treasure.html">← 보물창고 목록으로 돌아가기</a>
         </div>
 
     </div>

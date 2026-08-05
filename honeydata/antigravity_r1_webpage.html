@@ -17,60 +17,76 @@
             --card: #ffffff; --warm: #fff8ec; --amber: #f59e0b; --amber-d: #b45309;
             --green: #0c726c; --green-l: #e4faf8; --red: #dc2626; --radius: 18px;
         }
-        body { font-family: 'Noto Sans KR', sans-serif; background: var(--g5); color: var(--text); line-height: 1.75; }
-        .wrap { max-width: 800px; margin: 0 auto; padding: 0 0 60px; }
+        body { font-family: 'Noto Sans KR', sans-serif; background: var(--g5); color: var(--text); line-height: 1.8; }
+        .wrap { max-width: 820px; margin: 0 auto; padding: 0 0 80px; }
 
         .topbar { position: sticky; top: 0; z-index: 20; background: rgba(255,255,255,0.92); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); padding: 10px 16px; display: flex; align-items: center; gap: 8px; }
         .back-btn { border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 7px 14px; font-size: 13px; font-weight: 700; color: var(--g); cursor: pointer; font-family: inherit; }
         .topbar-title { font-size: 13px; color: var(--sub); font-weight: 700; }
 
-        .hero { background: linear-gradient(140deg, #071a33 0%, #0e3a6e 45%, #2563eb 100%); color: #fff; padding: 42px 24px 36px; text-align: center; position: relative; overflow: hidden; }
-        .hero-badge { display: inline-block; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.3); border-radius: 999px; padding: 4px 14px; font-size: 12개의; font-weight: 800; margin-bottom: 12px; letter-spacing: 0.5px; }
-        .hero h1 { font-family: 'Gaegu', cursive; font-size: 34px; line-height: 1.25; margin-bottom: 10px; }
+        .hero { background: linear-gradient(140deg, #071a33 0%, #0e3a6e 45%, #2563eb 100%); color: #fff; padding: 48px 24px 40px; text-align: center; position: relative; overflow: hidden; }
+        .hero-badge { display: inline-block; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.3); border-radius: 999px; padding: 4px 14px; font-size: 12px; font-weight: 800; margin-bottom: 14px; letter-spacing: 0.5px; }
+        .hero h1 { font-family: 'Gaegu', cursive; font-size: 36px; line-height: 1.25; margin-bottom: 12px; }
         .hero h1 span { background: linear-gradient(90deg, #93c5fd, #67e8f9); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
-        .hero p { font-size: 15px; color: rgba(255,255,255,0.92); }
+        .hero p { font-size: 15.5px; color: rgba(255,255,255,0.92); max-width: 650px; margin: 0 auto; }
+        .hero-meta { margin-top: 18px; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+        .hero-meta span { background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.22); border-radius: 999px; padding: 5px 14px; font-size: 12.5px; }
 
-        section { margin: 24px 16px 0; background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 26px 24px; }
-        section > h2 { font-size: 21px; color: var(--ink); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
-        section > .lead { font-size: 14.5px; color: var(--sub); margin-bottom: 18px; }
-        h3.blk { font-size: 16px; color: var(--g); margin: 22px 0 12px; display: flex; align-items: center; gap: 6px; }
-        p.body { font-size: 14.8px; margin-bottom: 14px; line-height: 1.75; }
-        ul.dots { margin: 0 0 14px; padding-left: 4px; list-style: none; }
-        ul.dots li { position: relative; padding-left: 22px; font-size: 14.5px; margin-bottom: 8px; }
-        ul.dots li::before { content: '·'; position: absolute; left: 6px; color: var(--g2); font-weight: 900; font-size: 18px; }
+        section { margin: 26px 16px 0; background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 30px 26px; box-shadow: 0 4px 20px rgba(0,0,0,0.03); }
+        section > h2 { font-size: 22px; color: var(--ink); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+        section > .lead { font-size: 15px; color: var(--sub); margin-bottom: 22px; }
+        h3.blk { font-size: 17px; color: var(--g); margin: 26px 0 14px; display: flex; align-items: center; gap: 6px; border-bottom: 2px solid var(--g4); padding-bottom: 6px; }
+        p.body { font-size: 15px; margin-bottom: 16px; line-height: 1.8; color: #334155; }
 
-        .steps { counter-reset: s; margin: 12px 0 8px; }
-        .step { counter-increment: s; position: relative; padding: 14px 0 14px 50px; border-bottom: 1px dashed var(--line); }
+        /* 비포 애프터 표 */
+        .ba-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 16px 0 20px; }
+        @media (max-width: 600px) { .ba-grid { grid-template-columns: 1fr; } }
+        .ba-card { border-radius: 14px; padding: 18px; font-size: 14px; }
+        .ba-card.before { background: #fef2f2; border: 1.5px solid #fecaca; color: #991b1b; }
+        .ba-card.after { background: #f0fdf4; border: 1.5px solid #bbf7d0; color: #166534; }
+        .ba-card h4 { font-size: 16px; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+
+        .steps { counter-reset: s; margin: 14px 0 10px; }
+        .step { counter-increment: s; position: relative; padding: 16px 0 16px 54px; border-bottom: 1px dashed var(--line); }
         .step:last-child { border-bottom: none; }
-        .step::before { content: counter(s); position: absolute; left: 0; top: 14px; width: 32px; height: 32px; background: var(--g); color: #fff; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; }
-        .step b { display: block; font-size: 15.5px; color: var(--ink); margin-bottom: 3px; }
-        .step small { font-size: 13.5px; color: var(--sub); line-height: 1.6; display: block; }
+        .step::before { content: counter(s); position: absolute; left: 0; top: 16px; width: 34px; height: 34px; background: var(--g); color: #fff; border-radius: 999px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14.5px; }
+        .step b { display: block; font-size: 16px; color: var(--ink); margin-bottom: 4px; }
+        .step small { font-size: 14px; color: var(--sub); line-height: 1.65; display: block; }
 
-        .prompt { background: #0f172a; border-radius: 14px; padding: 16px 18px; margin: 12px 0 18px; display: flex; flex-direction: column; box-shadow: inset 0 2px 6px rgba(0,0,0,0.3); }
-        .prompt pre { color: #f1f5f9; font-size: 13.8px; line-height: 1.7; white-space: pre-wrap; word-break: break-word; font-family: 'Noto Sans KR', monospace; }
-        .copy-btn { align-self: flex-end; margin-bottom: 10px; background: #2563eb; color: #fff; border: none; border-radius: 8px; padding: 7px 16px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; transition: all 0.2s; }
+        .prompt { background: #0f172a; border-radius: 16px; padding: 18px 20px; margin: 14px 0 20px; display: flex; flex-direction: column; box-shadow: inset 0 2px 6px rgba(0,0,0,0.3); }
+        .prompt pre { color: #f1f5f9; font-size: 14px; line-height: 1.75; white-space: pre-wrap; word-break: break-word; font-family: 'Noto Sans KR', monospace; }
+        .copy-btn { align-self: flex-end; margin-bottom: 12px; background: #2563eb; color: #fff; border: none; border-radius: 8px; padding: 8px 18px; font-size: 13.5px; font-weight: 700; cursor: pointer; font-family: inherit; transition: all 0.2s; }
         .copy-btn:hover { background: #1d4ed8; }
+        .prompt-label { font-size: 14px; color: var(--g); font-weight: 800; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
 
-        .note { border-radius: 14px; padding: 16px 18px; margin: 14px 0; font-size: 14px; line-height: 1.65; }
+        .preview-box { background: #f8fafc; border: 2px dashed #94a3b8; border-radius: 18px; padding: 22px; margin: 20px 0; }
+        .preview-header { font-size: 13.5px; font-weight: 800; color: #475569; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px; }
+        .phone-mockup { max-width: 380px; margin: 0 auto; background: #fff; border: 3px solid #334155; border-radius: 30px; padding: 20px; box-shadow: 0 12px 30px rgba(0,0,0,0.12); }
+        .phone-header { background: #0c726c; color: #fff; border-radius: 16px; padding: 16px; text-align: center; margin-bottom: 16px; }
+        .phone-card { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 14px; margin-bottom: 12px; font-size: 13.5px; color: #166534; }
+        .phone-btn { display: block; background: #16a34a; color: #fff; text-align: center; font-weight: 800; padding: 14px; border-radius: 12px; text-decoration: none; margin-top: 16px; font-size: 15px; box-shadow: 0 4px 12px rgba(22,163,74,0.3); }
+
+        .trouble-card { background: #fff8ec; border: 1.5px solid #fde68a; border-radius: 14px; padding: 18px; margin: 12px 0; }
+        .trouble-card b { color: #b45309; font-size: 15px; display: block; margin-bottom: 6px; }
+        .trouble-card p { font-size: 14px; color: #78350f; margin-bottom: 10px; }
+
+        .app-box { background: #eff6ff; border: 1.5px solid #bfdbfe; border-radius: 14px; padding: 18px; margin: 14px 0; }
+        .app-box h5 { font-size: 15.5px; color: #1e40af; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+
+        .note { border-radius: 14px; padding: 18px 20px; margin: 16px 0; font-size: 14.5px; line-height: 1.7; }
         .note.tip { background: var(--g5); border: 1.5px solid var(--g3); color: #1e3a8a; }
         .note.good { background: var(--green-l); border: 1.5px solid #b5e5df; color: #044e4a; }
         .note.warn { background: #fef2f2; border: 1.5px solid #fecaca; color: #7f1d1d; }
         .note b { font-weight: 800; }
 
-        .badge-tag { display: inline-block; background: #dbeafe; color: #1e40af; border-radius: 6px; padding: 2px 8px; font-size: 12px; font-weight: 700; margin-right: 6px; }
+        .badge-tag { display: inline-block; background: #dbeafe; color: #1e40af; border-radius: 6px; padding: 3px 10px; font-size: 12.5px; font-weight: 800; margin-right: 6px; }
 
-        /* 결과물 미리보기 박스 */
-        .preview-box { background: #f8fafc; border: 2px dashed #94a3b8; border-radius: 16px; padding: 20px; margin: 18px 0; }
-        .preview-header { font-size: 13px; font-weight: 800; color: #475569; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
-        .phone-mockup { max-width: 360px; margin: 0 auto; background: #fff; border: 3px solid #334155; border-radius: 28px; padding: 18px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-        .phone-header { background: #0c726c; color: #fff; border-radius: 14px; padding: 14px; text-align: center; margin-bottom: 14px; }
-        .phone-card { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 12px; margin-bottom: 10px; font-size: 13px; color: #166534; }
-        .phone-btn { display: block; background: #16a34a; color: #fff; text-align: center; font-weight: 800; padding: 12px; border-radius: 12px; text-decoration: none; margin-top: 14px; font-size: 14px; }
+        .code-box { background: #1e293b; color: #e2e8f0; border-radius: 12px; padding: 14px 16px; font-size: 13px; font-family: monospace; overflow-x: auto; margin: 10px 0; max-height: 250px; }
 
-        .end { margin: 34px 16px 0; background: linear-gradient(135deg, #0e3a6e, #1e40af); border-radius: var(--radius); padding: 30px 24px; color: #fff; text-align: center; }
-        .end h3 { font-family: 'Gaegu', cursive; font-size: 27px; color: #93c5fd; margin-bottom: 8px; }
-        .end p { font-size: 14.5px; color: rgba(255,255,255,0.88); margin-bottom: 20px; }
-        .end a { display: inline-block; background: #fff; color: var(--g); text-decoration: none; font-weight: 800; border-radius: 999px; padding: 13px 26px; font-size: 14.5px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .end { margin: 40px 16px 0; background: linear-gradient(135deg, #0e3a6e, #1e40af); border-radius: var(--radius); padding: 36px 26px; color: #fff; text-align: center; }
+        .end h3 { font-family: 'Gaegu', cursive; font-size: 30px; color: #93c5fd; margin-bottom: 10px; }
+        .end p { font-size: 15px; color: rgba(255,255,255,0.88); margin-bottom: 22px; }
+        .end a { display: inline-block; background: #fff; color: var(--g); text-decoration: none; font-weight: 800; border-radius: 999px; padding: 14px 28px; font-size: 15px; box-shadow: 0 4px 14px rgba(0,0,0,0.18); }
     </style>
 </head>
 
@@ -81,117 +97,226 @@
     </div>
 
     <div class="hero">
-        <span class="hero-badge">🔒 PREMIUM MASTERCLASS R1</span>
+        <span class="hero-badge">🔒 PREMIUM MASTERCLASS R1 (초대형 완전판)</span>
         <h1>프로그램 신청 안내 <span>모바일 웹페이지</span> 📱</h1>
-        <p>복잡한 종이 포스터 대신, 카톡에 주소 링크 하나로 전송하는<br>어르신 맞춤 모바일 홍보 페이지를 말 한마디로 만드세요.</p>
+        <p>어르신들 글씨 작아서 안 보인다는 전화 이제 그만!<br>카톡 링크 터치 한 번에 큼직한 글씨 안내문과 전화 연결 버튼이 나오는 모바일 페이지를 5분 만에 완성하세요.</p>
+        <div class="hero-meta">
+            <span>⏱️ 작업시간 3시간 -> 5분</span>
+            <span>포스터 인쇄비 0원</span>
+            <span>카톡 터치 즉시 전화연결</span>
+        </div>
     </div>
 
     <div class="wrap">
 
+        <!-- 1. 비포 애프터 현장 스토리 -->
         <section>
-            <h2>🌿 1. 사복쌤, 이럴 때 꼭 쓰세요! (왜 필요한가요?)</h2>
-            <p class="body">
-                <b>현장의 현실:</b> "김 대리님, 이번 어르신 정보화 교실 모집 종이 포스터 만들어서 복지관 로비에 붙여주세요!"<br>
-                하지만 포스터를 종이로 인쇄하면 비용도 들고, 단톡방에 사진으로 올리면 글씨가 너무 작아서 어르신들이 <i>"선생님, 글자가 하나도 안 보여요~"</i> 하고 전화를 주시죠.
-            </p>
-            <p class="body">
-                <b>이 레시피를 쓰면 일어나는 기적:</b><br>
-                AI에게 말 한마디만 시키면, 글씨가 큼직하고 아래에 <b>[전화로 바로 신청하기]</b> 버튼이 있는 전용 인터넷 페이지가 뚝딱 만들어집니다. 카톡으로 이 주소만 보내면 어르신이 버튼 한 번 터치로 바로 전화를 거실 수 있어요!
-            </p>
+            <h2>🌿 1. 사복쌤, 이럴 때 꼭 쓰세요! (현장 비교)</h2>
+            <p class="lead">종이 포스터나 이미지 파일 홍보의 한계를 스마트하게 해결합니다.</p>
+            
+            <div class="ba-grid">
+                <div class="ba-card before">
+                    <h4>❌ 기존 홍보 방식 (속상했던 현실)</h4>
+                    · 종이 포스터 만들어서 복지관 로비에 인쇄해 붙임 (인쇄비 지출)<br>
+                    · 단톡방에 포스터 이미지 첨부 ➔ 글씨가 너무 작아서 어르신들이 <i>"선생님, 글자가 하나도 안 보여요"</i> 전화 쇄도<br>
+                    · 전화번호 보면서 직접 숫자 하나씩 누르다가 번호 잘못 누르는 오류 발생
+                </div>
+                <div class="ba-card after">
+                    <h4>✨ 안티그래비티 모바일 페이지 (이 기적!)</h4>
+                    · 카톡으로 주소 링크 하나만 전송 ➔ 어르신폰 맞춤 큼직한 글씨 화면<br>
+                    · 하단에 커다란 <b>[📞 전화로 바로 신청하기]</b> 녹색 버튼 탑재<br>
+                    · 어르신이 버튼 터치 1초 만에 복지관 전화 연결 창이 뜨면서 신청 완료!
+                </div>
+            </div>
         </section>
 
-        <!-- 완성 미리보기 -->
+        <!-- 2. 결과물 3D 미리보기 -->
         <section>
-            <h2>🖼️ 2. 완성되면 스마트폰에 어떻게 보이나요? (미리보기)</h2>
-            <p class="lead">아래 3단계 명령을 다 치고 나면, 어르신들 스마트폰 화면에 이렇게 예쁘게 뜹니다!</p>
+            <h2>🖼️ 2. 완성되면 어르신 스마트폰에 어떻게 보이나요? (미리보기)</h2>
+            <p class="lead">아래 프롬프트를 실행하면 내 컴퓨터에 바로 만들어지는 모바일 페이지 실제 모습입니다.</p>
             
             <div class="preview-box">
-                <div class="preview-header">📱 완성된 모바일 안내 페이지 모습</div>
+                <div class="preview-header">📱 어르신 스마트폰 화면 실물 렌더링 예시</div>
                 <div class="phone-mockup">
                     <div class="phone-header">
-                        <h4 style="font-size:16px;">2026 청춘 스마트폰 교실</h4>
-                        <p style="font-size:12px; opacity:0.9;">어르신을 위한 1:1 맞춤 교육</p>
+                        <h4 style="font-size:17px; margin-bottom:4px;">2026 청춘 스마트폰 교실</h4>
+                        <p style="font-size:12.5px; opacity:0.92;">어르신을 위한 1:1 맞춤 디지털 교육</p>
                     </div>
                     <div class="phone-card">
-                        <b>📅 일시:</b> 매주 화요일 10시~12시<br>
-                        <b>📍 장소:</b> 복지관 2층 컴퓨터실<br>
-                        <b>💰 수강료:</b> 전액 무료 (선착순 15명)
+                        <b>📅 일시:</b> 매주 화요일 오전 10시 ~ 12시<br>
+                        <b>📍 장소:</b> 복지관 2층 정보화 교육실<br>
+                        <b>👥 대상:</b> 65세 이상 지역 어르신 (선착순 15명)<br>
+                        <b>💰 수강료:</b> <span style="background:#fef08a; color:#854d0e; padding:1px 6px; border-radius:4px; font-weight:800;">전액 무료</span>
                     </div>
                     <div class="phone-card" style="background:#eff6ff; border-color:#bfdbfe; color:#1e40af;">
-                        <b>💡 1회차:</b> 카톡 사진 보내기<br>
-                        <b>💡 2회차:</b> 버스 도착 시간 확인<br>
-                        <b>💡 3회차:</b> 병원 예약하기
+                        <b>💡 1회차:</b> 카톡 사진 보내기 & 손주와 영상통화<br>
+                        <b>💡 2회차:</b> 버스 도착시간 미리 확인하기<br>
+                        <b>💡 3회차:</b> 병원 예약 및 장보기 앱 활용
                     </div>
-                    <a href="#" class="phone-btn" onclick="alert('실제 어르신 휴대폰에서는 복지관 전화 연결창이 뜹니다!'); return false;">📞 전화로 바로 신청하기 (터치)</a>
+                    <a href="#" class="phone-btn" onclick="alert('실제 어르신 휴대폰에서는 복지관 전화 연결 창(02-1234-5678)이 즉시 뜹니다!'); return false;">📞 전화로 바로 신청하기 (터치)</a>
                 </div>
             </div>
         </section>
 
-        <!-- 프롬프트 복붙 -->
+        <!-- 3. 유치원생 엑셀/파일 준비 가이드 -->
         <section>
-            <h2>💬 3. 따라하기 — 채팅창에 복붙만 하세요!</h2>
-            <p class="lead">안티그래비티 IDE의 <b>오른쪽 채팅창</b>에 아래 1차 프롬프트를 복사해서 붙여넣으세요.</p>
+            <h2>📁 3. 폴더 준비하기 (유치원생도 따라 하는 1:1 위치 가이드)</h2>
+            <p class="lead">어려운 명령어나 환경설정 없이, 바탕화면에 폴더 하나만 만들어두면 준비 끝입니다!</p>
+            
+            <div class="steps">
+                <div class="step">
+                    <b>1. 바탕화면에 새 폴더 만들기</b>
+                    <small>바탕화면 빈 곳 우클릭 ➔ [새 폴더] ➔ 폴더 이름을 **`안티그래비티_연습`** 으로 만드세요.</small>
+                </div>
+                <div class="step">
+                    <b>2. 안티그래비티 IDE에서 이 폴더 열기</b>
+                    <small>안티그래비티 IDE 상단 메뉴 [File] ➔ [Open Folder] 누르고 방금 만든 `안티그래비티_연습` 폴더를 선택하세요.</small>
+                </div>
+            </div>
 
-            <h3 class="blk"><span class="badge-tag">STEP 1</span> 1차 프롬프트 (기본 뼈대 만들기)</h3>
-            <div class="prompt-label">📋 [복사] 버튼을 누르고 오른쪽 채팅창에 붙여넣고 엔터를 치세요</div>
+            <div class="note warn">
+                <b>🚨 사복쌤들이 자주 하는 실수 3가지 방지!</b><br>
+                1. 폴더 이름에 띄어쓰기나 특수문자를 넣지 마세요 (`안티그래비티_연습` 추천).<br>
+                2. 이미 다른 프로그램이 열려 있으면 창을 끄고 새 폴더를 지정해 주세요.<br>
+                3. 인터넷이 연결되어 있는지 확인해 주세요!
+            </div>
+        </section>
+
+        <!-- 4. 4단계 연속 마스터 프롬프트 -->
+        <section>
+            <h2>💬 4. 4단계 연속 마스터 프롬프트 (채팅창 복붙 풀패키지)</h2>
+            <p class="lead">IDE 오른쪽 채팅창에 차례대로 복사해서 입력하세요. AI가 알아서 코드를 써줍니다!</p>
+
+            <!-- STEP 1 -->
+            <h3 class="blk"><span class="badge-tag">STEP 1</span> 1차 프롬프트 — 뼈대 안내 페이지 만들기</h3>
+            <div class="prompt-label">📋 아래 복사 버튼을 누르고 오른쪽 채팅창에 붙여넣으세요</div>
             <div class="prompt">
                 <button class="copy-btn" onclick="cp(this)">📋 1차 프롬프트 복사</button>
-                <pre>사회복지관 '2026 청춘 스마트폰 교실' 참가자 모집을 위한 모바일 안내 웹페이지(index.html)를 만들어줘.
+                <pre>사회복지관 '2026 청춘 스마트폰 교실' 모집을 위한 모바일 안내 웹페이지(`index.html`)를 만들어줘.
 
 [포함할 내용]
-1. 제목: "2026 청춘 스마트폰 교실" (파스텔 초록색 바탕에 큼직한 글자)
-2. 정보: 일시(매주 화요일 10시), 장소(복지관 2층 컴퓨터실), 대상(65세 이상 15명 선착순), 수강료(무료)
-3. 교육 내용: 1회차 카톡 사진 공유, 2회차 버스 도착 확인, 3회차 병원 예약
-4. 하단 버튼: "📞 전화로 바로 신청하기" (클릭 시 02-1234-5678 전화 연결)
-5. 한 개의 index.html 파일 안에 글자 크기를 어르신이 보기 쉽게 큼직하게 만들어줘.</pre>
+1. 상단 제목: "2026 청춘 스마트폰 교실" (파스텔 초록색 바탕)
+2. 교육 정보: 일시(매주 화요일 10시), 장소(복지관 2층 컴퓨터실), 대상(65세 이상 15명 선착순), 수강료(무료)
+3. 커리큘럼: 1회차 카톡 사진 공유, 2회차 버스 도착 확인, 3회차 병원 예약
+4. 하단 버튼: "📞 전화로 바로 신청하기" (클릭 시 02-1234-5678 전화 연결되도록 tel: 링크 설정)
+5. 한 개의 `index.html` 파일 안에 글자 크기를 어르신이 보기 쉽게 큼직하게 만들어줘.</pre>
             </div>
 
             <div class="steps">
                 <div class="step">
-                    <b>1. 오른쪽 채팅창에 붙여넣고 엔터</b>
-                    <small>오른쪽 채팅창 하단 박스에 프롬프트를 넣고 엔터를 누릅니다.</small>
-                </div>
-                <div class="step">
-                    <b>2. 보라색 [Approve] 승인 버튼 클릭!</b>
-                    <small>AI가 "index.html 파일을 만듭니다"라고 계획을 제시하면 [Approve] 승인 버튼을 누르세요. 왼쪽 화면에서 코드가 써지는 것을 구경하시면 됩니다!</small>
+                    <b>관전 팁: 보라색 [Approve] 버튼이 뜨면 누르세요!</b>
+                    <small>AI가 "index.html 파일 작성을 진행합니다"라고 하면 [Approve] 버튼을 클릭하세요. 왼쪽 화면에 글자가 호다닥 써지면서 자동으로 파일이 생성됩니다.</small>
                 </div>
             </div>
 
-            <h3 class="blk"><span class="badge-tag">STEP 2</span> 2차 프롬프트 (카톡 글자 크기 & 색상 예쁘게 다듬기)</h3>
-            <div class="prompt-label">📋 코드가 다 써진 후 채팅창에 이어서 적으세요</div>
+            <!-- STEP 2 -->
+            <h3 class="blk"><span class="badge-tag">STEP 2</span> 2차 프롬프트 — 글자 강조 & 녹색 전화 버튼 세팅</h3>
+            <div class="prompt-label">📋 1차 작성이 끝난 후 채팅창에 이어서 적으세요</div>
             <div class="prompt">
                 <button class="copy-btn" onclick="cp(this)">📋 2차 프롬프트 복사</button>
-                <pre>방금 만든 index.html을 어르신들이 더 잘 볼 수 있게 수정해줘.
+                <pre>방금 만든 `index.html`을 어르신들이 더 잘 볼 수 있게 디자인을 다듬어줘.
 
-1. 글자 크기를 전체적으로 더 큼직하게 키우고, 중요한 '무료', '선착순 15명' 문구는 노란색 형광펜 강조 효과를 줘.
-2. 전화걸기 버튼을 녹색 큰 버튼으로 바꿔서 눈에 제일 잘 띄게 해줘.</pre>
+1. 중요 문구인 '전액 무료', '선착순 15명' 글자에 노란색 형광펜 강조 효과를 줘.
+2. 전화걸기 버튼을 화면 하단에 크고 눈에 잘 띄는 초록색 대형 버튼으로 만들어줘.
+3. 스마트폰 화면 크기(모바일 리스폰시브)에 딱 맞게 정렬해줘.</pre>
+            </div>
+
+            <!-- STEP 3 -->
+            <h3 class="blk"><span class="badge-tag">STEP 3</span> 3차 프롬프트 — 카톡 공유 시 나타나는 예쁜 카드(OG태그) 추가</h3>
+            <div class="prompt-label">📋 카톡 링크 보낼 때 예쁜 제목이 뜨게 해주는 프롬프트</div>
+            <div class="prompt">
+                <button class="copy-btn" onclick="cp(this)">📋 3차 프롬프트 복사</button>
+                <pre>`index.html` 파일 상단에 카카오톡 링크 전송용 오픈그래프(OG) 메타태그를 추가해줘.
+
+- 카톡 제목: [모집안내] 2026 청춘 스마트폰 교실 (무료)
+- 카톡 설명: 어르신을 위한 맞춤 디지털 교육! 지금 터치하여 신청하세요.
+- 카톡 미리보기 이미지 주소도 기본 템플릿으로 포함해줘.</pre>
+            </div>
+
+            <!-- STEP 4 -->
+            <h3 class="blk"><span class="badge-tag">STEP 4</span> 4차 프롬프트 — 문의 담당자 카카오톡 채널 버튼 추가</h3>
+            <div class="prompt-label">📋 전화가 부담스러운 분을 위한 1:1 카톡 상담 버튼 추가</div>
+            <div class="prompt">
+                <button class="copy-btn" onclick="cp(this)">📋 4차 프롬프트 복사</button>
+                <pre>`index.html` 하단 전화 버튼 옆에 "💬 카카오톡으로 문의하기" 노란색 버튼도 추가해줘.</pre>
             </div>
         </section>
 
-        <!-- 배포하기 -->
+        <!-- 5. 막혔을 때 1초 해결사 (Troubleshooting FAQ) -->
         <section>
-            <h2>🌐 4. 만든 페이지를 카톡으로 보내는 1분 비법 (0원)</h2>
-            <p class="lead">내 컴퓨터에 만든 `index.html` 파일을 카톡 전송용 인터넷 주소(URL)로 바꾸는 법입니다.</p>
+            <h2>🚨 5. 막혔을 때 1초 해결사! (Troubleshooting 5선)</h2>
+            <p class="lead">AI 지시 중 문제가 생기면 이 문장을 그대로 복사해서 채팅창에 넣으세요.</p>
 
-            <div class="steps">
-                <div class="step">
-                    <b>1. 인터넷 창에서 `app.netlify.com/drop` 접속</b>
-                    <small>무료로 인터넷 주소를 만들어주는 아주 고마운 웹사이트입니다.</small>
+            <div class="trouble-card">
+                <b>Q1. AI가 갑자기 이상한 빨간 글씨 오류를 내면서 멈췄어요!</b>
+                <p>➔ 해결 프롬프트: "방금 발생한 오류를 수정하고 `index.html` 파일을 다시 완성해줘."</p>
+            </div>
+
+            <div class="trouble-card">
+                <b>Q2. 전화걸기 버튼을 눌렀는데 반응이 없어요!</b>
+                <p>➔ 해결 프롬프트: "전화걸기 버튼의 href 주소를 `tel:02-1234-5678` 로 확실하게 고쳐줘."</p>
+            </div>
+
+            <div class="trouble-card">
+                <b>Q3. 스마트폰에서 볼 때 글자가 옆으로 깨지거나 잘려요!</b>
+                <p>➔ 해결 프롬프트: "모바일 화면 폭(viewport 360px)에 맞춰 글자가 자동으로 줄바꿈되도록 CSS를 보정해줘."</p>
+            </div>
+        </section>
+
+        <!-- 6. 실무 변형 응용 3선 -->
+        <section>
+            <h2>🎁 6. 다른 사업에도 바로 쓰는 실무 응용 3선 (확장팩)</h2>
+            <p class="lead">스마트폰 교실 외에 다른 현장 사업에도 아래 프롬프트만 복붙하면 즉시 활용 가능합니다!</p>
+
+            <div class="app-box">
+                <h5>🛍️ 응용 1: 명절 맞이 바자회·후원물품 배분 안내</h5>
+                <div class="prompt">
+                    <button class="copy-btn" onclick="cp(this)">📋 바자회 프롬프트 복사</button>
+                    <pre>사회복지관 '2026 추석 맞이 사랑의 바자회' 모바일 안내 페이지(`index.html`)를 만들어줘. 일시: 9월 15일, 장소: 복지관 마당, 주요 품목: 의류, 떡, 생필품. 하단에 "📞 물품 기부 문의하기" 버튼 포함해줘.</pre>
                 </div>
-                <div class="step">
-                    <b>2. 내 폴더의 `index.html` 파일을 마우스로 마우스 드래그</b>
-                    <small>안티그래비티 연습 폴더에 있는 `index.html` 파일을 끌어다 놓습니다.</small>
+            </div>
+
+            <div class="app-box">
+                <h5>🤝 응용 2: 대학생·지역주민 자원봉사자 모집</h5>
+                <div class="prompt">
+                    <button class="copy-btn" onclick="cp(this)">📋 봉사자 모집 프롬프트 복사</button>
+                    <pre>주말 아동 멘토링 '자원봉사자 모집' 모바일 웹페이지(`index.html`)를 만들어줘. 대상: 대학생 및 성인 봉사자, 활동혜택: VMS 봉사시간 인정, 신청하기 네이버폼 링크 버튼 포함해줘.</pre>
                 </div>
-                <div class="step">
-                    <b>3. 생성된 주소를 카톡 단톡방에 전송!</b>
-                    <small>`https://random-name.netlify.app` 같은 전용 주소가 바로 생성됩니다. 이 링크를 카톡에 전송하면 어르신 안내가 끝납니다!</small>
-                </div>
+            </div>
+        </section>
+
+        <!-- 7. 완성 소스 코드 뷰어 -->
+        <section>
+            <h2>📄 7. 최종 완성 소스 코드 (복사해서 소장하세요)</h2>
+            <p class="lead">AI 없이 직접 코드 파일에 복붙해서 사용하고 싶은 분을 위한 풀 코드입니다.</p>
+            <div class="code-box">
+&lt;!DOCTYPE html&gt;
+&lt;html lang="ko"&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+  &lt;title&gt;2026 청춘 스마트폰 교실&lt;/title&gt;
+  &lt;style&gt;
+    body { font-family: sans-serif; background: #eff6ff; padding: 20px; text-align: center; }
+    .card { background: #fff; border-radius: 20px; padding: 24px; max-width: 400px; margin: 0 auto; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    h1 { color: #0c726c; font-size: 24px; }
+    .btn { display: block; background: #16a34a; color: #fff; text-decoration: none; padding: 16px; border-radius: 12px; font-weight: bold; font-size: 18px; margin-top: 20px; }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div class="card"&gt;
+    &lt;h1&gt;📱 2026 청춘 스마트폰 교실&lt;/h1&gt;
+    &lt;p&gt;어르신 맞춤 1:1 무료 디지털 교육&lt;/p&gt;
+    &lt;a href="tel:02-1234-5678" class="btn"&gt;📞 전화로 바로 신청하기&lt;/a&gt;
+  &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
             </div>
         </section>
 
         <div class="end">
-            <h3>레시피 1 마스터 완료! 🚀</h3>
-            <p>포스터 인쇄비 0원! 업무 시간 대폭 절약! 어르신 맞춤 모바일 안내 페이지를 자유롭게 만드세요.</p>
+            <h3>레시피 1 마스터 완수! 🚀</h3>
+            <p>포스터 인쇄비 0원! 카톡 링크 하나로 어르신 프로그램 신청을 대박 내세요.</p>
             <a href="../treasure.html">← 보물창고 커리큘럼으로 돌아가기</a>
         </div>
 
