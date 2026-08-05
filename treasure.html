@@ -105,7 +105,7 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--g5);color:var(--text
 /* collapsible curriculum */
 .cur-toggle{width:100%;display:flex;align-items:center;gap:9px;background:#fff;border:none;border-top:1px solid var(--g4);padding:15px 18px;font-size:14px;font-weight:700;color:var(--text);cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:background .15s;}
 .cur-toggle:hover{background:var(--g5);}
-.cur-toggle .ct-count{margin-left:auto;font-size:11px;font-weight:700;color:var(--g);background:var(--g5);border:1px solid var(--g3);border-radius:8px;padding:3px 9px;}
+.cur-toggle .ct-count{margin-left:auto;font-size:11px;font-weight:700;color:var(--g);background:var(--g5);border:1px solid var(--g3);border-radius:8px;padding:3px 9px;white-space:nowrap;flex-shrink:0;}
 .cur-toggle .chev{color:var(--sub);transition:transform .22s;font-size:11px;}
 .cur-toggle.open .chev{transform:rotate(180deg);}
 .curriculum[hidden]{display:none;}
@@ -281,8 +281,8 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--g5);color:var(--text
     </div>
 
     <button class="cur-toggle" onclick="toggleCur(this)" aria-expanded="false">
-      <span>📚 전체 커리큘럼 (무료 + 프리미엄)</span>
-      <span class="ct-count">무료 입문 ＋ 레시피 8</span>
+      <span>📚 전체 커리큘럼</span>
+      <span class="ct-count">무료+프리미엄</span>
       <span class="chev">▾</span>
     </button>
     <div class="curriculum" hidden>
