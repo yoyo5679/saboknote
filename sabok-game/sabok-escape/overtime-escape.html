@@ -357,6 +357,7 @@ body {
     var im = new Image();
     im.onload = function () {
       IMG[n] = im;
+      if (im.decode) im.decode().catch(function () {});
       if (startVisible()) renderStart();
       if (!S.on) draw();
     };
@@ -366,19 +367,34 @@ body {
     var pre = CHARS[charId || S.char || 'case'].prefix;
     return IMG[pre + pose] || IMG[pose];
   }
+  // 크기별로 한 번만 줄여 둔 이미지를 재사용 (큰 원본을 매 프레임 고품질로 줄이면 휴대폰에서 끊김)
+  var SCALED = {};
+  function scaled(im, w, h) {
+    var pw = Math.max(1, Math.round(w * DPR)), ph = Math.max(1, Math.round(h * DPR));
+    var key = im.src + '|' + pw + 'x' + ph;
+    var c = SCALED[key];
+    if (!c) {
+      c = document.createElement('canvas'); c.width = pw; c.height = ph;
+      var g = c.getContext('2d'); g.imageSmoothingQuality = 'high';
+      g.drawImage(im, 0, 0, pw, ph);
+      SCALED[key] = c;
+    }
+    return c;
+  }
+  function blit(im, x, y, w, h) { ctx.drawImage(scaled(im, w, h), x, y, w, h); }
   // 상자(w×h) 안에 비율 유지해 맞춰 그림. 바닥 장애물은 아래 정렬, 공중은 가운데 정렬
   function drawFit(im, w, h, scale, bottom) {
     var s = Math.min(w*scale/im.width, h*scale/im.height);
     var dw = im.width*s, dh = im.height*s;
-    ctx.drawImage(im, (w-dw)/2, bottom ? h-dh : (h-dh)/2, dw, dh);
+    blit(im, (w-dw)/2, bottom ? h-dh : (h-dh)/2, dw, dh);
   }
   // 가로로 반복되는 배경: 홀수 칸은 좌우 반전해 이음새가 보이지 않게
   function drawTiled(im, offset, y, h) {
     var tw = im.width * h / im.height;
     var start = -(((offset % (tw*2)) + tw*2) % (tw*2));
     for (var x = start, k = 0; x < W; x += tw, k++) {
-      if (k % 2) { ctx.save(); ctx.translate(x+tw, y); ctx.scale(-1, 1); ctx.drawImage(im, 0, 0, tw, h); ctx.restore(); }
-      else ctx.drawImage(im, x, y, tw, h);
+      if (k % 2) { ctx.save(); ctx.translate(x+tw, y); ctx.scale(-1, 1); blit(im, 0, 0, tw, h); ctx.restore(); }
+      else blit(im, x, y, tw, h);
     }
   }
 
@@ -626,6 +642,14 @@ body {
     var h = 18 + Math.floor(m / 60), mm = Math.floor(m % 60);
     return (h >= 24 ? '24:00' : h + ':' + String(mm).padStart(2, '0'));
   }
+  // 배열을 새로 만들지 않고 제자리에서 걸러냄
+  function compact(arr, keep) {
+    var j = 0;
+    for (var i = 0; i < arr.length; i++) { var o = arr[i]; if (keep(o)) arr[j++] = o; }
+    arr.length = j;
+    return arr;
+  }
+  var lastJellySfx = -10;
   function totalScore() { return S.jellyScore + Math.floor(S.dist/40) + S.bonus; }
 
   // ============ 안내 문구 ============
@@ -740,7 +764,7 @@ body {
     cancelAnimationFrame(animId);
     S = initS();
     S.on = true;
-    lastTime = 0;
+    lastTime = 0; acc = 0;
     banner('🕕 18:00 퇴근 시간! 24:00 막차까지 달려!', '#ffd43b', 150);
     animId = requestAnimationFrame(loop);
   }
@@ -767,10 +791,7 @@ body {
     S.pfx.push({x:S.p.x+PW/2,y:S.p.y-8,vx:0,vy:-1,life:26,ml:26,t:'💥'});
   }
   function updPfx() {
-    S.pfx = S.pfx.filter(function(p){
-      p.x+=p.vx; p.y+=p.vy; if (!p.float) p.vy+=0.18; p.life--;
-      return p.life>0;
-    });
+    compact(S.pfx, keepPfx);
   }
   function drawPfx() {
     S.pfx.forEach(function(p){
@@ -1267,7 +1288,7 @@ body {
       var dh0 = p.pose==='slide' ? 32 : 64, dw0 = im.width * dh0 / im.height;
       for (var k = 1; k <= 3; k++) {
         ctx.globalAlpha = 0.18 / k;
-        ctx.drawImage(im, cx - dw0/2 - k*14, (p.pose==='slide' ? GND : p.y+p.h) - dh0, dw0, dh0);
+        blit(im, cx - dw0/2 - k*14, (p.pose==='slide' ? GND : p.y+p.h) - dh0, dw0, dh0);
       }
       ctx.globalAlpha = 1;
     }
@@ -1280,7 +1301,7 @@ body {
       ctx.save();
       ctx.translate(cx+sx, (p.pose==='slide' ? GND : p.y+p.h) + sy + (key==='run2' ? -1 : 0));
       if (p.pose==='fall') ctx.rotate(Math.sin(S.frames*0.3)*0.2);
-      ctx.drawImage(im, -dw/2, -dh, dw, dh);
+      blit(im, -dw/2, -dh, dw, dh);
       ctx.restore();
     } else {
       drawPlayerLegacy();
@@ -1292,7 +1313,7 @@ body {
     }
     // 젤리 자석
     var mr = magnetR();
-    if (mr && S.magnet > 0) {
+    if (mr && (S.magnet > 0 || S.fever > 0)) {
       ctx.save(); ctx.setLineDash([4, 6]); ctx.lineDashOffset = -S.frames;
       ctx.strokeStyle = 'rgba(255,212,59,0.5)'; ctx.lineWidth = 1.5;
       ctx.beginPath(); ctx.arc(cx, cy, 46, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
@@ -1409,7 +1430,7 @@ body {
     else if (it.t === 'leave') { S.shield = true; SFX.shield(); floatText('연차 장착! 한 번 막아 줌', x, y - 10, '#74b9ff'); }
     else if (it.t === 'card') { S.magnet = 480; SFX.item(); floatText('법카 찬스! 젤리 자석', x, y - 10); }
   }
-  function magnetR() { return S.magnet > 0 ? 150 : (S.char === 'pr' ? 75 : 0); }
+  function magnetR() { return S.magnet > 0 ? 150 : S.fever > 0 ? 120 : (S.char === 'pr' ? 75 : 0); }
 
   // ============ 칼퇴 피버 ============
   function startFever() {
@@ -1454,7 +1475,7 @@ body {
   }
   function updEvent() {
     var ev = S.event;
-    S.chats = S.chats.filter(function (c) { return --c.life > 0; });
+    compact(S.chats, keepChat);
     if (!ev) return;
     ev.t--;
     var id = ev.def.id;
@@ -1517,7 +1538,7 @@ body {
     ctx.beginPath(); ctx.ellipse(x, GND + 5, 22, 4, 0, 0, Math.PI * 2); ctx.fill();
     if (im) {
       var dh = 92, dw = im.width * dh / im.height;
-      ctx.drawImage(im, x - dw / 2, y - dh, dw, dh);
+      blit(im, x - dw / 2, y - dh, dw, dh);
     } else {
       ctx.save(); ctx.translate(x - 15, y - 54); drawBoss({ w: 30, h: 54 }); ctx.restore();
     }
@@ -1551,7 +1572,7 @@ body {
     var e = S.ending;
     if (!e) return;
     var th = 130, tw = trainW(), x = e.trainX, y = GND + 10 - th;
-    if (IMG.subway) ctx.drawImage(IMG.subway, x, y, tw, th);
+    if (IMG.subway) blit(IMG.subway, x, y, tw, th);
     else {
       ctx.fillStyle = '#2f3b52'; rr(x, y + 20, tw, th - 30, 12); ctx.fill();
       ctx.fillStyle = '#ffe9a8';
@@ -1560,6 +1581,12 @@ body {
   }
 
   // ============ 업데이트 ============
+  function keepObs(o) { return o.x > -90 && o.y < H + 60; }
+  function keepJelly(j) { return j.x > -30; }
+  function keepItem(it) { return it.x > -40; }
+  function keepPit(pt) { return pt.x + pt.w > -20; }
+  function keepPfx(p) { p.x += p.vx; p.y += p.vy; if (!p.float) p.vy += 0.18; p.life--; return p.life > 0; }
+  function keepChat(c) { return --c.life > 0; }
   function updWorld(sp) {
     S.obs.forEach(function(o){
       o.x -= sp + (o.proj ? 2.5 : 0);
@@ -1571,20 +1598,20 @@ body {
         if (o.t === 'minwon') missionAdd('minwon5');
       }
     });
-    S.obs = S.obs.filter(function(o){ return o.x > -90 && o.y < H + 60; });
+    compact(S.obs, keepObs);
     var mr = magnetR(), cx = S.p.x + PW / 2, cy = S.p.y + S.p.h / 2;
     S.jellies.forEach(function(j){
       j.x -= sp; j.spin += 0.12;
       if (mr) { var dx = cx - j.x, dy = cy - j.y; if (dx * dx + dy * dy < mr * mr) { j.x += dx * 0.2; j.y += dy * 0.2; } }
     });
-    S.jellies = S.jellies.filter(function(j){ return j.x>-30; });
+    compact(S.jellies, keepJelly);
     S.items.forEach(function(it){ it.x-=sp; it.bob+=0.09; });
-    S.items = S.items.filter(function(it){ return it.x>-40; });
+    compact(S.items, keepItem);
     S.pits.forEach(function(pt){
       pt.x-=sp;
       if (!pt.counted && pt.x + pt.w < S.p.x) { pt.counted = true; missionAdd('pit4'); }
     });
-    S.pits = S.pits.filter(function(pt){ return pt.x+pt.w>-20; });
+    compact(S.pits, keepPit);
   }
 
   function hitTest() {
@@ -1616,31 +1643,38 @@ body {
       return;
     }
     S.hp -= 25; S.hits++; S.lastHit = S.frames;
-    S.p.inv = 70; S.shake = 7; S.flash = 10; S.hitstop = 6;
+    S.p.inv = 70; S.shake = 7; S.flash = 10; S.hitstop = 3;
     S.streak = 0; S.feverGauge = Math.max(0, S.feverGauge - 25);
     pfxHit(); SFX.hit(); vib(80);
     if (S.hp <= 0) { S.hp = 0; gameOver('hp'); }
   }
 
+  // 줍는 범위: 장애물 판정(작게)과 달리 화면에 보이는 캐릭터 크기 그대로 (서 있을 때 약 44×64, 슬라이드 약 52×32)
+  function pickupBox() {
+    var p = S.p, cx = p.x + PW / 2;
+    if (p.slide) return { x1: cx - 26, x2: cx + 26, y1: GND - 34, y2: GND + 2 };
+    var foot = p.y + p.h;
+    return { x1: cx - 22, x2: cx + 22, y1: foot - 64, y2: foot + 2 };
+  }
   function collectTest() {
-    var p=S.p;
-    var px1=p.x-2, px2=p.x+PW+2, py1=p.y-2, py2=p.y+p.h+2;
-    S.jellies = S.jellies.filter(function(j){
-      if (j.x>px1 && j.x<px2 && j.y>py1 && j.y<py2) {
+    var bx = pickupBox();
+    var px1=bx.x1, px2=bx.x2, py1=bx.y1, py2=bx.y2;
+    compact(S.jellies, function(j){
+      if (j.x+j.r>px1 && j.x-j.r<px2 && j.y+j.r>py1 && j.y-j.r<py2) {
         S.streak++; S.jellyCount++;
         var pts = (10 + Math.min(S.streak,10)*2) * (S.fever > 0 ? 2 : 1) * (S.char === 'pr' ? 1.2 : 1);
         pts = Math.round(pts);
         S.jellyScore += pts;
         pfxJelly(j.x,j.y,j.c,pts);
         showCombo(S.streak);
-        SFX.jelly(S.streak);
+        if (S.frames - lastJellySfx >= 3) { SFX.jelly(S.streak); lastJellySfx = S.frames; }   // 한꺼번에 먹어도 소리는 몰아서
         missionAdd('jelly120');
         if (S.fever === 0 && !S.ending) { S.feverGauge += 2.5; if (S.feverGauge >= 100) { S.feverGauge = 100; startFever(); } }
         return false;
       }
       return true;
     });
-    S.items = S.items.filter(function(it){
+    compact(S.items, function(it){
       var iy = it.y + Math.sin(it.bob)*5;
       if (it.x+24>px1 && it.x<px2 && iy+28>py1 && iy<py2) { useItem(it); return false; }
       return true;
@@ -1701,7 +1735,7 @@ body {
       ctx.globalAlpha=1;
       var idx = JCOLORS.indexOf(j.c);
       var jim = IMG[j.c === '#ffd43b' ? 'jelly_yellow' : ['jelly_pink','jelly_yellow','jelly_blue'][Math.max(0, idx) % 3]];
-      if (jim) { ctx.drawImage(jim, j.x-j.r-2, j.y+bounce-j.r-2, j.r*2+4, j.r*2+4); return; }
+      if (jim) { blit(jim, j.x-j.r-2, j.y+bounce-j.r-2, j.r*2+4, j.r*2+4); return; }
       ctx.beginPath(); ctx.arc(j.x, j.y+bounce, j.r, 0, Math.PI*2); ctx.fill();
       ctx.fillStyle='rgba(255,255,255,0.75)';
       ctx.beginPath(); ctx.arc(j.x-2.5, j.y+bounce-2.5, 2.6, 0, Math.PI*2); ctx.fill();
@@ -1779,16 +1813,18 @@ body {
   }
 
   // ============ HUD ============
+  var HUD_EL = { score: document.getElementById('scoreV'), clock: document.getElementById('clockV'), hp: document.getElementById('hpfill'), fv: document.getElementById('fvfill') };
+  var hudLast = {};
+  function hudSet(k, v, fn) { if (hudLast[k] !== v) { hudLast[k] = v; fn(v); } }
   function updHUD() {
-    document.getElementById('scoreV').textContent = totalScore();
-    document.getElementById('clockV').textContent = clockText();
-    var f = document.getElementById('hpfill');
-    var pct = Math.max(0, S.hp / S.maxHp * 100);
-    f.style.width = pct + '%';
-    if (pct>55) f.style.background='linear-gradient(90deg,#2ed573,#7bed9f)';
-    else if (pct>25) f.style.background='linear-gradient(90deg,#ffd43b,#ffa94d)';
-    else f.style.background='linear-gradient(90deg,#ff4757,#ff8787)';
-    document.getElementById('fvfill').style.width = (S.fever > 0 ? S.fever / 360 * 100 : S.feverGauge) + '%';
+    hudSet('score', totalScore(), function (v) { HUD_EL.score.textContent = v; });
+    hudSet('clock', clockText(), function (v) { HUD_EL.clock.textContent = v; });
+    var pct = Math.max(0, Math.round(S.hp / S.maxHp * 200) / 2);
+    hudSet('hp', pct, function (v) { HUD_EL.hp.style.width = v + '%'; });
+    hudSet('hpc', pct > 55 ? 0 : pct > 25 ? 1 : 2, function (v) {
+      HUD_EL.hp.style.background = ['linear-gradient(90deg,#2ed573,#7bed9f)', 'linear-gradient(90deg,#ffd43b,#ffa94d)', 'linear-gradient(90deg,#ff4757,#ff8787)'][v];
+    });
+    hudSet('fv', Math.round(S.fever > 0 ? S.fever / 360 * 100 : S.feverGauge), function (v) { HUD_EL.fv.style.width = v + '%'; });
   }
 
   // ============ 시간대 전환 ============
@@ -1970,15 +2006,21 @@ body {
   }
 
   // ============ 메인 루프 ============
+  // 게임은 초당 60번 고정 간격으로 진행하고, 화면은 매 갱신마다 그림.
+  // 화면 갱신 주기(60Hz·120Hz 등)를 추정해 미세한 시간 흔들림을 없애야 진행이 고르게 보임
+  var acc = 0, period = fpsInterval;
   function loop(currentTime) {
     if (!S.on) return;
     animId = requestAnimationFrame(loop);
-    if (!lastTime) lastTime = currentTime;
-    var elapsed = currentTime - lastTime;
-    if (elapsed < fpsInterval) return;
-    lastTime = currentTime - (elapsed % fpsInterval);
-    step();
-    updHUD();
+    if (!lastTime) { lastTime = currentTime; return; }
+    var dt = Math.min(100, currentTime - lastTime);   // 탭 전환 등으로 길게 멈췄다 와도 한꺼번에 몰아서 진행하지 않음
+    lastTime = currentTime;
+    if (dt > 4 && dt < 40) period += (dt - period) * 0.08;
+    if (Math.abs(dt - period) < 1.5) dt = period;
+    acc += dt;
+    var n = 0;
+    while (acc >= fpsInterval - 0.5 && n < 4) { step(); acc -= fpsInterval; n++; if (!S.on) break; }
+    if (n) updHUD();
     draw();
   }
 
