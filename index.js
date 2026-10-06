@@ -2181,10 +2181,10 @@ try {
                     <button class="tab-btn" id="tab-budget" onclick="switchAdminTab('budget')" style="padding:10px 4px; border:none; border-radius:6px; background:transparent; font-weight:600; color:var(--text-5); font-size:0.72rem; transition:all 0.2s; white-space:nowrap;">단가 계산</button>
                 </div>
                 <div class="admin-group" data-cat="biz" style="display:none; grid-template-columns: repeat(4, 1fr); gap:6px; padding:4px; background:var(--surface-3); border-radius:10px;">
-                    <button class="tab-btn" id="tab-ltc" onclick="switchAdminTab('ltc')" style="padding:10px 4px; border:none; border-radius:6px; background:transparent; font-weight:600; color:var(--text-5); font-size:0.72rem; transition:all 0.2s; white-space:nowrap;">장기요양</button>
-                    <button class="tab-btn" id="tab-youth" onclick="switchAdminTab('youth')" style="padding:10px 4px; border:none; border-radius:6px; background:transparent; font-weight:600; color:var(--text-5); font-size:0.72rem; transition:all 0.2s; white-space:nowrap;">자립청년</button>
-                    <button class="tab-btn" id="tab-target" onclick="switchAdminTab('target')" style="padding:10px 4px; border:none; border-radius:6px; background:transparent; font-weight:600; color:var(--text-5); font-size:0.72rem; transition:all 0.2s; white-space:nowrap;">목표 달성률</button>
                     <button class="tab-btn" id="tab-percent" onclick="switchAdminTab('percent')" style="padding:10px 4px; border:none; border-radius:6px; background:transparent; font-weight:600; color:var(--text-5); font-size:0.72rem; transition:all 0.2s; white-space:nowrap;">퍼센트</button>
+                    <button class="tab-btn" id="tab-target" onclick="switchAdminTab('target')" style="padding:10px 4px; border:none; border-radius:6px; background:transparent; font-weight:600; color:var(--text-5); font-size:0.72rem; transition:all 0.2s; white-space:nowrap;">목표 달성률</button>
+                    <button class="tab-btn" id="tab-youth" onclick="switchAdminTab('youth')" style="padding:10px 4px; border:none; border-radius:6px; background:transparent; font-weight:600; color:var(--text-5); font-size:0.72rem; transition:all 0.2s; white-space:nowrap;">자립청년</button>
+                    <button class="tab-btn" id="tab-ltc" onclick="switchAdminTab('ltc')" style="padding:10px 4px; border:none; border-radius:6px; background:transparent; font-weight:600; color:var(--text-5); font-size:0.72rem; transition:all 0.2s; white-space:nowrap;">장기요양</button>
                 </div>
                 <div class="admin-group" data-cat="file" style="display:none; grid-template-columns: repeat(4, 1fr); gap:6px; padding:4px; background:var(--surface-3); border-radius:10px;">
                     <button class="tab-btn" id="tab-mosaic" onclick="switchAdminTab('mosaic')" style="padding:10px 4px; border:none; border-radius:6px; background:transparent; font-weight:600; color:var(--text-5); font-size:0.72rem; transition:all 0.2s; white-space:nowrap;">사진 가리기</button>
@@ -3016,6 +3016,18 @@ try {
                     .btn-tool-active { background:#3b82f6; color:white; }
                     .btn-tool { background:var(--surface-4); color:var(--text-4); }
                     .btn-tool:hover { background:#cbd5e1; }
+                    .mos-panel { width:100%; margin-top:12px; background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:12px 14px; display:flex; flex-direction:column; gap:12px; }
+                    .mos-row { display:flex; align-items:center; gap:10px; }
+                    .mos-label { flex:none; width:68px; font-size:0.8rem; font-weight:700; color:var(--text-3); }
+                    .mos-range { flex:1; min-width:0; accent-color:#2563eb; height:28px; }
+                    .mos-val { flex:none; min-width:30px; text-align:right; font-size:0.8rem; font-weight:800; color:#2563eb; }
+                    .mos-swatches { flex:1; display:flex; flex-wrap:wrap; gap:8px; }
+                    .mos-sw { width:28px; height:28px; border-radius:50%; border:2px solid var(--border-strong); cursor:pointer; padding:0; position:relative; box-shadow:inset 0 0 0 2px var(--surface); }
+                    .mos-sw.active { border-color:#2563eb; box-shadow:inset 0 0 0 2px var(--surface), 0 0 0 2px #93c5fd; }
+                    .mos-sw-custom { display:flex; align-items:center; justify-content:center; font-size:0.85rem; background:var(--surface-3); overflow:hidden; }
+                    .mos-sw-custom input { position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; height:100%; border:none; padding:0; }
+                    .mos-hint { font-size:0.7rem; color:var(--text-6); text-align:center; }
+                    .mos-cursor { position:absolute; border:2px solid rgba(255,255,255,0.95); outline:1px solid rgba(17,24,39,0.6); border-radius:50%; pointer-events:none; transform:translate(-50%,-50%); display:none; z-index:2; }
                 </style>
                 <div class="compressor-container step-card beautiful-card" style="padding:20px; border-color:#93c5fd;">
                     <h4 style="color:#1d4ed8; font-weight:800; font-size:1.1rem; margin-bottom:8px; text-align:center;">🔲 사진 모자이크 (개인정보 가리기)</h4>
@@ -3031,21 +3043,41 @@ try {
                     <div class="mosaic-editor" id="mosaicEditor">
                         <div class="canvas-wrapper" id="mosaicCanvasWrapper">
                             <canvas id="mosaicCanvas"></canvas>
+                            <div class="mos-cursor" id="mosCursor"></div>
                         </div>
                         
                         <div class="mosaic-toolbar">
                             <div style="width:100%; text-align:center; margin-bottom:4px; font-size:0.85rem; font-weight:700; color:var(--text-4);">가리기 방식</div>
                             <button class="btn-tool" id="btnMosModeBlack" style="background:#111827; color:white;">■ 완전가림</button>
-                            <button class="btn-tool" id="btnMosModePixel">모자이크(강)</button>
+                            <button class="btn-tool" id="btnMosModePixel">모자이크</button>
                             <button class="btn-tool" id="btnMosModeBlur">블러</button>
                         </div>
                         <div style="width:100%; text-align:center; font-size:0.72rem; color:#dc2626; font-weight:600; margin-top:6px;">🔒 주민번호·실명 등은 <b>완전가림</b>을 쓰세요 (블러·모자이크는 복원 위험)</div>
-                        <div class="mosaic-toolbar" style="margin-top:10px;">
-                            <div style="width:100%; text-align:center; margin-bottom:4px; font-size:0.85rem; font-weight:700; color:var(--text-4);">브러시 굵기</div>
-                            <button class="btn-tool" id="btnMosSizeS">얇게</button>
-                            <button class="btn-tool" id="btnMosSizeM" style="background:#3b82f6; color:white;">보통</button>
-                            <button class="btn-tool" id="btnMosSizeL">두껍게</button>
-                            <button class="btn-tool" id="btnMosSizeXL">아주 두껍게</button>
+
+                        <div class="mos-panel">
+                            <div class="mos-row">
+                                <span class="mos-label">브러시 굵기</span>
+                                <input type="range" id="mosSize" min="4" max="120" value="25" class="mos-range">
+                                <span class="mos-val" id="mosSizeVal">25</span>
+                            </div>
+                            <div class="mos-row" id="mosStrengthRow" style="display:none;">
+                                <span class="mos-label" id="mosStrengthLabel">블록 크기</span>
+                                <input type="range" id="mosStrength" min="1" max="10" value="5" class="mos-range">
+                                <span class="mos-val" id="mosStrengthVal">5</span>
+                            </div>
+                            <div class="mos-row" id="mosColorRow">
+                                <span class="mos-label">가림 색</span>
+                                <div class="mos-swatches" id="mosSwatches">
+                                    <button class="mos-sw active" data-color="#111827" style="background:#111827;" aria-label="검정"></button>
+                                    <button class="mos-sw" data-color="#ffffff" style="background:#ffffff;" aria-label="흰색"></button>
+                                    <button class="mos-sw" data-color="#6b7280" style="background:#6b7280;" aria-label="회색"></button>
+                                    <button class="mos-sw" data-color="#2563eb" style="background:#2563eb;" aria-label="파랑"></button>
+                                    <button class="mos-sw" data-color="#dc2626" style="background:#dc2626;" aria-label="빨강"></button>
+                                    <button class="mos-sw" data-color="#facc15" style="background:#facc15;" aria-label="노랑"></button>
+                                    <label class="mos-sw mos-sw-custom" aria-label="직접 고르기">🎨<input type="color" id="mosColor" value="#111827"></label>
+                                </div>
+                            </div>
+                            <div class="mos-hint">💡 PC에선 사진 위에서 마우스 휠로 굵기를 바꿀 수 있어요</div>
                         </div>
 
                         <div class="mosaic-toolbar" style="margin-top:12px;">
@@ -7730,10 +7762,16 @@ try {
         const btnBlur = document.getElementById('btnMosModeBlur');
         const btnPixel = document.getElementById('btnMosModePixel');
         const btnBlack = document.getElementById('btnMosModeBlack');
-        const btnSizeS = document.getElementById('btnMosSizeS');
-        const btnSizeM = document.getElementById('btnMosSizeM');
-        const btnSizeL = document.getElementById('btnMosSizeL');
-        const btnSizeXL = document.getElementById('btnMosSizeXL');
+        const sizeInput = document.getElementById('mosSize');
+        const sizeVal = document.getElementById('mosSizeVal');
+        const strengthRow = document.getElementById('mosStrengthRow');
+        const strengthInput = document.getElementById('mosStrength');
+        const strengthVal = document.getElementById('mosStrengthVal');
+        const strengthLabel = document.getElementById('mosStrengthLabel');
+        const colorRow = document.getElementById('mosColorRow');
+        const colorInput = document.getElementById('mosColor');
+        const swatches = document.querySelectorAll('#mosSwatches .mos-sw[data-color]');
+        const cursorEl = document.getElementById('mosCursor');
         const btnUndo = document.getElementById('btnMosUndo');
         const btnClear = document.getElementById('btnMosClear');
         const btnSave = document.getElementById('btnMosSave');
@@ -7747,8 +7785,12 @@ try {
         let lastX = 0, lastY = 0;
         let mode = 'black'; // 'black'(완전가림) | 'pixel' | 'blur'
         let brushSize = 25;
+        let strength = 5;          // 모자이크 블록 크기 / 블러 흐림 정도 (1~10)
+        let coverColor = '#111827'; // 완전가림 색
         let history = [];
         let blurredCanvas = null;
+        let pixelCanvas = null;
+        let effectDirty = false;    // 강도를 바꾸면 다음 붓질 전에 효과 캔버스를 다시 만든다
 
         dropZone.addEventListener('click', () => fileInput.click());
         dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
@@ -7790,7 +7832,7 @@ try {
             
             ctx.drawImage(originalImg, 0, 0, width, height);
             
-            blurredCanvas = createBlurredCanvas(width, height);
+            buildEffectCanvases();
 
             saveHistory();
         }
@@ -7802,6 +7844,30 @@ try {
             return t.filter === 'blur(2px)';
         }
 
+        function buildEffectCanvases() {
+            blurredCanvas = createBlurredCanvas(canvas.width, canvas.height);
+            pixelCanvas = createPixelCanvas(canvas.width, canvas.height);
+            effectDirty = false;
+        }
+
+        // 모자이크: 이미지 전체를 같은 격자로 픽셀화해 두고, 붓질한 부분만 오려 붙인다
+        function createPixelCanvas(width, height) {
+            const block = 4 + strength * 4; // 강도 1 → 8px, 5 → 24px, 10 → 44px
+            const small = document.createElement('canvas');
+            small.width = Math.max(1, Math.round(width / block));
+            small.height = Math.max(1, Math.round(height / block));
+            const sctx = small.getContext('2d');
+            sctx.imageSmoothingEnabled = true;
+            sctx.drawImage(originalImg, 0, 0, small.width, small.height);
+            const c = document.createElement('canvas');
+            c.width = width;
+            c.height = height;
+            const cctx = c.getContext('2d');
+            cctx.imageSmoothingEnabled = false;
+            cctx.drawImage(small, 0, 0, small.width, small.height, 0, 0, width, height);
+            return c;
+        }
+
         function createBlurredCanvas(width, height) {
             const c = document.createElement('canvas');
             c.width = width;
@@ -7809,8 +7875,8 @@ try {
             const bctx = c.getContext('2d');
 
             if (supportsCanvasFilter()) {
-                // 강한 블러: 이미지 크기 비례 반경(최소 16px) + 다중 패스로 텍스트 판독 방지
-                const radius = Math.max(16, Math.round(width / 40));
+                // 블러 반경: 이미지 크기 비례 기본값(최소 16px)에 강도(1~10, 기본 5)를 곱함
+                const radius = Math.max(3, Math.round(Math.max(16, width / 40) * strength / 5));
                 bctx.filter = 'blur(' + radius + 'px)';
                 for (let i = 0; i < 3; i++) bctx.drawImage(originalImg, 0, 0, width, height);
                 bctx.filter = 'none';
@@ -7824,7 +7890,8 @@ try {
             tmp.getContext('2d').drawImage(originalImg, 0, 0, width, height);
             let w = width, h = height;
 
-            for (let i = 0; i < 5; i++) { // 반씩 5회 축소 (≈ 1/32) — 훨씬 강한 블러
+            const passes = Math.min(8, Math.max(2, Math.round(strength * 0.6) + 2)); // 강도 5 → 5회(≈1/32)
+            for (let i = 0; i < passes; i++) {
                 const nw = Math.max(1, Math.floor(w / 2));
                 const nh = Math.max(1, Math.floor(h / 2));
                 const next = document.createElement('canvas');
@@ -7870,6 +7937,7 @@ try {
 
         function startDrawing(e) {
             e.preventDefault();
+            if (effectDirty) buildEffectCanvases();
             isDrawing = true;
             const pos = getMousePos(e);
             lastX = pos.x;
@@ -7912,33 +7980,73 @@ try {
 
             ctx.filter = 'none';
             if (mode === 'black') {
-                // 완전가림: 불투명 검정으로 덮음(복원 불가) — 원 클립 범위를 꽉 채움
-                ctx.fillStyle = '#111827';
+                // 완전가림: 고른 색으로 불투명하게 덮음(복원 불가) — 원 클립 범위를 꽉 채움
+                ctx.fillStyle = coverColor;
                 ctx.fillRect(x - brushSize, y - brushSize, brushSize * 2, brushSize * 2);
             } else if (mode === 'blur') {
-                if (blurredCanvas) {
-                    ctx.drawImage(blurredCanvas, 0, 0, canvas.width, canvas.height);
-                }
+                if (blurredCanvas) ctx.drawImage(blurredCanvas, 0, 0, canvas.width, canvas.height);
             } else {
-                // 모자이크(강): 블록을 크게 하여 글자 판독 방지
-                ctx.imageSmoothingEnabled = false;
-                const srcX = Math.max(0, x - brushSize);
-                const srcY = Math.max(0, y - brushSize);
-                const size = brushSize * 2;
-
-                const off = document.createElement('canvas');
-                off.width = Math.max(1, Math.round(size / 22));
-                off.height = Math.max(1, Math.round(size / 22));
-                const octx = off.getContext('2d');
-                octx.drawImage(originalImg, srcX * (originalImg.width / canvas.width), srcY * (originalImg.height / canvas.height), size * (originalImg.width / canvas.width), size * (originalImg.height / canvas.height), 0, 0, off.width, off.height);
-
-                ctx.filter = 'none';
-                ctx.drawImage(off, 0, 0, off.width, off.height, srcX, srcY, size, size);
+                if (pixelCanvas) ctx.drawImage(pixelCanvas, 0, 0, canvas.width, canvas.height);
             }
             ctx.restore();
         }
 
         canvas.style.touchAction = 'none'; // Ensure mobile doesn't scroll when drawing
+
+        // 브러시 크기 미리보기 원 (화면 표시 배율에 맞춰 그림)
+        function showCursor(clientX, clientY) {
+            if (!cursorEl || !canvas.width) return;
+            const rect = canvas.getBoundingClientRect();
+            const d = (brushSize * 2) * (rect.width / canvas.width);
+            cursorEl.style.width = d + 'px';
+            cursorEl.style.height = d + 'px';
+            cursorEl.style.left = (clientX - rect.left) + 'px';
+            cursorEl.style.top = (clientY - rect.top) + 'px';
+            cursorEl.style.display = 'block';
+        }
+        let previewTimer = null;
+        function previewSizeAtCenter() {
+            const rect = canvas.getBoundingClientRect();
+            showCursor(rect.left + rect.width / 2, rect.top + rect.height / 2);
+            clearTimeout(previewTimer);
+            previewTimer = setTimeout(() => { if (cursorEl) cursorEl.style.display = 'none'; }, 700);
+        }
+        canvas.addEventListener('mousemove', (e) => showCursor(e.clientX, e.clientY));
+        canvas.addEventListener('mouseleave', () => { if (cursorEl) cursorEl.style.display = 'none'; });
+
+        function setBrushSize(v) {
+            brushSize = Math.max(4, Math.min(120, Math.round(v)));
+            if (sizeInput) sizeInput.value = brushSize;
+            if (sizeVal) sizeVal.textContent = brushSize;
+        }
+        if (sizeInput) sizeInput.addEventListener('input', () => { setBrushSize(+sizeInput.value); previewSizeAtCenter(); });
+        // PC: 사진 위에서 마우스 휠로 굵기 조절
+        canvas.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            setBrushSize(brushSize + (e.deltaY < 0 ? 3 : -3));
+            showCursor(e.clientX, e.clientY);
+        }, { passive: false });
+
+        if (strengthInput) strengthInput.addEventListener('input', () => {
+            strength = +strengthInput.value;
+            if (strengthVal) strengthVal.textContent = strength;
+            effectDirty = true;
+        });
+
+        function setCoverColor(c) {
+            coverColor = c;
+            swatches.forEach(sw => sw.classList.toggle('active', sw.dataset.color.toLowerCase() === c.toLowerCase()));
+            if (colorInput && colorInput.value.toLowerCase() !== c.toLowerCase()) colorInput.value = c;
+        }
+        swatches.forEach(sw => sw.addEventListener('click', () => setCoverColor(sw.dataset.color)));
+        if (colorInput) colorInput.addEventListener('input', () => setCoverColor(colorInput.value));
+
+        // 모드에 맞는 설정만 보이기: 완전가림 → 색, 모자이크·블러 → 강도
+        function syncModePanel() {
+            if (colorRow) colorRow.style.display = mode === 'black' ? 'flex' : 'none';
+            if (strengthRow) strengthRow.style.display = mode === 'black' ? 'none' : 'flex';
+            if (strengthLabel) strengthLabel.textContent = mode === 'blur' ? '흐림 정도' : '블록 크기';
+        }
         
         canvas.addEventListener('mousedown', startDrawing);
         canvas.addEventListener('mousemove', draw);
@@ -7949,15 +8057,6 @@ try {
         window.addEventListener('touchend', stopDrawing);
         window.addEventListener('touchcancel', stopDrawing);
 
-        const setToolActive = (btn, group) => {
-            group.forEach(b => {
-                b.style.background = 'var(--surface-4)';
-                b.style.color = 'var(--text-4)';
-            });
-            btn.style.background = '#3b82f6';
-            btn.style.color = 'white';
-        };
-
         const modeGroup = [btnBlack, btnPixel, btnBlur];
         const setModeActive = (btn) => {
             modeGroup.forEach(b => { if (!b) return; b.style.background = 'var(--surface-4)'; b.style.color = 'var(--text-4)'; });
@@ -7965,15 +8064,10 @@ try {
             btn.style.background = (btn === btnBlack) ? '#111827' : '#3b82f6';
             btn.style.color = 'white';
         };
-        if (btnBlack) btnBlack.onclick = () => { mode = 'black'; setModeActive(btnBlack); };
-        if (btnPixel) btnPixel.onclick = () => { mode = 'pixel'; setModeActive(btnPixel); };
-        if (btnBlur) btnBlur.onclick = () => { mode = 'blur'; setModeActive(btnBlur); };
-
-        const sizeGroup = [btnSizeS, btnSizeM, btnSizeL, btnSizeXL];
-        btnSizeS.onclick = () => { brushSize = 10; setToolActive(btnSizeS, sizeGroup); };
-        btnSizeM.onclick = () => { brushSize = 25; setToolActive(btnSizeM, sizeGroup); };
-        btnSizeL.onclick = () => { brushSize = 45; setToolActive(btnSizeL, sizeGroup); };
-        if (btnSizeXL) btnSizeXL.onclick = () => { brushSize = 75; setToolActive(btnSizeXL, sizeGroup); };
+        if (btnBlack) btnBlack.onclick = () => { mode = 'black'; setModeActive(btnBlack); syncModePanel(); };
+        if (btnPixel) btnPixel.onclick = () => { mode = 'pixel'; setModeActive(btnPixel); syncModePanel(); };
+        if (btnBlur) btnBlur.onclick = () => { mode = 'blur'; setModeActive(btnBlur); syncModePanel(); };
+        syncModePanel();
 
         btnUndo.onclick = () => {
             if (history.length > 1) {
