@@ -6427,6 +6427,7 @@ try {
             'install':      () => window.showPWAInstallGuide && window.showPWAInstallGuide(),
             'bingo':        () => window.showPlaygroundContent && window.showPlaygroundContent('bingo'),
             'quiz':         () => window.showPlaygroundContent && window.showPlaygroundContent('quiz'),
+            'balance':      () => window.showPlaygroundContent && window.showPlaygroundContent('balance'),
         };
 
         function dispatchHash(hash) {
@@ -6498,6 +6499,11 @@ try {
             if (type === 'bingo') {
                 pgShowAllSteps('bingo');
                 if (window.initBingoGame) window.initBingoGame();
+                return;
+            }
+            if (type === 'balance') {
+                pgShowAllSteps('balance');
+                if (window.initBalanceGame) window.initBalanceGame();
                 return;
             }
 
@@ -7017,7 +7023,7 @@ try {
         hero: { emoji: "🦸", name: "현장의 영웅형", sub: "발이 닳도록 뛰는 사람", color: "#FF6B6B", color2: "#FF3F3F", bg: "linear-gradient(135deg,#FF6B6B,#FF8E8E)", card: "#FFF5F5", desc: "책상보다 현장이 편하고 클라이언트 얼굴을 직접 봐야 직성이 풀리는 타입. 포기하지 않는 끈기가 무기예요.", strengths: ["클라이언트 신뢰 No.1", "위기 대처 탁월", "발로 뛰는 자원발굴"], cautions: ["번아웃 위험 1위", "기록 미루는 경향", "경계 설정 어려움"], peer: "저 선생님한테 맡기면 진짜 다 해결돼", message: "오늘도 누군가의 세상을 바꿨을 거예요 🌟" },
         recorder: { emoji: "📋", name: "기록의 신형", sub: "이 세상 모든 서류는 내가 지킨다", color: "#4ECDC4", color2: "#2BADA4", bg: "linear-gradient(135deg,#4ECDC4,#6EE7E2)", card: "#F0FFFE", desc: "기록 하나도 허투루 안 쓰고 지침은 줄줄이 외우는 타입. 팀의 든든한 버팀목이에요.", strengths: ["꼼꼼한 업무 처리", "팀 내 표준 제시", "감사·점검 무결"], cautions: ["완벽주의 번아웃", "유연성 부족", "높은 기준으로 마찰"], peer: "저 선생님 기록은 진짜 교과서야", message: "완벽하지 않아도 괜찮아요, 오늘도 충분했어요 💚" },
         empath: { emoji: "💛", name: "공감 마스터형", sub: "모두의 감정 쓰레기통", color: "#F5A623", color2: "#D88900", bg: "linear-gradient(135deg,#F5A623,#F7C15E)", card: "#FFFDF0", desc: "클라이언트든 동료든 일단 다 들어주는 타입. 사무실의 정서적 안전망 역할을 자연스럽게 맡고 있어요.", strengths: ["팀 분위기 메이커", "라포 형성 최강", "감정 민감도 강점"], cautions: ["감정 소진 위험", "내 감정 돌봄 부족", "거절이 어려움"], peer: "저 선생님한테 얘기하면 왜인지 마음이 편해져", message: "남의 마음을 챙기는 당신, 오늘은 내 마음도 챙겨요 🌼" },
-        analyst: { emoji: "📊", name: "데이터 전도사형", sub: "근거 없으면 말도 않는다", color: "#6C63FF", color2: "#4940D4", bg: "linear-gradient(135deg,#6C63FF,#9B94FF)", card: "#F5F4FF", desc: "통계와 지침으로 무장한 근거기반 실천의 달인. 회의에서 데이터 꺼내드는 순간 팀 분위기가 바뀌는 타입.", strengths: ["보고서 완성도 최상", "정책 변화 빠른 대응", "팀 전문성 향상"], cautions: ["숫자에 치우쳐 사람 잊음", "타이밍 놓치는 경향", "융통성 부족"], peer: "저 선생님이 있으면 발표 준비 걱정 없어", message: "데이터 뒤에 있는 한 사람의 이야기도 기억해요 💙" },
+        analyst: { emoji: "📊", name: "데이터 전도사형", sub: "근거 없으면 말도 않는다", color: "#F59E0B", color2: "#4940D4", bg: "linear-gradient(135deg,#F59E0B,#9B94FF)", card: "#F5F4FF", desc: "통계와 지침으로 무장한 근거기반 실천의 달인. 회의에서 데이터 꺼내드는 순간 팀 분위기가 바뀌는 타입.", strengths: ["보고서 완성도 최상", "정책 변화 빠른 대응", "팀 전문성 향상"], cautions: ["숫자에 치우쳐 사람 잊음", "타이밍 놓치는 경향", "융통성 부족"], peer: "저 선생님이 있으면 발표 준비 걱정 없어", message: "데이터 뒤에 있는 한 사람의 이야기도 기억해요 💙" },
         creator: { emoji: "🎨", name: "프로그램 크리에이터형", sub: "사업계획서 쓸 때 눈이 빛난다", color: "#FF9A3C", color2: "#E07010", bg: "linear-gradient(135deg,#FF9A3C,#FFB76B)", card: "#FFF8F0", desc: "없는 사업도 만들어내고 아이디어가 넘쳐 주체를 못 하는 타입. 기획서만 보면 손이 근질근질해요.", strengths: ["신규 사업 기획 탁월", "공모사업 강점", "팀 활력 담당"], cautions: ["마무리가 약한 경향", "행정 업무 지루함", "너무 많이 벌여놓음"], peer: "저 선생님 아이디어는 진짜 어디서 나오는 거야", message: "오늘의 아이디어가 내일의 누군가를 구할 거예요 🧡" },
         networker: { emoji: "🤝", name: "네트워크 달인형", sub: "모르는 사람이 없다", color: "#26C6DA", color2: "#0097A7", bg: "linear-gradient(135deg,#26C6DA,#4DD0E1)", card: "#F0FEFF", desc: "지역사회 자원 연결의 달인. 명함 한 장으로 모든 걸 해결하고 어디서든 이미 아는 사람이 있는 타입.", strengths: ["자원 연계 최강", "다기관 협력 능숙", "정보 수집 1위"], cautions: ["관계 유지 에너지 소모", "연계에만 치우침", "경계가 모호해짐"], peer: "저 선생님한테 물어보면 어디든 연결해줘", message: "당신이 이은 연결고리가 누군가의 생명줄이에요 🌊" },
         navigator: { emoji: "🧭", name: "시스템 내비게이터형", sub: "복지 자원의 살아있는 지도", color: "#8E44AD", color2: "#7D3C98", bg: "linear-gradient(135deg,#8E44AD,#BB8FCE)", card: "#F8F0FC", desc: "어떤 어려운 상황이라도 적절한 제도와 자원을 찾아내 길을 안내하는 타입. 복잡한 복지 체계의 해결사에요.", strengths: ["정보 검색 속도 No.1", "유관기관 협력 구축", "전문적 정보 가공"], cautions: ["지침 업데이트 강박", "실행보다 정보 과잉", "설명이 너무 길어짐"], peer: "선생님은 모르는 정보가 없는 것 같아", message: "당신의 안내가 누군가의 어두운 길에 등불이 됩니다 💜" },
@@ -7087,8 +7093,199 @@ try {
     };
 
     // 모든 스텝(메뉴 포함)을 통합 관리하는 함수
+    /* ============================================================
+       사복 밸런스 게임 (15단계)
+       - 공유 링크에 내 답을 담아(?bg=ABBA...&bgn=닉네임) 친구가 풀면 일치율을 보여준다 (서버 저장 없음)
+       - 일부 문항에만 성향 태그(chill=워라밸 / passion=열정)를 달아 결과 유형을 정한다
+       ============================================================ */
+    const BALANCE_QS = [
+        { a: ['🍻', '회식 1차 끝나자마자 칼퇴근'], b: ['🎤', '2차 노래방까지 분위기 메이커'], tag: ['chill', 'passion'] },
+        { a: ['💰', '연봉 300만 원 인상'], b: ['🌴', '주 4.5일제'], tag: ['passion', 'chill'] },
+        { a: ['📑', '평생 결과보고서만 쓰기'], b: ['🧮', '평생 예산 결산만 하기'] },
+        { a: ['🌙', '밤 10시 팀장님 카톡 알림'], b: ['☀️', '토요일 아침 9시 행사 출근 문자'] },
+        { a: ['🎉', '참여자 30명 왁자지껄 프로그램'], b: ['🍵', '참여자 3명 오붓한 프로그램'], tag: ['passion', 'chill'] },
+        { a: ['🧑‍🎓', '실습생 5명 동시 지도'], b: ['🗂️', '하루 종일 혼자 서류 정리'], tag: ['passion', 'chill'] },
+        { a: ['🔁', '기안 반려 5번 받고 오늘 결재'], b: ['⏳', '반려 없이 결재 대기 2주'] },
+        { a: ['🏢', '한 기관에서 20년 근속'], b: ['🧳', '2년마다 새 기관 도전'] },
+        { a: ['📊', '엑셀 함수 마스터'], b: ['📝', '한글(HWP) 표 편집 마스터'] },
+        { a: ['🌇', '칼퇴하고 저녁 있는 삶'], b: ['🏆', '야근해도 사업 성과 1등 기관'], tag: ['chill', 'passion'] },
+        { a: ['📞', '후원자 감사 전화 100통'], b: ['📦', '후원물품 창고 대청소'] },
+        { a: ['☎️', '사무실에서 민원 전화 10통'], b: ['🚗', '가정방문 10곳 돌기'], tag: ['chill', 'passion'] },
+        { a: ['📱', '휴가 중에도 업무 카톡 확인'], b: ['✈️', '휴가 땐 무조건 비행기 모드'], tag: ['passion', 'chill'] },
+        { a: ['✍️', '사업계획서 혼자 다 쓰기'], b: ['👥', '5명이 같이 쓰기 (의견 조율 지옥)'] },
+        { a: ['🔄', '다시 태어나도 사회복지사'], b: ['🏠', '다음 생엔 건물주'], tag: ['passion', 'chill'] },
+    ];
+    const BALANCE_TYPES = {
+        chill:   { emoji: '🛋️', name: '워라밸 수호 사복쌤', desc: '지치지 않아야 오래 도울 수 있다는 걸 아는 현명한 타입. 칼퇴는 권리, 휴가는 신성해요!' },
+        balance: { emoji: '⚖️', name: '실속 균형 사복쌤', desc: '일도 삶도 적당히, 상황 따라 유연하게. 어느 팀에 가도 잘 맞는 든든한 타입이에요.' },
+        passion: { emoji: '🔥', name: '현장 열정 만렙 사복쌤', desc: '몸은 피곤해도 마음은 늘 현장에. 동료들이 기대는 버팀목이지만, 가끔은 꼭 쉬어가요!' },
+    };
+    const bgState = { idx: 0, answers: [], friend: null, friendName: '' };
+
+    function bgEsc(t) { const d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
+
+    // 공유 링크로 들어온 경우: 친구 답(15자 A/B)과 닉네임을 읽어 둔다
+    function bgReadFriendFromUrl() {
+        try {
+            const q = new URLSearchParams(window.location.search);
+            const bg = (q.get('bg') || '').toUpperCase();
+            if (/^[AB]{15}$/.test(bg)) {
+                bgState.friend = bg.split('');
+                bgState.friendName = (q.get('bgn') || '동료').slice(0, 12);
+            }
+        } catch (e) { /* noop */ }
+    }
+
+    window.initBalanceGame = function () {
+        bgReadFriendFromUrl();
+        bgState.idx = 0;
+        bgState.answers = [];
+        bgRenderIntro();
+    };
+
+    function bgRoot() { return document.getElementById('pg-step-balance'); }
+
+    function bgRenderIntro() {
+        const friendLine = bgState.friend
+            ? `<div style="background:#fff7d6; border:1px solid #fde68a; color:#92400e; border-radius:14px; padding:12px 14px; font-size:13.5px; font-weight:700; margin-bottom:16px;">💌 <b>${bgEsc(bgState.friendName)}</b>님이 도전장을 보냈어요!<br><span style="font-weight:500;">다 풀면 둘의 일치율을 알려드려요</span></div>`
+            : '';
+        bgRoot().innerHTML = `
+            <div style="text-align:center; padding:18px 0 8px;">
+                <div style="font-size:54px; margin-bottom:6px;">⚖️</div>
+                <div style="font-size:11px; letter-spacing:3px; color:var(--text-6); font-weight:700; margin-bottom:6px;">BALANCE GAME</div>
+                <h2 style="font-size:24px; font-weight:900; color:var(--text-1); line-height:1.35; margin-bottom:8px;">사복 밸런스 게임</h2>
+                <p style="font-size:14px; color:var(--text-5); line-height:1.6; margin-bottom:20px;">둘 중 <b>하나만</b> 골라야 한다면?<br>15단계 극한 선택, 고민은 짧게! ⏱</p>
+                ${friendLine}
+                <button onclick="bgStart()" style="width:100%; border:none; border-radius:16px; padding:17px; font-size:17px; font-weight:900; color:#fff; background:linear-gradient(135deg,#2563eb,#0c9488); box-shadow:0 8px 20px rgba(37,99,235,0.25); cursor:pointer; font-family:inherit;">시작하기 →</button>
+                <button onclick="pgShowAllSteps('menu')" style="margin-top:12px; background:none; border:none; color:var(--text-5); font-size:13px; cursor:pointer; font-family:inherit;">← 놀이터로</button>
+            </div>`;
+        pgResetScroll();
+    }
+
+    window.bgStart = function () { bgState.idx = 0; bgState.answers = []; bgRenderQuestion(); };
+
+    function bgRenderQuestion() {
+        const i = bgState.idx, q = BALANCE_QS[i], n = BALANCE_QS.length;
+        const opt = (key, o, color) => `
+            <button onclick="bgPick('${key}')" class="bg-opt" style="width:100%; min-height:120px; border:2px solid ${color}33; background:${color}0d; border-radius:20px; padding:18px 16px; cursor:pointer; font-family:inherit; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; transition:transform .12s, background .15s;">
+                <span style="font-size:38px; line-height:1;">${o[0]}</span>
+                <span style="font-size:17px; font-weight:900; color:var(--text-1); line-height:1.4; word-break:keep-all; text-align:center;">${bgEsc(o[1])}</span>
+            </button>`;
+        bgRoot().innerHTML = `
+            <div style="padding-top:6px;">
+                <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
+                    <button onclick="${i > 0 ? 'bgPrev()' : 'bgRenderIntroBack()'}" style="background:none; border:none; color:var(--text-5); font-size:13px; font-weight:700; cursor:pointer; padding:4px 0; font-family:inherit;">← ${i > 0 ? '이전' : '처음'}</button>
+                    <span style="font-size:13px; font-weight:900; color:#2563eb;">${i + 1} / ${n}</span>
+                </div>
+                <div style="height:8px; background:var(--surface-3); border-radius:999px; overflow:hidden; margin-bottom:22px;">
+                    <div style="height:100%; width:${Math.round((i / n) * 100)}%; background:linear-gradient(90deg,#2563eb,#0c9488); border-radius:999px; transition:width .3s;"></div>
+                </div>
+                <div style="text-align:center; font-size:15px; font-weight:800; color:var(--text-4); margin-bottom:16px;">둘 중 하나만 골라야 한다면? 🤔</div>
+                ${opt('A', q.a, '#2563eb')}
+                <div style="text-align:center; margin:10px 0; font-size:18px; font-weight:900; color:#e05a3a;">VS</div>
+                ${opt('B', q.b, '#0c9488')}
+            </div>`;
+        pgResetScroll();
+    }
+    window.bgRenderIntroBack = function () { bgRenderIntro(); };
+
+    window.bgPick = function (key) {
+        const btns = bgRoot().querySelectorAll('.bg-opt');
+        const chosen = btns[key === 'A' ? 0 : 1];
+        if (chosen) { chosen.style.transform = 'scale(0.97)'; chosen.style.background = key === 'A' ? '#dbeafe' : '#ccfbf1'; }
+        btns.forEach(b => { b.disabled = true; });
+        bgState.answers[bgState.idx] = key;
+        setTimeout(() => {
+            bgState.idx++;
+            if (bgState.idx >= BALANCE_QS.length) bgRenderResult();
+            else bgRenderQuestion();
+        }, 220);
+    };
+    window.bgPrev = function () { if (bgState.idx > 0) { bgState.idx--; bgRenderQuestion(); } };
+
+    function bgResultType() {
+        let chill = 0, tagged = 0;
+        BALANCE_QS.forEach((q, i) => {
+            if (!q.tag) return;
+            tagged++;
+            if (q.tag[bgState.answers[i] === 'A' ? 0 : 1] === 'chill') chill++;
+        });
+        const r = chill / tagged;
+        return r >= 0.7 ? 'chill' : (r <= 0.3 ? 'passion' : 'balance');
+    }
+
+    function bgShareUrl() {
+        const name = (localStorage.getItem('saboks_anonymous_name') || '사복쌤').slice(0, 12);
+        return location.origin + location.pathname + '?bg=' + bgState.answers.join('') + '&bgn=' + encodeURIComponent(name) + '#playground/balance';
+    }
+
+    function bgRenderResult() {
+        const t = BALANCE_TYPES[bgResultType()];
+        let compare = '';
+        if (bgState.friend) {
+            const same = bgState.answers.filter((a, i) => a === bgState.friend[i]).length;
+            const pct = Math.round(same / BALANCE_QS.length * 100);
+            const msg = pct >= 80 ? '거의 영혼의 단짝! 같은 팀 하세요 🤝' : pct >= 60 ? '꽤 잘 맞는 사이! 회식 메뉴는 금방 정하겠네요 🍽️' : pct >= 40 ? '반반! 서로 다른 매력이 있어요 🙂' : '정반대 스타일! 그래서 더 좋은 팀이 될지도 😆';
+            const diffs = BALANCE_QS.map((q, i) => ({ q, i })).filter(x => bgState.answers[x.i] !== bgState.friend[x.i]).slice(0, 3)
+                .map(x => `<li style="margin:6px 0;">나: <b>${bgEsc((bgState.answers[x.i] === 'A' ? x.q.a : x.q.b)[1])}</b><br><span style="color:var(--text-5);">${bgEsc(bgState.friendName)}: ${bgEsc((bgState.friend[x.i] === 'A' ? x.q.a : x.q.b)[1])}</span></li>`).join('');
+            compare = `
+                <div style="background:#fff7d6; border:1px solid #fde68a; border-radius:20px; padding:20px; margin-bottom:14px; text-align:center;">
+                    <div style="font-size:13px; font-weight:800; color:#92400e; margin-bottom:4px;">${bgEsc(bgState.friendName)}님과의 일치율</div>
+                    <div style="font-size:52px; font-weight:900; color:#b45309; line-height:1.1;">${pct}%</div>
+                    <div style="font-size:14px; font-weight:700; color:#78350f; margin-top:6px;">${msg}</div>
+                    ${diffs ? `<ul style="list-style:none; text-align:left; font-size:13px; margin-top:14px; padding-top:12px; border-top:1px dashed #fcd34d; line-height:1.5;"><li style="font-weight:800; color:#92400e; margin-bottom:4px;">이건 서로 달랐어요</li>${diffs}</ul>` : ''}
+                </div>`;
+        }
+        const picks = BALANCE_QS.map((q, i) => {
+            const o = bgState.answers[i] === 'A' ? q.a : q.b;
+            return `<div style="display:flex; gap:10px; align-items:center; padding:8px 0; border-bottom:1px solid var(--border); font-size:13.5px;"><span style="flex:none; width:22px; font-weight:900; color:#2563eb;">${i + 1}</span><span style="flex:none;">${o[0]}</span><span style="color:var(--text-2); font-weight:700; word-break:keep-all;">${bgEsc(o[1])}</span></div>`;
+        }).join('');
+        bgRoot().innerHTML = `
+            <div style="padding-top:8px;">
+                ${compare}
+                <div style="background:linear-gradient(135deg,#2563eb,#0c9488); color:#fff; border-radius:22px; padding:24px 20px; text-align:center; margin-bottom:14px; box-shadow:0 10px 24px rgba(37,99,235,0.22);">
+                    <div style="font-size:12px; font-weight:700; opacity:0.85; margin-bottom:6px;">나의 사복 밸런스 유형</div>
+                    <div style="font-size:48px; line-height:1.1; margin-bottom:6px;">${t.emoji}</div>
+                    <div style="font-size:22px; font-weight:900; margin-bottom:8px;">${t.name}</div>
+                    <div style="font-size:14px; line-height:1.6; opacity:0.95; word-break:keep-all;">${t.desc}</div>
+                </div>
+                <button onclick="bgShare()" id="bg-share-btn" style="width:100%; border:none; border-radius:16px; padding:16px; font-size:16px; font-weight:900; color:#78350f; background:#fde68a; cursor:pointer; font-family:inherit; margin-bottom:10px;">💌 동료한테 도전장 보내기</button>
+                <p style="font-size:12px; color:var(--text-5); text-align:center; margin:0 0 18px;">링크로 풀면 나와의 일치율이 나와요</p>
+                <div style="background:var(--surface); border:1px solid var(--border); border-radius:18px; padding:14px 16px; margin-bottom:14px;">
+                    <div style="font-size:13px; font-weight:900; color:var(--text-3); margin-bottom:4px;">📝 내가 고른 15개</div>
+                    ${picks}
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                    <button onclick="bgRestart()" style="border:1px solid var(--border); background:var(--surface); border-radius:14px; padding:13px; font-size:14px; font-weight:800; color:var(--text-3); cursor:pointer; font-family:inherit;">🔄 다시 하기</button>
+                    <button onclick="pgShowAllSteps('menu')" style="border:1px solid var(--border); background:var(--surface); border-radius:14px; padding:13px; font-size:14px; font-weight:800; color:var(--text-3); cursor:pointer; font-family:inherit;">🎪 놀이터로</button>
+                </div>
+            </div>`;
+        pgResetScroll();
+    }
+
+    window.bgRestart = function () {
+        // 다시 할 땐 내 기준으로 풀도록 친구 비교 정보를 지우고 주소의 ?bg도 정리
+        bgState.friend = null; bgState.friendName = '';
+        try { history.replaceState(null, '', location.pathname + '#playground/balance'); } catch (e) { /* noop */ }
+        bgRenderIntro();
+    };
+
+    window.bgShare = async function () {
+        const t = BALANCE_TYPES[bgResultType()];
+        const url = bgShareUrl();
+        const text = `나는 '${t.name}' ${t.emoji}\n사복 밸런스 게임 15단계, 너는 뭐 고를래? 나랑 일치율 확인해봐!`;
+        try {
+            if (navigator.share) { await navigator.share({ title: '사복 밸런스 게임', text, url }); return; }
+        } catch (e) { if (e && e.name === 'AbortError') return; }
+        try {
+            await navigator.clipboard.writeText(text + '\n' + url);
+            const btn = document.getElementById('bg-share-btn');
+            if (btn) { btn.textContent = '✅ 링크 복사됨! 카톡에 붙여넣기'; setTimeout(() => { btn.textContent = '💌 동료한테 도전장 보내기'; }, 2200); }
+        } catch (e) { prompt('이 링크를 복사해서 보내주세요', url); }
+    };
+
     function pgShowAllSteps(stepName) {
-        ['menu', 'intro', 'quiz', 'loading', 'result', 'ladder', 'lunch', 'bingo'].forEach(s => {
+        ['menu', 'intro', 'quiz', 'loading', 'result', 'ladder', 'lunch', 'bingo', 'balance'].forEach(s => {
             const el = document.getElementById('pg-step-' + s);
             if (el) el.style.display = (s === stepName) ? 'block' : 'none';
         });
@@ -7128,8 +7325,8 @@ try {
                 border:2px solid var(--border); border-radius:16px; padding:14px 20px; margin-bottom:8px;
                 font-size:14px; font-weight:600; color:var(--text-2); cursor:pointer;
                 transition:all 0.18s; line-height:1.4; font-family:inherit;
-            " onmouseenter="if(!window.pgState.animating) this.style.border='2px solid #6C63FF55'" onmouseleave="if(!this.dataset.selected) this.style.border='2px solid #f0f0f0'">
-                <span style="font-weight:800; margin-right:10px; color:#6C63FF; font-size:15px;">${labels[i]}</span>
+            " onmouseenter="if(!window.pgState.animating) this.style.border='2px solid #F59E0B55'" onmouseleave="if(!this.dataset.selected) this.style.border='2px solid #f0f0f0'">
+                <span style="font-weight:800; margin-right:10px; color:#F59E0B; font-size:15px;">${labels[i]}</span>
                 ${opt.text}
             </button>`;
         }).join('');
@@ -7143,8 +7340,8 @@ try {
 
         // Visual feedback
         btnEl.dataset.selected = 'true';
-        btnEl.style.background = "linear-gradient(135deg,#FF6B6B18,#6C63FF18)";
-        btnEl.style.border = "2px solid #6C63FF";
+        btnEl.style.background = "linear-gradient(135deg,#FF6B6B18,#F59E0B18)";
+        btnEl.style.border = "2px solid #F59E0B";
 
         Array.from(document.getElementById('pg-q-options').children).forEach(child => {
             if (child !== btnEl) child.style.opacity = 0.45;
@@ -7332,7 +7529,7 @@ try {
               이미지가 기기의 사진첩(또는 다운로드 폴더)에 저장됩니다 🙌
             </div>
             
-            <button id="pg-btn-link-copy" onclick="pgHandleCopyLink()" style="${btnStyle('linear-gradient(135deg,#FF6B6B,#6C63FF)', '0 6px 20px rgba(108,99,255,0.28)')}">
+            <button id="pg-btn-link-copy" onclick="pgHandleCopyLink()" style="${btnStyle('linear-gradient(135deg,#FF6B6B,#F59E0B)', '0 6px 20px rgba(245,158,11,0.28)')}">
               🔗 링크 복사해서 공유하기
             </button>
             
