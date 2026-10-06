@@ -191,6 +191,7 @@ try {
                 window.openNewsletterSubModal();
             }
         }
+        if (event.data === 'openEbookGate') window.openEbookGate();
     });
     /* --- 감정 파쇄기 로직 --- */
     const SHRED_MESSAGES = [
@@ -1073,10 +1074,87 @@ try {
             body.innerHTML = `
                 <div style="text-align:center; padding:30px 0;">
                     <div style="font-size:3.5rem; margin-bottom:16px; animation:float 3s ease-in-out infinite">💌</div>
-                    <h3 style="font-size:1.2rem; font-weight:900; color:#1e40af; margin-bottom:10px;">오케이! 접수됐어 💜</h3>
+                    <h3 style="font-size:1.2rem; font-weight:900; color:#1e40af; margin-bottom:10px;">오케이! 접수됐어 💙</h3>
                     <p style="font-size:0.9rem; color:var(--text-5); line-height:1.6;">평생 무료로 비밀 편지 보내줄게!<br>팀장님 몰래 잘 읽어봐 😎</p>
                 </div>`;
         }
+    };
+
+    /* --- 베타 이벤트: 이메일 남기면 안티그래비티 IDE 전자책 PDF 바로 다운로드 ---
+       이메일은 비밀편지 구독자(newsletter_subscribers)로 함께 저장 → 정식 출시 알림 대상 */
+    const EBOOK_PDF_URL = '/downloads/saboknote-antigravity-ide-beta.pdf';
+    const EBOOK_DONE_KEY = 'saboknote_ebook_beta_done';
+
+    function ebookDownloadHtml(already) {
+        return `
+            <div style="text-align:center; padding:24px 0 8px;">
+                <div style="font-size:3.2rem; margin-bottom:12px;">🎉</div>
+                <h3 style="font-size:1.15rem; font-weight:900; color:#1e40af; margin-bottom:8px;">${already ? '다시 받으러 오셨군요!' : '신청 완료! 바로 받아가세요'}</h3>
+                <p style="font-size:0.88rem; color:var(--text-5); line-height:1.6; margin-bottom:20px;">정식 출시되면 베타 참여자에게<br>가장 먼저 알려드릴게요 💙</p>
+                <a href="${EBOOK_PDF_URL}" download="사복노트_안티그래비티IDE_실전마스터_베타.pdf"
+                   style="display:block; text-decoration:none; background:linear-gradient(135deg,#2563eb,#1e40af); color:#fff; font-weight:900; font-size:1.05rem; padding:16px; border-radius:12px; box-shadow:0 4px 14px rgba(37,99,235,0.3);">📥 PDF 전자책 다운로드</a>
+                <p style="font-size:0.75rem; color:var(--text-6); margin-top:12px;">휴대폰에서 안 열리면 '파일' 앱이나 다운로드 폴더를 확인해 주세요.</p>
+            </div>`;
+    }
+
+    window.openEbookGate = function () {
+        let done = false;
+        try { done = localStorage.getItem(EBOOK_DONE_KEY) === '1'; } catch (e) { /* noop */ }
+        if (done) { openModal('📥 실전 레시피 PDF', ebookDownloadHtml(true), 'ebook'); return; }
+        const content = `
+        <div style="text-align:center; padding:12px 0 4px;">
+            <div style="font-size:3rem; margin-bottom:10px;">📘</div>
+            <h3 style="font-size:1.2rem; color:var(--text-dark); margin-bottom:8px; font-weight:900; word-break:keep-all;">안티그래비티 IDE 실전 마스터 <span style="white-space:nowrap;">(베타)</span></h3>
+            <p style="font-size:0.9rem; color:var(--text-5); margin-bottom:20px; line-height:1.6;">레시피 8개 + 프롬프트 40개 + 치트시트를<br>한 권으로 정리한 <b>PDF 전자책</b>이에요.<br>이메일만 남기면 <b>바로 다운로드</b>돼요.</p>
+            <div style="display:flex; flex-direction:column; gap:12px; text-align:left;">
+                <input type="email" id="ebook-email" class="calc-input" placeholder="이메일 주소 입력" style="font-size:1rem; padding:14px; border:2px solid var(--border); border-radius:12px;">
+                <label id="ebook-agree-label" style="display:flex; align-items:flex-start; gap:10px; cursor:pointer; padding:12px; background:#f5f9ff; border-radius:12px; border:1px solid #dbeafe;">
+                    <input type="checkbox" id="ebook-agree" style="width:18px; height:18px; accent-color:#2563eb; flex-shrink:0; margin-top:2px;">
+                    <span style="font-size:0.8rem; color:var(--text-4); line-height:1.5;">
+                        [필수] <strong style="color:#2563eb;">개인정보 수집·이용</strong>에 동의해요<br>
+                        <span style="color:var(--text-6); font-size:0.75rem;">수집 항목: 이메일 · 목적: 비밀편지(뉴스레터)와 정식 출시 안내 발송 · 보관: 구독 취소 시까지 (언제든 취소 가능)</span>
+                    </span>
+                </label>
+                <button class="btn-primary" id="ebook-submit" style="background:linear-gradient(135deg,#2563eb 0%,#1e40af 100%); padding:16px; font-size:1.05rem; border-radius:12px;" onclick="submitEbookGate()">📥 PDF 받기</button>
+            </div>
+        </div>`;
+        openModal('📥 실전 레시피 PDF 받기', content, 'ebook');
+    };
+
+    window.submitEbookGate = async function () {
+        const emailEl = document.getElementById('ebook-email');
+        const agreeEl = document.getElementById('ebook-agree');
+        const label = document.getElementById('ebook-agree-label');
+        const email = emailEl ? emailEl.value.trim() : '';
+        if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            emailEl.style.borderColor = '#ef4444'; emailEl.focus();
+            setTimeout(() => { emailEl.style.borderColor = 'var(--border)'; }, 1500);
+            return;
+        }
+        if (!agreeEl || !agreeEl.checked) {
+            label.style.borderColor = '#ef4444'; label.style.background = '#fff5f5';
+            setTimeout(() => { label.style.borderColor = '#dbeafe'; label.style.background = '#f5f9ff'; }, 1500);
+            return;
+        }
+        const btn = document.getElementById('ebook-submit');
+        if (btn) { btn.innerText = '준비 중...'; btn.disabled = true; }
+
+        // 저장에 실패해도 다운로드는 막지 않는다 (무료 이벤트이므로 사용자 경험 우선)
+        if (supabase) {
+            try {
+                const { error } = await withTimeout(supabase.from('newsletter_subscribers').insert({
+                    email: email,
+                    user_id: getOrCreateUserId() || 'anonymous',
+                    agreed_to_terms: true,
+                    created_at: new Date().toISOString()
+                }));
+                if (error) console.error('Ebook gate save error', error);
+            } catch (e) { console.error('Ebook gate save error', e); }
+        }
+        try { localStorage.setItem(EBOOK_DONE_KEY, '1'); } catch (e) { /* noop */ }
+
+        const body = document.getElementById('modal-body');
+        if (body) body.innerHTML = ebookDownloadHtml(false);
     };
 
     window.submitRequest = async function () {
