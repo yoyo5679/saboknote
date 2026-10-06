@@ -3549,7 +3549,8 @@ try {
         })),
     ];
     const FAV_KEY = 'sabok_fav_tools';
-    const DEFAULT_FAVS = ['prompter', 'admin', 'voca', 'eligibility', 'dashboard', 'support'];
+    // 비밀 프롬프트·행정/회계는 홈 상단 핵심 카드에 이미 있으므로 기본 즐겨찾기에서 제외
+    const DEFAULT_FAVS = ['voca', 'eligibility', 'dashboard', 'support', 'newsletter', 'request'];
 
     function getFavs() {
         try {

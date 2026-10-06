@@ -56,7 +56,7 @@
     <link rel="icon"
         href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>">
 
-    <link rel="stylesheet" href="index.css?v=2">
+    <link rel="stylesheet" href="index.css?v=3">
     <link rel="stylesheet" as="style" crossorigin
         href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -177,43 +177,35 @@
                     </div>
                 </div>
 
-                <!-- ② 비밀 프롬프트 (핵심 기능 — 전용 배너로 부각) -->
+                <!-- ② 핵심 도구 2종 (비밀 프롬프트 · 행정/회계 마스터) — 나란히 놓인 흰 카드 -->
                 <section class="sec">
-                    <button class="prompt-feature" onclick="homeOpenPrompt()">
-                        <div class="prompt-feature-glow"></div>
-                        <div class="prompt-feature-emoji">🪄</div>
-                        <div class="prompt-feature-body">
-                            <div class="prompt-feature-kicker">사복노트 핵심 기능</div>
-                            <div class="prompt-feature-title">사복천재의 비밀 프롬프트</div>
-                            <div class="prompt-feature-desc">복사해서 ChatGPT·Claude에 붙이면 끝! 사례기록·보고서·사업계획서가 1분 컷 ✨
+                    <div class="core-grid">
+                        <div class="core-card core-blue">
+                            <button class="core-main" onclick="homeOpenPrompt()">
+                                <span class="core-ico">🪄</span>
+                                <span class="core-kicker">핵심 기능</span>
+                                <span class="core-title">비밀 프롬프트</span>
+                                <span class="core-desc">복붙하면 사례기록·보고서가 1분 컷</span>
+                            </button>
+                            <div class="core-links">
+                                <button onclick="homeOpenPrompt('counsel')">📋 사례관리·상담</button>
+                                <button onclick="homeOpenPrompt('admin')">📈 사업기획·행정</button>
+                                <button onclick="homeOpenPrompt('marketing')">📣 홍보·마케팅</button>
                             </div>
-                            <span class="prompt-feature-cta">프롬프트 보러가기 →</span>
                         </div>
-                    </button>
-                    <div class="chip-row chip-row-3" style="margin-top:10px;">
-                        <button class="prompt-chip" onclick="homeOpenPrompt('counsel')">📋 사례관리·상담</button>
-                        <button class="prompt-chip" onclick="homeOpenPrompt('admin')">📈 사업기획·행정</button>
-                        <button class="prompt-chip" onclick="homeOpenPrompt('marketing')">📣 홍보·마케팅</button>
-                    </div>
-                </section>
-
-                <!-- ②-b 행정/회계 마스터 (핵심 기능 — 전용 배너로 부각) -->
-                <section class="sec">
-                    <button class="prompt-feature admin-feature" onclick="document.getElementById('open-admin-calc').click()">
-                        <div class="prompt-feature-glow"></div>
-                        <div class="prompt-feature-emoji">💸</div>
-                        <div class="prompt-feature-body">
-                            <div class="prompt-feature-kicker">1초 컷 행정·회계</div>
-                            <div class="prompt-feature-title">행정/회계 마스터</div>
-                            <div class="prompt-feature-desc">강사료·부가세·급여정산·장기요양부터 사진 개인정보 가리기까지, 12가지 실무 도구를 한 곳에서 ✨
+                        <div class="core-card core-teal">
+                            <button class="core-main" onclick="document.getElementById('open-admin-calc').click()">
+                                <span class="core-ico">💸</span>
+                                <span class="core-kicker">1초 컷 행정·회계</span>
+                                <span class="core-title">행정/회계 마스터</span>
+                                <span class="core-desc">12가지 계산기·실무 도구 모음</span>
+                            </button>
+                            <div class="core-links">
+                                <button onclick="openAdminTab('tax')">🎤 강사료 세금</button>
+                                <button onclick="openAdminTab('vat')">🧾 부가세</button>
+                                <button onclick="openAdminTab('mosaic')">🔲 사진 가리기</button>
                             </div>
-                            <span class="prompt-feature-cta">도구 열기 →</span>
                         </div>
-                    </button>
-                    <div class="chip-row chip-row-3" style="margin-top:10px;">
-                        <button class="prompt-chip" onclick="openAdminTab('tax')">🎤 강사료 세금</button>
-                        <button class="prompt-chip" onclick="openAdminTab('vat')">🧾 부가세</button>
-                        <button class="prompt-chip" onclick="openAdminTab('mosaic')">🔲 사진 가리기</button>
                     </div>
                 </section>
 
@@ -251,8 +243,8 @@
                     <div id="open-newsletter-read"></div>
                 </div>
 
-                <!-- ⑤ 도와줘요 Q&A + 오늘의 생존단어 + 지표 -->
-                <section class="sec">
+                <!-- ⑤ 도와줘요 Q&A + 오늘의 생존단어 + 지표 (PC 넓은 화면에선 오른쪽 컬럼) -->
+                <aside class="sec home-aside">
                     <div class="home-card" id="home-qa-card" style="display:none;">
                         <div class="home-card-head">
                             <span>🆘 도와줘요 Q&A</span>
@@ -279,7 +271,7 @@
                         <button class="sec-link"
                             onclick="document.getElementById('open-dashboard').click()">지표 보기</button>
                     </div>
-                </section>
+                </aside>
 
                 <!-- ⑥ 사복놀이터 배너 -->
                 <section class="sec" style="padding-bottom: 0;">
@@ -1388,14 +1380,7 @@
                 <span class="nav-icon">💬</span>
                 <span class="nav-label">커뮤니티</span>
             </button>
-            <button class="nav-item" id="nav-shredder" onclick="switchView('shredder')">
-                <span class="nav-icon">🗑️</span>
-                <span class="nav-label">파쇄기</span>
-            </button>
-            <button class="nav-item" id="nav-playground" onclick="switchView('playground')">
-                <span class="nav-icon">🎢</span>
-                <span class="nav-label">놀이터</span>
-            </button>
+            <!-- 파쇄기는 상단 '감정 파쇄' 버튼, 놀이터는 홈 배너로 진입 (모바일 탭 5개 유지) -->
             <button class="nav-item" id="nav-treasure" onclick="switchView('treasure')">
                 <span class="nav-icon">🍯</span>
                 <span class="nav-label">보물창고</span>
@@ -1419,7 +1404,7 @@
 
     </div><!-- /#app -->
 
-    <script src="index.js?v=35" charset="utf-8"></script>
+    <script src="index.js?v=36" charset="utf-8"></script>
     <script>
         // PWA Service Worker Registration
         if ('serviceWorker' in navigator) {
