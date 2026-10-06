@@ -76,10 +76,12 @@ body {
 .ov::before, .ov::after { content:''; margin:auto; flex-shrink:0; }
 .ov > * { flex-shrink:0; }
 .ov .em { font-size:2.2rem; animation:fl 2s ease-in-out infinite; }
+.ov .em img { height:84px; width:auto; display:block; }
 /* 모바일: 인트로 전체가 캔버스 높이(~240px) 안에 들어가도록 압축 */
 @media (max-width:520px){
   .ov { gap:3px; padding:4px 8px; }
   .ov .em { font-size:1.15rem; }
+  .ov .em img { height:44px; }
   .ov h2 { font-size:1.02rem; }
   .ov .sub { font-size:0.66rem; line-height:1.35; }
   .og { gap:4px 6px; }
@@ -223,6 +225,41 @@ body {
   var canvas = document.getElementById('gc');
   var ctx = canvas.getContext('2d');
   var W = canvas.width, H = canvas.height;
+  // 고해상도 화면에서 이미지가 뭉개지지 않도록 내부 해상도만 키움 (게임 좌표는 480x320 그대로)
+  var DPR = Math.min(window.devicePixelRatio || 1, 2);
+  canvas.width = W * DPR; canvas.height = H * DPR;
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  ctx.imageSmoothingQuality = 'high';
+
+  // ============ 나노바나나 이미지 (img/*.webp, make_assets.py로 생성) ============
+  // 이미지가 없거나 로딩 전이면 기존 코드 드로잉으로 그린다
+  var IMG = {};
+  ['run1','run2','jump','slide','fall','tired','hero',
+   'papers','phone','boss','boxes','minwon','nag','fax',
+   'jelly_pink','jelly_yellow','jelly_blue','drink','barrier','bg_office','floor'].forEach(function(n){
+    var im = new Image();
+    im.onload = function(){
+      IMG[n] = im;
+      if (n === 'hero') document.querySelector('#startScr .em').innerHTML = '<img src="'+im.src+'" alt="">';
+      if (!S.on) draw();
+    };
+    im.src = 'img/' + n + '.webp';
+  });
+  // 상자(w×h) 안에 비율 유지해 맞춰 그림. 바닥 장애물은 아래 정렬, 공중은 가운데 정렬
+  function drawFit(im, w, h, scale, bottom) {
+    var s = Math.min(w*scale/im.width, h*scale/im.height);
+    var dw = im.width*s, dh = im.height*s;
+    ctx.drawImage(im, (w-dw)/2, bottom ? h-dh : (h-dh)/2, dw, dh);
+  }
+  // 가로로 반복되는 배경: 홀수 칸은 좌우 반전해 이음새가 보이지 않게
+  function drawTiled(im, offset, y, h) {
+    var tw = im.width * h / im.height;
+    var start = -(((offset % (tw*2)) + tw*2) % (tw*2));
+    for (var x = start, k = 0; x < W; x += tw, k++) {
+      if (k % 2) { ctx.save(); ctx.translate(x+tw, y); ctx.scale(-1, 1); ctx.drawImage(im, 0, 0, tw, h); ctx.restore(); }
+      else ctx.drawImage(im, x, y, tw, h);
+    }
+  }
 
   var GND = H - 52;          // 지면 y (플레이어 발 위치)
   var PW = 26;               // 플레이어 폭
@@ -420,6 +457,13 @@ body {
 
   // ============ 배경: 어두운 심야 사무실 (패럴랙스 3겹) ============
   function drawBG() {
+    if (IMG.bg_office) {
+      ctx.fillStyle='#0d0f1a'; ctx.fillRect(0,0,W,H);
+      drawTiled(IMG.bg_office, S.bgx*0.3, 0, GND+8);
+      // 배경을 살짝 어둡게 눌러 캐릭터·장애물이 눈에 띄게
+      ctx.fillStyle='rgba(8,10,24,0.38)'; ctx.fillRect(0,0,W,GND+8);
+      return;
+    }
     // 어두운 사무실 벽
     var g = ctx.createLinearGradient(0,0,0,H);
     g.addColorStop(0,'#0d0f1a'); g.addColorStop(0.7,'#161927'); g.addColorStop(1,'#1a1d2e');
@@ -507,13 +551,17 @@ body {
   // 지면: 사무실 바닥 + 뚫린 구멍(공사중)
   function drawGround() {
     // 바닥
-    ctx.fillStyle='#101322'; ctx.fillRect(0,GND,W,H-GND);
-    ctx.fillStyle='#171a2c'; ctx.fillRect(0,GND,W,6);
-    // 타일 라인
-    ctx.strokeStyle='#1e2136'; ctx.lineWidth=1;
-    var tw=52, off=S.bgx%tw;
-    for (var x=-off;x<W;x+=tw){ ctx.beginPath(); ctx.moveTo(x,GND+6); ctx.lineTo(x-8,H); ctx.stroke(); }
-    ctx.beginPath(); ctx.moveTo(0,GND+26); ctx.lineTo(W,GND+26); ctx.stroke();
+    if (IMG.floor) {
+      drawTiled(IMG.floor, S.bgx, GND, H-GND);
+    } else {
+      ctx.fillStyle='#101322'; ctx.fillRect(0,GND,W,H-GND);
+      ctx.fillStyle='#171a2c'; ctx.fillRect(0,GND,W,6);
+      // 타일 라인
+      ctx.strokeStyle='#1e2136'; ctx.lineWidth=1;
+      var tw=52, off=S.bgx%tw;
+      for (var x=-off;x<W;x+=tw){ ctx.beginPath(); ctx.moveTo(x,GND+6); ctx.lineTo(x-8,H); ctx.stroke(); }
+      ctx.beginPath(); ctx.moveTo(0,GND+26); ctx.lineTo(W,GND+26); ctx.stroke();
+    }
 
     // 뚫린 바닥 (낭떠러지)
     S.pits.forEach(function(pt){
@@ -536,9 +584,13 @@ body {
         ctx.restore();
       }
       // 공사중 표지판
-      ctx.font='13px serif'; ctx.textAlign='center';
-      ctx.fillText('🚧', pt.x+pt.w/2, GND-8);
-      ctx.textAlign='left';
+      if (IMG.barrier) {
+        ctx.save(); ctx.translate(pt.x+pt.w/2-16, GND-24); drawFit(IMG.barrier, 32, 22, 1, true); ctx.restore();
+      } else {
+        ctx.font='13px serif'; ctx.textAlign='center';
+        ctx.fillText('🚧', pt.x+pt.w/2, GND-8);
+        ctx.textAlign='left';
+      }
     });
   }
 
@@ -585,6 +637,20 @@ body {
     var sy=S.shake?(Math.random()-0.5)*S.shake:0;
 
     if (p.inv>0 && Math.floor(S.frames/4)%2===0) return;
+
+    var key = p.pose==='slide' ? 'slide' : p.pose==='fall' ? 'fall' : (!p.ground ? 'jump' : (run ? 'run2' : 'run1'));
+    var im = IMG[key];
+    if (im) {
+      // 히트박스 발끝(아래 가운데) 기준으로 스프라이트를 세움
+      var dh = p.pose==='slide' ? 32 : 64;
+      var dw = im.width * dh / im.height;
+      ctx.save();
+      ctx.translate(p.x+PW/2+sx, (p.pose==='slide' ? GND : p.y+p.h) + sy + (key==='run2' ? -1 : 0));
+      if (p.pose==='fall') ctx.rotate(Math.sin(S.frames*0.3)*0.2);
+      ctx.drawImage(im, -dw/2, -dh, dw, dh);
+      ctx.restore();
+      return;
+    }
 
     ctx.save();
 
@@ -777,7 +843,11 @@ body {
       ctx.save();
       ctx.translate(o.x, oy);
 
-      if (o.t==='papers') drawPapers(o);
+      if (IMG[o.t]) {
+        if (o.t==='phone') ctx.translate(Math.sin(S.frames*0.5)*1.8, 0);  // 울리는 전화 진동
+        drawFit(IMG[o.t], o.w, o.h, 1.25, !o.air);
+      }
+      else if (o.t==='papers') drawPapers(o);
       else if (o.t==='phone') drawPhone(o);
       else if (o.t==='boss') drawBoss(o);
       else if (o.t==='boxes') drawBoxes(o);
@@ -1010,6 +1080,8 @@ body {
       ctx.globalAlpha=0.22;
       ctx.beginPath(); ctx.arc(j.x, j.y+bounce, j.r+5, 0, Math.PI*2); ctx.fill();
       ctx.globalAlpha=1;
+      var jim = IMG[['jelly_pink','jelly_yellow','jelly_blue'][Math.max(0, JCOLORS.indexOf(j.c)) % 3]];
+      if (jim) { ctx.drawImage(jim, j.x-j.r-2, j.y+bounce-j.r-2, j.r*2+4, j.r*2+4); return; }
       ctx.beginPath(); ctx.arc(j.x, j.y+bounce, j.r, 0, Math.PI*2); ctx.fill();
       ctx.fillStyle='rgba(255,255,255,0.75)';
       ctx.beginPath(); ctx.arc(j.x-2.5, j.y+bounce-2.5, 2.6, 0, Math.PI*2); ctx.fill();
@@ -1022,8 +1094,8 @@ body {
       var iy = it.y + Math.sin(it.bob)*5;
       ctx.fillStyle='rgba(46,213,115,0.20)';
       ctx.beginPath(); ctx.arc(it.x+11, iy+13, 20+Math.sin(it.bob*2)*3, 0, Math.PI*2); ctx.fill();
-      ctx.font='24px serif';
-      ctx.fillText('🧪', it.x, iy+22);
+      if (IMG.drink) { ctx.save(); ctx.translate(it.x-2, iy-4); drawFit(IMG.drink, 26, 32, 1, false); ctx.restore(); }
+      else { ctx.font='24px serif'; ctx.fillText('🧪', it.x, iy+22); }
       ctx.fillStyle='#2ed573'; ctx.font='bold 8px Jua';
       ctx.textAlign='center'; ctx.fillText('HP+', it.x+11, iy-4); ctx.textAlign='left';
     });
@@ -1066,7 +1138,9 @@ body {
     document.getElementById('bestV').textContent=best;
     renderRanks();
 
-    document.getElementById('goEmoji').textContent = reason==='fall' ? '🕳️' : '😩';
+    var goIm = reason==='fall' ? IMG.fall : IMG.tired;
+    if (goIm) document.getElementById('goEmoji').innerHTML = '<img src="'+goIm.src+'" alt="">';
+    else document.getElementById('goEmoji').textContent = reason==='fall' ? '🕳️' : '😩';
     var msgs=[
       [0,'야근 탈출 실패... 😭'],
       [80,'조금 더 빠르면 됐는데! 😤'],

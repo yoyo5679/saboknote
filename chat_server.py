@@ -31,6 +31,8 @@ STATUS_FILE = os.path.join(BASE_DIR, "live_status.json")
 CHAT_FILE   = os.path.join(BASE_DIR, "chat_log.json")
 ENV_FILE    = os.path.join(BASE_DIR, ".env")
 PORT        = 7788
+HOST        = "127.0.0.1"  # 이 PC에서만 접속 (같은 와이파이 다른 기기 차단)
+ALLOWED_ORIGINS = {f"http://localhost:{PORT}", f"http://127.0.0.1:{PORT}"}
 
 pipeline_lock    = threading.Lock()
 pipeline_running = False
@@ -243,6 +245,10 @@ class Handler(BaseHTTPRequestHandler):
     def do_POST(self):
         if self.path != "/command":
             self.send_response(404); self.end_headers(); return
+        # 다른 사이트에서 몰래 보내는 요청 차단 (내 API 키 도용 방지)
+        origin = self.headers.get("Origin")
+        if origin and origin not in ALLOWED_ORIGINS:
+            self._json({"ok": False, "error": "forbidden origin"}, 403); return
         length = int(self.headers.get("Content-Length", 0))
         body   = self.rfile.read(length)
         try:
@@ -254,7 +260,7 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_OPTIONS(self):
         self.send_response(200)
-        self.send_header("Access-Control-Allow-Origin",  "*")
+        self.send_header("Access-Control-Allow-Origin",  f"http://localhost:{PORT}")
         self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
         self.send_header("Access-Control-Allow-Headers", "Content-Type")
         self.end_headers()
@@ -275,7 +281,8 @@ class Handler(BaseHTTPRequestHandler):
             self._json({"ok": True, "stopped": True}); return
 
         # ── /key 명령 처리 (로그 저장 안 함) ──────────────────
-        key_match = re.match(r'^/key\s+(\S+)$', msg, re.I)
+        key_match = (re.match(r'^/key\s+(\S+)$', msg, re.I)
+                     or re.match(r'^(AIza[0-9A-Za-z_-]{30,})$', msg))  # /key 없이 키만 붙여넣어도 로그에 안 남김
         if key_match:
             key = key_match.group(1)
             set_runtime_key(key)
@@ -310,7 +317,7 @@ class Handler(BaseHTTPRequestHandler):
             self.send_header("Content-Type",   ctype)
             self.send_header("Content-Length", len(data))
             self.send_header("Cache-Control",  "no-cache")
-            self.send_header("Access-Control-Allow-Origin", "*")
+            self.send_header("Access-Control-Allow-Origin", f"http://localhost:{PORT}")
             self.end_headers()
             self.wfile.write(data)
         except FileNotFoundError:
@@ -321,7 +328,7 @@ class Handler(BaseHTTPRequestHandler):
         self.send_response(status)
         self.send_header("Content-Type",   "application/json")
         self.send_header("Content-Length", len(body))
-        self.send_header("Access-Control-Allow-Origin", "*")
+        self.send_header("Access-Control-Allow-Origin", f"http://localhost:{PORT}")
         self.end_headers()
         self.wfile.write(body)
 
@@ -359,7 +366,7 @@ if __name__ == "__main__":
     print(f"{'━'*50}")
     print(f"  Ctrl+C 로 종료\n")
 
-    server = HTTPServer(("", PORT), Handler)
+    server = HTTPServer((HOST, PORT), Handler)
     try:
         server.serve_forever()
     except KeyboardInterrupt:
