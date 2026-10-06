@@ -2924,11 +2924,14 @@ try {
                 <style>
                     .percent-mode-card { background:var(--surface-2); border:1px solid var(--border); border-radius:12px; padding:16px; margin-bottom:16px; transition:all 0.2s; }
                     .percent-mode-card:hover { border-color:#93c5fd; box-shadow:0 4px 12px rgba(59,130,246,0.1); }
-                    .percent-title { font-size:0.95rem; font-weight:800; color:#1e3a8a; margin-bottom:12px; display:flex; align-items:center; gap:6px; }
-                    .percent-inputs { display:flex; gap:8px; align-items:center; }
-                    .percent-inputs input { flex:1; min-width:0; padding:10px; border-radius:8px; border:1px solid var(--border-strong); font-size:1rem; outline:none; text-align:right; color:var(--text-2); font-weight:700;}
+                    .percent-title { font-size:0.95rem; font-weight:800; color:#1e3a8a; margin-bottom:12px; display:flex; align-items:flex-start; gap:8px; line-height:1.4; word-break:keep-all; }
+                    .percent-title span { white-space:nowrap; flex:none; }
+                    /* 폰에서도 값이 다 보이게: 입력칸은 줄마다 넓게, 결과는 맨 아래 한 줄 전체 */
+                    .percent-inputs { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:8px 10px; align-items:center; }
+                    .percent-inputs > span { font-size:0.9rem !important; }
+                    .percent-inputs input { width:100%; min-width:0; padding:12px; border-radius:10px; border:1px solid var(--border-strong); font-size:16px; outline:none; text-align:right; color:var(--text-2); font-weight:700; }
                     .percent-inputs input:focus { border-color:#3b82f6; box-shadow:0 0 0 2px rgba(59,130,246,0.2); }
-                    .percent-result { font-weight:900; color:#2563eb; font-size:1.1rem; min-width:80px; text-align:right; }
+                    .percent-result { grid-column:1 / -1; font-weight:900; color:#2563eb; font-size:1.3rem; text-align:right; background:#eff6ff; border-radius:10px; padding:10px 14px; overflow-wrap:anywhere; }
                 </style>
                 <div class="step-card beautiful-card" style="padding:20px; border-color:#bfdbfe;">
                     <h4 style="color:#1e40af; font-weight:800; font-size:1.1rem; margin-bottom:8px; text-align:center;">📊 만능 퍼센트 계산기</h4>
@@ -3923,7 +3926,12 @@ try {
     };
 
     window.calcPercent = function (mode) {
-        const formatNumber = (num) => Number.isInteger(num) ? num.toLocaleString() : num.toLocaleString(undefined, { maximumFractionDigits: 2 });
+        // 소수 둘째 자리까지 표시하되, 0.01 미만인 0이 아닌 값은 '0'으로 뭉개지지 않게 유효숫자 2자리로
+        const formatNumber = (num) => {
+            if (Number.isInteger(num)) return num.toLocaleString();
+            if (num !== 0 && Math.abs(num) < 0.01) return num.toLocaleString(undefined, { maximumSignificantDigits: 2 });
+            return num.toLocaleString(undefined, { maximumFractionDigits: 2 });
+        };
         
         if (mode === 1) {
             const a = parseFloat(document.getElementById('pc-1-a').value);
@@ -4694,7 +4702,7 @@ try {
                 </div>
                 <div style="flex:1; min-width:0;">
                     <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
-                        <span style="background:#dbeafe; color:#2563eb; font-size:0.68rem; font-weight:800; padding:2px 8px; border-radius:20px; white-space:nowrap; flex-shrink:0;">${item.category}</span>
+                        <span style="background:#dbeafe; color:#2563eb; font-size:0.75rem; font-weight:800; padding:3px 9px; border-radius:20px; white-space:nowrap; flex-shrink:0;">${item.category}</span>
                     </div>
                     <h4 style="font-size:1.05rem; font-weight:800; color:var(--text-dark); margin:0 0 8px 0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${item.word}</h4>
                     <p style="font-size:0.9rem; color:var(--text-2); line-height:1.5; font-weight:600; margin-bottom:8px;">${item.meaning}</p>
