@@ -800,9 +800,10 @@ body {
   font-family: inherit;
   color: var(--text-6);
   cursor: pointer;
-  padding: 4px 8px;
+  padding: 4px 1px;
   border-radius: 14px;
   flex: 1;
+  min-width: 0;
   transition: color 0.2s;
 }
 
@@ -834,8 +835,8 @@ body {
 }
 
 .nav-label {
-  font-size: 0.68rem;
-  letter-spacing: -0.01em;
+  font-size: 0.64rem;
+  letter-spacing: -0.03em;
   white-space: nowrap;
 }
 
