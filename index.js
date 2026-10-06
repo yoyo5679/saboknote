@@ -164,14 +164,14 @@ try {
             
             <div style="display:flex; flex-direction:column; gap:12px; text-align:left;">
                 <input type="email" id="newsletter-email" class="calc-input" placeholder="칼퇴를 도와줄 이메일 주소 입력" style="font-size:1rem; padding:14px; border:2px solid var(--border); border-radius:12px;">
-                <label style="display:flex; align-items:flex-start; gap:10px; cursor:pointer; padding:12px; background:#f8f5ff; border-radius:12px; border:1px solid #ede9fe;">
-                    <input type="checkbox" id="newsletter-agree" style="width:18px; height:18px; accent-color:#7c3aed; flex-shrink:0; margin-top:2px;">
+                <label style="display:flex; align-items:flex-start; gap:10px; cursor:pointer; padding:12px; background:#f5f9ff; border-radius:12px; border:1px solid #dbeafe;">
+                    <input type="checkbox" id="newsletter-agree" style="width:18px; height:18px; accent-color:#2563eb; flex-shrink:0; margin-top:2px;">
                     <span style="font-size:0.8rem; color:var(--text-4); line-height:1.5;">
-                        [필수] <strong style="color:#7c3aed;">개인정보 수집·이용</strong> 건 동의 완료!<br>
+                        [필수] <strong style="color:#2563eb;">개인정보 수집·이용</strong> 건 동의 완료!<br>
                         <span style="color:var(--text-6); font-size:0.75rem;">쿨하게 약속함: 수집한 이메일은 뉴스레터 발송용으로만 쓰고, 언제든 구독 취소 가능함 🤙</span>
                     </span>
                 </label>
-                <button class="btn-primary" style="background:linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%); padding:16px; font-size:1.1rem; border-radius:12px; box-shadow:0 4px 14px rgba(124,58,237,0.3)" onclick="subscribeNewsletter()">💌 나도 이 편지 받을래!</button>
+                <button class="btn-primary" style="background:linear-gradient(135deg, #2563eb 0%, #1e40af 100%); padding:16px; font-size:1.1rem; border-radius:12px; box-shadow:0 4px 14px rgba(37, 99, 235,0.3)" onclick="subscribeNewsletter()">💌 나도 이 편지 받을래!</button>
             </div>
         </div>`;
         openModal('비밀 편지 구독 신청', modalContent, 'newsletter');
@@ -538,7 +538,7 @@ try {
                 ${lines}
             </div>
             <p style="font-size:0.8rem; color:var(--text-5); text-align:center; line-height:1.6;">${entries.length}개의 흔적이 쌓였어요.<br>여기까지 걸어온 건 다른 누구도 아닌 당신이에요. 👏</p>
-            <button id="growth-card-btn" onclick="downloadGrowthCard()" style="width:100%; margin-top:16px; padding:14px; background:linear-gradient(135deg,#6366f1,#8b5cf6); color:#fff; border:none; border-radius:14px; font-size:0.92rem; font-weight:800; cursor:pointer; box-shadow:0 4px 12px rgba(99,102,241,0.25);">🖼️ 이 궤적 카드로 저장하기</button>
+            <button id="growth-card-btn" onclick="downloadGrowthCard()" style="width:100%; margin-top:16px; padding:14px; background:linear-gradient(135deg,#3b82f6,#3b82f6); color:#fff; border:none; border-radius:14px; font-size:0.92rem; font-weight:800; cursor:pointer; box-shadow:0 4px 12px rgba(59, 130, 246,0.25);">🖼️ 이 궤적 카드로 저장하기</button>
             <button onclick="deleteAllGrowth()" style="width:100%; margin-top:10px; padding:12px; background:none; border:1.5px solid #fecaca; color:#ef4444; border-radius:12px; font-size:0.85rem; font-weight:700; cursor:pointer;">궤적 전체 삭제</button>
             ${COMFORT_DISCLAIMER}`;
     }
@@ -633,8 +633,8 @@ try {
         const ctx = canvas.getContext('2d');
 
         const grad = ctx.createLinearGradient(0, 0, W, H);
-        grad.addColorStop(0, '#6366f1');
-        grad.addColorStop(1, '#8b5cf6');
+        grad.addColorStop(0, '#3b82f6');
+        grad.addColorStop(1, '#3b82f6');
         ctx.fillStyle = grad;
         ctx.fillRect(0, 0, W, H);
 
@@ -1027,7 +1027,7 @@ try {
         const email = emailEl ? emailEl.value.trim() : '';
 
         if (!email || !email.includes('@')) {
-            emailEl.style.borderColor = '#7c3aed';
+            emailEl.style.borderColor = '#2563eb';
             emailEl.focus();
             setTimeout(() => { emailEl.style.borderColor = 'var(--border)'; }, 1500);
             return;
@@ -1036,8 +1036,8 @@ try {
             agreeEl.closest('label').style.borderColor = '#ef4444';
             agreeEl.closest('label').style.background = '#fff5f5';
             setTimeout(() => {
-                agreeEl.closest('label').style.borderColor = '#ede9fe';
-                agreeEl.closest('label').style.background = '#f8f5ff';
+                agreeEl.closest('label').style.borderColor = '#dbeafe';
+                agreeEl.closest('label').style.background = '#f5f9ff';
             }, 1500);
             return;
         }
@@ -1073,7 +1073,7 @@ try {
             body.innerHTML = `
                 <div style="text-align:center; padding:30px 0;">
                     <div style="font-size:3.5rem; margin-bottom:16px; animation:float 3s ease-in-out infinite">💌</div>
-                    <h3 style="font-size:1.2rem; font-weight:900; color:#5b21b6; margin-bottom:10px;">오케이! 접수됐어 💜</h3>
+                    <h3 style="font-size:1.2rem; font-weight:900; color:#1e40af; margin-bottom:10px;">오케이! 접수됐어 💜</h3>
                     <p style="font-size:0.9rem; color:var(--text-5); line-height:1.6;">평생 무료로 비밀 편지 보내줄게!<br>팀장님 몰래 잘 읽어봐 😎</p>
                 </div>`;
         }
@@ -2168,30 +2168,31 @@ try {
 
         const openAdminModal = () => {
             const content = `
-            <div class="admin-tabs" style="display:flex; flex-direction:column; gap:8px; margin-bottom:24px; padding:12px; background:var(--surface-2); border-radius:12px; border:1px solid var(--border);">
-                <div style="font-size:0.75rem; font-weight:700; color:var(--text-6); padding-left:4px; margin-bottom:-4px;">💸 회계 관리 마스터</div>
-                <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:6px; padding:4px; background:var(--surface-3); border-radius:8px;">
-                    <button class="tab-btn active" id="tab-vat" onclick="switchAdminTab('vat')" style="padding:10px 4px; border:none; border-radius:6px; background:var(--surface); font-weight:700; color:var(--primary); box-shadow:0 2px 4px rgba(0,0,0,0.05); font-size:0.7rem; transition:all 0.2s; white-space:nowrap;">1.부가세</button>
-                    <button class="tab-btn" id="tab-budget" onclick="switchAdminTab('budget')" style="padding:10px 4px; border:none; border-radius:6px; background:transparent; font-weight:600; color:var(--text-5); font-size:0.7rem; transition:all 0.2s; white-space:nowrap;">2.단가계산</button>
-                    <button class="tab-btn" id="tab-tax" onclick="switchAdminTab('tax')" style="padding:10px 4px; border:none; border-radius:6px; background:transparent; font-weight:600; color:var(--text-5); font-size:0.7rem; transition:all 0.2s; white-space:nowrap;">3.강사료</button>
-                    <button class="tab-btn" id="tab-payroll" onclick="switchAdminTab('payroll')" style="padding:10px 4px; border:none; border-radius:6px; background:transparent; font-weight:600; color:var(--text-5); font-size:0.7rem; transition:all 0.2s; white-space:nowrap;">4.급여정산</button>
+            <div class="admin-tabs" style="display:flex; flex-direction:column; gap:8px; margin-bottom:24px;">
+                <div class="admin-cats">
+                    <button class="admin-cat active" data-cat="acct" onclick="switchAdminCat('acct')">💰 회계·급여</button>
+                    <button class="admin-cat" data-cat="biz" onclick="switchAdminCat('biz')">📊 사업·통계</button>
+                    <button class="admin-cat" data-cat="file" onclick="switchAdminCat('file')">🗂️ 사진·문서</button>
                 </div>
-                
-                <div style="font-size:0.75rem; font-weight:700; color:var(--text-6); padding-left:4px; margin-top:4px; margin-bottom:-4px;">📊 사업/실적 마스터</div>
-                <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:6px; padding:4px; background:var(--surface-3); border-radius:8px;">
-                    <button class="tab-btn" id="tab-percent" onclick="switchAdminTab('percent')" style="padding:10px 4px; border:none; border-radius:6px; background:transparent; font-weight:600; color:var(--text-5); font-size:0.7rem; transition:all 0.2s; white-space:nowrap;">5.퍼센트</button>
-                    <button class="tab-btn" id="tab-target" onclick="switchAdminTab('target')" style="padding:10px 4px; border:none; border-radius:6px; background:transparent; font-weight:600; color:var(--text-5); font-size:0.7rem; transition:all 0.2s; white-space:nowrap;">6.목표달성</button>
-                    <button class="tab-btn" id="tab-ltc" onclick="switchAdminTab('ltc')" style="padding:10px 4px; border:none; border-radius:6px; background:transparent; font-weight:600; color:var(--text-5); font-size:0.7rem; transition:all 0.2s; white-space:nowrap;">7.장기요양</button>
-                    <button class="tab-btn" id="tab-youth" onclick="switchAdminTab('youth')" style="padding:10px 4px; border:none; border-radius:6px; background:transparent; font-weight:600; color:var(--text-5); font-size:0.7rem; transition:all 0.2s; white-space:nowrap;">8.자립청년</button>
+                <div class="admin-group" data-cat="acct" style="display:grid; grid-template-columns: repeat(4, 1fr); gap:6px; padding:4px; background:var(--surface-3); border-radius:10px;">
+                    <button class="tab-btn active" id="tab-vat" onclick="switchAdminTab('vat')" style="padding:10px 4px; border:none; border-radius:6px; background:var(--surface); font-weight:700; color:var(--primary); box-shadow:0 2px 4px rgba(0,0,0,0.05); font-size:0.72rem; transition:all 0.2s; white-space:nowrap;">부가세</button>
+                    <button class="tab-btn" id="tab-tax" onclick="switchAdminTab('tax')" style="padding:10px 4px; border:none; border-radius:6px; background:transparent; font-weight:600; color:var(--text-5); font-size:0.72rem; transition:all 0.2s; white-space:nowrap;">강사료 세금</button>
+                    <button class="tab-btn" id="tab-payroll" onclick="switchAdminTab('payroll')" style="padding:10px 4px; border:none; border-radius:6px; background:transparent; font-weight:600; color:var(--text-5); font-size:0.72rem; transition:all 0.2s; white-space:nowrap;">급여 정산</button>
+                    <button class="tab-btn" id="tab-budget" onclick="switchAdminTab('budget')" style="padding:10px 4px; border:none; border-radius:6px; background:transparent; font-weight:600; color:var(--text-5); font-size:0.72rem; transition:all 0.2s; white-space:nowrap;">단가 계산</button>
                 </div>
-
-                <div style="font-size:0.75rem; font-weight:700; color:var(--text-6); padding-left:4px; margin-top:4px; margin-bottom:-4px;">🗂️ 파일/문서 유틸리티</div>
-                <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:6px; padding:4px; background:var(--surface-3); border-radius:8px;">
-                    <button class="tab-btn" id="tab-mosaic" onclick="switchAdminTab('mosaic')" style="padding:10px 4px; border:none; border-radius:6px; background:transparent; font-weight:600; color:var(--text-5); font-size:0.7rem; transition:all 0.2s; white-space:nowrap;">9.모자이크</button>
-                    <button class="tab-btn" id="tab-compressor" onclick="switchAdminTab('compressor')" style="padding:10px 4px; border:none; border-radius:6px; background:transparent; font-weight:600; color:var(--text-5); font-size:0.7rem; transition:all 0.2s; white-space:nowrap;">10.사진압축</button>
-                    <button class="tab-btn" id="tab-converter" onclick="switchAdminTab('converter')" style="padding:10px 4px; border:none; border-radius:6px; background:transparent; font-weight:600; color:var(--text-5); font-size:0.7rem; transition:all 0.2s; white-space:nowrap;">11.포맷변환</button>
-                    <button class="tab-btn" id="tab-pdf" onclick="switchAdminTab('pdf')" style="padding:10px 4px; border:none; border-radius:6px; background:transparent; font-weight:600; color:var(--text-5); font-size:0.7rem; transition:all 0.2s; white-space:nowrap;">12.PDF압축</button>
+                <div class="admin-group" data-cat="biz" style="display:none; grid-template-columns: repeat(4, 1fr); gap:6px; padding:4px; background:var(--surface-3); border-radius:10px;">
+                    <button class="tab-btn" id="tab-ltc" onclick="switchAdminTab('ltc')" style="padding:10px 4px; border:none; border-radius:6px; background:transparent; font-weight:600; color:var(--text-5); font-size:0.72rem; transition:all 0.2s; white-space:nowrap;">장기요양</button>
+                    <button class="tab-btn" id="tab-youth" onclick="switchAdminTab('youth')" style="padding:10px 4px; border:none; border-radius:6px; background:transparent; font-weight:600; color:var(--text-5); font-size:0.72rem; transition:all 0.2s; white-space:nowrap;">자립청년</button>
+                    <button class="tab-btn" id="tab-target" onclick="switchAdminTab('target')" style="padding:10px 4px; border:none; border-radius:6px; background:transparent; font-weight:600; color:var(--text-5); font-size:0.72rem; transition:all 0.2s; white-space:nowrap;">목표 달성률</button>
+                    <button class="tab-btn" id="tab-percent" onclick="switchAdminTab('percent')" style="padding:10px 4px; border:none; border-radius:6px; background:transparent; font-weight:600; color:var(--text-5); font-size:0.72rem; transition:all 0.2s; white-space:nowrap;">퍼센트</button>
                 </div>
+                <div class="admin-group" data-cat="file" style="display:none; grid-template-columns: repeat(4, 1fr); gap:6px; padding:4px; background:var(--surface-3); border-radius:10px;">
+                    <button class="tab-btn" id="tab-mosaic" onclick="switchAdminTab('mosaic')" style="padding:10px 4px; border:none; border-radius:6px; background:transparent; font-weight:600; color:var(--text-5); font-size:0.72rem; transition:all 0.2s; white-space:nowrap;">사진 가리기</button>
+                    <button class="tab-btn" id="tab-compressor" onclick="switchAdminTab('compressor')" style="padding:10px 4px; border:none; border-radius:6px; background:transparent; font-weight:600; color:var(--text-5); font-size:0.72rem; transition:all 0.2s; white-space:nowrap;">사진 압축</button>
+                    <button class="tab-btn" id="tab-converter" onclick="switchAdminTab('converter')" style="padding:10px 4px; border:none; border-radius:6px; background:transparent; font-weight:600; color:var(--text-5); font-size:0.72rem; transition:all 0.2s; white-space:nowrap;">포맷 변환</button>
+                    <button class="tab-btn" id="tab-pdf" onclick="switchAdminTab('pdf')" style="padding:10px 4px; border:none; border-radius:6px; background:transparent; font-weight:600; color:var(--text-5); font-size:0.72rem; transition:all 0.2s; white-space:nowrap;">PDF 압축</button>
+                </div>
+            </div>
             </div>
 
                 <div id="admin-content-vat" class="tab-content" style="animation: fadeIn 0.3s ease;">
@@ -2214,7 +2215,7 @@ try {
                             </div>
                             <div style="display:none; justify-content:space-between; margin-top:12px;">
                                 <span style="font-weight:800; color:var(--primary); font-size:0.95rem;">W4C 복사용 서식</span>
-                                <button onclick="navigator.clipboard.writeText(document.getElementById('vat-copy-text').innerText); alert('복사되었습니다.')" style="background:#e0e7ff; color:var(--primary); border:none; border-radius:6px; padding:6px 12px; font-size:0.8rem; font-weight:800; cursor:pointer;">복사하기</button>
+                                <button onclick="navigator.clipboard.writeText(document.getElementById('vat-copy-text').innerText); alert('복사되었습니다.')" style="background:#dbeafe; color:var(--primary); border:none; border-radius:6px; padding:6px 12px; font-size:0.8rem; font-weight:800; cursor:pointer;">복사하기</button>
                             </div>
                             <div id="vat-copy-text" style="display:none; font-size:0.85rem; color:var(--text-4); margin-top:8px;">공급가액 0원 / 부가세 0원</div>
                         </div>
@@ -2225,9 +2226,9 @@ try {
                 <div id="admin-content-tax" class="tab-content" style="display:none; animation: fadeIn 0.3s ease;">
                     
                     <!-- 강사료 세금 계산기 -->
-                    <div class="step-card beautiful-card" style="margin-bottom:24px; padding:20px; border-color:#e0e7ff;">
-                        <h4 style="color:#4f46e5; font-weight:800; font-size:1.1rem; margin-bottom:8px;">🔬 강사료 세금 계산기</h4>
-                        <p style="font-size:0.8rem; color:#4338ca; margin-bottom:16px;">강사에게 지급하기로 한 총액(Gross) 입력 시 세금 및 실수령액 자동 정산</p>
+                    <div class="step-card beautiful-card" style="margin-bottom:24px; padding:20px; border-color:#dbeafe;">
+                        <h4 style="color:#2563eb; font-weight:800; font-size:1.1rem; margin-bottom:8px;">🔬 강사료 세금 계산기</h4>
+                        <p style="font-size:0.8rem; color:#1d4ed8; margin-bottom:16px;">강사에게 지급하기로 한 총액(Gross) 입력 시 세금 및 실수령액 자동 정산</p>
                         <div style="display:flex; gap:10px; margin-bottom:16px;">
                             <button id="btn-tax-business" onclick="setTaxType('business')" class="btn-primary" style="flex:1; background:var(--primary); padding:10px 0; font-size:0.9rem;">사업소득 (3.3%)</button>
                             <button id="btn-tax-other" onclick="setTaxType('other')" class="btn-primary btn-outline" style="flex:1; padding:10px 0; font-size:0.9rem;">기타소득 (8.8%)</button>
@@ -2239,13 +2240,13 @@ try {
                             <input type="number" id="instructor-input" class="calc-input" placeholder="예: 240000" oninput="calcInstructorTax()" style="font-size:1.1rem; padding:12px;">
                         </div>
                         
-                        <div style="background:#eef2ff; border:1px solid #c7d2fe; border-radius:12px; padding:16px;">
-                            <div style="display:flex; justify-content:space-between; margin-bottom:12px; padding-bottom:8px; border-bottom:1px solid #c7d2fe;">
-                                <span id="inst-tax-label" style="font-weight:600; color:#4f46e5; font-size:0.9rem;">사업소득세 (3.3%)</span>
-                                <span id="inst-tax-total" style="font-weight:700; color:#3730a3;">0원</span>
+                        <div style="background:#eff6ff; border:1px solid #bfdbfe; border-radius:12px; padding:16px;">
+                            <div style="display:flex; justify-content:space-between; margin-bottom:12px; padding-bottom:8px; border-bottom:1px solid #bfdbfe;">
+                                <span id="inst-tax-label" style="font-weight:600; color:#2563eb; font-size:0.9rem;">사업소득세 (3.3%)</span>
+                                <span id="inst-tax-total" style="font-weight:700; color:#1e40af;">0원</span>
                             </div>
                             <div style="display:flex; justify-content:space-between;">
-                                <span style="font-weight:800; color:#312e81; font-size:1rem;">💰 강사 실수령액</span>
+                                <span style="font-weight:800; color:#1e3a8a; font-size:1rem;">💰 강사 실수령액</span>
                                 <span id="inst-net" style="font-weight:900; color:#e11d48; font-size:1.2rem;">0원</span>
                             </div>
                         </div>
@@ -2460,7 +2461,7 @@ try {
                                             <span id="net-ratio">0%</span>
                                         </div>
                                         <div style="height:8px; background:rgba(255,255,255,0.1); border-radius:10px; overflow:hidden;">
-                                            <div id="net-bar" style="height:100%; width:0%; background:linear-gradient(90deg, #ec4899, #8b5cf6); transition:width 0.5s cubic-bezier(0.4, 0, 0.2, 1);"></div>
+                                            <div id="net-bar" style="height:100%; width:0%; background:linear-gradient(90deg, #ec4899, #3b82f6); transition:width 0.5s cubic-bezier(0.4, 0, 0.2, 1);"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -2470,13 +2471,13 @@ try {
 
                         <!-- 🤓 신입을 위한 급여 계산 설명 토글 -->
                         <div style="margin-top:20px; text-align:center;">
-                            <button onclick="togglePayrollGuide()" id="btn-payroll-guide" style="background:linear-gradient(135deg, #f0abfc 0%, #818cf8 100%); color:white; border:none; border-radius:12px; padding:12px 24px; font-size:0.9rem; font-weight:800; cursor:pointer; transition:all 0.3s; box-shadow:0 4px 12px rgba(129,140,248,0.3);">
+                            <button onclick="togglePayrollGuide()" id="btn-payroll-guide" style="background:linear-gradient(135deg, #f0abfc 0%, #60a5fa 100%); color:white; border:none; border-radius:12px; padding:12px 24px; font-size:0.9rem; font-weight:800; cursor:pointer; transition:all 0.3s; box-shadow:0 4px 12px rgba(129,140,248,0.3);">
                                 🤓 이게 뭔 소리야? (설명 보기)
                             </button>
                         </div>
                         <div id="payroll-guide-panel" style="display:none; margin-top:16px; animation: fadeIn 0.3s ease;">
                             <div style="background:linear-gradient(135deg, #faf5ff 0%, #eff6ff 100%); border-radius:20px; padding:24px; border:1px solid #e9d5ff;">
-                                <div style="font-size:1.1rem; font-weight:900; color:#7c3aed; margin-bottom:16px; display:flex; align-items:center; gap:8px;">
+                                <div style="font-size:1.1rem; font-weight:900; color:#2563eb; margin-bottom:16px; display:flex; align-items:center; gap:8px;">
                                     📚 신입 사복이를 위한 급여명세서 해설서
                                 </div>
 
@@ -2501,8 +2502,8 @@ try {
                                     </div>
 
                                     <!-- 연장수당 -->
-                                    <div style="background:var(--surface); border-radius:14px; padding:14px; border-left:4px solid #8b5cf6;">
-                                        <div style="font-weight:800; color:#5b21b6; font-size:0.9rem; margin-bottom:4px;">🌙 연장근무수당 = 통상시급 × 1.5배 × 시간</div>
+                                    <div style="background:var(--surface); border-radius:14px; padding:14px; border-left:4px solid #3b82f6;">
+                                        <div style="font-weight:800; color:#1e40af; font-size:0.9rem; margin-bottom:4px;">🌙 연장근무수당 = 통상시급 × 1.5배 × 시간</div>
                                         <div style="font-size:0.8rem; color:#78716c; line-height:1.6;">
                                             야근하면 시급의 <strong>1.5배</strong>를 받아요! (50% 가산)<br>
                                             "야근비가 왜 이것밖에 안 돼?" → 시급 기준이라 그래요… 😢<br>
@@ -2537,7 +2538,7 @@ try {
                                                 어르신들 요양 서비스 비용! 건강보험에 덧붙여서 나가요 👴
                                             </div>
                                             <div>
-                                                <strong style="color:#9333ea;">④ 고용보험 (~0.9%)</strong><br>
+                                                <strong style="color:#2563eb;">④ 고용보험 (~0.9%)</strong><br>
                                                 실직하면 실업급여 받을 수 있는 보험! 미래의 안전망이에요 🪂
                                             </div>
                                         </div>
@@ -3005,19 +3006,19 @@ try {
             <div id="admin-content-mosaic" class="tab-content" style="display:none; animation: fadeIn 0.3s ease;">
                 <style>
                     .mosaic-drop-zone { border:2px dashed var(--border-strong); border-radius:16px; padding:30px 20px; text-align:center; background:var(--surface); cursor:pointer; transition:all 0.2s; margin-bottom:20px; }
-                    .mosaic-drop-zone:hover, .mosaic-drop-zone.dragover { border-color:#8b5cf6; background:#f5f3ff; }
+                    .mosaic-drop-zone:hover, .mosaic-drop-zone.dragover { border-color:#3b82f6; background:#eff6ff; }
                     .mosaic-editor { display:none; flex-direction:column; align-items:center; background:var(--surface-2); padding:16px; border-radius:12px; border:1px solid var(--border); margin-bottom:20px; }
                     .mosaic-editor.visible { display:flex; }
                     .canvas-wrapper { position:relative; max-width:100%; border:1px solid var(--border-strong); border-radius:8px; overflow:hidden; background:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAMUlEQVQ4T2NkYGAQYcAP3hKhf+FIBkYGIg0YvA0YxmgwpIFiNPzRMJqMRsMoGhgAAAD//8oUCPwAAAAASUVORK5CYII=') repeat; cursor:crosshair; touch-action:none; }
                     .canvas-wrapper canvas { display:block; max-width:100%; height:auto; }
                     .mosaic-toolbar { display:flex; gap:8px; flex-wrap:wrap; justify-content:center; margin-top:16px; width:100%; }
                     .mosaic-toolbar button { padding:8px 12px; font-size:0.85rem; font-weight:700; border-radius:8px; border:none; cursor:pointer; transition:all 0.2s; }
-                    .btn-tool-active { background:#8b5cf6; color:white; }
+                    .btn-tool-active { background:#3b82f6; color:white; }
                     .btn-tool { background:var(--surface-4); color:var(--text-4); }
                     .btn-tool:hover { background:#cbd5e1; }
                 </style>
-                <div class="compressor-container step-card beautiful-card" style="padding:20px; border-color:#c4b5fd;">
-                    <h4 style="color:#6d28d9; font-weight:800; font-size:1.1rem; margin-bottom:8px; text-align:center;">🔲 사진 모자이크 (개인정보 가리기)</h4>
+                <div class="compressor-container step-card beautiful-card" style="padding:20px; border-color:#93c5fd;">
+                    <h4 style="color:#1d4ed8; font-weight:800; font-size:1.1rem; margin-bottom:8px; text-align:center;">🔲 사진 모자이크 (개인정보 가리기)</h4>
                     <p style="text-align:center; color:var(--text-5); font-size:0.85rem; margin-bottom:20px;">손가락이나 마우스로 쓱쓱 문질러 민감한 정보를 안전하게 가리세요</p>
 
                     <div class="mosaic-drop-zone" id="mosaicDropZone">
@@ -3042,7 +3043,7 @@ try {
                         <div class="mosaic-toolbar" style="margin-top:10px;">
                             <div style="width:100%; text-align:center; margin-bottom:4px; font-size:0.85rem; font-weight:700; color:var(--text-4);">브러시 굵기</div>
                             <button class="btn-tool" id="btnMosSizeS">얇게</button>
-                            <button class="btn-tool" id="btnMosSizeM" style="background:#8b5cf6; color:white;">보통</button>
+                            <button class="btn-tool" id="btnMosSizeM" style="background:#3b82f6; color:white;">보통</button>
                             <button class="btn-tool" id="btnMosSizeL">두껍게</button>
                             <button class="btn-tool" id="btnMosSizeXL">아주 두껍게</button>
                         </div>
@@ -3523,18 +3524,18 @@ try {
         { key: 'target', name: '목표달성률', desc: '사업 실적 달성률 즉시 확인', tint: '#fff7ed' },
         { key: 'ltc', name: '장기요양 한도', desc: '등급별 한도·본인부담금', tint: '#ecfeff' },
         { key: 'youth', name: '자립청년 연령', desc: '보호종료·자립수당 기준', tint: '#f0fdf4' },
-        { key: 'mosaic', name: '사진 모자이크', desc: '개인정보 가리기(기기 처리)', tint: '#f5f3ff' },
+        { key: 'mosaic', name: '사진 모자이크', desc: '개인정보 가리기(기기 처리)', tint: '#eff6ff' },
         { key: 'compressor', name: '사진 압축', desc: '첨부용 이미지 용량 줄이기', tint: '#eff6ff' },
         { key: 'converter', name: '포맷 변환', desc: 'HEIC·PNG·JPG 상호 변환', tint: '#fdf4ff' },
         { key: 'pdf', name: 'PDF 압축', desc: '공문·첨부 파일 용량 줄이기', tint: '#fef2f2' },
     ];
     const ALL_TOOLS = [
-        { id: 'prompter', group: '주요 도구', icon: '🪄', name: '비밀 프롬프트', desc: '사례기록·보고서 AI 주문', tint: '#eef2ff', act: () => document.getElementById('open-ai-prompter').click() },
+        { id: 'prompter', group: '주요 도구', icon: '🪄', name: '비밀 프롬프트', desc: '사례기록·보고서 AI 주문', tint: '#eff6ff', act: () => document.getElementById('open-ai-prompter').click() },
         { id: 'admin', group: '주요 도구', icon: '💸', name: '행정/회계 마스터', desc: '12가지 계산기 모두 열기', tint: '#ecfdf5', act: () => document.getElementById('open-admin-calc').click() },
         { id: 'voca', group: '주요 도구', icon: '📖', name: '생존 단어장', desc: '초보 복지사 용어 사전', tint: '#fffbeb', act: () => document.getElementById('open-voca-dict').click() },
         { id: 'eligibility', group: '주요 도구', icon: '💰', name: '수급판정 계산', desc: '기초수급·차상위 기준', tint: '#fef2f2', act: () => document.getElementById('calc-eligibility').click() },
         { id: 'dashboard', group: '주요 도구', icon: '📊', name: '핵심 지표', desc: '중위소득·장기요양 수가', tint: '#f1f5f9', act: () => document.getElementById('open-dashboard').click() },
-        { id: 'newsletter', group: '주요 도구', icon: '💌', name: '비밀 편지', desc: '사복천재의 뉴스레터', tint: '#f5f3ff', act: () => document.getElementById('open-newsletter-read').click() },
+        { id: 'newsletter', group: '주요 도구', icon: '💌', name: '비밀 편지', desc: '사복천재의 뉴스레터', tint: '#eff6ff', act: () => document.getElementById('open-newsletter-read').click() },
         { id: 'support', group: '주요 도구', icon: '🔍', name: '지원정보 찾기', desc: '맞춤형 복지서비스 검색', tint: '#eff6ff', act: () => window.open('https://bok-jumoney.vercel.app', '_blank') },
         { id: 'request', group: '주요 도구', icon: '🙋', name: '요청하기', desc: '필요한 프롬프트·용어 요청', tint: '#fefce8', act: () => document.getElementById('open-request-modal').click() },
         // 행정/회계 마스터 12개 계산기 (그룹으로 표시)
@@ -3726,8 +3727,20 @@ try {
         }, 140);
     };
 
+    // 행정/회계 마스터: 분류(회계·급여 / 사업·통계 / 사진·문서) 전환 — 고른 분류의 4개 탭만 보여준다
+    window.switchAdminCat = function (cat, openFirst = true) {
+        document.querySelectorAll('.admin-group').forEach(g => { g.style.display = g.dataset.cat === cat ? 'grid' : 'none'; });
+        document.querySelectorAll('.admin-cat').forEach(b => b.classList.toggle('active', b.dataset.cat === cat));
+        if (openFirst) {
+            const first = document.querySelector('.admin-group[data-cat="' + cat + '"] .tab-btn');
+            if (first) switchAdminTab(first.id.replace('tab-', ''));
+        }
+    };
+
     window.switchAdminTab = function (tabName, fromUserClick = true) {
         if (fromUserClick) recordToolUsage(tabName);
+        const ownGroup = document.getElementById('tab-' + tabName)?.closest('.admin-group');
+        if (ownGroup && ownGroup.style.display === 'none') switchAdminCat(ownGroup.dataset.cat, false);
         const contentVat = document.getElementById('admin-content-vat');
         const contentTax = document.getElementById('admin-content-tax');
         const contentLtc = document.getElementById('admin-content-ltc');
@@ -4092,7 +4105,7 @@ try {
         } else {
             panel.style.display = 'none';
             btn.innerHTML = '🤓 이게 뭔 소리야? (설명 보기)';
-            btn.style.background = 'linear-gradient(135deg, #f0abfc 0%, #818cf8 100%)';
+            btn.style.background = 'linear-gradient(135deg, #f0abfc 0%, #60a5fa 100%)';
         }
     };
 
@@ -4571,7 +4584,7 @@ try {
                 </div>
                 <div style="flex:1; min-width:0;">
                     <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
-                        <span style="background:#e0e7ff; color:#4f46e5; font-size:0.68rem; font-weight:800; padding:2px 8px; border-radius:20px; white-space:nowrap; flex-shrink:0;">${item.category}</span>
+                        <span style="background:#dbeafe; color:#2563eb; font-size:0.68rem; font-weight:800; padding:2px 8px; border-radius:20px; white-space:nowrap; flex-shrink:0;">${item.category}</span>
                     </div>
                     <h4 style="font-size:1.05rem; font-weight:800; color:var(--text-dark); margin:0 0 8px 0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${item.word}</h4>
                     <p style="font-size:0.9rem; color:var(--text-2); line-height:1.5; font-weight:600; margin-bottom:8px;">${item.meaning}</p>
@@ -4649,7 +4662,7 @@ try {
                 html += `
                 <div style="background:var(--surface); border-radius:16px; padding:18px; border:1px solid var(--border); box-shadow:var(--shadow-card); cursor:pointer;" onclick="openQaDetail('${post.id}')">
                     <div style="display:flex; gap:8px; margin-bottom:10px;">
-                        <span style="background:#e0e7ff; color:#4338ca; font-size:0.7rem; font-weight:800; padding:4px 8px; border-radius:12px;">${escapeHtml(post.category) || '일반'}</span>
+                        <span style="background:#dbeafe; color:#1d4ed8; font-size:0.7rem; font-weight:800; padding:4px 8px; border-radius:12px;">${escapeHtml(post.category) || '일반'}</span>
                     </div>
                     <div style="font-size:1.05rem; font-weight:800; color:var(--text-900); line-height:1.4; margin-bottom:8px;">${escapeHtml(post.title)}</div>
                     <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.8rem; color:var(--text-6);">
@@ -4906,7 +4919,7 @@ try {
                 repliesHtml += `
                 <div id="reply-item-${r.id}" style="background:var(--surface-2); padding:16px; border-radius:14px; border:1px solid var(--border); margin-bottom:12px;">
                     <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
-                        <span style="font-weight:800; font-size:0.85rem; color:var(--text-900);">${escapeHtml(r.author)}${isMyReply ? ' <span style="font-size:0.7rem; background:#e0e7ff; color:#4338ca; padding:2px 6px; border-radius:8px;">나</span>' : ''}</span>
+                        <span style="font-weight:800; font-size:0.85rem; color:var(--text-900);">${escapeHtml(r.author)}${isMyReply ? ' <span style="font-size:0.7rem; background:#dbeafe; color:#1d4ed8; padding:2px 6px; border-radius:8px;">나</span>' : ''}</span>
                         <span style="font-size:0.75rem; color:var(--text-6);">${formatDate(r.created_at)}</span>
                     </div>
                     <div style="font-size:0.9rem; color:var(--text-4); line-height:1.5;">${escapeHtml(r.content)}</div>
@@ -4928,7 +4941,7 @@ try {
             const modalContent = `
             <div style="display:flex; flex-direction:column; gap:20px;">
                 <div style="padding-bottom:16px; border-bottom:1px solid var(--border);">
-                    <span style="background:#e0e7ff; color:#4338ca; font-size:0.75rem; font-weight:800; padding:4px 10px; border-radius:12px; display:inline-block; margin-bottom:12px;">${escapeHtml(post.category)}</span>
+                    <span style="background:#dbeafe; color:#1d4ed8; font-size:0.75rem; font-weight:800; padding:4px 10px; border-radius:12px; display:inline-block; margin-bottom:12px;">${escapeHtml(post.category)}</span>
                     <h3 style="font-size:1.3rem; font-weight:900; color:var(--text-900); line-height:1.4; margin-bottom:12px;">${escapeHtml(post.title)}</h3>
                     <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.85rem; color:var(--text-5);">
                         <span>${escapeHtml(post.author)}</span>
@@ -5262,11 +5275,11 @@ try {
 
             let html = '';
             data.forEach(post => {
-                let badgeColor = '#e0e7ff';
-                let textColor = '#4338ca';
+                let badgeColor = '#dbeafe';
+                let textColor = '#1d4ed8';
                 if (post.category === '정보 공유방') { badgeColor = '#fee2e2'; textColor = '#b91c1c'; }
                 if (post.category === '취업/이직') { badgeColor = '#dcfce3'; textColor = '#15803d'; }
-                if (post.category === '썰게시판') { badgeColor = '#f3e8ff'; textColor = '#7e22ce'; }
+                if (post.category === '썰게시판') { badgeColor = '#f3e8ff'; textColor = '#1d4ed8'; }
                 if (post.category === '하루일기') { badgeColor = '#fef3c7'; textColor = '#b45309'; }
 
                 html += `
@@ -5422,7 +5435,7 @@ try {
                 repliesHtml += `
                 <div id="comm-reply-item-${r.id}" style="background:var(--surface-2); padding:16px; border-radius:14px; border:1px solid var(--border); margin-bottom:12px;">
                     <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
-                        <span style="font-weight:800; font-size:0.85rem; color:var(--text-900);">${escapeHtml(r.author)}${isMyReply ? ' <span style="font-size:0.7rem; background:#e0e7ff; color:#4338ca; padding:2px 6px; border-radius:8px;">나</span>' : ''}</span>
+                        <span style="font-weight:800; font-size:0.85rem; color:var(--text-900);">${escapeHtml(r.author)}${isMyReply ? ' <span style="font-size:0.7rem; background:#dbeafe; color:#1d4ed8; padding:2px 6px; border-radius:8px;">나</span>' : ''}</span>
                         <span style="font-size:0.75rem; color:var(--text-6);">${formatDate(r.created_at)}</span>
                     </div>
                     <div style="font-size:0.9rem; color:var(--text-4); line-height:1.5;">${escapeHtml(r.content)}</div>
@@ -5432,11 +5445,11 @@ try {
             `;
             });
 
-            let badgeColor = '#e0e7ff';
-            let textColor = '#4338ca';
+            let badgeColor = '#dbeafe';
+            let textColor = '#1d4ed8';
             if (post.category === '정보 공유방') { badgeColor = '#fee2e2'; textColor = '#b91c1c'; }
             if (post.category === '취업/이직') { badgeColor = '#dcfce3'; textColor = '#15803d'; }
-            if (post.category === '썰게시판') { badgeColor = '#f3e8ff'; textColor = '#7e22ce'; }
+            if (post.category === '썰게시판') { badgeColor = '#f3e8ff'; textColor = '#1d4ed8'; }
             if (post.category === '하루일기') { badgeColor = '#fef3c7'; textColor = '#b45309'; }
 
             // 내가 쓴 글인지 확인
@@ -5872,7 +5885,7 @@ try {
         const levels = [
             { max: 50, name: '🌱 열정 가득 인턴요원', color: '#16a34a', bg: '#dcfce7' },
             { max: 150, name: '🌿 믿음직한 주임요원', color: '#0284c7', bg: '#e0f2fe' },
-            { max: 400, name: '🌳 실력파 대리요원', color: '#7c3aed', bg: '#ede9fe' },
+            { max: 400, name: '🌳 실력파 대리요원', color: '#0f766e', bg: '#ccfbf1' },
             { max: 1000, name: '🔥 현장의 마스터 (과장)', color: '#ea580c', bg: '#ffedd5' },
             { max: Infinity, name: '👑 살아있는 전설 (부장 이상)', color: '#b91c1c', bg: '#fee2e2' }
         ];
@@ -5936,7 +5949,7 @@ try {
 
             let html = '';
             data.forEach(post => {
-                let badgeColor = '#e0e7ff', textColor = '#4338ca';
+                let badgeColor = '#dbeafe', textColor = '#1d4ed8';
                 if (post.category === '정보 공유방') { badgeColor = '#fee2e2'; textColor = '#b91c1c'; }
                 if (post.category === '취업/이직') { badgeColor = '#dcfce3'; textColor = '#15803d'; }
 
@@ -6014,22 +6027,22 @@ try {
         // XP/레벨 안내
         const xpGuideContent = `
         <div style="font-size:0.88rem; color:var(--text-3); line-height:1.8;">
-            <div style="background:linear-gradient(135deg,#6366f1,#8b5cf6); color:#fff; border-radius:16px; padding:16px; margin-bottom:20px; text-align:center;">
+            <div style="background:linear-gradient(135deg,#3b82f6,#3b82f6); color:#fff; border-radius:16px; padding:16px; margin-bottom:20px; text-align:center;">
                 <div style="font-size:2rem; margin-bottom:6px;">⚡</div>
                 <div style="font-size:1rem; font-weight:900; margin-bottom:4px;">XP(경험치) 시스템</div>
                 <div style="font-size:0.82rem; opacity:0.85;">활동하면 할수록 등급이 올라가요!</div>
             </div>
 
             <div style="margin-bottom:20px;">
-                <div style="font-size:0.78rem; font-weight:800; color:#6366f1; margin-bottom:10px; letter-spacing:0.5px;">💰 XP 획득 방법</div>
+                <div style="font-size:0.78rem; font-weight:800; color:#3b82f6; margin-bottom:10px; letter-spacing:0.5px;">💰 XP 획득 방법</div>
                 <div style="display:flex; flex-direction:column; gap:8px;">
                     <div style="display:flex; justify-content:space-between; align-items:center; background:var(--surface-2); padding:10px 14px; border-radius:10px; border:1px solid var(--border);">
                         <span style="font-weight:700;">✍️ 질문/게시글 작성</span>
-                        <span style="font-weight:900; color:#6366f1; font-size:1rem;">+5 XP</span>
+                        <span style="font-weight:900; color:#3b82f6; font-size:1rem;">+5 XP</span>
                     </div>
                     <div style="display:flex; justify-content:space-between; align-items:center; background:var(--surface-2); padding:10px 14px; border-radius:10px; border:1px solid var(--border);">
                         <span style="font-weight:700;">💬 답변/댓글 작성</span>
-                        <span style="font-weight:900; color:#6366f1; font-size:1rem;">+15 XP</span>
+                        <span style="font-weight:900; color:#3b82f6; font-size:1rem;">+15 XP</span>
                     </div>
                     <div style="display:flex; justify-content:space-between; align-items:center; background:var(--surface-2); padding:10px 14px; border-radius:10px; border:1px solid var(--border);">
                         <span style="font-weight:700;">🙏 채택/감사 받기</span>
@@ -6039,7 +6052,7 @@ try {
             </div>
 
             <div>
-                <div style="font-size:0.78rem; font-weight:800; color:#6366f1; margin-bottom:10px; letter-spacing:0.5px;">🏆 등급 기준표</div>
+                <div style="font-size:0.78rem; font-weight:800; color:#3b82f6; margin-bottom:10px; letter-spacing:0.5px;">🏆 등급 기준표</div>
                 <div style="display:flex; flex-direction:column; gap:6px;">
                     <div style="display:flex; align-items:center; gap:10px; padding:10px 14px; background:#dcfce7; border-radius:10px; border:1px solid #bbf7d0;">
                         <span style="font-size:1.1rem;">🌱</span>
@@ -6057,13 +6070,13 @@ try {
                         </div>
                         <span style="font-size:0.75rem; color:#0284c7; font-weight:700; background:#bae6fd; padding:2px 8px; border-radius:8px;">Lv.2</span>
                     </div>
-                    <div style="display:flex; align-items:center; gap:10px; padding:10px 14px; background:#ede9fe; border-radius:10px; border:1px solid #ddd6fe;">
+                    <div style="display:flex; align-items:center; gap:10px; padding:10px 14px; background:#dbeafe; border-radius:10px; border:1px solid #bfdbfe;">
                         <span style="font-size:1.1rem;">🌳</span>
                         <div style="flex:1;">
-                            <div style="font-weight:800; color:#6d28d9; font-size:0.9rem;">실력파 대리요원</div>
-                            <div style="font-size:0.75rem; color:#4c1d95;">150 ~ 399 XP</div>
+                            <div style="font-weight:800; color:#1d4ed8; font-size:0.9rem;">실력파 대리요원</div>
+                            <div style="font-size:0.75rem; color:#1e3a8a;">150 ~ 399 XP</div>
                         </div>
-                        <span style="font-size:0.75rem; color:#7c3aed; font-weight:700; background:#ddd6fe; padding:2px 8px; border-radius:8px;">Lv.3</span>
+                        <span style="font-size:0.75rem; color:#2563eb; font-weight:700; background:#bfdbfe; padding:2px 8px; border-radius:8px;">Lv.3</span>
                     </div>
                     <div style="display:flex; align-items:center; gap:10px; padding:10px 14px; background:#ffedd5; border-radius:10px; border:1px solid #fed7aa;">
                         <span style="font-size:1.1rem;">🔥</span>
@@ -6085,7 +6098,7 @@ try {
             </div>
 
             <div style="margin-top:16px; padding:12px; background:var(--surface-3); border-radius:12px; font-size:0.8rem; color:var(--text-5); line-height:1.6;">
-                💡 <strong>팁:</strong> 질문보다 <strong style="color:#6366f1;">답변을 작성</strong>하면 3배 더 많은 XP를 획득할 수 있어요! 내가 쓴 답변은 수정·삭제도 가능합니다.
+                💡 <strong>팁:</strong> 질문보다 <strong style="color:#3b82f6;">답변을 작성</strong>하면 3배 더 많은 XP를 획득할 수 있어요! 내가 쓴 답변은 수정·삭제도 가능합니다.
             </div>
         </div>`;
 
@@ -6585,7 +6598,7 @@ try {
                 });
 
                 results.forEach((r, i) => {
-                    ctx.fillStyle = '#3730A3';
+                    ctx.fillStyle = '#1e40af';
                     const displayResult = r.length > (n > 10 ? 4 : 6) ? r.slice(0, n > 10 ? 3 : 5)+'…' : r;
                     ctx.fillText(displayResult, cols[i], botY + 18);
                 });
@@ -7503,7 +7516,7 @@ try {
         if (lineCount === 0) return { emoji: '🌱', name: '새싹 복지사', desc: '아직 현장의 매운맛을 다 못 보셨군요! 그 순수함, 오래 지켜지길 바라요.', color: '#10b981', color2: '#059669' };
         if (lineCount <= 2) return { emoji: '💪', name: '적응 완료 복지사', desc: '슬슬 짬바가 차오르는 중. 이제 웬만한 일엔 놀라지 않죠?', color: '#3b82f6', color2: '#2563eb' };
         if (lineCount <= 5) return { emoji: '🔥', name: '중견 고인물', desc: '현장 만렙까지 얼마 안 남았어요. 후배들이 슬슬 기대기 시작합니다.', color: '#f59e0b', color2: '#ea580c' };
-        if (lineCount <= 8) return { emoji: '🏆', name: '전설의 고인물', desc: '이 구역의 산증인. 선생님 없으면 기관이 안 돌아갑니다.', color: '#8b5cf6', color2: '#6d28d9' };
+        if (lineCount <= 8) return { emoji: '🏆', name: '전설의 고인물', desc: '이 구역의 산증인. 선생님 없으면 기관이 안 돌아갑니다.', color: '#14b8a6', color2: '#0f766e' };
         return { emoji: '🚨', name: '소진 주의보', desc: '너무 많은 걸 겪으셨어요... 오늘은 감정 파쇄기에 다 털어놓고 가세요.', color: '#ef4444', color2: '#b91c1c' };
     }
 
@@ -7941,15 +7954,15 @@ try {
                 b.style.background = 'var(--surface-4)';
                 b.style.color = 'var(--text-4)';
             });
-            btn.style.background = '#8b5cf6';
+            btn.style.background = '#3b82f6';
             btn.style.color = 'white';
         };
 
         const modeGroup = [btnBlack, btnPixel, btnBlur];
         const setModeActive = (btn) => {
             modeGroup.forEach(b => { if (!b) return; b.style.background = 'var(--surface-4)'; b.style.color = 'var(--text-4)'; });
-            // 완전가림은 검정, 나머지는 보라로 활성 표시
-            btn.style.background = (btn === btnBlack) ? '#111827' : '#8b5cf6';
+            // 완전가림은 검정, 나머지는 파랑으로 활성 표시
+            btn.style.background = (btn === btnBlack) ? '#111827' : '#3b82f6';
             btn.style.color = 'white';
         };
         if (btnBlack) btnBlack.onclick = () => { mode = 'black'; setModeActive(btnBlack); };

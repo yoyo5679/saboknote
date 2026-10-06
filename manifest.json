@@ -1,7 +1,7 @@
 {
   "name": "사회복지사 비밀노트",
   "short_name": "비밀노트",
-  "description": "사회복지사를 위한 익명 커뮤니티 및 실무 계산기 플랫폼",
+  "description": "사회복지사 서류·계산을 1분 만에 끝내는 실무 도구 모음 — AI 프롬프트·행정/회계 계산기·익명 Q&A",
   "start_url": "/index.html",
   "display": "standalone",
   "background_color": "#ffffff",
