@@ -56,7 +56,7 @@
     <link rel="icon"
         href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>">
 
-    <link rel="stylesheet" href="index.css?v=3">
+    <link rel="stylesheet" href="index.css?v=4">
     <link rel="stylesheet" as="style" crossorigin
         href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -111,7 +111,7 @@
             <span class="logo-badge">🌿</span>
             <div>
                 <div class="side-brand-name">사복노트</div>
-                <div class="side-brand-sub">사회복지사 비밀노트</div>
+                <div class="side-brand-sub">서류·계산 1분 컷</div>
             </div>
         </div>
         <div class="side-nav-items">
@@ -121,14 +121,15 @@
                     class="side-ico">🆘</span>도와줘요</button>
             <button class="side-item" id="snav-community" onclick="switchView('community')"><span
                     class="side-ico">💬</span>커뮤니티</button>
-            <button class="side-item" id="snav-shredder" onclick="switchView('shredder')"><span
-                    class="side-ico">🗑️</span>감정 파쇄기</button>
-            <button class="side-item" id="snav-playground" onclick="switchView('playground')"><span
-                    class="side-ico">🎢</span>놀이터</button>
             <button class="side-item" id="snav-treasure" onclick="switchView('treasure')"><span
                     class="side-ico">🍯</span>보물창고</button>
             <button class="side-item" id="snav-mypage" onclick="switchView('mypage')"><span
                     class="side-ico">👤</span>내 정보</button>
+            <div class="side-group-label">☕ 쉬어가기</div>
+            <button class="side-item" id="snav-shredder" onclick="switchView('shredder')"><span
+                    class="side-ico">🗑️</span>감정 파쇄기</button>
+            <button class="side-item" id="snav-playground" onclick="switchView('playground')"><span
+                    class="side-ico">🎢</span>놀이터</button>
         </div>
         <button class="side-profile" onclick="switchView('mypage')">
             <span class="side-profile-emoji">🦊</span>
@@ -167,7 +168,7 @@
                     <div class="hero-v2-inner">
                         <div class="hero-v2-eyebrow">✨ 사회복지사가 행복해야 현장이 행복합니다</div>
                         <h2 class="hero-v2-title">안녕하세요, <span id="home-nick">사복인</span>님 🌿</h2>
-                        <p class="hero-v2-sub">AI 프롬프트로 서류 뚝딱, 행정/회계 계산은 1초 컷!</p>
+                        <p class="hero-v2-sub">사회복지사 서류·계산을 <b>1분 만에</b> 끝내는 곳</p>
                         <form class="hero-v2-search" onsubmit="return homeSearch(event)">
                             <input id="home-search-input" type="search" placeholder="🔍 복지 용어 검색 (예: 품의서, 수급판정)"
                                 autocomplete="off">
@@ -273,16 +274,30 @@
                     </div>
                 </aside>
 
-                <!-- ⑥ 사복놀이터 배너 -->
+                <!-- ⑥ 쉬어가기 (감정 파쇄기 · 사복놀이터) -->
                 <section class="sec" style="padding-bottom: 0;">
-                    <button class="playground-banner" onclick="switchView('playground')">
-                        <span style="font-size:1.7rem;">🎢</span>
-                        <span style="flex:1; text-align:left;">
-                            <span class="pb-title">잠깐 쉬어갈까요? 사복놀이터</span>
-                            <span class="pb-desc">심리테스트 · 공감 빙고 · 점심 메뉴 추천</span>
-                        </span>
-                        <span style="font-size:1rem; color:var(--text-6);">→</span>
-                    </button>
+                    <div class="sec-head">
+                        <div class="sec-head-l">
+                            <span class="sec-title">☕ 쉬어가기</span>
+                            <span class="sec-sub">일하다 지칠 땐 잠깐 숨 돌려요</span>
+                        </div>
+                    </div>
+                    <div class="rest-grid">
+                        <button class="playground-banner" onclick="switchView('shredder')">
+                            <span style="font-size:1.6rem;">🗑️</span>
+                            <span style="flex:1; text-align:left; min-width:0;">
+                                <span class="pb-title">감정 파쇄기</span>
+                                <span class="pb-desc">속상한 마음, 적고 갈아버리기</span>
+                            </span>
+                        </button>
+                        <button class="playground-banner" onclick="switchView('playground')">
+                            <span style="font-size:1.6rem;">🎢</span>
+                            <span style="flex:1; text-align:left; min-width:0;">
+                                <span class="pb-title">사복놀이터</span>
+                                <span class="pb-desc">심리테스트·빙고·점심 메뉴</span>
+                            </span>
+                        </button>
+                    </div>
                 </section>
 
                 <!-- ⑦ 무엇이든 물어보살 (기능·프롬프트 요청) -->
@@ -566,15 +581,15 @@
                                 🔄 계정 동기화 (기기 변경/백업)</div>
 
                             <div
-                                style="background:#f5f3ff; padding:14px; border-radius:12px; margin-bottom:16px; border:1px solid #ddd6fe;">
-                                <div style="font-size:0.7rem; color:#7c3aed; margin-bottom:4px; font-weight:800;">내 동기화
+                                style="background:#eff6ff; padding:14px; border-radius:12px; margin-bottom:16px; border:1px solid #bfdbfe;">
+                                <div style="font-size:0.7rem; color:#2563eb; margin-bottom:4px; font-weight:800;">내 동기화
                                     코드 (매우 중요!)</div>
                                 <div style="display:flex; align-items:center; justify-content:space-between;">
                                     <div id="my-sync-code"
-                                        style="font-size:1.2rem; font-weight:900; color:#4338ca; letter-spacing:0.5px;">
+                                        style="font-size:1.2rem; font-weight:900; color:#1d4ed8; letter-spacing:0.5px;">
                                         -</div>
                                     <button onclick="copySyncCode()"
-                                        style="background:var(--surface); border:1px solid #ddd6fe; border-radius:6px; padding:4px 8px; font-size:11px; font-weight:700; color:#7c3aed; cursor:pointer;">복사</button>
+                                        style="background:var(--surface); border:1px solid #bfdbfe; border-radius:6px; padding:4px 8px; font-size:11px; font-weight:700; color:#2563eb; cursor:pointer;">복사</button>
                                 </div>
                                 <div style="font-size:0.65rem; color:var(--text-6); margin-top:8px;">
                                     * 이 코드를 다른 기기에서 입력하면 내 정보를 그대로 가져옵니다.
@@ -605,7 +620,7 @@
                             style="background:var(--surface); border-radius:16px; overflow:hidden; border:1px solid var(--border); box-shadow:var(--shadow-card);">
                             <div id="open-xp-guide"
                                 style="padding:14px 18px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; cursor:pointer;">
-                                <span style="font-weight:700; font-size:0.95rem; color:#6366f1; white-space:nowrap;">⚡
+                                <span style="font-weight:700; font-size:0.95rem; color:#3b82f6; white-space:nowrap;">⚡
                                     XP &amp; 레벨 안내</span><span style="color:var(--text-6);">›</span>
                             </div>
                             <div
@@ -1404,7 +1419,7 @@
 
     </div><!-- /#app -->
 
-    <script src="index.js?v=36" charset="utf-8"></script>
+    <script src="index.js?v=37" charset="utf-8"></script>
     <script>
         // PWA Service Worker Registration
         if ('serviceWorker' in navigator) {

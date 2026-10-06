@@ -60,7 +60,7 @@ html.dark-mode {
 }
 
 .dm-switch input:checked + .dm-switch-slider {
-  background-color: #6366f1;
+  background-color: #3b82f6;
 }
 
 .dm-switch input:checked + .dm-switch-slider::before {
@@ -1157,10 +1157,10 @@ select:focus {
 .prompter-intro {
   text-align: left;
   padding: 24px;
-  background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
   border-radius: 20px;
   margin-bottom: 24px;
-  border: 1px solid #c7d2fe;
+  border: 1px solid #bfdbfe;
   position: relative;
   overflow: hidden;
 }
@@ -1169,7 +1169,7 @@ select:focus {
   position: absolute;
   top: 10px;
   right: -25px;
-  background: #4338ca;
+  background: #1d4ed8;
   color: white;
   padding: 4px 30px;
   font-size: 0.7rem;
@@ -1181,13 +1181,13 @@ select:focus {
 .prompter-intro h3 {
   font-size: 1.4rem;
   font-weight: 800;
-  color: #312e81;
+  color: #1e3a8a;
   margin-bottom: 8px;
 }
 
 .prompter-intro p {
   font-size: 0.9rem;
-  color: #4338ca;
+  color: #1d4ed8;
   line-height: 1.5;
 }
 
@@ -1517,10 +1517,11 @@ select:focus {
 }
 
 .hero-v2-sub {
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   color: #d3e2fd;
   margin: 0 0 14px;
 }
+.hero-v2-sub b { color: #fff; font-weight: 900; }
 
 .hero-v2-search {
   display: flex;
@@ -1785,6 +1786,12 @@ select:focus {
 .pb-title { display: block; font-weight: 800; font-size: 0.88rem; }
 .pb-desc { display: block; font-size: 0.74rem; color: var(--text-5); margin-top: 2px; }
 
+/* 쉬어가기: 감정 파쇄기 · 놀이터 나란히 */
+.rest-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.rest-grid .playground-banner { padding: 13px 12px; gap: 9px; }
+.rest-grid .pb-desc { word-break: keep-all; }
+.side-group-label { font-size: 0.7rem; font-weight: 800; color: var(--text-6); padding: 14px 14px 4px; }
+
 /* 다크모드 보정 */
 html.dark-mode .fav-ico { background: var(--surface-3) !important; }
 html.dark-mode .home-word-card { background: rgba(18, 165, 148, 0.12); border-color: rgba(143, 221, 214, 0.25); }
@@ -1812,10 +1819,10 @@ html.dark-mode .hero-v2 { box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45); }
 html.dark-mode .logo-badge { background: rgba(59, 130, 246, 0.22); }
 
 .header-shred-btn {
-  border: none;
+  border: 1px solid var(--teal-300);
   border-radius: 999px;
-  background: var(--teal-700);
-  color: #fff;
+  background: var(--teal-100);
+  color: var(--teal-700);
   font-family: inherit;
   font-weight: 800;
   font-size: 0.72rem;
@@ -1823,7 +1830,8 @@ html.dark-mode .logo-badge { background: rgba(59, 130, 246, 0.22); }
   cursor: pointer;
   white-space: nowrap;
 }
-.header-shred-btn:active { background: var(--teal-800); }
+.header-shred-btn:active { background: var(--teal-300); }
+html.dark-mode .header-shred-btn { background: rgba(18, 165, 148, 0.14); border-color: rgba(143, 221, 214, 0.3); color: var(--teal-300); }
 .app-header .icon-btn { width: 32px; height: 32px; font-size: 17px; }
 
 /* 섹션 헤더 부제 */
@@ -2151,3 +2159,27 @@ html.dark-mode .request-card-arrow { color: var(--teal-300); }
   margin: 14px 2px 6px;
 }
 .at-group-title:first-child { margin-top: 0; }
+
+/* 행정/회계 마스터 — 분류 선택(세그먼트) */
+.admin-cats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+.admin-cat {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  border-radius: 999px;
+  padding: 9px 4px;
+  font-family: inherit;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--text-4);
+  cursor: pointer;
+  white-space: nowrap;
+}
+.admin-cat.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+}
