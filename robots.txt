@@ -1,6 +1,4 @@
 User-agent: *
 Allow: /
-# 유료(프리미엄) 레시피는 검색 노출 제외
-Disallow: /honeydata/antigravity_r
 
 Sitemap: https://saboknote.com/sitemap.xml
