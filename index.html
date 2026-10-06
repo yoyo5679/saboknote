@@ -56,7 +56,7 @@
     <link rel="icon"
         href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>">
 
-    <link rel="stylesheet" href="index.css?v=5">
+    <link rel="stylesheet" href="index.css?v=6">
     <link rel="stylesheet" as="style" crossorigin
         href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -1395,7 +1395,14 @@
                 <span class="nav-icon">💬</span>
                 <span class="nav-label">커뮤니티</span>
             </button>
-            <!-- 파쇄기는 상단 '감정 파쇄' 버튼, 놀이터는 홈 배너로 진입 (모바일 탭 5개 유지) -->
+            <button class="nav-item" id="nav-shredder" onclick="switchView('shredder')">
+                <span class="nav-icon">🗑️</span>
+                <span class="nav-label">파쇄기</span>
+            </button>
+            <button class="nav-item" id="nav-playground" onclick="switchView('playground')">
+                <span class="nav-icon">🎢</span>
+                <span class="nav-label">놀이터</span>
+            </button>
             <button class="nav-item" id="nav-treasure" onclick="switchView('treasure')">
                 <span class="nav-icon">🍯</span>
                 <span class="nav-label">보물창고</span>
