@@ -2184,3 +2184,28 @@ html.dark-mode .request-card-arrow { color: var(--teal-300); }
   border-color: var(--primary);
   color: #fff;
 }
+
+/* ============================================
+   폰(≤480px) 가독성: 모달 안 카드가 여러 겹이라 여백이 폭을 잡아먹던 문제 완화
+   ============================================ */
+@media (max-width: 480px) {
+  .modal-body { padding: 16px 14px; padding-bottom: calc(24px + env(safe-area-inset-bottom, 16px)); }
+  .modal-body .step-card { padding: 14px !important; border-radius: 14px; }
+  .modal-body .percent-mode-card { padding: 14px 12px; }
+  /* 아이폰: 16px 미만 입력칸은 누르면 화면이 확대되므로 16px로 고정 */
+  .modal-body input[type="number"],
+  .modal-body input[type="text"],
+  .modal-body input[type="email"],
+  .modal-body select,
+  .modal-body textarea { font-size: 16px !important; }
+
+  /* 핵심 지표 등 탭 4개를 한 줄에 넣은 곳: 폰에선 2×2로 (옆으로 넘침 방지) */
+  .modal-body .admin-tabs[style*="repeat(4, 1fr)"] { grid-template-columns: repeat(2, 1fr) !important; }
+
+  /* 급여 정산: 금액 입력 카드 2열 → 1열(7자리 금액도 다 보이게), 결과 카드 여백 축소, 작은 글자 키움 */
+  #admin-content-payroll [style*="grid-template-columns: repeat(2, 1fr)"] { grid-template-columns: 1fr !important; gap: 10px !important; }
+  #admin-content-payroll [style*="border-radius:24px; padding:24px"] { padding: 16px !important; border-radius: 18px !important; }
+  #admin-content-payroll label { font-size: 0.78rem !important; letter-spacing: 0 !important; }
+  #admin-content-payroll [style*="font-size:0.6rem"] { font-size: 0.72rem !important; }
+  #admin-content-payroll [style*="font-size:0.65rem"] { font-size: 0.74rem !important; }
+}
