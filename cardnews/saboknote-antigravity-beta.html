@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>사복노트 안티그래비티 IDE 베타 무료 카드뉴스</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  /* 인스타그램 피드 4:5 — 장당 1080×1350 */
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:#DDE3ED; font-family:'Noto Sans KR',sans-serif; display:flex; flex-direction:column; align-items:center; gap:40px; padding:40px 0; }
+  .card { width:1080px; height:1350px; position:relative; overflow:hidden; display:flex; flex-direction:column; word-break:keep-all; }
+  .foot { height:104px; flex-shrink:0; display:flex; align-items:center; justify-content:space-between; padding:0 72px; font-size:26px; }
+  .foot .fl { font-weight:900; }
+  .tag { display:inline-block; font-size:26px; font-weight:700; padding:10px 26px; border-radius:40px; }
+
+  /* 1 훅 — 네이비 */
+  .c1 { background:#1B2E4B; color:#fff; }
+  .c1 .glow { position:absolute; width:760px; height:760px; right:-260px; top:-240px; border-radius:50%; background:radial-gradient(circle, rgba(47,111,237,0.45), transparent 68%); }
+  .c1 .body { flex:1; padding:0 72px; display:flex; flex-direction:column; justify-content:center; position:relative; }
+  .c1 .tag { background:rgba(47,111,237,0.22); border:2px solid rgba(91,153,255,0.5); color:#8DB8FF; align-self:flex-start; margin-bottom:46px; }
+  .c1 h1 { font-size:96px; font-weight:900; line-height:1.22; letter-spacing:-0.03em; margin-bottom:44px; }
+  .c1 h1 em { font-style:normal; color:#FFD166; }
+  .c1 .sheet { background:#fff; border-radius:24px; padding:30px 34px; color:#1B2E4B; box-shadow:0 30px 70px rgba(0,0,0,0.35); transform:rotate(-2deg); margin-bottom:56px; }
+  .c1 .row { display:grid; grid-template-columns:1.1fr 1.5fr 1fr; gap:12px; font-size:26px; padding:10px 0; border-bottom:2px solid #EEF2F7; }
+  .c1 .row.h { font-weight:900; color:#2F6FED; }
+  .c1 .row.dup { background:#FFF4E6; color:#C2410C; }
+  .c1 .sub { font-size:40px; color:rgba(255,255,255,0.75); line-height:1.5; }
+  .c1 .sub b { color:#fff; }
+  .c1 .foot { background:rgba(255,255,255,0.05); border-top:2px solid rgba(255,255,255,0.08); color:rgba(255,255,255,0.4); }
+
+  /* 2 공감 — 흰 배경 + 코랄 헤더 */
+  .c2 { background:#fff; }
+  .c2 .head { background:#E05A3A; padding:70px 72px 56px; color:#fff; }
+  .c2 .head small { display:block; font-size:28px; font-weight:700; opacity:0.75; letter-spacing:3px; margin-bottom:16px; }
+  .c2 .head h2 { font-size:64px; font-weight:900; line-height:1.3; }
+  .c2 .body { flex:1; padding:40px 72px; display:flex; flex-direction:column; justify-content:center; gap:26px; }
+  .c2 .scene { background:#F4F6FA; border-radius:26px; padding:36px 38px; display:flex; gap:26px; align-items:center; }
+  .c2 .ic { font-size:62px; flex:none; }
+  .c2 .t { font-size:36px; font-weight:700; color:#1B2E4B; line-height:1.4; }
+  .c2 .t span { display:block; font-size:28px; font-weight:500; color:#8A94A6; margin-top:6px; }
+  .c2 .foot { background:#F4F6FA; color:#8A94A6; }
+  .c2 .foot .fl { color:#E05A3A; }
+
+  /* 3 해결 — 연한 블루 */
+  .c3 { background:#EBF2FF; }
+  .c3 .body { flex:1; padding:40px 72px; display:flex; flex-direction:column; justify-content:center; }
+  .c3 .tag { background:#2F6FED; color:#fff; align-self:flex-start; margin-bottom:30px; }
+  .c3 h2 { font-size:70px; font-weight:900; color:#1B2E4B; line-height:1.3; margin-bottom:46px; }
+  .c3 h2 em { font-style:normal; color:#2F6FED; }
+  .c3 .list { display:flex; flex-direction:column; gap:20px; }
+  .c3 .item { background:#fff; border-radius:26px; padding:34px 36px; display:flex; align-items:center; gap:26px; box-shadow:0 8px 24px rgba(47,111,237,0.08); }
+  .c3 .ck { width:64px; height:64px; flex:none; border-radius:50%; background:#2ABFB5; color:#fff; font-size:36px; font-weight:900; display:flex; align-items:center; justify-content:center; }
+  .c3 .it { font-size:40px; font-weight:900; color:#1B2E4B; }
+  .c3 .it span { display:block; font-size:27px; font-weight:500; color:#8A94A6; margin-top:4px; }
+  .c3 .foot { color:#8A94A6; }
+  .c3 .foot .fl { color:#2F6FED; }
+
+  /* 4 실제 예시 — 다크 */
+  .c4 { background:#0F172A; color:#fff; }
+  .c4 .body { flex:1; padding:86px 72px 0; display:flex; flex-direction:column; }
+  .c4 .tag { background:rgba(42,191,181,0.18); border:2px solid rgba(42,191,181,0.5); color:#5EEAD4; align-self:flex-start; margin-bottom:30px; }
+  .c4 h2 { font-size:64px; font-weight:900; line-height:1.3; margin-bottom:44px; }
+  .c4 .chat { background:#1E293B; border-radius:28px; padding:36px 38px; }
+  .c4 .lbl { font-size:26px; font-weight:700; color:#8DB8FF; margin-bottom:20px; }
+  .c4 .me { background:#2F6FED; border-radius:28px 28px 8px 28px; padding:28px 32px; font-size:33px; line-height:1.55; margin-left:60px; }
+  .c4 .arrow { text-align:center; font-size:46px; color:#5EEAD4; margin:24px 0; }
+  .c4 .ai { background:#fff; color:#1B2E4B; border-radius:28px 28px 28px 8px; padding:28px 32px; font-size:31px; line-height:1.6; margin-right:40px; }
+  .c4 .ai b { color:#0C8A7E; }
+  .c4 .note { margin-top:40px; font-size:38px; font-weight:900; color:#FFD166; text-align:center; }
+  .c4 .foot { background:rgba(255,255,255,0.04); border-top:2px solid rgba(255,255,255,0.08); color:rgba(255,255,255,0.35); }
+
+  /* 5 혜택 — 흰 배경 + 레시피 목록 */
+  .c5 { background:#fff; }
+  .c5 .body { flex:1; padding:80px 72px 0; display:flex; flex-direction:column; }
+  .c5 .tag { background:#FFD166; color:#78350F; align-self:flex-start; margin-bottom:28px; }
+  .c5 h2 { font-size:62px; font-weight:900; color:#1B2E4B; line-height:1.3; margin-bottom:38px; }
+  .c5 h2 em { font-style:normal; color:#E05A3A; }
+  .c5 .grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:34px; }
+  .c5 .r { background:#F4F6FA; border-radius:20px; padding:22px 24px; font-size:29px; font-weight:700; color:#1B2E4B; line-height:1.35; }
+  .c5 .r b { display:block; color:#2F6FED; font-size:24px; margin-bottom:4px; }
+  .c5 .pdf { display:flex; align-items:center; gap:28px; background:#1B2E4B; border-radius:26px; padding:28px 34px; color:#fff; }
+  .c5 .book { width:110px; height:140px; flex:none; border-radius:10px; background:linear-gradient(160deg,#0b2f5c,#1d4fd8); box-shadow:6px 8px 0 rgba(255,255,255,0.15); display:flex; align-items:center; justify-content:center; font-size:20px; font-weight:900; text-align:center; line-height:1.3; padding:10px; }
+  .c5 .pt { font-size:34px; font-weight:900; line-height:1.4; }
+  .c5 .pt span { display:block; font-size:27px; font-weight:500; color:rgba(255,255,255,0.7); margin-top:6px; }
+  .c5 .foot { background:#F4F6FA; color:#8A94A6; }
+  .c5 .foot .fl { color:#2F6FED; }
+
+  /* 6 CTA — 블루 */
+  .c6 { background:linear-gradient(160deg,#1B2E4B 0%,#2F6FED 100%); color:#fff; }
+  .c6 .body { flex:1; padding:0 72px; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; }
+  .c6 .big { font-size:120px; margin-bottom:24px; }
+  .c6 h2 { font-size:72px; font-weight:900; line-height:1.3; margin-bottom:40px; }
+  .c6 .steps { display:flex; flex-direction:column; gap:18px; width:100%; margin-bottom:56px; }
+  .c6 .st { background:rgba(255,255,255,0.12); border:2px solid rgba(255,255,255,0.2); border-radius:24px; padding:26px 32px; font-size:36px; font-weight:700; text-align:left; display:flex; gap:22px; align-items:center; }
+  .c6 .n { width:56px; height:56px; flex:none; border-radius:50%; background:#FFD166; color:#1B2E4B; font-weight:900; font-size:32px; display:flex; align-items:center; justify-content:center; }
+  .c6 .save { font-size:34px; color:rgba(255,255,255,0.85); line-height:1.6; }
+  .c6 .save b { color:#FFD166; }
+  .c6 .foot { background:rgba(0,0,0,0.15); color:rgba(255,255,255,0.55); }
+</style>
+</head>
+<body>
+
+<!-- 1. 훅 -->
+<section class="card c1" id="s1">
+  <div class="glow"></div>
+  <div class="body">
+    <span class="tag">사회복지사 업무 꿀팁</span>
+    <h1>엑셀 명단 복붙하다<br><em>퇴근 놓친 사람</em> 🙋‍♀️</h1>
+    <div class="sheet">
+      <div class="row h"><span>이름</span><span>연락처</span><span>회차</span></div>
+      <div class="row"><span>김○○</span><span>010-1234-****</span><span>1회</span></div>
+      <div class="row dup"><span>김○○</span><span>01012341***</span><span>중복?!</span></div>
+      <div class="row"><span>이○○</span><span>(빈칸)</span><span>2회</span></div>
+    </div>
+    <p class="sub">이거, 이제 <b>AI한테 말로 시키면</b> 끝나요 👉</p>
+  </div>
+  <div class="foot"><span class="fl">사복노트</span><span>1 / 6</span></div>
+</section>
+
+<!-- 2. 공감 -->
+<section class="card c2" id="s2">
+  <div class="head">
+    <small>REAL TALK</small>
+    <h2>본업은 사람 돕는 건데<br>하루 절반이 서류 😮‍💨</h2>
+  </div>
+  <div class="body">
+    <div class="scene"><span class="ic">📋</span><div class="t">회차별 명단 하나로 합치기<span>복붙 · 중복 찾기 · 전화번호 형식 맞추기</span></div></div>
+    <div class="scene"><span class="ic">📢</span><div class="t">프로그램 안내문 또 만들기<span>날짜만 바뀌는데 매번 처음부터</span></div></div>
+    <div class="scene"><span class="ic">📊</span><div class="t">월말 통계 그래프<span>엑셀 차트랑 씨름하다 한 시간</span></div></div>
+    <div class="scene"><span class="ic">📝</span><div class="t">결과보고서 백지 앞에서 멍…<span>뭐부터 써야 할지 모르겠는 그 느낌</span></div></div>
+  </div>
+  <div class="foot"><span class="fl">사복노트</span><span>2 / 6</span></div>
+</section>
+
+<!-- 3. 해결 -->
+<section class="card c3" id="s3">
+  <div class="body">
+    <span class="tag">코딩 1도 몰라도 OK</span>
+    <h2>AI한테 <em>말로만</em> 시켜도<br>이게 다 돼요</h2>
+    <div class="list">
+      <div class="item"><span class="ck">✔</span><div class="it">프로그램 신청 페이지<span>링크 하나로 카톡 홍보까지</span></div></div>
+      <div class="item"><span class="ck">✔</span><div class="it">흩어진 명단 자동 정리<span>중복 제거 · 형식 통일 한 번에</span></div></div>
+      <div class="item"><span class="ck">✔</span><div class="it">월간 통계 그래프<span>엑셀 넣으면 보고서용 그래프로</span></div></div>
+      <div class="item"><span class="ck">✔</span><div class="it">결과보고서 초안<span>자료만 주면 공문체로 뼈대 완성</span></div></div>
+    </div>
+  </div>
+  <div class="foot"><span class="fl">사복노트</span><span>3 / 6</span></div>
+</section>
+
+<!-- 4. 실제 예시 -->
+<section class="card c4" id="s4">
+  <div class="body">
+    <span class="tag">실제로 이렇게 시켜요</span>
+    <h2>구글 '안티그래비티 IDE'<br>채팅창에 한 줄이면 끝</h2>
+    <div class="chat">
+      <div class="lbl">⌨ 내가 쓴 말</div>
+      <div class="me">이 폴더 명단 엑셀들 하나로 합쳐줘. 중복은 빼고, 전화번호는 010-0000-0000으로 맞춰줘.</div>
+      <div class="arrow">▼</div>
+      <div class="ai">✅ 파일 4개 → <b>통합명단.xlsx</b> 완성<br>중복 <b>12명</b> 제거 · 빈칸 <b>3곳</b> 표시해 뒀어요</div>
+    </div>
+    <p class="note">복붙 몇 시간 → 채팅 한 줄 ⏱</p>
+  </div>
+  <div class="foot"><span class="fl">사복노트</span><span>4 / 6</span></div>
+</section>
+
+<!-- 5. 혜택 -->
+<section class="card c5" id="s5">
+  <div class="body">
+    <span class="tag">🎉 지금은 베타 기간</span>
+    <h2>실전 레시피 8개<br><em>전부 무료</em>로 풀었어요</h2>
+    <div class="grid">
+      <div class="r"><b>R1</b>신청 안내 웹페이지</div>
+      <div class="r"><b>R2</b>대상자 자가진단</div>
+      <div class="r"><b>R3</b>명단·엑셀 자동 취합</div>
+      <div class="r"><b>R4</b>월간 통계 그래프</div>
+      <div class="r"><b>R5</b>만족도 설문 집계</div>
+      <div class="r"><b>R6</b>안내문·공문 생성</div>
+      <div class="r"><b>R7</b>후원자 감사 메시지</div>
+      <div class="r"><b>R8</b>결과보고서 초안</div>
+    </div>
+    <div class="pdf">
+      <div class="book">안티그래비티<br>IDE<br>실전 마스터</div>
+      <div class="pt">이메일만 남기면<br>PDF 전자책도 바로 📥<span>프롬프트 40개 · 치트시트 포함</span></div>
+    </div>
+  </div>
+  <div class="foot"><span class="fl">사복노트</span><span>5 / 6</span></div>
+</section>
+
+<!-- 6. CTA -->
+<section class="card c6" id="s6">
+  <div class="body">
+    <div class="big">🍯</div>
+    <h2>받는 법은<br>딱 2단계</h2>
+    <div class="steps">
+      <div class="st"><span class="n">1</span>프로필 링크 → 사복노트 '보물창고'</div>
+      <div class="st"><span class="n">2</span>레시피 보기 / PDF 받기 누르기</div>
+    </div>
+    <p class="save">나중에 쓰려면 <b>저장 📌</b><br>야근 중인 옆자리 쌤한테 <b>공유</b> 💌</p>
+  </div>
+  <div class="foot"><span class="fl">사복노트</span><span>6 / 6</span></div>
+</section>
+
+</body>
+</html>
