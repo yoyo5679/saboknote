@@ -483,10 +483,12 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--g5);color:var(--text
 <script>
 function go(url){ window.open(url, '_blank'); }
 
+// 프리미엄 레시피는 결제 확인 수단(로그인·구매 기록)이 없으므로 여기서 내용을 직접 열지 않는다.
+// 결제 링크가 있으면 구매 안내, 없으면 출시 알림 신청으로 보낸다. (구매자에겐 결제 후 파일로 전달)
 function openRecipe(url){
   const p = PRODUCTS.antigravity;
   if(p && p.paymentLink && p.paymentLink.trim()){
-    go(url);
+    openPurchase('antigravity');
   } else {
     parent.postMessage('openNewsletterModal', '*');
   }
