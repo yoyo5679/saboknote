@@ -32,6 +32,7 @@ body {
   height: 100%; max-height: 100dvh;
   padding: 10px;
 }
+#headRow { display:flex; flex-direction:column; gap:8px; width:100%; }
 #topbar { display:flex; width:100%; justify-content:space-between; align-items:center; gap:8px; }
 #titleBar {
   font-family:'Black Han Sans',sans-serif;
@@ -42,6 +43,7 @@ body {
 #titleBar span { color:var(--white); }
 .topbtns { display:flex; gap:6px; align-items:center; }
 .iconbtn {
+  white-space:nowrap;
   background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); color:var(--white);
   border-radius:12px; padding:6px 10px; font-size:0.95rem; cursor:pointer; font-family:'Jua',sans-serif;
 }
@@ -191,8 +193,42 @@ body {
 #unlockMsg { color:#ffd43b; font-size:0.9rem; }
 #unlockMsg:empty, #dailyRank:empty { display:none; }
 #dailyRank { color:#74b9ff; font-size:0.9rem; }
+/* ---------- 가로모드: 가운데 게임 화면, 왼쪽 슬라이드·오른쪽 점프 ---------- */
+body.landscape { padding:0; }
+body.landscape #wrapper {
+  max-width:none; max-height:none; width:var(--lw); height:var(--lh);
+  display:grid; grid-template-columns:minmax(0,1fr) auto minmax(0,1fr); grid-template-rows:auto minmax(0,1fr);
+  grid-template-areas:"head head head" "slide game jump";
+  gap:8px 12px; align-items:center;
+  padding:8px max(12px, env(safe-area-inset-right)) 8px max(12px, env(safe-area-inset-left));
+}
+body.landscape #headRow { grid-area:head; flex-direction:row; align-items:stretch; }
+body.landscape #topbar { width:auto; justify-content:flex-start; flex-shrink:0; }
+body.landscape #titleBar { display:none; }
+body.landscape #exitBtn { padding:6px 9px; font-size:0.85rem; }
+body.landscape .ex-t { display:none; }
+body.landscape .iconbtn, body.landscape #exitBtn { white-space:nowrap; }
+body.landscape #hud { flex:1; min-width:0; padding:5px 10px; }
+body.landscape #canvasWrap {
+  grid-area:game; justify-self:center; width:auto; aspect-ratio:3 / 2;
+  height:min(calc(var(--lh) - 76px), calc((var(--lw) - 250px) / 1.5));
+}
+body.landscape #gc { width:100%; height:100%; }
+body.landscape #ctrls { display:contents; }
+body.landscape #btnSlide { grid-area:slide; }
+body.landscape #btnJump { grid-area:jump; }
+body.landscape .cbtn { height:70%; min-height:90px; font-size:1.1rem; min-width:0; }
+body.landscape #rankWrap { display:none; }
+body.landscape .em img { height:64px; }
+/* 휴대폰을 세로로 든 채 가로모드: 화면 전체를 90도 돌려서 보여 줌 (아이폰은 방향 고정 기능이 없음) */
+body.rotated #wrapper, body.rotated .ov {
+  position:fixed; inset:auto; top:0; left:var(--lh);
+  width:var(--lw); height:var(--lh);
+  transform-origin:top left; transform:rotate(90deg);
+}
 @media (max-width:420px){
-  #titleBar { font-size:1.25rem; }
+  #titleBar { font-size:1.25rem; white-space:nowrap; }
+  .ex-t { display:none; }
   .ov h2 { font-size:1.45rem; }
   .em img { height:76px; }
 }
@@ -200,11 +236,13 @@ body {
 </head>
 <body>
 <div id="wrapper">
+  <div id="headRow">
   <div id="topbar">
     <div id="titleBar">🌙 야근 <span>탈출 RUN!</span></div>
     <div class="topbtns">
+      <button id="rotBtn" class="iconbtn" aria-label="가로모드·세로모드 바꾸기">↔️ 가로</button>
       <button id="muteBtn" class="iconbtn" aria-label="소리 켜기·끄기">🔊</button>
-      <button id="exitBtn" class="btn" onclick="if(confirm('내일 팀장님 얼굴을 볼 자신이 있습니까? 👀\n(정말 도망가시겠어요?)')) window.location.href='../../index.html';">🔌 전원 뽑고 튀기</button>
+      <button id="exitBtn" class="btn" onclick="if(confirm('내일 팀장님 얼굴을 볼 자신이 있습니까? 👀\n(정말 도망가시겠어요?)')) window.location.href='../../index.html';">🔌<span class="ex-t"> 전원 뽑고 튀기</span></button>
     </div>
   </div>
 
@@ -217,6 +255,7 @@ body {
     <div class="hi"><span class="hl">🕕 시각</span><span class="hv" id="clockV">18:00</span></div>
     <div class="hi"><span class="hl">⭐ 점수</span><span class="hv" id="scoreV">0</span></div>
     <div class="hi"><span class="hl">🏆 최고</span><span class="hv" id="bestV">0</span></div>
+  </div>
   </div>
 
   <div id="canvasWrap">
@@ -252,6 +291,10 @@ body {
     <div class="chars" id="charList"></div>
     <div class="box"><h4>🎯 이번 판 미션</h4><div id="missionList"></div></div>
     <button class="btn" id="startBtn">🔖 퇴근 도장 찍고 출발!</button>
+    <div class="btnrow">
+      <button class="btn sub2" id="rotBtn2">↔️ 가로모드로</button>
+      <button class="btn sub2" id="muteBtn2">🔊 소리 켜짐</button>
+    </div>
     <div class="og">
       <div class="oi">📄 서류·팀장님 → ⬆ 점프</div>
       <div class="oi">💢 민원·잔소리 → ⬇ 슬라이드</div>
@@ -355,11 +398,16 @@ body {
   ['admin_', 'pr_'].forEach(function (pre) { ['run1','run2','jump','slide','fall'].forEach(function (p) { IMG_NAMES.push(pre + p); }); });
   IMG_NAMES.forEach(function (n) {
     var im = new Image();
+    // 디코딩이 끝난 뒤에만 사용 등록. 아이폰 Safari는 디코딩 중인 이미지를 빈 그림으로 그리는데,
+    // 그 빈 그림이 축소 캐시(scaled)에 저장되면 배경이 사라지고 캐릭터가 깜빡이게 됨
     im.onload = function () {
-      IMG[n] = im;
-      if (im.decode) im.decode().catch(function () {});
-      if (startVisible()) renderStart();
-      if (!S.on) draw();
+      var ready = function () {
+        if (IMG[n]) return;
+        IMG[n] = im;
+        if (startVisible()) renderStart();
+        if (!S.on) draw();
+      };
+      if (im.decode) im.decode().then(ready, ready); else ready();
     };
     im.src = 'img/' + n + '.webp';
   });
@@ -447,9 +495,48 @@ body {
   };
   function vib(p) { try { if (navigator.vibrate) navigator.vibrate(p); } catch (e) {} }
   var muteBtn = document.getElementById('muteBtn');
-  function renderMute() { muteBtn.textContent = muted ? '🔇' : '🔊'; }
-  muteBtn.addEventListener('click', function () { muted = !muted; lsSet('esc_muted', muted); renderMute(); if (!muted) SFX.item(); });
+  var muteBtn2 = document.getElementById('muteBtn2');
+  function renderMute() { muteBtn.textContent = muted ? '🔇' : '🔊'; muteBtn2.textContent = muted ? '🔇 소리 꺼짐' : '🔊 소리 켜짐'; }
+  function toggleMute() { muted = !muted; lsSet('esc_muted', muted); renderMute(); if (!muted) SFX.item(); }
+  muteBtn.addEventListener('click', toggleMute);
+  muteBtn2.addEventListener('click', toggleMute);
   renderMute();
+
+  // ============ 가로모드 ============
+  var landscape = lsGet('esc_landscape', false);
+  var rotBtn = document.getElementById('rotBtn'), rotBtn2 = document.getElementById('rotBtn2');
+  function applyOrientation() {
+    var vw = window.innerWidth, vh = window.innerHeight;
+    var rotate = landscape && vh > vw;   // 휴대폰을 세로로 든 상태면 화면을 돌려서 가로로 보여 줌
+    document.body.classList.toggle('landscape', landscape);
+    document.body.classList.toggle('rotated', rotate);
+    var root = document.documentElement.style;
+    root.setProperty('--lw', (rotate ? vh : vw) + 'px');
+    root.setProperty('--lh', (rotate ? vw : vh) + 'px');
+    rotBtn.textContent = landscape ? '↕️ 세로' : '↔️ 가로';
+    rotBtn2.textContent = landscape ? '↕️ 세로모드로' : '↔️ 가로모드로';
+  }
+  function setLandscape(on) {
+    landscape = on; lsSet('esc_landscape', on);
+    var touch = window.matchMedia && matchMedia('(pointer: coarse)').matches;
+    if (on && touch) {
+      // 안드로이드 크롬 등: 전체 화면 + 가로 고정이 되면 진짜 가로로 (아이폰은 지원 안 해서 화면 돌리기로 대신)
+      var el = document.documentElement, req = el.requestFullscreen || el.webkitRequestFullscreen;
+      try {
+        var pr = req ? req.call(el) : null;
+        if (pr && pr.then) pr.then(function () { if (screen.orientation && screen.orientation.lock) return screen.orientation.lock('landscape'); }).catch(function () {});
+      } catch (e) {}
+    } else if (!on) {
+      try { if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock(); } catch (e) {}
+      if (document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(function () {});
+    }
+    applyOrientation();
+  }
+  rotBtn.addEventListener('click', function () { setLandscape(!landscape); });
+  rotBtn2.addEventListener('click', function () { setLandscape(!landscape); });
+  window.addEventListener('resize', applyOrientation);
+  window.addEventListener('orientationchange', function () { setTimeout(applyOrientation, 250); });
+  applyOrientation();
 
   // ============ Supabase & 랭킹 ============
   var supabaseUrl = 'https://seldrnpohdkggennjieo.supabase.co';
