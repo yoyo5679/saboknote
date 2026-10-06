@@ -136,6 +136,8 @@ body {
   backdrop-filter:blur(6px);
 }
 .ov::before, .ov::after { content:''; margin:auto; flex-shrink:0; }
+/* 시작·결과 화면에서도 가로/세로·소리 버튼이 늘 보이도록 오른쪽 위에 고정 */
+.ovcorner { position:absolute; top:10px; right:max(10px, env(safe-area-inset-right)); display:flex; gap:6px; z-index:1; }
 .panel { width:100%; max-width:460px; display:flex; flex-direction:column; gap:10px; flex-shrink:0; }
 .em { font-size:2.4rem; animation:fl 2s ease-in-out infinite; align-self:center; }
 .em img { height:96px; width:auto; display:block; }
@@ -226,6 +228,7 @@ body.rotated #wrapper, body.rotated .ov {
   width:var(--lw); height:var(--lh);
   transform-origin:top left; transform:rotate(90deg);
 }
+body.rotated .ovcorner { right:max(10px, env(safe-area-inset-bottom)); }
 @media (max-width:420px){
   #titleBar { font-size:1.25rem; white-space:nowrap; }
   .ex-t { display:none; }
@@ -279,6 +282,7 @@ body.rotated #wrapper, body.rotated .ov {
 </div>
 
 <div class="ov" id="startScr">
+  <div class="ovcorner"><button class="iconbtn ovMute" aria-label="소리 켜기·끄기">🔊</button><button class="iconbtn ovRot" aria-label="가로모드·세로모드 바꾸기">↔️ 가로</button></div>
   <div class="panel">
     <div class="em" id="heroEm">🧑‍💼</div>
     <h2>야근 탈출 RUN!</h2>
@@ -291,10 +295,6 @@ body.rotated #wrapper, body.rotated .ov {
     <div class="chars" id="charList"></div>
     <div class="box"><h4>🎯 이번 판 미션</h4><div id="missionList"></div></div>
     <button class="btn" id="startBtn">🔖 퇴근 도장 찍고 출발!</button>
-    <div class="btnrow">
-      <button class="btn sub2" id="rotBtn2">↔️ 가로모드로</button>
-      <button class="btn sub2" id="muteBtn2">🔊 소리 켜짐</button>
-    </div>
     <div class="og">
       <div class="oi">📄 서류·팀장님 → ⬆ 점프</div>
       <div class="oi">💢 민원·잔소리 → ⬇ 슬라이드</div>
@@ -311,6 +311,7 @@ body.rotated #wrapper, body.rotated .ov {
 </div>
 
 <div class="ov" id="gameoverScr" style="display:none">
+  <div class="ovcorner"><button class="iconbtn ovMute" aria-label="소리 켜기·끄기">🔊</button><button class="iconbtn ovRot" aria-label="가로모드·세로모드 바꾸기">↔️ 가로</button></div>
   <div class="panel">
     <div class="em" id="goEmoji">😩</div>
     <div class="title-big" id="titleV"></div>
@@ -494,17 +495,15 @@ body.rotated #wrapper, body.rotated .ov {
     ending: function () { seq([523, 659, 784, 1047, 784, 1047], 0.13, 'square', 0.18, 0.05); }
   };
   function vib(p) { try { if (navigator.vibrate) navigator.vibrate(p); } catch (e) {} }
-  var muteBtn = document.getElementById('muteBtn');
-  var muteBtn2 = document.getElementById('muteBtn2');
-  function renderMute() { muteBtn.textContent = muted ? '🔇' : '🔊'; muteBtn2.textContent = muted ? '🔇 소리 꺼짐' : '🔊 소리 켜짐'; }
+  var muteBtns = document.querySelectorAll('#muteBtn, .ovMute');
+  function renderMute() { for (var i = 0; i < muteBtns.length; i++) muteBtns[i].textContent = muted ? '🔇' : '🔊'; }
   function toggleMute() { muted = !muted; lsSet('esc_muted', muted); renderMute(); if (!muted) SFX.item(); }
-  muteBtn.addEventListener('click', toggleMute);
-  muteBtn2.addEventListener('click', toggleMute);
+  for (var mi = 0; mi < muteBtns.length; mi++) muteBtns[mi].addEventListener('click', toggleMute);
   renderMute();
 
   // ============ 가로모드 ============
   var landscape = lsGet('esc_landscape', false);
-  var rotBtn = document.getElementById('rotBtn'), rotBtn2 = document.getElementById('rotBtn2');
+  var rotBtns = document.querySelectorAll('#rotBtn, .ovRot');
   function applyOrientation() {
     var vw = window.innerWidth, vh = window.innerHeight;
     var rotate = landscape && vh > vw;   // 휴대폰을 세로로 든 상태면 화면을 돌려서 가로로 보여 줌
@@ -513,8 +512,7 @@ body.rotated #wrapper, body.rotated .ov {
     var root = document.documentElement.style;
     root.setProperty('--lw', (rotate ? vh : vw) + 'px');
     root.setProperty('--lh', (rotate ? vw : vh) + 'px');
-    rotBtn.textContent = landscape ? '↕️ 세로' : '↔️ 가로';
-    rotBtn2.textContent = landscape ? '↕️ 세로모드로' : '↔️ 가로모드로';
+    for (var i = 0; i < rotBtns.length; i++) rotBtns[i].textContent = landscape ? '↕️ 세로' : '↔️ 가로';
   }
   function setLandscape(on) {
     landscape = on; lsSet('esc_landscape', on);
@@ -532,8 +530,7 @@ body.rotated #wrapper, body.rotated .ov {
     }
     applyOrientation();
   }
-  rotBtn.addEventListener('click', function () { setLandscape(!landscape); });
-  rotBtn2.addEventListener('click', function () { setLandscape(!landscape); });
+  for (var ri = 0; ri < rotBtns.length; ri++) rotBtns[ri].addEventListener('click', function () { setLandscape(!landscape); });
   window.addEventListener('resize', applyOrientation);
   window.addEventListener('orientationchange', function () { setTimeout(applyOrientation, 250); });
   applyOrientation();
