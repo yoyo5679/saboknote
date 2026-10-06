@@ -98,7 +98,10 @@ body {
   cursor:pointer;
   box-shadow:0 4px 12px rgba(0,0,0,0.3);
   touch-action:none;
+  display:flex; align-items:center; justify-content:center; gap:5px;
 }
+.ci { display:flex; }
+.ci svg { width:1.15em; height:1.15em; fill:none; stroke:currentColor; stroke-width:3.2; stroke-linecap:round; stroke-linejoin:round; }
 .cbtn:active, .cbtn.held { background:rgba(245,197,24,0.18); border-color:var(--accent); color:var(--accent); transform:scale(0.97); }
 #rankWrap {
   width:100%;
@@ -136,6 +139,8 @@ body {
   backdrop-filter:blur(6px);
 }
 .ov::before, .ov::after { content:''; margin:auto; flex-shrink:0; }
+/* 시작·결과 화면에서도 가로/세로·소리 버튼이 늘 보이도록 오른쪽 위에 고정 */
+.ovcorner { position:absolute; top:10px; right:max(10px, env(safe-area-inset-right)); display:flex; gap:6px; z-index:1; }
 .panel { width:100%; max-width:460px; display:flex; flex-direction:column; gap:10px; flex-shrink:0; }
 .em { font-size:2.4rem; animation:fl 2s ease-in-out infinite; align-self:center; }
 .em img { height:96px; width:auto; display:block; }
@@ -193,31 +198,59 @@ body {
 #unlockMsg { color:#ffd43b; font-size:0.9rem; }
 #unlockMsg:empty, #dailyRank:empty { display:none; }
 #dailyRank { color:#74b9ff; font-size:0.9rem; }
-/* ---------- 가로모드: 가운데 게임 화면, 왼쪽 슬라이드·오른쪽 점프 ---------- */
+/* ---------- 가로모드 (쿠키런식): 게임 화면이 전체를 채우고, 점수·점프·슬라이드는 그 위에 떠 있음 ---------- */
 body.landscape { padding:0; }
 body.landscape #wrapper {
-  max-width:none; max-height:none; width:var(--lw); height:var(--lh);
-  display:grid; grid-template-columns:minmax(0,1fr) auto minmax(0,1fr); grid-template-rows:auto minmax(0,1fr);
-  grid-template-areas:"head head head" "slide game jump";
-  gap:8px 12px; align-items:center;
-  padding:8px max(12px, env(safe-area-inset-right)) 8px max(12px, env(safe-area-inset-left));
+  position:relative; overflow:hidden; display:block;
+  max-width:none; max-height:none; width:var(--lw); height:var(--lh); padding:0;
 }
-body.landscape #headRow { grid-area:head; flex-direction:row; align-items:stretch; }
-body.landscape #topbar { width:auto; justify-content:flex-start; flex-shrink:0; }
-body.landscape #titleBar { display:none; }
-body.landscape #exitBtn { padding:6px 9px; font-size:0.85rem; }
-body.landscape .ex-t { display:none; }
-body.landscape .iconbtn, body.landscape #exitBtn { white-space:nowrap; }
-body.landscape #hud { flex:1; min-width:0; padding:5px 10px; }
-body.landscape #canvasWrap {
-  grid-area:game; justify-self:center; width:auto; aspect-ratio:3 / 2;
-  height:min(calc(var(--lh) - 76px), calc((var(--lw) - 250px) / 1.5));
+body.landscape #canvasWrap { position:absolute; inset:0; width:100%; height:100%; border-radius:0; box-shadow:none; }
+body.landscape #gc { width:100%; height:100%; object-fit:cover; object-position:bottom; }
+body.landscape #combo { top:30%; }
+body.landscape #headRow {
+  position:absolute; z-index:4; top:6px; left:0; right:0; width:auto;
+  flex-direction:row; align-items:center; gap:8px; pointer-events:none;
+  padding:0 max(12px, env(safe-area-inset-right)) 0 max(12px, env(safe-area-inset-left));
 }
-body.landscape #gc { width:100%; height:100%; }
+body.landscape #headRow button { pointer-events:auto; }
+body.landscape #topbar { order:2; width:auto; flex-shrink:0; }
+body.landscape #titleBar, body.landscape .hl, body.landscape .ex-t { display:none; }
+body.landscape #hud { order:1; flex:1; min-width:0; padding:0; gap:6px; background:none; border:none; justify-content:flex-start; }
+body.landscape .hpwrap, body.landscape .hi, body.landscape .iconbtn, body.landscape #exitBtn {
+  height:34px; background:rgba(8,10,20,0.6); border:1px solid rgba(255,255,255,0.16); border-radius:17px; box-shadow:0 2px 8px rgba(0,0,0,0.3);
+}
+body.landscape .hpwrap { flex:0 1 240px; margin-right:auto; position:relative; justify-content:center; gap:3px; padding:0 12px 0 32px; }
+body.landscape .hpwrap::before { content:'❤️'; position:absolute; left:9px; top:50%; transform:translateY(-50%); font-size:0.9rem; }
+body.landscape #hpbar { height:10px; }
+body.landscape #fvbar { height:4px; }
+body.landscape .hi { flex-direction:row; padding:0 11px; }
+body.landscape .hv { font-size:0.95rem; }
+body.landscape #clockV::before { content:'🕕 '; }
+body.landscape #scoreV::before { content:'⭐ '; }
+body.landscape #bestV::before { content:'🏆 '; }
+body.landscape .iconbtn, body.landscape #exitBtn { padding:0 11px; font-size:0.85rem; white-space:nowrap; }
+body.landscape #exitBtn { color:#ff6b81; border-color:rgba(255,71,87,0.5); }
 body.landscape #ctrls { display:contents; }
-body.landscape #btnSlide { grid-area:slide; }
-body.landscape #btnJump { grid-area:jump; }
-body.landscape .cbtn { height:70%; min-height:90px; font-size:1.1rem; min-width:0; }
+body.landscape .cbtn {
+  --c:255,255,255;
+  position:absolute; z-index:3; bottom:max(12px, calc(var(--lh) * 0.05));
+  width:var(--bs); height:var(--bs); flex:none; padding:0; border-radius:50%;
+  flex-direction:column; gap:0;
+  background:radial-gradient(circle at 50% 28%, rgba(var(--c),0.45), rgba(var(--c),0.12) 62%, rgba(var(--c),0.04));
+  border:3px solid rgba(var(--c),0.85);
+  box-shadow:0 5px 0 rgba(0,0,0,0.35), 0 0 18px rgba(var(--c),0.3), inset 0 2px 0 rgba(255,255,255,0.35);
+  color:#fff; font-family:'Black Han Sans',sans-serif; font-weight:normal;
+  font-size:calc(var(--bs) * 0.16); text-shadow:0 2px 2px rgba(0,0,0,0.6);
+  transition:transform .07s, box-shadow .07s;
+}
+body.landscape .cbtn .ci svg { width:calc(var(--bs) * 0.4); height:calc(var(--bs) * 0.4); stroke-width:3.6; filter:drop-shadow(0 2px 1px rgba(0,0,0,0.5)); }
+body.landscape #btnJump { left:max(16px, env(safe-area-inset-left)); --c:245,197,24; }
+body.landscape #btnSlide { right:max(16px, env(safe-area-inset-right)); --c:116,185,255; }
+body.landscape .cbtn:active, body.landscape .cbtn.held {
+  transform:translateY(4px) scale(0.94); color:#fff; border-color:rgb(var(--c));
+  background:radial-gradient(circle at 50% 28%, rgba(var(--c),0.85), rgba(var(--c),0.4) 62%, rgba(var(--c),0.2));
+  box-shadow:0 1px 0 rgba(0,0,0,0.35), 0 0 28px rgba(var(--c),0.8), inset 0 2px 0 rgba(255,255,255,0.35);
+}
 body.landscape #rankWrap { display:none; }
 body.landscape .em img { height:64px; }
 /* 휴대폰을 세로로 든 채 가로모드: 화면 전체를 90도 돌려서 보여 줌 (아이폰은 방향 고정 기능이 없음) */
@@ -226,6 +259,7 @@ body.rotated #wrapper, body.rotated .ov {
   width:var(--lw); height:var(--lh);
   transform-origin:top left; transform:rotate(90deg);
 }
+body.rotated .ovcorner { right:max(10px, env(safe-area-inset-bottom)); }
 @media (max-width:420px){
   #titleBar { font-size:1.25rem; white-space:nowrap; }
   .ex-t { display:none; }
@@ -265,8 +299,8 @@ body.rotated #wrapper, body.rotated .ov {
   </div>
 
   <div id="ctrls">
-    <button class="cbtn" id="btnSlide">⬇ 슬라이드</button>
-    <button class="cbtn" id="btnJump">⬆ 점프</button>
+    <button class="cbtn" id="btnSlide"><span class="ci"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 9l7 7 7-7"/></svg></span><span class="cl">슬라이드</span></button>
+    <button class="cbtn" id="btnJump"><span class="ci"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 15l7-7 7 7"/></svg></span><span class="cl">점프</span></button>
   </div>
 
   <div id="rankWrap">
@@ -279,6 +313,7 @@ body.rotated #wrapper, body.rotated .ov {
 </div>
 
 <div class="ov" id="startScr">
+  <div class="ovcorner"><button class="iconbtn ovMute" aria-label="소리 켜기·끄기">🔊</button><button class="iconbtn ovRot" aria-label="가로모드·세로모드 바꾸기">↔️ 가로</button></div>
   <div class="panel">
     <div class="em" id="heroEm">🧑‍💼</div>
     <h2>야근 탈출 RUN!</h2>
@@ -291,10 +326,6 @@ body.rotated #wrapper, body.rotated .ov {
     <div class="chars" id="charList"></div>
     <div class="box"><h4>🎯 이번 판 미션</h4><div id="missionList"></div></div>
     <button class="btn" id="startBtn">🔖 퇴근 도장 찍고 출발!</button>
-    <div class="btnrow">
-      <button class="btn sub2" id="rotBtn2">↔️ 가로모드로</button>
-      <button class="btn sub2" id="muteBtn2">🔊 소리 켜짐</button>
-    </div>
     <div class="og">
       <div class="oi">📄 서류·팀장님 → ⬆ 점프</div>
       <div class="oi">💢 민원·잔소리 → ⬇ 슬라이드</div>
@@ -311,6 +342,7 @@ body.rotated #wrapper, body.rotated .ov {
 </div>
 
 <div class="ov" id="gameoverScr" style="display:none">
+  <div class="ovcorner"><button class="iconbtn ovMute" aria-label="소리 켜기·끄기">🔊</button><button class="iconbtn ovRot" aria-label="가로모드·세로모드 바꾸기">↔️ 가로</button></div>
   <div class="panel">
     <div class="em" id="goEmoji">😩</div>
     <div class="title-big" id="titleV"></div>
@@ -333,11 +365,16 @@ body.rotated #wrapper, body.rotated .ov {
   var canvas = document.getElementById('gc');
   var ctx = canvas.getContext('2d');
   var W = canvas.width, H = canvas.height;
-  // 고해상도 화면에서 이미지가 뭉개지지 않도록 내부 해상도만 키움 (게임 좌표는 480x320 그대로)
+  // 고해상도 화면에서 이미지가 뭉개지지 않도록 내부 해상도만 키움 (게임 좌표는 480x320, 가로모드에선 폭만 넓어짐)
   var DPR = Math.min(window.devicePixelRatio || 1, 2);
-  canvas.width = W * DPR; canvas.height = H * DPR;
-  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-  ctx.imageSmoothingQuality = 'high';
+  // 가로모드용 위치 보정: 플레이어 x, 위쪽 안내 글자를 내릴 만큼, 보스를 오른쪽 버튼에서 비킬 만큼
+  var PX = 70, TOPY = 0, RX = 0;
+  function sizeCanvas() {
+    canvas.width = Math.round(W * DPR); canvas.height = H * DPR;
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    ctx.imageSmoothingQuality = 'high';
+  }
+  sizeCanvas();
 
   var GND = H - 52;          // 지면 y (플레이어 발 위치)
   var PW = 26;               // 플레이어 폭
@@ -494,27 +531,35 @@ body.rotated #wrapper, body.rotated .ov {
     ending: function () { seq([523, 659, 784, 1047, 784, 1047], 0.13, 'square', 0.18, 0.05); }
   };
   function vib(p) { try { if (navigator.vibrate) navigator.vibrate(p); } catch (e) {} }
-  var muteBtn = document.getElementById('muteBtn');
-  var muteBtn2 = document.getElementById('muteBtn2');
-  function renderMute() { muteBtn.textContent = muted ? '🔇' : '🔊'; muteBtn2.textContent = muted ? '🔇 소리 꺼짐' : '🔊 소리 켜짐'; }
+  var muteBtns = document.querySelectorAll('#muteBtn, .ovMute');
+  function renderMute() { for (var i = 0; i < muteBtns.length; i++) muteBtns[i].textContent = muted ? '🔇' : '🔊'; }
   function toggleMute() { muted = !muted; lsSet('esc_muted', muted); renderMute(); if (!muted) SFX.item(); }
-  muteBtn.addEventListener('click', toggleMute);
-  muteBtn2.addEventListener('click', toggleMute);
+  for (var mi = 0; mi < muteBtns.length; mi++) muteBtns[mi].addEventListener('click', toggleMute);
   renderMute();
 
   // ============ 가로모드 ============
   var landscape = lsGet('esc_landscape', false);
-  var rotBtn = document.getElementById('rotBtn'), rotBtn2 = document.getElementById('rotBtn2');
+  var rotBtns = document.querySelectorAll('#rotBtn, .ovRot');
   function applyOrientation() {
     var vw = window.innerWidth, vh = window.innerHeight;
     var rotate = landscape && vh > vw;   // 휴대폰을 세로로 든 상태면 화면을 돌려서 가로로 보여 줌
     document.body.classList.toggle('landscape', landscape);
     document.body.classList.toggle('rotated', rotate);
     var root = document.documentElement.style;
-    root.setProperty('--lw', (rotate ? vh : vw) + 'px');
-    root.setProperty('--lh', (rotate ? vw : vh) + 'px');
-    rotBtn.textContent = landscape ? '↕️ 세로' : '↔️ 가로';
-    rotBtn2.textContent = landscape ? '↕️ 세로모드로' : '↔️ 가로모드로';
+    var lw = rotate ? vh : vw, lh = rotate ? vw : vh;
+    root.setProperty('--lw', lw + 'px');
+    root.setProperty('--lh', lh + 'px');
+    // 가로모드: 게임 화면 폭을 휴대폰 비율만큼 넓혀서 화면을 꽉 채우고, 점프·슬라이드·점수는 그 위에 띄움
+    var bs = Math.round(Math.min(100, Math.max(72, lh * 0.23))), sc = lh / H;
+    root.setProperty('--bs', bs + 'px');
+    var nw = landscape ? Math.min(800, Math.max(480, Math.round(H * lw / lh))) : 480;
+    PX = landscape ? Math.round(Math.max(70 + (nw - 480) / 2, (16 + bs + 14) / sc)) : 70;
+    TOPY = landscape ? Math.round(46 / sc) : 0;
+    RX = landscape ? Math.max(0, Math.round((16 + bs) / sc) - 20) : 0;
+    if (nw !== W) { W = nw; sizeCanvas(); }
+    if (S && S.p && !S.ending) S.p.x = PX;
+    if (S && !S.on) draw();
+    for (var i = 0; i < rotBtns.length; i++) rotBtns[i].textContent = landscape ? '↕️ 세로' : '↔️ 가로';
   }
   function setLandscape(on) {
     landscape = on; lsSet('esc_landscape', on);
@@ -532,8 +577,7 @@ body.rotated #wrapper, body.rotated .ov {
     }
     applyOrientation();
   }
-  rotBtn.addEventListener('click', function () { setLandscape(!landscape); });
-  rotBtn2.addEventListener('click', function () { setLandscape(!landscape); });
+  for (var ri = 0; ri < rotBtns.length; ri++) rotBtns[ri].addEventListener('click', function () { setLandscape(!landscape); });
   window.addEventListener('resize', applyOrientation);
   window.addEventListener('orientationchange', function () { setTimeout(applyOrientation, 250); });
   applyOrientation();
@@ -710,7 +754,7 @@ body.rotated #wrapper, body.rotated .ov {
       frames:0, dist:0,
       jellyScore:0, bonus:0, hp:maxHp, maxHp:maxHp,
       speed:SPEEDS[0], curSp:SPEEDS[0],
-      p:{ x:70, y:GND-PH_RUN, vy:0, h:PH_RUN, ground:true, jumps:0, slide:false, inv:0, pose:'run' },
+      p:{ x:PX, y:GND-PH_RUN, vy:0, h:PH_RUN, ground:true, jumps:0, slide:false, inv:0, pose:'run' },
       obs:[], jellies:[], items:[], pits:[], pfx:[], chats:[],
       bgx:0,
       nextObs:80, nextJelly:60, nextItem:700, nextEvent:HOUR_F + 300,
@@ -778,8 +822,14 @@ body.rotated #wrapper, body.rotated .ov {
 
   var bj = document.getElementById('btnJump');
   var bs = document.getElementById('btnSlide');
-  bj.addEventListener('touchstart', function(e){ e.preventDefault(); doJump(); }, {passive:false});
-  bj.addEventListener('mousedown', function(e){ e.preventDefault(); doJump(); });
+  function jumpOn(e){ e.preventDefault(); doJump(); bj.classList.add('held'); }
+  function jumpOff(){ bj.classList.remove('held'); }
+  bj.addEventListener('touchstart', jumpOn, {passive:false});
+  bj.addEventListener('touchend', jumpOff);
+  bj.addEventListener('touchcancel', jumpOff);
+  bj.addEventListener('mousedown', jumpOn);
+  bj.addEventListener('mouseup', jumpOff);
+  bj.addEventListener('mouseleave', jumpOff);
   function slideOn(e){ e.preventDefault(); setSlide(true); bs.classList.add('held'); }
   function slideOff(e){ if(e) e.preventDefault(); setSlide(false); bs.classList.remove('held'); }
   bs.addEventListener('touchstart', slideOn, {passive:false});
@@ -1568,7 +1618,7 @@ body.rotated #wrapper, body.rotated .ov {
     var id = ev.def.id;
     if (id === 'rain' && ev.t % 10 === 0) S.jellies.push({ x: W * 0.35 + rnd() * W * 0.7, y: 24 + rnd() * (GND - 90), r: 8, c: JCOLORS[Math.floor(rnd() * 6)], spin: 0 });
     if (id === 'call') S.shake = Math.max(S.shake, 2.4);
-    if (id === 'chat' && ev.t % 45 === 0) { var m = pick(CHAT_TEXTS); S.chats.push({ x: 16 + rnd() * (W - 220), y: 34 + rnd() * (GND - 120), life: 120, who: m[0], text: m[1] }); }
+    if (id === 'chat' && ev.t % 45 === 0) { var m = pick(CHAT_TEXTS); S.chats.push({ x: 16 + rnd() * (W - 220), y: 34 + TOPY + rnd() * (GND - 120 - TOPY), life: 120, who: m[0], text: m[1] }); }
     if (ev.t <= 0) S.event = null;
   }
   function drawEventOverlay() {
@@ -1603,7 +1653,7 @@ body.rotated #wrapper, body.rotated .ov {
     if (b.throwAnim > 0) b.throwAnim--;
     if (--b.next <= 0) {
       var low = rnd() < 0.5;
-      S.obs.push({ x: W - 84, y: low ? GND - 26 : GND - 50, w: 30, h: 24, t: 'doc', label: low ? '점프!' : '슬라이드!', air: !low, proj: true, bob: 0, spin: 0 });
+      S.obs.push({ x: W - 84 - RX, y: low ? GND - 26 : GND - 50, w: 30, h: 24, t: 'doc', label: low ? '점프!' : '슬라이드!', air: !low, proj: true, bob: 0, spin: 0 });
       b.throwAnim = 18;
       b.next = 55 + rnd() * 30 - Math.min(20, b.t / 60);
       SFX.whoosh();
@@ -1619,7 +1669,7 @@ body.rotated #wrapper, body.rotated .ov {
     if (b.state !== 1) return;
     var im = (b.throwAnim > 0 && IMG.boss_throw) ? IMG.boss_throw : IMG.boss;
     var enter = Math.min(1, b.t / 40), leave = Math.min(1, (BOSS_LEN - b.t) / 40);
-    var x = W - 70 + (1 - Math.min(enter, leave)) * 90;
+    var x = W - 70 - RX + (1 - Math.min(enter, leave)) * 90;
     var y = GND - 4 + Math.sin(b.t * 0.08) * 3;
     ctx.fillStyle = 'rgba(0,0,0,0.35)';
     ctx.beginPath(); ctx.ellipse(x, GND + 5, 22, 4, 0, 0, Math.PI * 2); ctx.fill();
@@ -1634,7 +1684,7 @@ body.rotated #wrapper, body.rotated .ov {
   // ============ 24:00 막차 엔딩 ============
   function trainW() { return IMG.subway ? IMG.subway.width * (130 / IMG.subway.height) : 300; }
   function startEnding() {
-    S.ending = { phase: 1, t: 0, sp: S.curSp, trainX: W + 20, trainTarget: 92, hidePlayer: false };
+    S.ending = { phase: 1, t: 0, sp: S.curSp, trainX: W + 20, trainTarget: PX + 22, hidePlayer: false };
     S.event = null; S.chats = []; S.dash = 0;
     banner('🚇 24:00 막차 도착! 올라타!', '#ffd43b', 200);
     SFX.chime();
@@ -1849,9 +1899,9 @@ body.rotated #wrapper, body.rotated .ov {
       ctx.globalAlpha = a;
       ctx.font = 'bold 13px Jua';
       var tw = ctx.measureText(b.text).width + 26;
-      ctx.fillStyle = 'rgba(13,15,26,0.82)'; rr(W / 2 - tw / 2, 8, tw, 26, 13); ctx.fill();
-      ctx.strokeStyle = b.color; ctx.lineWidth = 1.5; rr(W / 2 - tw / 2, 8, tw, 26, 13); ctx.stroke();
-      ctx.fillStyle = b.color; ctx.textAlign = 'center'; ctx.fillText(b.text, W / 2, 26); ctx.textAlign = 'left';
+      ctx.fillStyle = 'rgba(13,15,26,0.82)'; rr(W / 2 - tw / 2, 8 + TOPY, tw, 26, 13); ctx.fill();
+      ctx.strokeStyle = b.color; ctx.lineWidth = 1.5; rr(W / 2 - tw / 2, 8 + TOPY, tw, 26, 13); ctx.stroke();
+      ctx.fillStyle = b.color; ctx.textAlign = 'center'; ctx.fillText(b.text, W / 2, 26 + TOPY); ctx.textAlign = 'left';
       ctx.globalAlpha = 1;
     }
     // 버프 아이콘 (왼쪽 위)
@@ -1861,7 +1911,7 @@ body.rotated #wrapper, body.rotated .ov {
     if (S.shield) buffs.push(['🎫', 1]);
     if (S.fever > 0) buffs.push(['🍬', S.fever / 360]);
     buffs.forEach(function (bf, i) {
-      var x = 18 + i * 30, y = 52;
+      var x = 18 + i * 30, y = 52 + TOPY;
       ctx.fillStyle = 'rgba(13,15,26,0.75)'; ctx.beginPath(); ctx.arc(x, y, 12, 0, Math.PI * 2); ctx.fill();
       ctx.strokeStyle = '#ffd43b'; ctx.lineWidth = 2.5;
       ctx.beginPath(); ctx.arc(x, y, 12, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * bf[1]); ctx.stroke();
@@ -1871,13 +1921,13 @@ body.rotated #wrapper, body.rotated .ov {
     if (S.boss.state === 1) {
       var left = Math.ceil((BOSS_LEN - S.boss.t) / 60);
       ctx.font = 'bold 12px Jua'; ctx.textAlign = 'center';
-      ctx.fillStyle = 'rgba(255,71,87,0.9)'; ctx.fillText('📋 평가 시즌  ' + left + '초', W / 2, 52); ctx.textAlign = 'left';
+      ctx.fillStyle = 'rgba(255,71,87,0.9)'; ctx.fillText('📋 평가 시즌  ' + left + '초', W / 2, 52 + TOPY); ctx.textAlign = 'left';
     }
     // 미션 진행 (오른쪽 위)
     if (S.on && S.missions && S.missions.length) {
       var done = S.missions.filter(function (m) { return m.done; }).length;
       ctx.font = 'bold 10px Jua'; ctx.textAlign = 'right';
-      ctx.fillStyle = 'rgba(232,234,240,0.85)'; ctx.fillText('🎯 미션 ' + done + '/' + S.missions.length, W - 10, 56); ctx.textAlign = 'left';
+      ctx.fillStyle = 'rgba(232,234,240,0.85)'; ctx.fillText('🎯 미션 ' + done + '/' + S.missions.length, W - 10, 56 + TOPY); ctx.textAlign = 'left';
     }
   }
   function drawFeverOverlay() {
