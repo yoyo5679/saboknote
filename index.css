@@ -1479,8 +1479,9 @@ select:focus {
   margin: 12px 13px 0;
   border-radius: var(--radius-xl);
   overflow: hidden;
-  background: #2563eb;
-  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.25);
+  /* 히어로는 연하게 물러나고, 진한 색은 아래 핵심 카드(누를 곳)에만 쓴다 */
+  background: #eef4ff;
+  border: 1px solid #d6e4ff;
 }
 
 .hero-v2-circle {
@@ -1490,7 +1491,7 @@ select:focus {
   width: 150px;
   height: 150px;
   border-radius: 999px;
-  background: #3b7bef;
+  background: rgba(37, 99, 235, 0.06);
   opacity: 0.6;
   pointer-events: none;
 }
@@ -1503,7 +1504,7 @@ select:focus {
 .hero-v2-eyebrow {
   font-size: 0.72rem;
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.78);
+  color: #2563eb;
   margin-bottom: 6px;
 }
 
@@ -1511,7 +1512,7 @@ select:focus {
   /* 닉네임 길이와 무관하게 항상 한 줄 — 넘치면 JS(fitGreeting)가 폰트를 줄여 딱 맞춤 */
   font-size: 1.35rem;
   font-weight: 900;
-  color: #fff;
+  color: var(--text-1);
   margin: 0 0 4px;
   letter-spacing: -0.02em;
   white-space: nowrap;
@@ -1519,10 +1520,10 @@ select:focus {
 
 .hero-v2-sub {
   font-size: 0.9rem;
-  color: #d3e2fd;
+  color: var(--text-4);
   margin: 0 0 14px;
 }
-.hero-v2-sub b { color: #fff; font-weight: 900; }
+.hero-v2-sub b { color: #1d4ed8; font-weight: 900; }
 
 .hero-v2-search {
   display: flex;
@@ -1532,14 +1533,14 @@ select:focus {
 .hero-v2-search input {
   flex: 1;
   min-width: 0;
-  border: none;
+  border: 1px solid #d6e4ff;
   border-radius: 999px;
   padding: 11px 16px;
   font-size: 0.85rem;
   font-family: inherit;
   background: #fff;
   color: var(--text-dark);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.08);
 }
 
 .hero-v2-search input:focus { outline: 2px solid #a9c6fb; }
@@ -1547,7 +1548,7 @@ select:focus {
 .hero-v2-search button {
   border: none;
   border-radius: 999px;
-  background: #172c63;
+  background: #2563eb;
   color: #fff;
   font-family: inherit;
   font-weight: 800;
@@ -1560,11 +1561,11 @@ select:focus {
 .hero-v2-badge {
   display: inline-flex;
   margin-top: 12px;
-  background: rgba(255, 255, 255, 0.16);
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: #fff;
+  border: 1px solid #d6e4ff;
   padding: 6px 12px;
   border-radius: 999px;
-  color: #fff;
+  color: #1d4ed8;
   font-size: 0.72rem;
   font-weight: 700;
   cursor: pointer;
@@ -1804,7 +1805,12 @@ html.dark-mode .core-card { --core-tint: rgba(59, 130, 246, 0.14); }
 html.dark-mode .core-card.core-teal { --core-tint: rgba(45, 212, 191, 0.14); }
 html.dark-mode .pv-out { color: #e2e8f0; }
 html.dark-mode .quick-row .prompt-chip { background: rgba(59, 130, 246, 0.14); border-color: rgba(147, 197, 253, 0.25); color: #bfdbfe; }
-html.dark-mode .hero-v2 { box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45); }
+html.dark-mode .hero-v2 { background: rgba(59, 130, 246, 0.1); border-color: rgba(147, 197, 253, 0.2); }
+html.dark-mode .hero-v2-eyebrow,
+html.dark-mode .hero-v2-sub b,
+html.dark-mode .hero-v2-badge { color: #93c5fd; }
+html.dark-mode .hero-v2-badge { background: rgba(255, 255, 255, 0.06); border-color: rgba(147, 197, 253, 0.25); }
+html.dark-mode .hero-v2-search input { border-color: rgba(147, 197, 253, 0.25); }
 
 /* ============================================
    HEADER V2 (클로드 디자인 개선안)
