@@ -834,8 +834,9 @@ body {
 }
 
 .nav-label {
-  font-size: 0.65rem;
+  font-size: 0.68rem;
   letter-spacing: -0.01em;
+  white-space: nowrap;
 }
 
 
@@ -1703,17 +1704,17 @@ select:focus {
 }
 
 .home-word-card {
-  background: var(--teal-700);
+  background: var(--teal-100);
+  border: 1px solid var(--teal-300);
   border-radius: var(--radius-lg);
-  padding: 18px 20px;
-  box-shadow: 0 6px 20px rgba(12, 114, 108, 0.25);
+  padding: 16px 18px;
   margin-bottom: 12px;
 }
 
 .home-word-label {
   font-size: 0.72rem;
   font-weight: 800;
-  color: var(--teal-300);
+  color: var(--teal-700);
   margin-bottom: 6px;
   letter-spacing: 0.05em;
 }
@@ -1721,30 +1722,31 @@ select:focus {
 .home-word {
   font-size: 1.25rem;
   font-weight: 900;
-  color: #fff;
+  color: var(--teal-800);
   margin-bottom: 2px;
 }
 
 .home-word-meaning {
   font-size: 0.78rem;
-  color: var(--teal-100);
+  color: var(--teal-700);
   font-weight: 700;
   margin-bottom: 6px;
+  word-break: keep-all;
 }
 
 .home-word-desc {
   margin: 0 0 12px;
   font-size: 0.8rem;
-  color: var(--teal-100);
+  color: var(--teal-800);
   line-height: 1.55;
-  opacity: 0.92;
+  opacity: 0.85;
 }
 
 .home-word-btn {
   border: none;
   border-radius: 999px;
-  background: #fff;
-  color: var(--teal-800);
+  background: var(--teal-700);
+  color: #fff;
   font-family: inherit;
   font-weight: 800;
   font-size: 0.78rem;
@@ -1785,6 +1787,12 @@ select:focus {
 
 /* 다크모드 보정 */
 html.dark-mode .fav-ico { background: var(--surface-3) !important; }
+html.dark-mode .home-word-card { background: rgba(18, 165, 148, 0.12); border-color: rgba(143, 221, 214, 0.25); }
+html.dark-mode .home-word-label,
+html.dark-mode .home-word-meaning { color: var(--teal-300); }
+html.dark-mode .home-word,
+html.dark-mode .home-word-desc { color: #e6f7f5; }
+html.dark-mode .core-card.core-teal { --core: #2dd4bf; --core-tint: rgba(45, 212, 191, 0.14); }
 html.dark-mode .hero-v2 { box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45); }
 
 /* ============================================
@@ -2035,82 +2043,104 @@ html.dark-mode .request-card-arrow { color: var(--teal-300); }
 
   /* 데스크톱에서 홈 즐겨찾기 카드를 3열로 (넓은 폭 활용) */
   .fav-grid { grid-template-columns: repeat(3, 1fr); }
+
+  /* 사이드바에 브랜드가 있으므로 헤더 로고는 숨김 (로고 중복 방지) */
+  .header-logo { display: none !important; }
+  .header-inner { justify-content: flex-end; }
+}
+
+/* 넓은 PC(≥1280px): 홈을 2단으로 — 왼쪽 본문 + 오른쪽 보조 컬럼(Q&A·생존단어·지표) */
+@media (min-width: 1280px) {
+  #app:has(#view-home.active) { max-width: 1180px; }
+  #view-home.active {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 330px;
+    grid-auto-rows: min-content;
+    align-items: start;
+  }
+  #view-home > * { grid-column: 1; }
+  #view-home > .hero-v2 { grid-column: 1 / -1; }
+  #view-home > .home-aside {
+    grid-column: 2;
+    grid-row: 2 / span 12;
+    position: sticky;
+    top: 0;
+    padding-left: 0;
+  }
 }
 
 /* ============================================
-   비밀 프롬프트 피처 배너 (핵심 기능 부각)
+   홈 핵심 도구 카드 (비밀 프롬프트 · 행정/회계 마스터)
+   흰 카드 + 아이콘에만 브랜드 색 — 첫 화면을 차분하게
    ============================================ */
-.prompt-feature {
-  position: relative;
-  overflow: hidden;
-  width: 100%;
+.core-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.core-card {
+  --core: var(--primary);
+  --core-tint: var(--tint-primary);
   display: flex;
-  align-items: center;
-  gap: 14px;
-  text-align: left;
-  border: none;
+  flex-direction: column;
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  padding: 18px 20px;
-  cursor: pointer;
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  min-width: 0;
+}
+.core-card.core-teal { --core: var(--teal-700); --core-tint: var(--teal-100); }
+.core-main {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 15px 14px 12px;
+  border: none;
+  background: none;
+  text-align: left;
   font-family: inherit;
-  color: #fff;
-  background: linear-gradient(120deg, #4338ca 0%, #6366f1 55%, #818cf8 100%);
-  box-shadow: 0 8px 24px rgba(79, 70, 229, 0.3);
-  transition: transform 0.12s, box-shadow 0.2s;
+  cursor: pointer;
+  border-top: 4px solid var(--core);
 }
-.prompt-feature:active { transform: scale(0.99); }
-.prompt-feature-glow {
-  position: absolute;
-  right: -40px;
-  top: -50px;
-  width: 170px;
-  height: 170px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.13);
-  pointer-events: none;
-}
-.prompt-feature-emoji {
-  flex: none;
-  width: 54px;
-  height: 54px;
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.18);
+.core-main:active { background: var(--core-tint); }
+.core-ico {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: var(--core-tint);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.7rem;
+  font-size: 1.25rem;
+  margin-bottom: 8px;
 }
-.prompt-feature-body { position: relative; min-width: 0; }
-.prompt-feature-kicker {
-  font-size: 0.66rem;
-  font-weight: 800;
-  letter-spacing: 0.06em;
-  color: rgba(255, 255, 255, 0.72);
-  margin-bottom: 3px;
+.core-kicker { font-size: 0.64rem; font-weight: 800; color: var(--core); letter-spacing: 0.02em; }
+.core-title { font-size: 0.98rem; font-weight: 900; color: var(--text-1); letter-spacing: -0.02em; }
+.core-desc { font-size: 0.72rem; color: var(--text-5); line-height: 1.4; word-break: keep-all; }
+.core-links {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--border);
+  margin-top: auto;
 }
-.prompt-feature-title { font-size: 1.08rem; font-weight: 900; margin-bottom: 4px; letter-spacing: -0.01em; }
-.prompt-feature-desc {
-  font-size: 0.78rem;
-  color: rgba(255, 255, 255, 0.9);
-  line-height: 1.45;
-  margin-bottom: 10px;
+.core-links button {
+  border: none;
+  background: none;
+  font-family: inherit;
+  text-align: left;
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--text-3);
+  padding: 9px 14px;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-.prompt-feature-cta {
-  display: inline-block;
-  background: #fff;
-  color: #4338ca;
-  font-size: 0.78rem;
-  font-weight: 800;
-  padding: 7px 14px;
-  border-radius: 999px;
-}
-
-/* 행정/회계 마스터 전용 배너 (청록 브랜드 톤) */
-.prompt-feature.admin-feature {
-  background: linear-gradient(120deg, #065f5b 0%, #0c9488 55%, #10b981 100%);
-  box-shadow: 0 8px 24px rgba(12, 148, 136, 0.3);
-}
-.prompt-feature.admin-feature .prompt-feature-cta { color: #0c726c; }
+.core-links button + button { border-top: 1px dashed var(--border); }
+.core-links button:active, .core-links button:hover { background: var(--core-tint); color: var(--core); }
 
 /* 전체 도구 모달 — 그룹 헤더 */
 .at-group-title {
