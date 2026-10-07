@@ -896,6 +896,7 @@ body.rotated .ovcorner { right:max(10px, env(safe-area-inset-bottom)); }
 
   function startGame() {
     audio();
+    if (supabase) supabase.rpc('track_use', { ev: 'game_play' }).then(function () {}, function () {});   // 판 수만 셈
     startScr.style.display = 'none';
     overScr.style.display = 'none';
     cancelAnimationFrame(animId);

@@ -2260,3 +2260,89 @@ html.dark-mode .request-card-arrow { color: var(--teal-300); }
   #admin-content-payroll [style*="font-size:0.6rem"] { font-size: 0.72rem !important; }
   #admin-content-payroll [style*="font-size:0.65rem"] { font-size: 0.74rem !important; }
 }
+
+/* ============================================
+   프롬프트 보관함 · 빈칸 미리 채우기 · 복사 후 안내
+   ============================================ */
+.ps-fav {
+  margin-top: 12px; padding: 7px 14px; border-radius: 999px; cursor: pointer;
+  border: 1.5px solid var(--border-strong); background: var(--surface); color: var(--text-4);
+  font-family: inherit; font-size: 0.85rem; font-weight: 800;
+}
+.ps-fav.on { border-color: #f59e0b; background: #fffbeb; color: #b45309; }
+html.dark-mode .ps-fav.on { background: rgba(245, 158, 11, 0.14); color: #fcd34d; }
+.ps-fill {
+  margin: 0 0 12px; padding: 12px 14px; border: 1.5px dashed var(--border-strong);
+  border-radius: 14px; background: var(--surface-2);
+}
+.ps-fill summary { cursor: pointer; font-weight: 800; color: var(--primary); font-size: 0.92rem; }
+.ps-fill summary span { font-weight: 600; color: var(--text-6); font-size: 0.8rem; }
+.ps-note { margin: 10px 0 6px; font-size: 0.8rem; color: var(--text-5); line-height: 1.55; word-break: keep-all; }
+.ps-label { display: block; margin: 10px 0 4px; font-size: 0.8rem; font-weight: 700; color: var(--text-3); line-height: 1.4; word-break: keep-all; }
+.ps-input { width: 100%; min-height: 44px; padding: 10px 12px; font-size: 0.9rem; line-height: 1.45; resize: vertical; font-family: inherit; }
+.ps-row { display: flex; gap: 8px; margin-top: 12px; }
+.ps-row .btn-primary { flex: 1; padding: 11px 8px; font-size: 0.9rem; width: auto; margin: 0; }
+.ps-row .btn-outline { flex: 0 0 auto; padding: 11px 16px; }
+.ps-status { font-size: 0.82rem; color: var(--text-4); line-height: 1.55; margin: -4px 2px 12px; word-break: keep-all; }
+.ps-status:empty { display: none; }
+.ps-login-row { display: flex; gap: 8px; margin-top: 8px; }
+.ps-login-row button {
+  flex: 1; padding: 10px 8px; border-radius: 10px; cursor: pointer;
+  font-family: inherit; font-size: 0.85rem; font-weight: 800;
+}
+.ps-kakao { background: #fee500; color: #191919; border: none; }
+.ps-google { background: var(--surface); color: var(--text-2); border: 1px solid var(--border-strong); }
+.ps-done { margin-top: 12px; padding: 10px 12px; border-radius: 10px; background: #ecfdf5; color: #047857; font-weight: 800; font-size: 0.88rem; text-align: center; }
+html.dark-mode .ps-done { background: rgba(16, 185, 129, 0.14); color: #6ee7b7; }
+.ps-card { margin-top: 10px; padding: 14px; border-radius: 14px; border: 1.5px solid #dbeafe; background: var(--tint-primary); text-align: left; }
+.ps-card-t { font-weight: 900; font-size: 0.92rem; color: var(--text-1); }
+.ps-card-d { font-size: 0.8rem; color: var(--text-5); margin-top: 4px; line-height: 1.5; word-break: keep-all; }
+.ps-sub-row { display: flex; gap: 8px; margin-top: 10px; }
+.ps-sub-row input { flex: 1; min-width: 0; padding: 11px 12px; font-size: 0.95rem; }
+.ps-sub-row .btn-primary { width: auto; flex: 0 0 auto; padding: 11px 18px; margin: 0; }
+.ps-agree { display: flex; gap: 8px; align-items: flex-start; margin-top: 8px; font-size: 0.74rem; color: var(--text-5); line-height: 1.45; cursor: pointer; }
+.ps-agree input { width: 16px; height: 16px; flex-shrink: 0; margin-top: 1px; accent-color: #2563eb; }
+.ps-box { margin: 0 0 16px; padding: 12px 14px; border-radius: 14px; background: var(--surface-2); border: 1px solid var(--border); }
+.ps-box.ps-empty { font-size: 0.8rem; color: var(--text-5); line-height: 1.5; word-break: keep-all; }
+.ps-box-t { font-weight: 900; font-size: 0.88rem; color: var(--text-2); margin-bottom: 8px; }
+.ps-chips { display: flex; flex-direction: column; gap: 6px; }
+.ps-chip {
+  display: block; width: 100%; text-align: left; padding: 9px 12px; border-radius: 10px; cursor: pointer;
+  border: 1px solid var(--border-strong); background: var(--surface); color: var(--text-2);
+  font-family: inherit; font-size: 0.85rem; font-weight: 700;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.ps-chip-tag { font-size: 0.7rem; font-weight: 800; color: #2563eb; background: #dbeafe; padding: 2px 6px; border-radius: 999px; margin-left: 4px; }
+html.dark-mode .ps-chip-tag { background: rgba(59, 130, 246, 0.2); color: #93c5fd; }
+.ps-foot { display: flex; gap: 8px; margin-top: 18px; padding-top: 14px; border-top: 1px dashed var(--border); }
+.ps-foot button {
+  flex: 1; padding: 11px 8px; border-radius: 12px; cursor: pointer; word-break: keep-all;
+  border: 1px solid var(--border-strong); background: var(--surface); color: var(--text-3);
+  font-family: inherit; font-size: 0.8rem; font-weight: 800; line-height: 1.35;
+}
+
+/* ============================================
+   기관 AI 교육 문의
+   ============================================ */
+.edu-course { padding: 14px; border-radius: 14px; background: var(--tint-primary); border: 1px solid #dbeafe; margin-bottom: 16px; }
+.edu-course-t { font-weight: 900; font-size: 0.9rem; color: #1e40af; margin-bottom: 8px; word-break: keep-all; }
+html.dark-mode .edu-course-t { color: #93c5fd; }
+.edu-row { display: flex; gap: 10px; font-size: 0.82rem; line-height: 1.5; padding: 3px 0; color: var(--text-3); }
+.edu-row b { flex: 0 0 34px; color: var(--text-5); font-weight: 800; }
+.edu-row span { word-break: keep-all; }
+.edu-form { display: flex; flex-direction: column; gap: 6px; text-align: left; }
+.edu-form label { font-size: 0.8rem; font-weight: 800; color: var(--text-3); margin-top: 6px; }
+.edu-form label em { color: #ef4444; font-style: normal; }
+.edu-input { width: 100%; padding: 12px; font-size: 0.95rem; border-radius: 10px; font-family: inherit; }
+textarea.edu-input { resize: vertical; line-height: 1.5; }
+.edu-2col { display: flex; gap: 10px; }
+.edu-2col > div { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.edu-form .edu-agree {
+  display: flex; gap: 10px; align-items: flex-start; cursor: pointer; margin-top: 10px;
+  padding: 12px; border-radius: 12px; background: #f5f9ff; border: 1px solid #dbeafe; font-weight: 500; line-height: 1.5;
+}
+html.dark-mode .edu-form .edu-agree { background: var(--tint-primary); border-color: var(--border); }
+.edu-agree input { width: 18px; height: 18px; flex-shrink: 0; margin-top: 2px; accent-color: #2563eb; }
+.edu-agree strong { color: #2563eb; }
+.edu-agree small { color: var(--text-6); font-size: 0.74rem; }
+#edu-submit { margin-top: 10px; padding: 15px; font-size: 1.02rem; border-radius: 12px; }
