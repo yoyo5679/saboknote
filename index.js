@@ -60,8 +60,11 @@ try {
     const COPY_COUNT_KEY = 'saboknote_prompt_copies';   // 프롬프트 복사 횟수 (로그인 권유 시점)
     function trackUse(ev, source) {
         if (!supabase) return;
-        const args = source ? { ev, source } : { ev };
-        ensureAnonSession().then(() => supabase.rpc('track_use', args)).catch(() => { /* 기록 실패는 무시 */ });
+        ensureAnonSession()
+            .then(() => supabase.rpc('track_use', source ? { ev, source } : { ev }))
+            // 서버 함수가 경로(source)를 모르는 예전 버전이면 경로 없이라도 기록
+            .then(res => { if (source && res && res.error) return supabase.rpc('track_use', { ev }); })
+            .catch(() => { /* 기록 실패는 무시 */ });
     }
     window.trackUse = trackUse;
     function visitSource() {
