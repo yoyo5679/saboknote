@@ -2,17 +2,24 @@
 -- Supabase 대시보드 → SQL Editor에 붙여넣고 Run 하면 됩니다. (여러 번 실행해도 안전하게 작성)
 
 -- 1) 사용 기록: 하루 단위 · 익명 ID별 횟수만 센다 (무엇을 입력했는지는 저장하지 않음)
+--    방문(visit)은 어디서 들어왔는지(src: 인스타·카카오·검색 등)도 함께 센다.
 --    클라이언트는 표를 직접 읽거나 쓸 수 없고 track_use 함수로만 기록한다.
 create table if not exists public.usage_daily (
   day date not null,
   event text not null,
+  src text not null default '',
   uid uuid not null default '00000000-0000-0000-0000-000000000000',
   n integer not null default 1 check (n >= 0),
-  primary key (day, event, uid)
+  primary key (day, event, src, uid)
 );
+-- 예전 버전(src 없음)을 먼저 실행했어도 맞춰지게
+alter table public.usage_daily add column if not exists src text not null default '';
+alter table public.usage_daily drop constraint if exists usage_daily_pkey;
+alter table public.usage_daily add primary key (day, event, src, uid);
 alter table public.usage_daily enable row level security;
 
-create or replace function public.track_use(ev text)
+drop function if exists public.track_use(text);
+create or replace function public.track_use(ev text, source text default null)
 returns void
 language plpgsql
 security definer
@@ -24,26 +31,35 @@ declare
     'balance_done','quiz_done','shred','ebook_get','workbook_open','workbook_get',
     'newsletter_sub','edu_open','edu_inquiry','login_click'
   ];
+  sources text[] := array[
+    'instagram','threads','kakao','naver','google','daum','facebook','youtube','band',
+    'workbook','direct','other'
+  ];
+  s text := '';
 begin
   if ev is null or not (ev = any(allowed)) then
     return;
   end if;
-  insert into public.usage_daily as u (day, event, uid, n)
-  values ((now() at time zone 'Asia/Seoul')::date, ev,
+  if ev = 'visit' then
+    s := case when source = any(sources) then source else 'other' end;
+  end if;
+  insert into public.usage_daily as u (day, event, src, uid, n)
+  values ((now() at time zone 'Asia/Seoul')::date, ev, s,
           coalesce(auth.uid(), '00000000-0000-0000-0000-000000000000'::uuid), 1)
-  on conflict (day, event, uid) do update set n = least(u.n + 1, 200);  -- 한 사람이 하루에 부풀릴 수 있는 횟수 제한
+  on conflict (day, event, src, uid) do update set n = least(u.n + 1, 200);  -- 한 사람이 하루에 부풀릴 수 있는 횟수 제한
 end;
 $$;
-revoke all on function public.track_use(text) from public;
-grant execute on function public.track_use(text) to anon, authenticated;
+revoke all on function public.track_use(text, text) from public;
+grant execute on function public.track_use(text, text) to anon, authenticated;
 
--- 대시보드에서 보는 요약: 날짜·기능별 총 횟수와 사용자 수 (클라이언트에는 열지 않음)
-create or replace view public.usage_summary with (security_invoker = true) as
-select day, event,
+-- 대시보드에서 보는 요약: 날짜·기능(·유입 경로)별 총 횟수와 사용자 수 (클라이언트에는 열지 않음)
+drop view if exists public.usage_summary;
+create view public.usage_summary with (security_invoker = true) as
+select day, event, src,
        sum(n)::int as total,
        count(distinct uid) filter (where uid <> '00000000-0000-0000-0000-000000000000') as users
 from public.usage_daily
-group by day, event;
+group by day, event, src;
 revoke all on public.usage_summary from anon, authenticated;
 
 -- 2) 기관 교육 문의: 누구나 보내기만 가능, 읽기는 대시보드(Table Editor)에서만
@@ -93,5 +109,6 @@ create policy "own delete" on public.prompt_saves for delete to authenticated
   using (user_id = (select auth.uid()));
 
 -- 확인용 (실행 후 아무 문제 없으면 무시해도 됨)
--- select * from public.usage_summary order by day desc, event;
--- select * from public.edu_inquiries order by created_at desc;
+-- 최근 30일 방문자 수:      select count(distinct uid) from public.usage_daily where event = 'visit' and day > current_date - 30;
+-- 유입 경로별 방문자 수:    select src, sum(users) from public.usage_summary where event = 'visit' group by src order by 2 desc;
+-- 교육 문의:                select * from public.edu_inquiries order by created_at desc;

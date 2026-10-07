@@ -239,7 +239,7 @@ def field_html(lab, hint, size):
 
 def lab_page(L):
     no, key, title, when, fields, example, tip, follow, checks = L
-    url = f"{SITE}/#home/prompt-{key}"
+    url = f"{SITE}/?utm_source=workbook#home/prompt-{key}"   # QR로 들어온 방문을 따로 셈
     fh = "".join(field_html(*f) for f in fields)
     ex = "".join(f'<div class="row"><b>■ {e(a)}:</b> {e(b)}</div>' for a, b in example)
     fo = "".join(f'<div class="bubble">"{e(x)}"</div>' for x in follow)
@@ -339,8 +339,8 @@ doc = f"""<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>사�
 
 <section class="back">
   <h1>다음은 이렇게 이어 가요</h1>
-  <div class="card"><div class="tx"><div class="tt">더 많은 프롬프트는 사복노트에서</div><div class="dd">사례관리·행정·홍보 프롬프트 23개, 행정 계산기, 사진 속 개인정보 가리기 도구까지 무료로 써요.</div><div class="url">saboknote.com</div></div><img src="{qr(SITE + '/')}" alt=""></div>
-  <div class="card"><div class="tx"><div class="tt">우리 기관도 함께 배우고 싶다면</div><div class="dd">기관 출강·온라인 실습 2시간. 이 워크북을 교재로 써요.</div><div class="url">saboknote.com/#home/edu</div></div><img src="{qr(SITE + '/#home/edu')}" alt=""></div>
+  <div class="card"><div class="tx"><div class="tt">더 많은 프롬프트는 사복노트에서</div><div class="dd">사례관리·행정·홍보 프롬프트 23개, 행정 계산기, 사진 속 개인정보 가리기 도구까지 무료로 써요.</div><div class="url">saboknote.com</div></div><img src="{qr(SITE + '/?utm_source=workbook')}" alt=""></div>
+  <div class="card"><div class="tx"><div class="tt">우리 기관도 함께 배우고 싶다면</div><div class="dd">기관 출강·온라인 실습 2시간. 이 워크북을 교재로 써요.</div><div class="url">saboknote.com/#home/edu</div></div><img src="{qr(SITE + '/?utm_source=workbook#home/edu')}" alt=""></div>
   <div class="card"><div class="tx"><div class="tt">새 프롬프트 소식 받기</div><div class="dd">사복노트 홈에서 비밀편지를 구독하면 새 프롬프트와 자료를 먼저 보내 드려요.</div></div></div>
   <div class="foot">이 워크북은 초안이에요. 고쳤으면 하는 점은 사복노트 홈의 '사복천재님, 이것 좀 만들어주세요!'에 남겨 주세요.<br>© 2026 사복노트 · 이 워크북의 사례는 모두 연습용 가상 사례예요.</div>
 </section>

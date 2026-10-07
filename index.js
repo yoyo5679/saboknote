@@ -53,20 +53,34 @@ try {
     ensureAnonSession();
 
     /* --- 사용 기록: 하루 단위로 몇 명이 어떤 기능을 썼는지만 센다 (입력 내용은 보내지 않음) ---
+       방문은 어디서 들어왔는지(인스타·카카오·검색 등)도 함께 센다. 링크에 ?utm_source=instagram 처럼 붙이면 가장 정확하다.
        서버의 track_use 함수가 허용된 이름만 받고, 한 사람이 하루에 부풀릴 수 있는 횟수도 막는다. */
     const NL_DONE_KEY = 'saboknote_nl_done';            // 비밀편지 구독함 → 구독 권유 숨김
     const PS_KEY = 'saboknote_prompt_saves';            // 프롬프트 보관함 (이 기기 사본)
     const COPY_COUNT_KEY = 'saboknote_prompt_copies';   // 프롬프트 복사 횟수 (로그인 권유 시점)
-    function trackUse(ev) {
+    function trackUse(ev, source) {
         if (!supabase) return;
-        ensureAnonSession().then(() => supabase.rpc('track_use', { ev })).catch(() => { /* 기록 실패는 무시 */ });
+        const args = source ? { ev, source } : { ev };
+        ensureAnonSession().then(() => supabase.rpc('track_use', args)).catch(() => { /* 기록 실패는 무시 */ });
     }
     window.trackUse = trackUse;
+    function visitSource() {
+        try {
+            const utm = (new URLSearchParams(location.search).get('utm_source') || '').toLowerCase();
+            const ref = document.referrer ? new URL(document.referrer).hostname.toLowerCase() : '';
+            const s = utm || ref;
+            if (!s || /saboknote\.com$/.test(s) || s === location.hostname) return 'direct';
+            const known = [['instagram', /instagram|^ig$/], ['threads', /threads/], ['kakao', /kakao/], ['naver', /naver/],
+                ['google', /google/], ['daum', /daum/], ['facebook', /facebook|^fb$/], ['youtube', /youtube/], ['band', /band/], ['workbook', /^workbook$/]];
+            const hit = known.find(([, re]) => re.test(s));
+            return hit ? hit[0] : 'other';
+        } catch (e) { return 'other'; }
+    }
     try {
         const today = new Date().toLocaleDateString('sv-SE', { timeZone: 'Asia/Seoul' });
         if (localStorage.getItem('saboknote_visit_day') !== today) {
             localStorage.setItem('saboknote_visit_day', today);
-            trackUse('visit');
+            trackUse('visit', visitSource());
         }
     } catch (e) { /* noop */ }
 
