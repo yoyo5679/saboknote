@@ -56,7 +56,7 @@
     <link rel="icon"
         href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>">
 
-    <link rel="stylesheet" href="index.css?v=10">
+    <link rel="stylesheet" href="index.css?v=11">
     <link rel="stylesheet" as="style" crossorigin
         href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -66,6 +66,9 @@
     <meta name="google-adsense-account" content="ca-pub-4943960812497979">
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4943960812497979"
         crossorigin="anonymous"></script>
+    <!-- Vercel Web Analytics (방문자 수·유입 경로) — Vercel 대시보드에서 Analytics를 켜야 집계됨 -->
+    <script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
+    <script defer src="/_vercel/insights/script.js"></script>
 </head>
 
 <body>
@@ -183,7 +186,7 @@
                     <div class="core-grid">
                         <button class="core-card core-blue" onclick="homeOpenPrompt()">
                             <span class="core-top">
-                                <span class="core-row"><span class="core-ico">🪄</span><span class="core-count">20개</span></span>
+                                <span class="core-row"><span class="core-ico">🪄</span><span class="core-count">23개</span></span>
                                 <span class="core-title">비밀 프롬프트</span>
                                 <span class="core-desc">복붙하면 사례기록 1분 컷</span>
                             </span>
@@ -281,6 +284,32 @@
                             onclick="document.getElementById('open-dashboard').click()">지표 보기</button>
                     </div>
                 </aside>
+
+                <!-- ⑤-2 AI 실무 교육 (프롬프트 워크북 · 기관 교육 문의) -->
+                <section class="sec" style="padding-bottom: 0;">
+                    <div class="sec-head">
+                        <div class="sec-head-l">
+                            <span class="sec-title">🎓 AI 실무 교육</span>
+                            <span class="sec-sub">혼자 연습하거나, 우리 기관이 함께 배우거나</span>
+                        </div>
+                    </div>
+                    <div class="rest-grid">
+                        <button class="playground-banner" onclick="openWorkbookGate()">
+                            <span style="font-size:1.6rem;">📘</span>
+                            <span style="flex:1; text-align:left; min-width:0;">
+                                <span class="pb-title">프롬프트 워크북</span>
+                                <span class="pb-desc">무료 PDF 실습지</span>
+                            </span>
+                        </button>
+                        <button class="playground-banner" onclick="openEduModal()">
+                            <span style="font-size:1.6rem;">🏫</span>
+                            <span style="flex:1; text-align:left; min-width:0;">
+                                <span class="pb-title">기관 교육 문의</span>
+                                <span class="pb-desc">출강·온라인 실습 2시간</span>
+                            </span>
+                        </button>
+                    </div>
+                </section>
 
                 <!-- ⑥ 쉬어가기 (감정 파쇄기 · 사복놀이터) -->
                 <section class="sec" style="padding-bottom: 0;">
@@ -1439,7 +1468,7 @@
 
     </div><!-- /#app -->
 
-    <script src="index.js?v=46" charset="utf-8"></script>
+    <script src="index.js?v=47" charset="utf-8"></script>
     <script>
         // PWA Service Worker Registration
         if ('serviceWorker' in navigator) {

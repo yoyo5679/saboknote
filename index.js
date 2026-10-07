@@ -52,6 +52,24 @@ try {
     }
     ensureAnonSession();
 
+    /* --- 사용 기록: 하루 단위로 몇 명이 어떤 기능을 썼는지만 센다 (입력 내용은 보내지 않음) ---
+       서버의 track_use 함수가 허용된 이름만 받고, 한 사람이 하루에 부풀릴 수 있는 횟수도 막는다. */
+    const NL_DONE_KEY = 'saboknote_nl_done';            // 비밀편지 구독함 → 구독 권유 숨김
+    const PS_KEY = 'saboknote_prompt_saves';            // 프롬프트 보관함 (이 기기 사본)
+    const COPY_COUNT_KEY = 'saboknote_prompt_copies';   // 프롬프트 복사 횟수 (로그인 권유 시점)
+    function trackUse(ev) {
+        if (!supabase) return;
+        ensureAnonSession().then(() => supabase.rpc('track_use', { ev })).catch(() => { /* 기록 실패는 무시 */ });
+    }
+    window.trackUse = trackUse;
+    try {
+        const today = new Date().toLocaleDateString('sv-SE', { timeZone: 'Asia/Seoul' });
+        if (localStorage.getItem('saboknote_visit_day') !== today) {
+            localStorage.setItem('saboknote_visit_day', today);
+            trackUse('visit');
+        }
+    } catch (e) { /* noop */ }
+
     /* --- OAuth 콜백 에러 처리 ---
        [버그 원인] 다른 기기에서 linkIdentity()로 이미 연결된 카카오/구글을 시도하면
        클라이언트가 아닌 콜백(redirect) 단계에서 422(Identity is already linked)로 실패하고,
@@ -229,6 +247,7 @@ try {
 
     /* ===== 정서 동반자: 파쇄 애니메이션 공통 ===== */
     function runShredAnimation(renderSuccess) {
+        trackUse('shred');
         const ta = document.getElementById('shredder-textarea');
         const stripped = document.getElementById('shredder-strips');
         const writeArea = document.getElementById('shredder-write-area');
@@ -813,6 +832,7 @@ try {
        다른 기기에서 로그인만 해도 닉네임·게시글·게임 기록까지 복원되게 한다. */
     window.socialLogin = async function (provider) {
         if (!supabase) { alert('네트워크 연결을 확인한 뒤 다시 시도해 주세요.'); return; }
+        trackUse('login_click');
         const providerName = provider === 'google' ? '구글' : '카카오';
         try {
             localStorage.setItem('sabok_pending_provider', provider);
@@ -870,6 +890,8 @@ try {
                 localStorage.removeItem(LINK_DONE_KEY);
                 localStorage.removeItem(SABOK_RESTORE_DECLINED_KEY);
                 localStorage.removeItem('sabok_pending_provider');
+                localStorage.removeItem(PS_KEY);   // 공용 PC에서 다음 사람에게 보관함이 보이지 않게
+                localStorage.removeItem(COPY_COUNT_KEY);
                 Object.keys(localStorage).forEach(k => {
                     if (k.startsWith('sb-') && k.endsWith('-auth-token')) localStorage.removeItem(k);
                 });
@@ -1068,6 +1090,9 @@ try {
             }
         }
 
+        try { localStorage.setItem(NL_DONE_KEY, '1'); } catch (e) { /* noop */ }
+        trackUse('newsletter_sub');
+
         // 구독 완료 UI
         const body = document.getElementById('modal-body');
         if (body) {
@@ -1151,10 +1176,196 @@ try {
                 if (error) console.error('Ebook gate save error', error);
             } catch (e) { console.error('Ebook gate save error', e); }
         }
-        try { localStorage.setItem(EBOOK_DONE_KEY, '1'); } catch (e) { /* noop */ }
+        try { localStorage.setItem(EBOOK_DONE_KEY, '1'); localStorage.setItem(NL_DONE_KEY, '1'); } catch (e) { /* noop */ }
+        trackUse('ebook_get');
 
         const body = document.getElementById('modal-body');
         if (body) body.innerHTML = ebookDownloadHtml(false);
+    };
+
+    /* --- AI 프롬프트 워크북 PDF: 이메일 남기면 바로 다운로드 (비밀편지 구독자로 함께 저장) ---
+       비밀편지를 이미 구독한 기기는 이메일을 다시 묻지 않는다. */
+    const WORKBOOK_PDF_URL = '/downloads/saboknote-prompt-workbook.pdf';
+    const WORKBOOK_DONE_KEY = 'saboknote_workbook_done';
+
+    function workbookDownloadHtml(mode) {
+        const title = mode === 'again' ? '다시 받으러 오셨군요!' : mode === 'subscriber' ? '비밀편지 구독자는 바로 받아 가세요' : '신청 완료! 바로 받아 가세요';
+        return `
+            <div style="text-align:center; padding:24px 0 8px;">
+                <div style="font-size:3.2rem; margin-bottom:12px;">📘</div>
+                <h3 style="font-size:1.15rem; font-weight:900; color:#1e40af; margin-bottom:8px;">${title}</h3>
+                <p style="font-size:0.88rem; color:var(--text-5); line-height:1.6; margin-bottom:20px;">강의 교재로 써도 좋아요.<br>우리 기관도 함께 배우고 싶다면 교육 문의를 남겨 주세요.</p>
+                <a href="${WORKBOOK_PDF_URL}" download="사복노트_AI프롬프트워크북_초안.pdf"
+                   style="display:block; text-decoration:none; background:linear-gradient(135deg,#2563eb,#1e40af); color:#fff; font-weight:900; font-size:1.05rem; padding:16px; border-radius:12px; box-shadow:0 4px 14px rgba(37,99,235,0.3);">📥 워크북 PDF 다운로드</a>
+                <button class="btn-primary btn-outline" onclick="openEduModal()" style="margin-top:10px; width:100%; padding:13px; border-radius:12px;">🏫 기관 교육 문의</button>
+                <p style="font-size:0.75rem; color:var(--text-6); margin-top:12px;">휴대폰에서 안 열리면 '파일' 앱이나 다운로드 폴더를 확인해 주세요.</p>
+            </div>`;
+    }
+
+    window.openWorkbookGate = function () {
+        trackUse('workbook_open');
+        let done = false, subscribed = false;
+        try {
+            done = localStorage.getItem(WORKBOOK_DONE_KEY) === '1';
+            subscribed = localStorage.getItem(NL_DONE_KEY) === '1';
+        } catch (e) { /* noop */ }
+        if (done || subscribed) {
+            if (!done) { try { localStorage.setItem(WORKBOOK_DONE_KEY, '1'); } catch (e) { /* noop */ } trackUse('workbook_get'); }
+            openModal('📘 AI 프롬프트 워크북', workbookDownloadHtml(done ? 'again' : 'subscriber'), 'workbook');
+            return;
+        }
+        const content = `
+        <div style="text-align:center; padding:12px 0 4px;">
+            <div style="font-size:3rem; margin-bottom:10px;">📘</div>
+            <h3 style="font-size:1.2rem; color:var(--text-dark); margin-bottom:8px; font-weight:900; word-break:keep-all;">AI 프롬프트 워크북 <span style="white-space:nowrap;">(초안)</span></h3>
+            <p style="font-size:0.9rem; color:var(--text-5); margin-bottom:20px; line-height:1.6; word-break:keep-all;">사례관리 기록·사업계획서에 많이 쓰는 프롬프트 6개를<br>빈칸 채우기 실습지로 묶은 <b>PDF</b>예요.<br>이메일만 남기면 <b>바로 받을 수 있어요.</b></p>
+            <div style="display:flex; flex-direction:column; gap:12px; text-align:left;">
+                <input type="email" id="wb-email" class="calc-input" placeholder="이메일 주소 입력" autocomplete="email" style="font-size:1rem; padding:14px; border:2px solid var(--border); border-radius:12px;">
+                <label id="wb-agree-label" style="display:flex; align-items:flex-start; gap:10px; cursor:pointer; padding:12px; background:#f5f9ff; border-radius:12px; border:1px solid #dbeafe;">
+                    <input type="checkbox" id="wb-agree" style="width:18px; height:18px; accent-color:#2563eb; flex-shrink:0; margin-top:2px;">
+                    <span style="font-size:0.8rem; color:var(--text-4); line-height:1.5;">
+                        [필수] <strong style="color:#2563eb;">개인정보 수집·이용</strong>에 동의해요<br>
+                        <span style="color:var(--text-6); font-size:0.75rem;">수집 항목: 이메일 · 목적: 비밀편지(뉴스레터)와 새 자료 안내 발송 · 보관: 구독 취소 시까지 (언제든 취소 가능)</span>
+                    </span>
+                </label>
+                <button class="btn-primary" id="wb-submit" style="background:linear-gradient(135deg,#2563eb 0%,#1e40af 100%); padding:16px; font-size:1.05rem; border-radius:12px;" onclick="submitWorkbookGate()">📥 워크북 받기</button>
+            </div>
+        </div>`;
+        openModal('📘 AI 프롬프트 워크북 받기', content, 'workbook');
+    };
+
+    window.submitWorkbookGate = async function () {
+        const emailEl = document.getElementById('wb-email');
+        const agreeEl = document.getElementById('wb-agree');
+        const label = document.getElementById('wb-agree-label');
+        const email = emailEl ? emailEl.value.trim() : '';
+        if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            emailEl.style.borderColor = '#ef4444'; emailEl.focus();
+            setTimeout(() => { emailEl.style.borderColor = 'var(--border)'; }, 1500);
+            return;
+        }
+        if (!agreeEl || !agreeEl.checked) {
+            label.style.borderColor = '#ef4444'; label.style.background = '#fff5f5';
+            setTimeout(() => { label.style.borderColor = '#dbeafe'; label.style.background = '#f5f9ff'; }, 1500);
+            return;
+        }
+        const btn = document.getElementById('wb-submit');
+        if (btn) { btn.innerText = '준비 중...'; btn.disabled = true; }
+        // 저장에 실패해도 다운로드는 막지 않는다 (무료 자료이므로 사용자 경험 우선)
+        if (supabase) {
+            try {
+                const { error } = await withTimeout(supabase.from('newsletter_subscribers').insert({
+                    email: email,
+                    user_id: getOrCreateUserId() || 'anonymous',
+                    agreed_to_terms: true,
+                    created_at: new Date().toISOString()
+                }));
+                if (error) console.error('Workbook gate save error', error);
+            } catch (e) { console.error('Workbook gate save error', e); }
+        }
+        try { localStorage.setItem(WORKBOOK_DONE_KEY, '1'); localStorage.setItem(NL_DONE_KEY, '1'); } catch (e) { /* noop */ }
+        trackUse('workbook_get');
+        const body = document.getElementById('modal-body');
+        if (body) body.innerHTML = workbookDownloadHtml('new');
+    };
+
+    /* --- 기관 AI 교육 문의: 문의 내용은 edu_inquiries 표에 저장 (보내기만 가능, 읽기는 대시보드에서만) --- */
+    window.openEduModal = function () {
+        trackUse('edu_open');
+        const input = 'class="calc-input edu-input"';
+        const content = `
+        <div class="edu-wrap">
+            <div style="text-align:center; padding:6px 0 14px;">
+                <div style="font-size:2.8rem; margin-bottom:8px;">🏫</div>
+                <h3 style="font-size:1.2rem; color:var(--text-dark); margin-bottom:8px; font-weight:900;">우리 기관 AI 실무 교육</h3>
+                <p style="font-size:0.88rem; color:var(--text-5); line-height:1.6; word-break:keep-all;">참여자가 각자 노트북이나 휴대폰으로 사복노트 프롬프트를 따라 하며,<br>가상 사례로 기록 초안을 직접 써 보는 교육이에요.</p>
+            </div>
+            <div class="edu-course">
+                <div class="edu-course-t">대표 과정 · 사례관리 기록·사업계획서, AI로 반나절 줄이기</div>
+                <div class="edu-row"><b>대상</b><span>사회복지 기관 실무자</span></div>
+                <div class="edu-row"><b>시간</b><span>2시간 실습 (기관 일정에 맞춰 조정)</span></div>
+                <div class="edu-row"><b>내용</b><span>개인정보 가리는 원칙 → 프롬프트로 기록·계획서 초안 쓰기 → [확인 필요] 표시 검토 → 우리 기관 서식에 맞추기</span></div>
+                <div class="edu-row"><b>방식</b><span>기관 출강 또는 온라인(줌)</span></div>
+                <div class="edu-row"><b>교재</b><span>AI 프롬프트 워크북 제공</span></div>
+            </div>
+            <div class="edu-form">
+                <label for="edu-org">기관명 <em>*</em></label>
+                <input id="edu-org" ${input} maxlength="80" placeholder="예: 행복종합사회복지관">
+                <label for="edu-name">담당자 성함 <em>*</em></label>
+                <input id="edu-name" ${input} maxlength="40" placeholder="예: 홍길동">
+                <label for="edu-contact">연락처 (이메일 또는 전화) <em>*</em></label>
+                <input id="edu-contact" ${input} maxlength="100" placeholder="예: edu@welfare.or.kr 또는 02-000-0000">
+                <div class="edu-2col">
+                    <div>
+                        <label for="edu-type">교육 방식</label>
+                        <select id="edu-type" ${input}><option value="출강">기관 출강</option><option value="온라인">온라인(줌)</option><option value="미정" selected>아직 미정</option></select>
+                    </div>
+                    <div>
+                        <label for="edu-count">예상 인원</label>
+                        <input id="edu-count" ${input} maxlength="20" placeholder="예: 15명">
+                    </div>
+                </div>
+                <label for="edu-when">희망 시기</label>
+                <input id="edu-when" ${input} maxlength="40" placeholder="예: 11월 중순, 평일 오후">
+                <label for="edu-msg">궁금한 점 (선택)</label>
+                <textarea id="edu-msg" ${input} maxlength="1000" rows="3" placeholder="예: 신입 직원 대상으로 기록 위주로 하고 싶어요"></textarea>
+                <label id="edu-agree-label" class="edu-agree">
+                    <input type="checkbox" id="edu-agree">
+                    <span>[필수] <strong>개인정보 수집·이용</strong>에 동의해요<br><small>수집 항목: 기관명, 담당자 이름, 연락처 · 목적: 교육 문의 답변 · 보관: 문의 처리 후 1년 (요청하면 바로 삭제)</small></span>
+                </label>
+                <button class="btn-primary" id="edu-submit" onclick="submitEduInquiry()">📨 교육 문의 보내기</button>
+            </div>
+        </div>`;
+        openModal('🏫 기관 AI 교육 문의', content, 'edu');
+    };
+
+    window.submitEduInquiry = async function () {
+        const val = id => { const el = document.getElementById(id); return el ? el.value.trim() : ''; };
+        const org = val('edu-org'), name = val('edu-name'), contact = val('edu-contact');
+        const missing = [['edu-org', org], ['edu-name', name], ['edu-contact', contact.length >= 5 ? contact : '']].find(([, v]) => !v);
+        if (missing) {
+            const el = document.getElementById(missing[0]);
+            if (el) { el.style.borderColor = '#ef4444'; el.focus(); setTimeout(() => { el.style.borderColor = ''; }, 1500); }
+            return;
+        }
+        const agree = document.getElementById('edu-agree');
+        if (!agree || !agree.checked) {
+            const label = document.getElementById('edu-agree-label');
+            if (label) { label.style.borderColor = '#ef4444'; setTimeout(() => { label.style.borderColor = ''; }, 1500); }
+            return;
+        }
+        if (!supabase) { alert('네트워크 연결을 확인한 뒤 다시 시도해 주세요.'); return; }
+        const btn = document.getElementById('edu-submit');
+        if (btn) { btn.disabled = true; btn.textContent = '보내는 중...'; }
+        try {
+            await ensureAnonSession();
+            const type = val('edu-type');
+            const { error } = await withTimeout(supabase.from('edu_inquiries').insert({
+                org_name: org.slice(0, 80),
+                contact_name: name.slice(0, 40),
+                contact: contact.slice(0, 100),
+                edu_type: ['출강', '온라인', '미정'].includes(type) ? type : '미정',
+                headcount: val('edu-count').slice(0, 20) || null,
+                preferred_date: val('edu-when').slice(0, 40) || null,
+                message: val('edu-msg').slice(0, 1000) || null,
+                agreed: true
+            }));
+            if (error) throw error;
+        } catch (e) {
+            console.error('Edu inquiry error', e);
+            if (btn) { btn.disabled = false; btn.textContent = '📨 교육 문의 보내기'; }
+            alert('문의를 보내지 못했어요. 잠시 후 다시 시도해 주세요.');
+            return;
+        }
+        trackUse('edu_inquiry');
+        const body = document.getElementById('modal-body');
+        if (body) body.innerHTML = `
+            <div style="text-align:center; padding:30px 0;">
+                <div style="font-size:3.5rem; margin-bottom:16px;">📨</div>
+                <h3 style="font-size:1.15rem; font-weight:900; color:#1e40af; margin-bottom:10px;">문의가 접수됐어요</h3>
+                <p style="font-size:0.9rem; color:var(--text-5); line-height:1.6; margin-bottom:20px;">남겨 주신 연락처로 연락드릴게요.<br>그동안 워크북을 먼저 살펴보셔도 좋아요.</p>
+                <button class="btn-primary" onclick="openWorkbookGate()" style="width:100%; padding:14px; border-radius:12px;">📘 워크북 받기</button>
+            </div>`;
     };
 
     window.submitRequest = async function () {
@@ -2244,11 +2455,11 @@ try {
     };
 
     // 모든 프롬프트에 공통 규칙과 입력 칸을 붙여 완성본을 만든다 (화면 표시와 복사가 같은 결과를 쓴다)
-    function buildPrompt(data) {
+    function buildPrompt(data, values) {
         const askRule = data.noQuestions
             ? '- 질문을 먼저 하지 말고 바로 답하세요. 더 확인할 정보는 답 안에 \'추가로 확인할 것\'으로 넣어 주세요.'
             : '- 결과가 크게 달라질 만큼 중요한 정보가 빠졌을 때만, 작성 전에 질문을 3개 이내로 해 주세요. 그 밖에는 합리적으로 가정하고 바로 작성하세요.';
-        const fields = data.fields.map(f => `■ ${f}: `).join('\n');
+        const fields = data.fields.map((f, i) => `■ ${f}: ${values && values[i] ? String(values[i]).trim() : ''}`).join('\n');
         return `${data.prompt}
 
 ## 공통 규칙
@@ -2333,12 +2544,21 @@ ${fields}
                 <h3>사복천재의 비밀 프롬프트 🪄</h3>
                 <p>현장 업무 흐름에 맞춰 최신 작성법으로 다시 짠 프롬프트예요. 빈칸만 채우면 되고, 입력에 없는 사실은 지어내지 않게 만들었어요.</p>
             </div>
+            <div id="ps-box">${psBoxHtml()}</div>
             ${tabsHtml}
             <div class="prompt-options-list">
                 ${contentsHtml}
             </div>
+            <div class="ps-foot">
+                <button onclick="openWorkbookGate()">📘 6개를 실습지로 묶은 워크북 받기</button>
+                <button onclick="openEduModal()">🏫 기관 교육 문의</button>
+            </div>
         `;
             openModal('사복천재의 비밀 프롬프트', content, 'prompt');
+            psSyncFromServer().then(() => {
+                const box = document.getElementById('ps-box');
+                if (box) box.innerHTML = psBoxHtml();
+            });
         };
 
         if (btn) btn.onclick = openPrompterModal;
@@ -2376,6 +2596,14 @@ ${fields}
         const data = AI_PROMPTS[type];
         const modalBody = document.getElementById('modal-body');
         const modalTitle = document.getElementById('modal-title');
+        if (!data || !modalBody || !modalTitle) return;
+        trackUse('prompt_open');
+        psSyncFromServer();
+        const saved = psGet(type);
+        const savedFields = saved.fields || {};
+        const fillHtml = data.fields.map((f, i) => `
+                    <label class="ps-label" for="ps-in-${i}">${escapeHtml(f)}</label>
+                    <textarea id="ps-in-${i}" class="calc-input ps-input" data-i="${i}" rows="2" oninput="psOnInput('${type}')">${escapeHtml(savedFields[i] || '')}</textarea>`).join('');
 
         modalTitle.innerText = data.title;
         modalBody.innerHTML = `
@@ -2388,12 +2616,25 @@ ${fields}
                 <span style="font-size:2.5rem; display:block; margin-bottom:12px;">${data.icon}</span>
                 <h4 style="font-size:1.2rem; font-weight:800; color:var(--text-dark); margin-bottom:8px;">${data.title}</h4>
                 <p style="font-size:0.9rem; color:var(--text-5); line-height:1.5;">${data.description}</p>
+                <button id="ps-fav-btn" class="ps-fav${saved.fav ? ' on' : ''}" onclick="togglePromptFav('${type}')">${saved.fav ? '★ 보관함에 담겼어요' : '☆ 보관함에 담기'}</button>
             </div>
+
+            <details class="ps-fill" id="ps-fill"${psHasFields(saved) ? ' open' : ''}>
+                <summary>✏️ 빈칸 미리 채우기 <span>(선택)</span></summary>
+                <p class="ps-note">채운 내용은 복사할 때 &lt;입력&gt; 칸에 같이 들어가요. 실명·연락처·주민번호는 쓰지 마세요. 기관명·사업명처럼 자주 쓰는 내용을 저장해 두면 편해요.</p>
+                ${fillHtml}
+                <div class="ps-row">
+                    <button id="ps-save-btn" class="btn-primary" onclick="savePromptFields('${type}')">💾 내 입력 저장</button>
+                    <button class="btn-primary btn-outline" onclick="clearPromptFields('${type}')">비우기</button>
+                </div>
+            </details>
+            <div id="ps-status" class="ps-status"></div>
 
             <div class="prompt-content-box">
                 <div class="prompt-content-label">복사할 프롬프트 내용</div>
-                <div id="prompt-text" class="prompt-text-area">${escapeHtml(buildPrompt(data))}</div>
+                <div id="prompt-text" class="prompt-text-area">${escapeHtml(buildPrompt(data, savedFields))}</div>
                 <button class="btn-primary" style="margin-top:16px; width:100%; height:54px; font-size:1.1rem;" onclick="copyPromptToClipboard('${type}')">🪄 프롬프트 복사하기</button>
+                <div id="ps-after-copy"></div>
             </div>
 
             <div class="prompt-guide-box">
@@ -2403,7 +2644,7 @@ ${fields}
                 <ol style="padding-left:20px; font-size:0.85rem; color:var(--text-4); line-height:1.7;">
                     <li>위의 <b>[프롬프트 복사하기]</b> 버튼을 눌러요.</li>
                     <li>ChatGPT, Claude, Gemini 채팅창에 붙여넣어요.</li>
-                    <li>맨 아래 <b>&lt;입력&gt;</b> 칸을 채워서 보내요. 모르는 칸은 비워 둬도 되고, 기관 양식은 파일로 첨부해도 돼요.</li>
+                    <li>맨 아래 <b>&lt;입력&gt;</b> 칸을 채워서 보내요. 위에서 빈칸을 미리 채웠다면 그대로 보내면 돼요. 모르는 칸은 비워 둬도 되고, 기관 양식은 파일로 첨부해도 돼요.</li>
                     <li>결과를 받은 뒤 "더 짧게", "표로 바꿔 줘"처럼 이어서 요청하면 더 좋아져요.</li>
                 </ol>
                 <div style="margin-top:10px; padding-top:10px; border-top:1px dashed var(--border); font-size:0.82rem; color:var(--text-4); line-height:1.65;">
@@ -2421,28 +2662,253 @@ ${fields}
 
     window.copyPromptToClipboard = function (type) {
         const data = AI_PROMPTS[type];
-        const textToCopy = buildPrompt(data);
+        const values = psFieldsFromInputs();
+        const pii = findPII(Object.values(values).join('\n'));
+        if (pii && !confirm(`${pii}로 보이는 내용이 들어 있어요.\nAI에는 개인정보를 넣지 않는 게 안전해요.\n\n그래도 복사할까요?`)) return;
+        const textToCopy = buildPrompt(data, values);
 
-        // Create a temporary textarea to hold the text
-        const tempTextArea = document.createElement("textarea");
+        // 화면 밖 임시 칸에 담아 복사 (안 되면 클립보드 API로 한 번 더)
+        const tempTextArea = document.createElement('textarea');
         tempTextArea.value = textToCopy;
+        tempTextArea.style.cssText = 'position:fixed; top:0; left:0; opacity:0; font-size:16px;';
         document.body.appendChild(tempTextArea);
         tempTextArea.select();
+        tempTextArea.setSelectionRange(0, textToCopy.length);
+        let copied = false;
+        try { copied = document.execCommand('copy'); } catch (err) { copied = false; }
+        document.body.removeChild(tempTextArea);
 
-        try {
-            document.execCommand('copy');
-            alert('프롬프트가 복사되었습니다! 이제 AI 채팅창에 붙여넣어보세요.');
-        } catch (err) {
-            console.error('Copy failed', err);
-            // Fallback or modern API
-            if (navigator.clipboard) {
-                navigator.clipboard.writeText(textToCopy).then(() => {
-                    alert('프롬프트가 복사되었습니다!');
-                });
-            }
-        } finally {
-            document.body.removeChild(tempTextArea);
+        const done = () => { trackUse('prompt_copy'); psRenderAfterCopy(); };
+        const fail = () => alert('복사하지 못했어요. 위 프롬프트 내용을 길게 눌러 직접 복사해 주세요.');
+        if (copied) { done(); return; }
+        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(textToCopy).then(done).catch(fail);
+        else fail();
+    };
+
+    /* ===== 프롬프트 보관함 · 빈칸 미리 채우기 =====
+       ⭐ 담기와 내가 채운 빈칸을 저장한다. 익명 계정에도 저장되고(이 기기),
+       카카오·구글을 연결하면 같은 계정이라 사무실 PC·휴대폰에서 이어 쓴다.
+       서버 표(prompt_saves)가 없거나 오프라인이면 이 기기(localStorage)에만 둔다. */
+    let psCache = null;
+    let psSynced = false;
+
+    function psAll() {
+        if (!psCache) {
+            try { psCache = JSON.parse(localStorage.getItem(PS_KEY) || '{}') || {}; } catch (e) { psCache = {}; }
         }
+        return psCache;
+    }
+    function psPersist() { try { localStorage.setItem(PS_KEY, JSON.stringify(psAll())); } catch (e) { /* noop */ } }
+    function psGet(key) { return psAll()[key] || { fav: false, fields: {} }; }
+    function psHasFields(entry) { return !!entry && Object.keys(entry.fields || {}).some(k => String(entry.fields[k] || '').trim()); }
+    async function psSession() {
+        const session = await ensureAnonSession();
+        return session && session.user ? session : null;
+    }
+    function psIsLinked(session) {
+        const u = session && session.user;
+        return !!(u && (u.identities || []).some(i => i.provider === 'kakao' || i.provider === 'google'));
+    }
+
+    async function psUpload(key, entry, session) {
+        const uid = session.user.id;
+        const query = (!entry.fav && !psHasFields(entry))
+            ? supabase.from('prompt_saves').delete().eq('user_id', uid).eq('prompt_key', key)
+            : supabase.from('prompt_saves').upsert({
+                user_id: uid, prompt_key: key, fav: !!entry.fav, fields: entry.fields || {},
+                updated_at: new Date(entry.t || Date.now()).toISOString()
+            }, { onConflict: 'user_id,prompt_key' });
+        const { error } = await withTimeout(query, 8000);
+        if (error) throw error;
+    }
+
+    // 서버 → 이 기기: 더 최근 것을 남기고, 이 기기에만 있던 것은 서버에 올린다
+    async function psSyncFromServer() {
+        if (psSynced || !supabase) return;
+        try {
+            const session = await psSession();
+            if (!session) return;
+            const { data, error } = await withTimeout(supabase.from('prompt_saves').select('prompt_key, fav, fields, updated_at'), 8000);
+            if (error || !data) return;
+            psSynced = true;
+            const all = psAll();
+            const onServer = {};
+            data.forEach(r => {
+                onServer[r.prompt_key] = true;
+                const t = Date.parse(r.updated_at) || 0;
+                const cur = all[r.prompt_key];
+                if (!cur || (cur.t || 0) < t) all[r.prompt_key] = { fav: !!r.fav, fields: r.fields || {}, t };
+            });
+            psPersist();
+            Object.keys(all).forEach(k => {
+                if (!onServer[k] && AI_PROMPTS[k]) psUpload(k, all[k], session).catch(() => { /* 다음에 다시 */ });
+            });
+        } catch (e) { /* 오프라인이면 이 기기 저장만 쓴다 */ }
+    }
+
+    // 결과: 'cloud' = 카카오·구글 계정에 저장(다른 기기에서도 보임), 'device' = 이 기기에서만 보임
+    async function psPut(key, entry) {
+        const all = psAll();
+        const next = { fav: !!entry.fav, fields: entry.fields || {}, t: Date.now() };
+        if (!next.fav && !psHasFields(next)) delete all[key]; else all[key] = next;
+        psPersist();
+        if (!supabase) return 'device';
+        try {
+            const session = await psSession();
+            if (!session) return 'device';
+            await psUpload(key, next, session);
+            return psIsLinked(session) ? 'cloud' : 'device';
+        } catch (e) {
+            console.warn('prompt save:', e && e.message ? e.message : e);
+            return 'device';
+        }
+    }
+
+    function psBoxHtml() {
+        const all = psAll();
+        const keys = Object.keys(all).filter(k => AI_PROMPTS[k] && (all[k].fav || psHasFields(all[k])));
+        if (!keys.length) return '<div class="ps-box ps-empty">⭐ 자주 쓰는 프롬프트는 보관함에 담아 두세요. 빈칸을 미리 채워 저장할 수도 있어요.</div>';
+        const chips = keys.map(k => `<button class="ps-chip" onclick="renderPromptDetail('${k}')">${AI_PROMPTS[k].icon} ${escapeHtml(AI_PROMPTS[k].title)}${psHasFields(all[k]) ? ' <span class="ps-chip-tag">입력 저장됨</span>' : ''}</button>`).join('');
+        return `<div class="ps-box"><div class="ps-box-t">⭐ 내 보관함</div><div class="ps-chips">${chips}</div></div>`;
+    }
+
+    // 저장·복사 전에 개인정보로 보이는 패턴을 찾는다 (완벽하진 않아서 안내 문구도 함께 둔다)
+    const PII_PATTERNS = [
+        [/\d{6}\s*-\s*[1-4]\d{6}/, '주민등록번호'],
+        [/01[016789][-.\s]?\d{3,4}[-.\s]?\d{4}/, '휴대폰 번호'],
+        [/(^|[^\d])0\d{1,2}[-.)]\s?\d{3,4}[-.]\d{4}(?!\d)/, '전화번호'],
+        [/[^\s@<>]+@[^\s@<>]+\.[a-z]{2,}/i, '이메일 주소'],
+    ];
+    function findPII(text) {
+        for (const [re, name] of PII_PATTERNS) if (re.test(text)) return name;
+        return null;
+    }
+
+    function psFieldsFromInputs() {
+        const out = {};
+        document.querySelectorAll('#ps-fill .ps-input').forEach(el => {
+            if (el.value.trim()) out[el.dataset.i] = el.value;
+        });
+        return out;
+    }
+    // 빈칸을 채우면 아래 프롬프트 미리보기도 바로 바뀐다
+    window.psOnInput = function (type) {
+        const pre = document.getElementById('prompt-text');
+        if (pre && AI_PROMPTS[type]) pre.textContent = buildPrompt(AI_PROMPTS[type], psFieldsFromInputs());
+    };
+
+    function psLoginButtons() {
+        return '<div class="ps-login-row"><button class="ps-kakao" onclick="socialLogin(\'kakao\')">카카오로 연결</button><button class="ps-google" onclick="socialLogin(\'google\')">구글로 연결</button></div>';
+    }
+    function psShowSaveStatus(where, what) {
+        const el = document.getElementById('ps-status');
+        if (!el) return;
+        if (what === 'unfav') { el.innerHTML = '보관함에서 뺐어요.'; return; }
+        if (what === 'cleared') { el.innerHTML = '저장해 둔 입력을 지웠어요.'; return; }
+        if (where === 'cloud') { el.innerHTML = '☁️ 계정에 저장했어요. 다른 기기에서도 보여요.'; return; }
+        el.innerHTML = '💾 이 기기에 저장했어요. 카카오·구글을 연결하면 사무실 PC·휴대폰에서도 보여요.' + psLoginButtons();
+    }
+
+    window.togglePromptFav = async function (type) {
+        if (!AI_PROMPTS[type]) return;
+        const cur = psGet(type);
+        const fav = !cur.fav;
+        const b = document.getElementById('ps-fav-btn');
+        if (b) { b.textContent = fav ? '★ 보관함에 담겼어요' : '☆ 보관함에 담기'; b.classList.toggle('on', fav); }
+        if (fav) trackUse('prompt_save');
+        const where = await psPut(type, { fav, fields: cur.fields });
+        psShowSaveStatus(where, fav ? 'fav' : 'unfav');
+    };
+
+    window.savePromptFields = async function (type) {
+        if (!AI_PROMPTS[type]) return;
+        const fields = psFieldsFromInputs();
+        const pii = findPII(Object.values(fields).join('\n'));
+        if (pii && !confirm(`${pii}로 보이는 내용이 있어요.\n대상자 개인정보라면 지우고 저장해 주세요.\n(기관 대표번호처럼 공개된 정보면 그대로 저장해도 돼요)\n\n그대로 저장할까요?`)) return;
+        const btn = document.getElementById('ps-save-btn');
+        if (btn) { btn.disabled = true; btn.textContent = '저장 중...'; }
+        const where = await psPut(type, { fav: psGet(type).fav, fields });
+        if (btn) { btn.disabled = false; btn.textContent = '💾 내 입력 저장'; }
+        if (Object.keys(fields).length) { trackUse('prompt_save'); psShowSaveStatus(where, 'fields'); }
+        else psShowSaveStatus(where, 'cleared');
+    };
+
+    window.clearPromptFields = async function (type) {
+        document.querySelectorAll('#ps-fill .ps-input').forEach(el => { el.value = ''; });
+        window.psOnInput(type);
+        const cur = psGet(type);
+        if (psHasFields(cur)) {
+            const where = await psPut(type, { fav: cur.fav, fields: {} });
+            psShowSaveStatus(where, 'cleared');
+        }
+    };
+
+    // 복사 직후: 완료 안내 + (아직이면) 비밀편지 구독 + (3번째 복사부터, 연결 전이면) 로그인 권유
+    async function psRenderAfterCopy() {
+        const box = document.getElementById('ps-after-copy');
+        if (!box) return;
+        let copies = 1, subscribed = false;
+        try {
+            copies = (parseInt(localStorage.getItem(COPY_COUNT_KEY) || '0', 10) || 0) + 1;
+            localStorage.setItem(COPY_COUNT_KEY, String(copies));
+            subscribed = localStorage.getItem(NL_DONE_KEY) === '1';
+        } catch (e) { /* noop */ }
+        let html = '<div class="ps-done">✅ 복사했어요. AI 채팅창에 붙여넣으세요.</div>';
+        if (!subscribed) html += `
+            <div class="ps-card" id="ps-sub-card">
+                <div class="ps-card-t">📬 새 프롬프트가 나오면 먼저 받아 볼래요?</div>
+                <div class="ps-card-d">사복노트 비밀편지로 보내 드려요. 언제든 구독을 취소할 수 있어요.</div>
+                <div class="ps-sub-row">
+                    <input type="email" id="ps-sub-email" class="calc-input" placeholder="이메일 주소" autocomplete="email">
+                    <button class="btn-primary" onclick="submitInlineSub()">구독</button>
+                </div>
+                <label class="ps-agree"><input type="checkbox" id="ps-sub-agree"> <span>[필수] 개인정보 수집·이용 동의 · 이메일 · 비밀편지 발송용 · 구독 취소 시까지 보관</span></label>
+            </div>`;
+        box.innerHTML = html;
+        if (copies < 3) return;
+        const session = await psSession().catch(() => null);
+        if (session && !psIsLinked(session) && document.getElementById('ps-after-copy') === box && !box.querySelector('.ps-login')) {
+            box.insertAdjacentHTML('beforeend', `
+            <div class="ps-card ps-login">
+                <div class="ps-card-t">☁️ 보관함을 사무실 PC·휴대폰에서 이어 쓰기</div>
+                <div class="ps-card-d">카카오나 구글을 연결하면 담아 둔 프롬프트와 입력이 다른 기기에서도 그대로 보여요.</div>
+                ${psLoginButtons()}
+            </div>`);
+        }
+    }
+
+    window.submitInlineSub = async function () {
+        const emailEl = document.getElementById('ps-sub-email');
+        const agreeEl = document.getElementById('ps-sub-agree');
+        const email = emailEl ? emailEl.value.trim() : '';
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            if (emailEl) { emailEl.style.borderColor = '#ef4444'; emailEl.focus(); setTimeout(() => { emailEl.style.borderColor = ''; }, 1500); }
+            return;
+        }
+        if (!agreeEl || !agreeEl.checked) {
+            const label = agreeEl && agreeEl.closest('label');
+            if (label) { label.style.color = '#ef4444'; setTimeout(() => { label.style.color = ''; }, 1500); }
+            return;
+        }
+        if (supabase) {
+            try {
+                const { error } = await withTimeout(supabase.from('newsletter_subscribers').insert({
+                    email: email,
+                    user_id: getOrCreateUserId() || 'anonymous',
+                    agreed_to_terms: true,
+                    created_at: new Date().toISOString()
+                }));
+                if (error && error.code !== '23505') throw error;   // 이미 구독한 이메일이면 그대로 완료
+            } catch (e) {
+                console.error('Inline subscribe error', e);
+                alert('앗, 구독 등록 중에 문제가 생겼어요. 잠시 후 다시 시도해 주세요.');
+                return;
+            }
+        }
+        try { localStorage.setItem(NL_DONE_KEY, '1'); } catch (e) { /* noop */ }
+        trackUse('newsletter_sub');
+        const card = document.getElementById('ps-sub-card');
+        if (card) card.innerHTML = '<div class="ps-card-t">💌 구독했어요! 새 소식이 생기면 보내 드릴게요.</div>';
     };
 
     function initModal() {
@@ -2586,6 +3052,7 @@ ${fields}
         const btn2 = document.getElementById('open-admin-calc-2');
 
         const openAdminModal = () => {
+            trackUse('admin_open');
             const content = `
             <div class="admin-tabs" style="display:flex; flex-direction:column; gap:8px; margin-bottom:24px;">
                 <div class="admin-cats">
@@ -6768,7 +7235,17 @@ ${fields}
             'install':      () => window.showPWAInstallGuide && window.showPWAInstallGuide(),
             'quiz':         () => window.showPlaygroundContent && window.showPlaygroundContent('quiz'),
             'balance':      () => window.showPlaygroundContent && window.showPlaygroundContent('balance'),
+            'workbook':     () => window.openWorkbookGate && window.openWorkbookGate(),
+            'edu':          () => window.openEduModal && window.openEduModal(),
         };
+        // 프롬프트 바로 열기 (워크북 QR·SNS 링크용): #home/prompt-pie_records
+        Object.keys(AI_PROMPTS).forEach(k => {
+            window._modalRegistry['prompt-' + k] = () => {
+                const b = document.getElementById('open-ai-prompter');
+                if (b) b.click();
+                if (window.renderPromptDetail) window.renderPromptDetail(k);
+            };
+        });
 
         function dispatchHash(hash) {
             const parts = hash.replace('#', '').split('/');
@@ -7557,6 +8034,7 @@ ${fields}
     }
 
     function bgRenderResult() {
+        trackUse('balance_done');
         const t = BALANCE_TYPES[bgResultType()];
         let compare = '';
         if (bgState.friend) {
@@ -7768,6 +8246,7 @@ ${fields}
     }
 
     function pgRenderResultPage() {
+        trackUse('quiz_done');
         pgShowStep('result');
         const t = pgTypes[pgState.resultType];
 
