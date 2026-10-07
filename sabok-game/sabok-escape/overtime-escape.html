@@ -538,7 +538,9 @@ body.rotated .ovcorner { right:max(10px, env(safe-area-inset-bottom)); }
   renderMute();
 
   // ============ 가로모드 ============
-  var landscape = lsGet('esc_landscape', false);
+  // 들어올 때는 항상 세로모드. 가로모드는 버튼을 누른 그때만 (기기에 저장하지 않음)
+  var landscape = false;
+  try { localStorage.removeItem('esc_landscape'); } catch (e) {}   // 예전에 저장된 가로모드 선택 지우기
   var rotBtns = document.querySelectorAll('#rotBtn, .ovRot');
   function applyOrientation() {
     var vw = window.innerWidth, vh = window.innerHeight;
@@ -562,7 +564,7 @@ body.rotated .ovcorner { right:max(10px, env(safe-area-inset-bottom)); }
     for (var i = 0; i < rotBtns.length; i++) rotBtns[i].textContent = landscape ? '↕️ 세로' : '↔️ 가로';
   }
   function setLandscape(on) {
-    landscape = on; lsSet('esc_landscape', on);
+    landscape = on;
     var touch = window.matchMedia && matchMedia('(pointer: coarse)').matches;
     if (on && touch) {
       // 안드로이드 크롬 등: 전체 화면 + 가로 고정이 되면 진짜 가로로 (아이폰은 지원 안 해서 화면 돌리기로 대신)
