@@ -7308,6 +7308,10 @@ ${fields}
                 window.open('./sabok-game/index.html', '_blank');
                 return;
             }
+            if (type === 'adventure') {
+                window.open('./sabok-game/adventure/index.html', '_blank');
+                return;
+            }
             if (type === 'escape') {
                 window.open('./sabok-game/sabok-escape/overtime-escape.html', '_blank');
                 return;
