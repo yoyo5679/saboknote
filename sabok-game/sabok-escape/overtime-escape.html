@@ -125,7 +125,7 @@ body {
 .rr span:first-child { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .rs { color:var(--white); font-weight:bold; flex-shrink:0; }
 #exitBtn {
-  padding:6px 12px; font-size:0.85rem; margin:0;
+  padding:6px 12px; font-size:0.85rem; margin:0; white-space:nowrap;
   background:rgba(255,71,87,0.15); color:#ff4757;
   box-shadow:none; border:1px solid #ff4757;
 }
@@ -141,6 +141,8 @@ body {
 .ov::before, .ov::after { content:''; margin:auto; flex-shrink:0; }
 /* 시작·결과 화면에서도 가로/세로·소리 버튼이 늘 보이도록 오른쪽 위에 고정 */
 .ovcorner { position:absolute; top:10px; right:max(10px, env(safe-area-inset-right)); display:flex; gap:6px; z-index:1; }
+/* 시작·결과 화면 왼쪽 위: 나가기 */
+.ovExit { position:absolute; top:10px; left:max(10px, env(safe-area-inset-left)); z-index:1; }
 .panel { width:100%; max-width:460px; display:flex; flex-direction:column; gap:10px; flex-shrink:0; }
 .em { font-size:2.4rem; animation:fl 2s ease-in-out infinite; align-self:center; }
 .em img { height:96px; width:auto; display:block; }
@@ -214,7 +216,7 @@ body.landscape #headRow {
 }
 body.landscape #headRow button { pointer-events:auto; }
 body.landscape #topbar { order:2; width:auto; flex-shrink:0; }
-body.landscape #titleBar, body.landscape .hl, body.landscape .ex-t { display:none; }
+body.landscape #titleBar, body.landscape .hl { display:none; }
 body.landscape #hud { order:1; flex:1; min-width:0; padding:0; gap:6px; background:none; border:none; justify-content:flex-start; }
 body.landscape .hpwrap, body.landscape .hi, body.landscape .iconbtn, body.landscape #exitBtn {
   height:34px; background:rgba(8,10,20,0.6); border:1px solid rgba(255,255,255,0.16); border-radius:17px; box-shadow:0 2px 8px rgba(0,0,0,0.3);
@@ -260,12 +262,16 @@ body.rotated #wrapper, body.rotated .ov {
   transform-origin:top left; transform:rotate(90deg);
 }
 body.rotated .ovcorner { right:max(10px, env(safe-area-inset-bottom)); }
+body.rotated .ovExit { left:max(10px, env(safe-area-inset-top)); }
 @media (max-width:420px){
   #titleBar { font-size:1.25rem; white-space:nowrap; }
-  .ex-t { display:none; }
+  .topbtns { gap:4px; }
+  .topbtns .iconbtn, #exitBtn { padding:6px 8px; }
   .ov h2 { font-size:1.45rem; }
   .em img { height:76px; }
 }
+@media (max-width:400px){ #titleBar { font-size:1rem; } }
+@media (max-width:340px){ .ex-t { display:none; } }
 </style>
 </head>
 <body>
@@ -276,7 +282,7 @@ body.rotated .ovcorner { right:max(10px, env(safe-area-inset-bottom)); }
     <div class="topbtns">
       <button id="rotBtn" class="iconbtn" aria-label="가로모드·세로모드 바꾸기">↔️ 가로</button>
       <button id="muteBtn" class="iconbtn" aria-label="소리 켜기·끄기">🔊</button>
-      <button id="exitBtn" class="btn" onclick="if(confirm('내일 팀장님 얼굴을 볼 자신이 있습니까? 👀\n(정말 도망가시겠어요?)')) window.location.href='../../index.html';">🔌<span class="ex-t"> 전원 뽑고 튀기</span></button>
+      <button id="exitBtn" class="btn" aria-label="나가기">🚪<span class="ex-t"> 나가기</span></button>
     </div>
   </div>
 
@@ -313,6 +319,7 @@ body.rotated .ovcorner { right:max(10px, env(safe-area-inset-bottom)); }
 </div>
 
 <div class="ov" id="startScr">
+  <button class="iconbtn ovExit">🚪 나가기</button>
   <div class="ovcorner"><button class="iconbtn ovMute" aria-label="소리 켜기·끄기">🔊</button><button class="iconbtn ovRot" aria-label="가로모드·세로모드 바꾸기">↔️ 가로</button></div>
   <div class="panel">
     <div class="em" id="heroEm">🧑‍💼</div>
@@ -342,6 +349,7 @@ body.rotated .ovcorner { right:max(10px, env(safe-area-inset-bottom)); }
 </div>
 
 <div class="ov" id="gameoverScr" style="display:none">
+  <button class="iconbtn ovExit">🚪 나가기</button>
   <div class="ovcorner"><button class="iconbtn ovMute" aria-label="소리 켜기·끄기">🔊</button><button class="iconbtn ovRot" aria-label="가로모드·세로모드 바꾸기">↔️ 가로</button></div>
   <div class="panel">
     <div class="em" id="goEmoji">😩</div>
@@ -536,6 +544,18 @@ body.rotated .ovcorner { right:max(10px, env(safe-area-inset-bottom)); }
   function toggleMute() { muted = !muted; lsSet('esc_muted', muted); renderMute(); if (!muted) SFX.item(); }
   for (var mi = 0; mi < muteBtns.length; mi++) muteBtns[mi].addEventListener('click', toggleMute);
   renderMute();
+
+  // ============ 나가기 ============
+  // 놀이터에서 새 탭으로 열었으면 그 탭을 닫아 원래 화면으로 돌아가고, 아니면 놀이터로 간다
+  function exitGame() {
+    try { if (window.opener) { window.close(); if (window.closed) return; } } catch (e) {}
+    location.href = '/#playground';
+  }
+  document.getElementById('exitBtn').addEventListener('click', function () {
+    if (confirm('내일 팀장님 얼굴을 볼 자신이 있습니까? 👀\n(정말 도망가시겠어요?)')) exitGame();
+  });
+  var exitBtns = document.querySelectorAll('.ovExit');   // 시작·결과 화면은 달리는 중이 아니라 바로 나감
+  for (var ei = 0; ei < exitBtns.length; ei++) exitBtns[ei].addEventListener('click', exitGame);
 
   // ============ 가로모드 ============
   // 들어올 때는 항상 세로모드. 가로모드는 버튼을 누른 그때만 (기기에 저장하지 않음)

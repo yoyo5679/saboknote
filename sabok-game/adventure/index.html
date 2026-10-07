@@ -186,7 +186,9 @@
     .sub { color: #fff; font-size: clamp(12px, 1.8vw, 18px); text-shadow: 0 2px 4px #000; margin: 6px 0 18px; }
     .title-btns { display: flex; flex-direction: column; gap: 10px; width: min(70%, 280px); }
     .title-btns .btn { padding: 11px; font-size: clamp(15px, 2.2vw, 21px); }
-    .back-link { color: #fff; margin-top: 14px; font-size: clamp(11px, 1.5vw, 14px); opacity: .85; }
+    /* 제목·확인·캐릭터 고르기·엔딩 화면의 나가기: 놀이 중 HUD의 나가기와 같은 자리 */
+    .scr-exit { position: absolute; right: 1.2%; top: 2%; z-index: 31; display: none; }
+    .scr-exit.on { display: block; }
     .unofficial-note { margin: 8px 0 0; max-width: min(92%, 460px); padding: 4px 10px; border-radius: 10px; background: rgba(40, 28, 18, .5); color: #fff; font-size: clamp(9px, 1.2vw, 12px); line-height: 1.4; text-align: center; }
     /* 이어하기 버튼 아래 줄: 어디까지 했는지 */
     #contBtn small { display: block; font-size: .62em; margin-top: 3px; opacity: .85; }
@@ -228,7 +230,6 @@
       #scrTitle .title-btns { gap: 6px; }
       #scrTitle .title-btns .btn { padding: 6px; font-size: 15px; }
       #scrTitle .save-note { margin-top: 8px; padding: 5px 10px; font-size: 11px; }
-      #scrTitle .back-link { margin-top: 6px; }
     }
     .confirm-panel p { font-size: clamp(14px, 1.9vw, 18px); color: #5a4632; margin: 6px 0 4px; line-height: 1.5; }
 
@@ -525,6 +526,9 @@
       <!-- Card reward popup -->
       <div class="card-pop" id="cardPop" style="z-index:45"></div>
 
+      <!-- 제목·확인·캐릭터 고르기·엔딩 화면의 나가기 (놀이 중에는 HUD의 나가기) -->
+      <button class="hbtn scr-exit" id="scrExitBtn">🏠 나가기</button>
+
       <!-- Loading -->
       <div class="screen on" id="scrLoading" style="background:#1e2a44">
         <div class="loading">모험 준비 중…<div class="bar exp"><i id="loadFill" style="width:0"></i></div></div>
@@ -540,7 +544,6 @@
         </div>
         <p class="save-note" id="saveNote"></p>
         <p class="save-note inapp-note" id="inappNote" style="display:none"></p>
-        <a class="back-link" href="/">← 사복노트 홈으로</a>
         <p class="unofficial-note">개인이 만든 비공식 게임이에요. 나오는 기관·정책 내용은 바뀔 수 있으니, 실제 신청 전엔 꼭 해당 기관에 확인해 주세요.</p>
       </div>
 
@@ -2208,6 +2211,7 @@
 
   function screen(id) {
     ['scrLoading', 'scrTitle', 'scrConfirm', 'scrSelect', 'scrBook', 'scrShop', 'scrStage', 'scrEnding'].forEach(s => $(s).classList.toggle('on', s === id));
+    $('scrExitBtn').classList.toggle('on', ['scrTitle', 'scrConfirm', 'scrSelect', 'scrEnding'].includes(id));
   }
 
   function showEnding() {
@@ -2819,7 +2823,7 @@
     const copy = $('copyUrlBtn');
     if (copy) copy.onclick = (e) => {
       e.preventDefault();
-      const url = location.origin + '/play';
+      const url = location.origin + location.pathname;
       const done = () => { copy.textContent = '✅ 복사했어요! 사파리 주소창에 붙여 넣어요'; };
       if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(done, () => prompt('이 주소를 복사해요', url));
       else prompt('이 주소를 복사해요', url);
@@ -2867,7 +2871,13 @@
   $('stageBtn').onclick = () => { if (mode === 'play') openStages(); };
   $('stageClose').onclick = $('stageX').onclick = () => { screen(null); mode = 'play'; };
   document.querySelectorAll('[data-st]').forEach(b => b.onclick = () => openStages(b.dataset.st));
-  $('exitBtn').onclick = () => { persist(); location.href = 'game.html'; };
+  // 나가기: 사복노트 놀이터에서 새 탭으로 열었으면 그 탭을 닫아 원래 화면으로 돌아가고, 아니면 놀이터로 간다
+  function exitGame() {
+    if (S) persist();
+    try { if (window.opener) { window.close(); if (window.closed) return; } } catch (e) {}
+    location.href = '/#playground';
+  }
+  $('exitBtn').onclick = $('scrExitBtn').onclick = exitGame;
   $('againBtn').onclick = () => {
     if (!confirm('처음부터 다시 하면 코인·통장·가구 기록이 모두 지워져요. 정말 새로 시작할까요?')) return;
     clearSave(); map = null; S = null; refreshTitle(); screen('scrTitle'); mode = 'title';
