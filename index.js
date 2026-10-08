@@ -4940,7 +4940,7 @@ ${fields}
             return;
         }
         const total = parseInt(input);
-        const supply = Math.floor(total / 1.1);
+        const supply = Math.floor(total * 10 / 11);   // ÷1.1을 정수로 계산 (55,000원이 49,999원으로 나오던 소수점 오차 방지)
         const tax = total - supply;
 
         document.getElementById('vat-supply').innerText = supply.toLocaleString() + '원';
@@ -6914,50 +6914,7 @@ ${fields}
 
     /* ─── 내정보 메뉴 핸들러 (Justy 작성) ─── */
     function initMyPageMenus() {
-        // 서비스 이용약관
-        const tosContent = `
-                    <div style="font-size:0.88rem; color:var(--text-3); line-height:1.8;">
-            <p style="font-size:0.75rem; color:var(--text-6); margin-bottom:16px;">시행일: 2026년 3월 2일 &nbsp;|&nbsp; 버전: v1.0</p>
-
-            <h4 style="font-size:0.95rem; font-weight:800; color:var(--text-2); margin-bottom:8px;">제1조 (목적)</h4>
-            <p style="margin-bottom:16px;">본 약관은 사회복지사 비밀노트(이하 "서비스")의 이용 조건 및 절차, 이용자와 서비스 운영자 간의 권리·의무 및 책임사항을 규정함을 목적으로 합니다.</p>
-
-            <h4 style="font-size:0.95rem; font-weight:800; color:var(--text-2); margin-bottom:8px;">제2조 (서비스 내용)</h4>
-            <p style="margin-bottom:16px;">서비스는 사회복지사의 실무를 지원하기 위해 다음의 기능을 제공합니다.<br>① AI 프롬프트 라이브러리 ② 복지 용어 생존단어장 ③ 행정·회계 계산기 ④ 익명 Q&A(도와줘요) ⑤ 커뮤니티 게시판</p>
-
-            <h4 style="font-size:0.95rem; font-weight:800; color:var(--text-2); margin-bottom:8px;">제3조 (이용자의 의무)</h4>
-            <p style="margin-bottom:16px;">① 이용자는 허위 정보를 게시하거나 타인을 비방하는 콘텐츠를 작성해서는 안 됩니다.<br>② 이용자는 타인의 개인정보를 무단으로 게시하거나 수집해서는 안 됩니다.<br>③ 서비스의 안정적인 운영을 방해하는 행위를 해서는 안 됩니다.</p>
-
-            <h4 style="font-size:0.95rem; font-weight:800; color:var(--text-2); margin-bottom:8px;">제4조 (면책조항)</h4>
-            <p style="margin-bottom:16px;">① 서비스에서 제공하는 정보(수급판정 계산, 복지 제도 등)는 참고용이며, 실제 업무에서는 관련 법령 및 공식 기관의 안내를 최우선으로 따르시기 바랍니다.<br>② 이용자 간의 분쟁 또는 이용자가 게시한 콘텐츠로 인한 손해에 대해 운영자는 책임을 지지 않습니다.</p>
-
-            <h4 style="font-size:0.95rem; font-weight:800; color:var(--text-2); margin-bottom:8px;">제5조 (약관 변경)</h4>
-            <p style="margin-bottom:8px;">운영자는 관련 법령을 위반하지 않는 범위 내에서 본 약관을 변경할 수 있으며, 변경 시 서비스 내 공지합니다.</p>
-        </div>`;
-
-        // 개인정보처리방침
-        const ppContent = `
-        <div style="font-size:0.88rem; color:var(--text-3); line-height:1.8;">
-            <p style="font-size:0.75rem; color:var(--text-6); margin-bottom:16px;">시행일: 2026년 3월 2일 &nbsp;|&nbsp; 관련 법령: 개인정보 보호법</p>
-
-            <h4 style="font-size:0.95rem; font-weight:800; color:var(--text-2); margin-bottom:8px;">1. 수집하는 개인정보 항목</h4>
-            <p style="margin-bottom:16px;">서비스는 회원가입 없이 이용 가능하며, 다음의 정보를 수집합니다.<br>
-• <strong>익명 사용자 ID</strong>: 기기 브라우저 로컬스토리지에 저장되는 임의 식별자(예: user_abc123). 서버에 저장되지 않습니다.<br>
-• <strong>게시물 데이터</strong>: Q&A 및 커뮤니티 게시글·댓글 (익명 ID와 함께 Supabase에 저장)<br>
-• <strong>이메일 주소</strong>: 비밀 편지(뉴스레터) 구독 신청 시 이용자가 직접 입력하는 경우에만 수집. <span style="color:#ef4444; font-weight:700;">동의 없이 수집하지 않습니다.</span></p>
-
-            <h4 style="font-size:0.95rem; font-weight:800; color:var(--text-2); margin-bottom:8px;">2. 개인정보 수집 및 이용 목적</h4>
-            <p style="margin-bottom:16px;">① 게시물 작성자 본인 확인 (수정·삭제 권한 부여)<br>② 서비스 품질 개선을 위한 통계적 분석<br>③ 이메일: 뉴스레터(비밀 편지) 발송 목적으로만 사용. 광고·마케팅 목적으로 제3자에게 제공하지 않습니다.</p>
-
-            <h4 style="font-size:0.95rem; font-weight:800; color:var(--text-2); margin-bottom:8px;">3. 개인정보 보유 및 이용기간</h4>
-            <p style="margin-bottom:16px;">게시물은 이용자가 삭제하거나 서비스 종료 시까지 보관됩니다. 익명 ID는 브라우저 데이터 삭제 시 자동 소멸됩니다.</p>
-
-            <h4 style="font-size:0.95rem; font-weight:800; color:var(--text-2); margin-bottom:8px;">4. 제3자 제공</h4>
-            <p style="margin-bottom:16px;">서비스는 이용자의 정보를 법령에 규정된 경우를 제외하고 제3자에게 제공하지 않습니다. 데이터는 Supabase(미국 소재)에 암호화 저장됩니다.</p>
-
-            <h4 style="font-size:0.95rem; font-weight:800; color:var(--text-2); margin-bottom:8px;">5. 이용자의 권리</h4>
-            <p style="margin-bottom:8px;">이용자는 자신이 작성한 게시물을 언제든지 직접 삭제할 수 있습니다. 기타 문의는 서비스 내 '요청하기' 기능을 이용해 주세요.</p>
-        </div>`;
+        // 서비스 이용약관·개인정보처리방침은 별도 페이지(/terms.html, /privacy.html)로 연다 — scripts/build_pages.py가 만듦
 
         // 알림 설정
         const notifContent = `
@@ -7051,9 +7008,9 @@ ${fields}
             if (text.includes('알림 설정')) {
                 el.onclick = () => openModal('🔔 알림 설정', notifContent);
             } else if (text.includes('이용약관')) {
-                el.onclick = () => openModal('📋 서비스 이용약관', tosContent);
+                el.onclick = () => { location.href = '/terms.html'; };
             } else if (text.includes('개인정보')) {
-                el.onclick = () => openModal('🔒 개인정보처리방침', ppContent);
+                el.onclick = () => { location.href = '/privacy.html'; };
             } else if (text.includes('XP') || text.includes('레벨')) {
                 el.onclick = () => openModal('⚡ XP & 레벨 안내', xpGuideContent);
             }
@@ -7066,38 +7023,9 @@ ${fields}
         }
     }
 
-    /* ─── 내 정보 탭 정책 모달 제어 함수 ─── */
-    window.openTOSModal = function () {
-        const modal = document.getElementById('modal-tos'); // HTML ID에 맞게 수정
-        if (modal) {
-            modal.classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
-        }
-    };
-
-    window.closeTOSModal = function () {
-        const modal = document.getElementById('modal-tos');
-        if (modal) {
-            modal.classList.add('hidden');
-            document.body.style.overflow = '';
-        }
-    };
-
-    window.openPrivacyModal = function () {
-        const modal = document.getElementById('modal-privacy');
-        if (modal) {
-            modal.classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
-        }
-    };
-
-    window.closePrivacyModal = function () {
-        const modal = document.getElementById('modal-privacy');
-        if (modal) {
-            modal.classList.add('hidden');
-            document.body.style.overflow = '';
-        }
-    };
+    /* ─── 내 정보 탭 약관·개인정보처리방침: 별도 페이지로 연다 (구글·애드센스 심사도 같은 주소를 읽음) ─── */
+    window.openTOSModal = function () { location.href = '/terms.html'; };
+    window.openPrivacyModal = function () { location.href = '/privacy.html'; };
 
 
     /* ─── 헤더 버튼 핸들러 ─── */
@@ -8388,7 +8316,7 @@ ${fields}
     }
 
     window.pgHandleCopyLink = function () {
-        navigator.clipboard.writeText("나는 어떤 복지사 유형? 테스트 해봐! → https://saboknote.com/#playground/quiz");
+        navigator.clipboard.writeText("나는 어떤 복지사 유형? 테스트 해봐! → https://www.saboknote.com/#playground/quiz");
         const btn = document.getElementById('pg-btn-link-copy');
         if (btn) {
             btn.innerHTML = "✅ 링크 복사됨!";
@@ -8485,7 +8413,7 @@ ${fields}
 
     /* ===== 공유 공통 헬퍼: 모바일이면 네이티브 공유 시트(카톡·인스타), 아니면 다운로드+링크복사 ===== */
     async function shareCanvasAsImage(canvas, filename, shareText, shareUrl) {
-        shareUrl = shareUrl || 'https://saboknote.com/';
+        shareUrl = shareUrl || 'https://www.saboknote.com/';
         const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
         if (!blob) throw new Error('이미지 생성 실패');
         const file = new File([blob], filename, { type: 'image/png' });
@@ -8515,7 +8443,7 @@ ${fields}
                 canvas,
                 `나의_사복_유형_${t.name.replace(/\s+/g, '_')}.png`,
                 `나는 "${t.name}" 유형 사회복지사래요 ${t.emoji} 당신은 어떤 유형?`,
-                'https://saboknote.com/#playground/quiz'
+                'https://www.saboknote.com/#playground/quiz'
             );
             if (btn && mode === 'downloaded') {
                 btn.innerHTML = '✅ 이미지 저장 + 공유 문구 복사됨!';

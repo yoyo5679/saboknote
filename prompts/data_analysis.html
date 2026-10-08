@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>지역사회 욕구조사 데이터 분석 및 시각화 전문가 — 사회복지사 AI 프롬프트 | 사복노트</title>
+    <meta name="description" content="지역사회 욕구조사 데이터 분석 및 시각화 전문가 AI 프롬프트. 설문지 500장을 받았는데 숫자들이 춤을 추고 내 눈은 사시가 될 것 같을 때. 엑셀 없이 1초 만에 &#x27;우리 지역엔 이게 제일 급해요!&#x27;라고 외치고 싶을 때 사용합니다.">
+    <link rel="canonical" href="https://www.saboknote.com/prompts/data_analysis.html">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="사복노트">
+    <meta property="og:title" content="지역사회 욕구조사 데이터 분석 및 시각화 전문가 — 사회복지사 AI 프롬프트">
+    <meta property="og:description" content="지역사회 욕구조사 데이터 분석 및 시각화 전문가 AI 프롬프트. 설문지 500장을 받았는데 숫자들이 춤을 추고 내 눈은 사시가 될 것 같을 때. 엑셀 없이 1초 만에 &#x27;우리 지역엔 이게 제일 급해요!&#x27;라고 외치고 싶을 때 사용합니다.">
+    <meta property="og:url" content="https://www.saboknote.com/prompts/data_analysis.html">
+    <meta property="og:image" content="https://www.saboknote.com/og-image.png">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📈</text></svg>">
+    <meta name="google-adsense-account" content="ca-pub-4943960812497979">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4943960812497979"
+        crossorigin="anonymous"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Pretendard', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; background: #f8fafc; color: #1e293b; line-height: 1.7; word-break: keep-all; overflow-wrap: anywhere; }
+        a { color: #2563eb; }
+        .top { background: linear-gradient(125deg, #0f2d6b 0%, #1e4eb5 45%, #3b7ef8 100%); color: #fff; padding: 28px 20px 32px; }
+        .top .site { font-size: 0.82rem; opacity: 0.85; margin-bottom: 10px; }
+        .top .site a { color: #fff; text-decoration: none; font-weight: 700; }
+        .top h1 { font-size: 1.5rem; font-weight: 900; letter-spacing: -0.02em; line-height: 1.35; }
+        .top p { font-size: 0.9rem; opacity: 0.9; margin-top: 6px; }
+        main { max-width: 680px; margin: 0 auto; padding: 20px 16px 60px; }
+        .card { background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); }
+        .card h2 { font-size: 1.08rem; font-weight: 800; margin-bottom: 12px; }
+        .card h3 { font-size: 0.98rem; font-weight: 800; margin: 18px 0 8px; }
+        .card p, .card li { font-size: 0.92rem; color: #334155; }
+        .card p + p { margin-top: 10px; }
+        .card ol, .card ul { padding-left: 20px; }
+        .card li + li { margin-top: 6px; }
+        .muted { color: #64748b !important; font-size: 0.84rem !important; }
+        .note { background: #fffbeb; border: 1px solid #fde68a; border-radius: 12px; padding: 12px 14px; font-size: 0.86rem; color: #78350f; margin-top: 12px; }
+        .chips a { display: inline-block; background: #eef2ff; color: #4338ca; border-radius: 20px; padding: 8px 14px; font-size: 0.85rem; font-weight: 700; text-decoration: none; margin: 0 6px 8px 0; }
+        .cta { display: block; text-align: center; background: linear-gradient(135deg, #2563eb, #4338ca); color: #fff !important; border-radius: 14px; padding: 15px; font-size: 0.95rem; font-weight: 800; text-decoration: none; margin: 4px 0 16px; }
+        .list a.item { display: flex; gap: 12px; align-items: flex-start; padding: 13px 0; border-top: 1px solid #f1f5f9; text-decoration: none; color: inherit; }
+        .list a.item:first-of-type { border-top: none; }
+        .list .ico { font-size: 1.5rem; line-height: 1.2; flex-shrink: 0; }
+        .list .t { display: block; font-size: 0.95rem; font-weight: 800; color: #1e293b; }
+        .list .d { display: block; font-size: 0.83rem; color: #64748b; margin-top: 2px; }
+        pre.prompt { white-space: pre-wrap; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px; font-family: inherit; font-size: 0.84rem; line-height: 1.65; color: #334155; max-height: 520px; overflow: auto; }
+        .copy { width: 100%; border: none; border-radius: 12px; padding: 13px; margin-bottom: 12px; background: #1e293b; color: #fff; font-family: inherit; font-size: 0.92rem; font-weight: 800; cursor: pointer; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
+        th, td { border: 1px solid #e2e8f0; padding: 9px 10px; text-align: left; vertical-align: top; color: #334155; }
+        th { background: #f1f5f9; font-weight: 800; white-space: nowrap; }
+        .bubble { background: #eff6ff; border-radius: 12px; padding: 10px 12px; font-size: 0.88rem; color: #1e3a8a; margin-top: 8px; }
+        .check li { list-style: none; position: relative; }
+        .check li::before { content: '☐'; position: absolute; left: -20px; color: #64748b; }
+        dl.voca dt { font-size: 0.98rem; font-weight: 800; margin-top: 16px; }
+        dl.voca dt:first-child { margin-top: 0; }
+        dl.voca dd { font-size: 0.9rem; color: #334155; }
+        dl.voca dd b { color: #1d4ed8; }
+        .policy h2 { margin-top: 6px; }
+        .policy h3 { font-size: 0.95rem; }
+        .policy .scroll { margin: 4px 0 12px; }
+        .policy td:first-child { font-weight: 700; }
+        @media (max-width: 600px) {
+            .policy table, .policy tbody, .policy tr, .policy td { display: block; width: 100%; }
+            .policy tr:first-child { display: none; }
+            .policy tr { border: 1px solid #e2e8f0; border-radius: 12px; padding: 10px 12px; margin-bottom: 8px; }
+            .policy td { border: none; padding: 3px 0; }
+            .policy td[data-label]::before { content: attr(data-label); display: block; font-size: 0.75rem; font-weight: 800; color: #94a3b8; }
+            .policy td:first-child { font-size: 0.95rem; color: #1e293b; padding-bottom: 4px; }
+        }
+        footer { text-align: center; font-size: 0.78rem; color: #94a3b8; padding: 0 16px 40px; line-height: 2; }
+        footer a { color: #64748b; margin: 0 4px; }
+    </style>
+</head>
+
+<body>
+    <div class="top">
+        <div class="site"><a href="/">📔 사복노트</a> › <a href="/prompts/">AI 프롬프트</a> › 지역사회 욕구조사 데이터 분석 및 시각화 전문가</div>
+        <h1>📈 지역사회 욕구조사 데이터 분석 및 시각화 전문가</h1>
+        <p>사업기획 및 행정 · 복사해서 ChatGPT·Claude·Gemini에 붙여넣는 AI 프롬프트</p>
+    </div>
+
+    <main>
+        <div class="card">
+            <h2>이럴 때 쓰세요</h2>
+            <p>설문지 500장을 받았는데 숫자들이 춤을 추고 내 눈은 사시가 될 것 같을 때. 엑셀 없이 1초 만에 &#x27;우리 지역엔 이게 제일 급해요!&#x27;라고 외치고 싶을 때 사용합니다.</p>
+        </div>
+
+        <div class="card">
+            <h2>빈칸에 넣을 것</h2>
+            <ol>
+                <li>조사 개요 (대상, 응답자 수, 방법, 시기)</li>
+                <li>결과 데이터 (표를 붙여넣거나 엑셀 파일 첨부)</li>
+                <li>분석 목적 (예: 내년 사업계획 필요성 근거)</li>
+            </ol>
+            <p class="muted" style="margin-top:10px;">모르는 칸은 비워 둬도 돼요. 대상자는 실명 대신 가명·연령대·동 단위로 적어 주세요.</p>
+        </div>
+
+        <div class="card">
+            <h2>프롬프트 전문</h2>
+            <button class="copy" type="button" onclick="copyPrompt(this)">📋 프롬프트 복사하기</button>
+            <pre class="prompt" id="prompt-text">당신은 사회복지 욕구조사를 설계하고 분석해 온 연구원입니다.
+사회복지사가 욕구조사 결과를 사업 기획에 바로 쓸 수 있게 정리하도록 돕습니다. 결과는 사업계획서의 &#x27;필요성&#x27; 근거와 내부 보고에 쓰입니다.
+
+## 분석 원칙
+1. 데이터를 받으면 먼저 구조(문항 수, 응답자 수, 집단 구분)를 3줄로 요약해 제대로 읽었는지 보여 주세요.
+2. 모든 수치는 &lt;입력&gt;이나 첨부 파일의 값으로만 계산하고, 비율은 분모를 함께 적으세요. (예: 42% (126/300명))
+3. 우선순위는 응답 빈도, 심각도, 시급성 중 무엇을 기준으로 했는지 밝히고 정하세요.
+4. 집단별 응답자가 30명보다 적으면 차이를 단정하지 말고 &#x27;경향&#x27;으로만 쓰세요.
+5. 주관식 응답은 주제별로 묶고, 각 주제의 대표 응답을 원문 그대로 1~2개 인용하세요.
+6. 직접 드러나지 않은 잠재 욕구는 &#x27;해석&#x27;이라고 표시해 사실과 구분하세요.
+7. 기관 이용자만 조사했다면 비이용자의 욕구가 빠졌을 수 있다는 점처럼, 표본의 한계를 분명히 쓰세요.
+
+## 결과물 형식
+- 데이터 구조 요약 (3줄)
+- 핵심 발견 3가지 (한 줄씩)
+- 욕구 우선순위 표 (순위 | 욕구 | 근거 수치 | 판단 기준)
+- 집단별 차이 (연령, 가구 유형 등 데이터에 있는 것만)
+- 주관식 주제 분석
+- 잠재 욕구 (해석)
+- 보고서에 넣을 차트 제안 (차트 종류, 제목, 축)
+- 상위 3개 욕구에 맞는 사업 방향
+- 이번 조사의 한계
+
+## 다 쓴 뒤 점검
+- 계산한 비율의 합과 분모가 맞는가
+- 사실과 해석이 섞이지 않았는가
+
+## 공통 규칙
+- 통계·수치·법 조항 번호·지역 기관명·연락처·인용문 같은 구체적 사실은 &lt;입력&gt;, 첨부 파일, 이 지시문에 있는 것만 쓰세요. 없으면 지어내지 말고 [확인 필요: 무엇을 확인할지]로 표시하세요.
+- 실천 이론이나 제도 이름 같은 일반 지식은 써도 됩니다. 다만 선정 기준·지원 금액·신청 요건처럼 해마다 바뀌는 정보는 [확인 필요]로 표시하세요.
+- &lt;입력&gt;의 내용을 부풀리거나, 적히지 않은 세부(사례 내용, 비율, 대사, 장면)를 덧붙이지 마세요.
+- 대상자와 제3자(가족, 이웃)의 이름·주민등록번호·주소·연락처가 보이면 가려서 쓰세요. (예: 대상자 김OO, 이웃 A)
+- 결과가 크게 달라질 만큼 중요한 정보가 빠졌을 때만, 작성 전에 질문을 3개 이내로 해 주세요. 그 밖에는 합리적으로 가정하고 바로 작성하세요.
+- 괄호 속 &#x27;예:&#x27; 안내만 남아 있는 칸은 비어 있는 것으로 봐 주세요.
+- 인사말이나 작업 설명 없이 결과물부터 바로 쓰세요.
+- 맨 끝에 짧게 덧붙여 주세요: ① [확인 필요] 목록 ② 가정한 내용 ③ 이어서 요청하면 좋은 것 2가지
+
+※ 입력 전 확인: 실명·주민등록번호·정확한 주소·연락처·사진·전산시스템 화면 캡처는 넣지 마세요. 가명, 연령대, 동 단위로 바꿔 넣으면 됩니다.
+&lt;입력&gt;
+■ 조사 개요 (대상, 응답자 수, 방법, 시기): 
+■ 결과 데이터 (표를 붙여넣거나 엑셀 파일 첨부): 
+■ 분석 목적 (예: 내년 사업계획 필요성 근거): 
+&lt;/입력&gt;</pre>
+        </div>
+
+        <div class="card">
+            <h2>사용 순서</h2>
+            <ol>
+                <li>위의 <b>[프롬프트 복사하기]</b>를 눌러요.</li>
+                <li>ChatGPT, Claude, Gemini 채팅창에 붙여넣어요.</li>
+                <li>맨 아래 <b>&lt;입력&gt;</b> 칸을 채워서 보내요. 모르는 칸은 비워 둬도 되고, 기관 양식은 파일로 첨부해도 돼요.</li>
+                <li>결과를 받은 뒤 "더 짧게", "표로 바꿔 줘"처럼 이어서 요청하면 더 좋아져요.</li>
+            </ol>
+            <div class="note">
+                <b>⚠ 꼭 지켜 주세요</b><br>
+                · 실명·주민등록번호·주소·연락처는 지우고 넣어 주세요. 기관의 AI 사용 지침도 확인해 주세요.<br>
+                · AI 서비스 설정에서 '대화 내용으로 모델 학습'을 꺼 두면 더 안전해요.<br>
+                · AI 결과는 초안이에요. <b>[확인 필요]</b> 표시는 직접 확인한 뒤 써 주세요.
+            </div>
+        </div>
+
+        <a class="cta" href="/#home/prompt-data_analysis">✏️ 사복노트 앱에서 빈칸 미리 채우고 복사하기 →</a>
+
+        <div class="card chips">
+            <h2>사업기획 및 행정의 다른 프롬프트</h2>
+            <a href="/prompts/proposal.html">📄 공모사업 프로포절 기획 전문가</a>
+            <a href="/prompts/result_report.html">📊 사업 결과 보고 및 성과 분석 슈퍼바이저</a>
+            <a href="/prompts/official_doc.html">📝 행정 문서 및 격식 있는 공문서 작성 마스터</a>
+            <a href="/prompts/program_design.html">🎨 회기별 세부 프로그램 활동안 설계 전문가</a>
+            <a href="/prompts/strategy.html">🏛️ 시설 중장기 발전계획 및 운영 전략 컨설턴트</a>
+            <a href="/prompts/complaint.html">🤝 민원 응대 및 상황별 커뮤니케이션 매뉴얼 전문가</a>
+            <a href="/prompts/">🪄 프롬프트 23개 전체 보기</a>
+        </div>
+
+    </main>
+
+    <footer>
+        <div><a href="/">📔 사복노트</a> · <a href="/about.html">소개</a> · <a href="/prompts/">AI 프롬프트</a> · <a href="/voca/">생존 단어장</a> · <a href="/tools/">실무 도구</a> · <a href="/treasure.html">꿀자료</a></div>
+        <div><a href="/terms.html">이용약관</a> · <a href="/privacy.html"><b>개인정보처리방침</b></a> · 문의 <a href="mailto:saboknote@naver.com">saboknote@naver.com</a></div>
+    </footer>
+    <script>
+        function copyPrompt(btn) {
+            var text = document.getElementById('prompt-text').innerText;
+            var done = function () { var o = btn.innerHTML; btn.innerHTML = '✅ 복사했어요. AI 채팅창에 붙여넣으세요'; setTimeout(function () { btn.innerHTML = o; }, 2200); };
+            if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, function () { window.prompt('이 글을 복사하세요', text); });
+            else window.prompt('이 글을 복사하세요', text);
+        }
+    </script>
+</body>
+
+</html>
