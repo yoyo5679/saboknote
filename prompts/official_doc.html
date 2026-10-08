@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>행정 문서 및 격식 있는 공문서 작성 마스터 — 사회복지사 AI 프롬프트 | 사복노트</title>
+    <meta name="description" content="행정 문서 및 격식 있는 공문서 작성 마스터 AI 프롬프트. 옆 동네 복지관에 장소 좀 빌려달라고 해야 하는데 &#x27;어이~&#x27;라고 할 순 없고... 품격은 지키면서 거절할 수 없는 마력을 담은 문장이 간절할 때 꺼내 드세요.">
+    <link rel="canonical" href="https://www.saboknote.com/prompts/official_doc.html">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="사복노트">
+    <meta property="og:title" content="행정 문서 및 격식 있는 공문서 작성 마스터 — 사회복지사 AI 프롬프트">
+    <meta property="og:description" content="행정 문서 및 격식 있는 공문서 작성 마스터 AI 프롬프트. 옆 동네 복지관에 장소 좀 빌려달라고 해야 하는데 &#x27;어이~&#x27;라고 할 순 없고... 품격은 지키면서 거절할 수 없는 마력을 담은 문장이 간절할 때 꺼내 드세요.">
+    <meta property="og:url" content="https://www.saboknote.com/prompts/official_doc.html">
+    <meta property="og:image" content="https://www.saboknote.com/og-image.png">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📝</text></svg>">
+    <meta name="google-adsense-account" content="ca-pub-4943960812497979">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4943960812497979"
+        crossorigin="anonymous"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Pretendard', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; background: #f8fafc; color: #1e293b; line-height: 1.7; word-break: keep-all; overflow-wrap: anywhere; }
+        a { color: #2563eb; }
+        .top { background: linear-gradient(125deg, #0f2d6b 0%, #1e4eb5 45%, #3b7ef8 100%); color: #fff; padding: 28px 20px 32px; }
+        .top .site { font-size: 0.82rem; opacity: 0.85; margin-bottom: 10px; }
+        .top .site a { color: #fff; text-decoration: none; font-weight: 700; }
+        .top h1 { font-size: 1.5rem; font-weight: 900; letter-spacing: -0.02em; line-height: 1.35; }
+        .top p { font-size: 0.9rem; opacity: 0.9; margin-top: 6px; }
+        main { max-width: 680px; margin: 0 auto; padding: 20px 16px 60px; }
+        .card { background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); }
+        .card h2 { font-size: 1.08rem; font-weight: 800; margin-bottom: 12px; }
+        .card h3 { font-size: 0.98rem; font-weight: 800; margin: 18px 0 8px; }
+        .card p, .card li { font-size: 0.92rem; color: #334155; }
+        .card p + p { margin-top: 10px; }
+        .card ol, .card ul { padding-left: 20px; }
+        .card li + li { margin-top: 6px; }
+        .muted { color: #64748b !important; font-size: 0.84rem !important; }
+        .note { background: #fffbeb; border: 1px solid #fde68a; border-radius: 12px; padding: 12px 14px; font-size: 0.86rem; color: #78350f; margin-top: 12px; }
+        .chips a { display: inline-block; background: #eef2ff; color: #4338ca; border-radius: 20px; padding: 8px 14px; font-size: 0.85rem; font-weight: 700; text-decoration: none; margin: 0 6px 8px 0; }
+        .cta { display: block; text-align: center; background: linear-gradient(135deg, #2563eb, #4338ca); color: #fff !important; border-radius: 14px; padding: 15px; font-size: 0.95rem; font-weight: 800; text-decoration: none; margin: 4px 0 16px; }
+        .list a.item { display: flex; gap: 12px; align-items: flex-start; padding: 13px 0; border-top: 1px solid #f1f5f9; text-decoration: none; color: inherit; }
+        .list a.item:first-of-type { border-top: none; }
+        .list .ico { font-size: 1.5rem; line-height: 1.2; flex-shrink: 0; }
+        .list .t { display: block; font-size: 0.95rem; font-weight: 800; color: #1e293b; }
+        .list .d { display: block; font-size: 0.83rem; color: #64748b; margin-top: 2px; }
+        pre.prompt { white-space: pre-wrap; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px; font-family: inherit; font-size: 0.84rem; line-height: 1.65; color: #334155; max-height: 520px; overflow: auto; }
+        .copy { width: 100%; border: none; border-radius: 12px; padding: 13px; margin-bottom: 12px; background: #1e293b; color: #fff; font-family: inherit; font-size: 0.92rem; font-weight: 800; cursor: pointer; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
+        th, td { border: 1px solid #e2e8f0; padding: 9px 10px; text-align: left; vertical-align: top; color: #334155; }
+        th { background: #f1f5f9; font-weight: 800; white-space: nowrap; }
+        .bubble { background: #eff6ff; border-radius: 12px; padding: 10px 12px; font-size: 0.88rem; color: #1e3a8a; margin-top: 8px; }
+        .check li { list-style: none; position: relative; }
+        .check li::before { content: '☐'; position: absolute; left: -20px; color: #64748b; }
+        dl.voca dt { font-size: 0.98rem; font-weight: 800; margin-top: 16px; }
+        dl.voca dt:first-child { margin-top: 0; }
+        dl.voca dd { font-size: 0.9rem; color: #334155; }
+        dl.voca dd b { color: #1d4ed8; }
+        .policy h2 { margin-top: 6px; }
+        .policy h3 { font-size: 0.95rem; }
+        .policy .scroll { margin: 4px 0 12px; }
+        .policy td:first-child { font-weight: 700; }
+        @media (max-width: 600px) {
+            .policy table, .policy tbody, .policy tr, .policy td { display: block; width: 100%; }
+            .policy tr:first-child { display: none; }
+            .policy tr { border: 1px solid #e2e8f0; border-radius: 12px; padding: 10px 12px; margin-bottom: 8px; }
+            .policy td { border: none; padding: 3px 0; }
+            .policy td[data-label]::before { content: attr(data-label); display: block; font-size: 0.75rem; font-weight: 800; color: #94a3b8; }
+            .policy td:first-child { font-size: 0.95rem; color: #1e293b; padding-bottom: 4px; }
+        }
+        footer { text-align: center; font-size: 0.78rem; color: #94a3b8; padding: 0 16px 40px; line-height: 2; }
+        footer a { color: #64748b; margin: 0 4px; }
+    </style>
+</head>
+
+<body>
+    <div class="top">
+        <div class="site"><a href="/">📔 사복노트</a> › <a href="/prompts/">AI 프롬프트</a> › 행정 문서 및 격식 있는 공문서 작성 마스터</div>
+        <h1>📝 행정 문서 및 격식 있는 공문서 작성 마스터</h1>
+        <p>사업기획 및 행정 · 복사해서 ChatGPT·Claude·Gemini에 붙여넣는 AI 프롬프트</p>
+    </div>
+
+    <main>
+        <div class="card">
+            <h2>이럴 때 쓰세요</h2>
+            <p>옆 동네 복지관에 장소 좀 빌려달라고 해야 하는데 &#x27;어이~&#x27;라고 할 순 없고... 품격은 지키면서 거절할 수 없는 마력을 담은 문장이 간절할 때 꺼내 드세요.</p>
+        </div>
+
+        <div class="card">
+            <h2>빈칸에 넣을 것</h2>
+            <ol>
+                <li>받는 기관</li>
+                <li>문서 종류 (예: 협조 요청, 행사 안내, 회신)</li>
+                <li>핵심 내용 (무엇을, 언제, 어디서)</li>
+                <li>회신 기한과 담당자 (연락처는 OOO으로 둬도 됨)</li>
+                <li>붙임 자료 (있으면)</li>
+            </ol>
+            <p class="muted" style="margin-top:10px;">모르는 칸은 비워 둬도 돼요. 대상자는 실명 대신 가명·연령대·동 단위로 적어 주세요.</p>
+        </div>
+
+        <div class="card">
+            <h2>가상 예시로 따라 해 보기</h2>
+            <p class="muted">연습용으로 지어낸 사례예요. 실제 기록에는 우리 기관 사례를 가명으로 바꿔 넣어 주세요.</p>
+            <div class="scroll" style="margin-top:10px;"><table>
+                <tr><th>받는 기관</th><td>행복동 행정복지센터</td></tr>
+                <tr><th>문서 종류</th><td>협조 요청</td></tr>
+                <tr><th>핵심 내용</th><td>10월 마지막 주 어르신 건강강좌에 쓸 2층 회의실 대관</td></tr>
+                <tr><th>회신 기한과 담당자</th><td>2026. 10. 20.(화)까지, 담당 OOO</td></tr>
+                <tr><th>붙임 자료</th><td>행사 계획서 1부</td></tr>
+            </table></div>
+            <p style="margin-top:12px;"><b>볼 점</b> · 회신 기한이 첫 문단에 보이는지, 날짜가 &#x27;2026. 10. 20.(화)&#x27; 형식으로 맞춰졌는지 보세요.</p>
+            <h3>결과를 받은 뒤 이어서 요청하기</h3>
+            <div class="bubble">"같은 내용을 담당 주무관에게 보낼 짧은 문자로 바꿔 줘"</div>
+            <div class="bubble">"어렵다는 답이 오면 다른 날짜를 제안하는 회신 문장을 써 줘"</div>
+            <h3>결과에서 확인할 것</h3>
+            <ul class="check">
+                <li>첫 문단만 읽어도 요청과 기한이 보이나</li>
+                <li>날짜·시간·항목 기호가 규칙에 맞나</li>
+                <li>본문 끝에 &#x27;끝.&#x27;이 있나</li>
+            </ul>
+        </div>
+        <div class="card">
+            <h2>프롬프트 전문</h2>
+            <button class="copy" type="button" onclick="copyPrompt(this)">📋 프롬프트 복사하기</button>
+            <pre class="prompt" id="prompt-text">당신은 사회복지시설 행정 실무와 공문서 작성 규칙을 잘 아는 행정 담당자입니다.
+사회복지사가 유관기관이나 행정기관에 보낼 공문을 쓰도록 돕습니다. 받는 쪽 담당자가 첫 문단만 읽고도 &quot;무엇을, 언제까지 해 달라는지&quot; 알 수 있어야 합니다.
+
+## 작성 원칙
+1. 공문 형식을 지키세요: 수신, (경유), 제목, 본문, 붙임, 발신 명의.
+2. 본문은 &#x27;1. 관련&#x27; 다음 &#x27;2.&#x27;에서 핵심 요청이나 안내를 바로 밝히는 두괄식으로 쓰세요.
+3. 항목 기호는 1. → 가. → 1) → 가) 순서로 쓰세요.
+4. 날짜는 &#x27;2026. 10. 6.(화)&#x27;, 시간은 &#x27;14:00&#x27; 형식으로 쓰고, 본문(붙임이 있으면 붙임) 끝에 &#x27;끝.&#x27;을 붙이세요.
+5. 어려운 한자어와 관행적 표현 대신 쉬운 공공언어를 쓰세요. (예: &#x27;하기 바람&#x27; → &#x27;해 주시기 바랍니다&#x27;)
+6. 부탁하는 문서라면 상대 기관에도 도움이 되는 점을 한 줄 담되, 사정하는 말투는 피하세요.
+7. 회신 기한과 담당자 연락처 자리를 반드시 두세요.
+8. 대상자 개인정보가 꼭 들어가야 하는 공문이면 필요한 최소한만 넣고, 본문 대신 붙임으로 분리하는 방법을 제안하세요.
+
+## 결과물 형식
+- 공문 전문
+- 이메일로 보낼 때 쓸 짧은 본문 (5줄 이내)
+- 공문 제목 후보 3개
+
+## 다 쓴 뒤 점검
+- 첫 문단만 읽어도 요청 내용과 기한을 알 수 있는가
+- 날짜·시간·항목 기호 표기가 규칙에 맞는가
+
+## 공통 규칙
+- 통계·수치·법 조항 번호·지역 기관명·연락처·인용문 같은 구체적 사실은 &lt;입력&gt;, 첨부 파일, 이 지시문에 있는 것만 쓰세요. 없으면 지어내지 말고 [확인 필요: 무엇을 확인할지]로 표시하세요.
+- 실천 이론이나 제도 이름 같은 일반 지식은 써도 됩니다. 다만 선정 기준·지원 금액·신청 요건처럼 해마다 바뀌는 정보는 [확인 필요]로 표시하세요.
+- &lt;입력&gt;의 내용을 부풀리거나, 적히지 않은 세부(사례 내용, 비율, 대사, 장면)를 덧붙이지 마세요.
+- 대상자와 제3자(가족, 이웃)의 이름·주민등록번호·주소·연락처가 보이면 가려서 쓰세요. (예: 대상자 김OO, 이웃 A)
+- 결과가 크게 달라질 만큼 중요한 정보가 빠졌을 때만, 작성 전에 질문을 3개 이내로 해 주세요. 그 밖에는 합리적으로 가정하고 바로 작성하세요.
+- 괄호 속 &#x27;예:&#x27; 안내만 남아 있는 칸은 비어 있는 것으로 봐 주세요.
+- 인사말이나 작업 설명 없이 결과물부터 바로 쓰세요.
+- 맨 끝에 짧게 덧붙여 주세요: ① [확인 필요] 목록 ② 가정한 내용 ③ 이어서 요청하면 좋은 것 2가지
+
+※ 입력 전 확인: 실명·주민등록번호·정확한 주소·연락처·사진·전산시스템 화면 캡처는 넣지 마세요. 가명, 연령대, 동 단위로 바꿔 넣으면 됩니다.
+&lt;입력&gt;
+■ 받는 기관: 
+■ 문서 종류 (예: 협조 요청, 행사 안내, 회신): 
+■ 핵심 내용 (무엇을, 언제, 어디서): 
+■ 회신 기한과 담당자 (연락처는 OOO으로 둬도 됨): 
+■ 붙임 자료 (있으면): 
+&lt;/입력&gt;</pre>
+        </div>
+
+        <div class="card">
+            <h2>사용 순서</h2>
+            <ol>
+                <li>위의 <b>[프롬프트 복사하기]</b>를 눌러요.</li>
+                <li>ChatGPT, Claude, Gemini 채팅창에 붙여넣어요.</li>
+                <li>맨 아래 <b>&lt;입력&gt;</b> 칸을 채워서 보내요. 모르는 칸은 비워 둬도 되고, 기관 양식은 파일로 첨부해도 돼요.</li>
+                <li>결과를 받은 뒤 "더 짧게", "표로 바꿔 줘"처럼 이어서 요청하면 더 좋아져요.</li>
+            </ol>
+            <div class="note">
+                <b>⚠ 꼭 지켜 주세요</b><br>
+                · 실명·주민등록번호·주소·연락처는 지우고 넣어 주세요. 기관의 AI 사용 지침도 확인해 주세요.<br>
+                · AI 서비스 설정에서 '대화 내용으로 모델 학습'을 꺼 두면 더 안전해요.<br>
+                · AI 결과는 초안이에요. <b>[확인 필요]</b> 표시는 직접 확인한 뒤 써 주세요.
+            </div>
+        </div>
+
+        <a class="cta" href="/#home/prompt-official_doc">✏️ 사복노트 앱에서 빈칸 미리 채우고 복사하기 →</a>
+
+        <div class="card chips">
+            <h2>사업기획 및 행정의 다른 프롬프트</h2>
+            <a href="/prompts/proposal.html">📄 공모사업 프로포절 기획 전문가</a>
+            <a href="/prompts/result_report.html">📊 사업 결과 보고 및 성과 분석 슈퍼바이저</a>
+            <a href="/prompts/data_analysis.html">📈 지역사회 욕구조사 데이터 분석 및 시각화 전문가</a>
+            <a href="/prompts/program_design.html">🎨 회기별 세부 프로그램 활동안 설계 전문가</a>
+            <a href="/prompts/strategy.html">🏛️ 시설 중장기 발전계획 및 운영 전략 컨설턴트</a>
+            <a href="/prompts/complaint.html">🤝 민원 응대 및 상황별 커뮤니케이션 매뉴얼 전문가</a>
+            <a href="/prompts/">🪄 프롬프트 23개 전체 보기</a>
+        </div>
+
+    </main>
+
+    <footer>
+        <div><a href="/">📔 사복노트</a> · <a href="/about.html">소개</a> · <a href="/prompts/">AI 프롬프트</a> · <a href="/voca/">생존 단어장</a> · <a href="/tools/">실무 도구</a> · <a href="/treasure.html">꿀자료</a></div>
+        <div><a href="/terms.html">이용약관</a> · <a href="/privacy.html"><b>개인정보처리방침</b></a> · 문의 <a href="mailto:saboknote@naver.com">saboknote@naver.com</a></div>
+    </footer>
+    <script>
+        function copyPrompt(btn) {
+            var text = document.getElementById('prompt-text').innerText;
+            var done = function () { var o = btn.innerHTML; btn.innerHTML = '✅ 복사했어요. AI 채팅창에 붙여넣으세요'; setTimeout(function () { btn.innerHTML = o; }, 2200); };
+            if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, function () { window.prompt('이 글을 복사하세요', text); });
+            else window.prompt('이 글을 복사하세요', text);
+        }
+    </script>
+</body>
+
+</html>

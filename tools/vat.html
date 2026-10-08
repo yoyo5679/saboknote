@@ -7,12 +7,12 @@
     <title>부가세 계산기 — 공급가액·부가세 10% 역산 | 사복노트</title>
     <meta name="description" content="총 결제금액만 입력하면 공급가액과 부가세 10%를 1초 만에 역산. 세금계산서 확인, 지출결의서 작성에 바로 쓰는 무료 부가세 계산기. 가입 없이 사용.">
     <meta name="keywords" content="부가세 계산기, 부가세 역산, 공급가액 계산, 부가가치세 10%, 세금계산서 공급가액, 사회복지시설 회계">
-    <link rel="canonical" href="https://saboknote.com/tools/vat.html">
+    <link rel="canonical" href="https://www.saboknote.com/tools/vat.html">
     <meta property="og:type" content="website">
     <meta property="og:title" content="부가세 계산기 — 공급가액·부가세 10% 역산">
     <meta property="og:description" content="총 결제금액만 입력하면 공급가액과 부가세를 1초 만에 역산. 가입 없이 무료.">
-    <meta property="og:url" content="https://saboknote.com/tools/vat.html">
-    <meta property="og:image" content="https://saboknote.com/og-image.png">
+    <meta property="og:url" content="https://www.saboknote.com/tools/vat.html">
+    <meta property="og:image" content="https://www.saboknote.com/og-image.png">
     <link rel="icon"
         href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧾</text></svg>">
     <script type="application/ld+json">
@@ -64,6 +64,9 @@
         footer { text-align: center; font-size: 0.78rem; color: #94a3b8; padding: 0 16px 40px; }
         footer a { color: #64748b; }
     </style>
+    <meta name="google-adsense-account" content="ca-pub-4943960812497979">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4943960812497979"
+        crossorigin="anonymous"></script>
 </head>
 
 <body>
@@ -113,6 +116,14 @@
             <p>· 견적서의 "부가세 별도" 금액에서 <strong>실제 결제금액</strong>을 계산할 때</p>
         </div>
 
+        <div class="card desc">
+            <h2>계산 예시</h2>
+            <p>· 카드전표 총액 <strong>55,000원</strong> → 공급가액 50,000원 + 부가세 5,000원</p>
+            <p>· 총액 <strong>10,000원</strong> → 10,000 ÷ 1.1 = 9,090.9… → 공급가액 9,090원(원 단위 내림), 부가세 910원</p>
+            <p>· 견적서 "부가세 별도 <strong>120,000원</strong>" → 부가세 12,000원, 실제 결제금액 132,000원</p>
+            <p>지출결의서에는 공급가액과 부가세를 나눠 적고, 둘을 더한 값이 영수증 총액과 같은지 확인하면 돼요.</p>
+        </div>
+
         <div class="card faq">
             <h2>자주 묻는 질문</h2>
             <h3>Q. 왜 총액을 1.1로 나누나요?</h3>
@@ -136,14 +147,14 @@
         </div>
     </main>
 
-    <footer>📔 <a href="/">사복노트</a> — 사회복지사를 위한 실무 도구 모음 · 가입 없이 무료</footer>
+    <footer>📔 <a href="/">사복노트</a> — 사회복지사를 위한 실무 도구 모음 · 가입 없이 무료<br><a href="/about.html">소개</a> · <a href="/prompts/">AI 프롬프트</a> · <a href="/voca/">생존 단어장</a> · <a href="/terms.html">이용약관</a> · <a href="/privacy.html">개인정보처리방침</a></footer>
 
     <script>
         function calcFromTotal() {
             var total = parseInt(document.getElementById('vat-total').value);
             var s = document.getElementById('out-supply'), t = document.getElementById('out-tax');
             if (!total || total <= 0) { s.innerText = '0원'; t.innerText = '0원'; return; }
-            var supply = Math.floor(total / 1.1);
+            var supply = Math.floor(total * 10 / 11);   // ÷1.1을 정수로 계산 (소수점 오차로 1원 틀리던 것 방지)
             s.innerText = supply.toLocaleString() + '원';
             t.innerText = (total - supply).toLocaleString() + '원';
         }
