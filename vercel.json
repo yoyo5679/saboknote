@@ -1,9 +1,9 @@
 {
   "redirects": [
     {
-      "source": "/:path*",
+      "source": "/(.*)",
       "has": [{ "type": "host", "value": "saboknote.vercel.app" }],
-      "destination": "https://www.saboknote.com/:path*",
+      "destination": "https://www.saboknote.com/$1",
       "permanent": true
     }
   ]
