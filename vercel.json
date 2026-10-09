@@ -9,6 +9,6 @@
     { "source": "/benefits", "destination": "/benefits/", "permanent": true }
   ],
   "rewrites": [
-    { "source": "/benefits/:path*", "destination": "https://bok-jumoney.vercel.app/:path*" }
+    { "source": "/benefits/(.*)", "destination": "https://bok-jumoney.vercel.app/$1" }
   ]
 }
