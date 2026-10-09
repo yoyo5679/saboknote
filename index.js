@@ -190,9 +190,14 @@ try {
     };
 
     /* --- Newsletter Reader (비밀 편지) --- */
-    window.openNewsletterSubModal = function() {
+    // 출시 알림을 받는 상품 (보물창고 버튼이 source로 보냄) — 구독 기록에 남겨 상품별 수요를 센다
+    const NL_SOURCES = { kit_result_report: { name: '연말 결과보고서 키트', when: '11월' } };
+    window.openNewsletterSubModal = function(source) {
+        window._nlSource = (typeof source === 'string' && NL_SOURCES[source]) ? source : null;
+        const kit = window._nlSource && NL_SOURCES[window._nlSource];
+        const kitNote = kit ? `<div style="background:#ecfdf5; border:1px solid #a7f3d0; border-radius:12px; padding:12px 14px; margin-bottom:16px; font-size:0.9rem; color:#065f46; line-height:1.55;">📋 <b>${kit.name}</b>는 ${kit.when}에 나와요.<br>비밀편지를 구독하면 출시 소식을 가장 먼저 보내 드려요.</div>` : '';
         const modalContent = `
-        <div style="text-align:center; padding: 20px 0;">
+        <div style="text-align:center; padding: 20px 0;">${kitNote}
             <div style="font-size:3rem; margin-bottom:12px; animation: bounce 2s infinite">💌</div>
             <h3 style="font-size:1.4rem; color:var(--text-dark); margin-bottom:8px; font-weight:900">팀장님 몰래 보는 비밀편지</h3>
             <p style="font-size:0.95rem; color:var(--text-5); margin-bottom:24px; line-height:1.6;"><strong>"쉿! 사복천재가 이메일로 직접 배달 갑니다."</strong><br>막히는 서류 업무 뚫어주는 AI 꼼수부터 최신 복지 트렌드까지! 출퇴근길 3분이면 칼퇴 쌉가능 😎 메일 주소만 쓱 남겨주세요!</p>
@@ -209,7 +214,7 @@ try {
                 <button class="btn-primary" style="background:linear-gradient(135deg, #2563eb 0%, #1e40af 100%); padding:16px; font-size:1.1rem; border-radius:12px; box-shadow:0 4px 14px rgba(37, 99, 235,0.3)" onclick="subscribeNewsletter()">💌 나도 이 편지 받을래!</button>
             </div>
         </div>`;
-        openModal('비밀 편지 구독 신청', modalContent, 'newsletter');
+        openModal(kit ? `${kit.name} 출시 알림` : '비밀 편지 구독 신청', modalContent, 'newsletter');
     };
 
     function initNewsletterReader() {
@@ -221,9 +226,12 @@ try {
 
     // iframe (보물창고 등)에서의 접근을 위한 postMessage 리스너
     window.addEventListener('message', function(event) {
-        if (event.data === 'openNewsletterModal') {
+        const msg = event.data;
+        if (msg === 'openNewsletterModal' || (msg && msg.type === 'openNewsletterModal')) {
+            const source = msg && msg.source;
+            if (source && NL_SOURCES[source]) trackUse('kit_interest');   // 상품 알림 버튼을 누른 사람 수
             if (typeof window.openNewsletterSubModal === 'function') {
-                window.openNewsletterSubModal();
+                window.openNewsletterSubModal(source);
             }
         }
         if (event.data === 'openEbookGate') window.openEbookGate();
@@ -1088,14 +1096,22 @@ try {
             btn.disabled = true;
         }
 
+        const nlSource = window._nlSource || null;
         if (supabase) {
             try {
-                await supabase.from('newsletter_subscribers').insert({
+                const row = {
                     email: email,
                     user_id: myUserId || 'anonymous',
                     agreed_to_terms: agreeEl.checked,
                     created_at: new Date().toISOString()
-                });
+                };
+                if (nlSource) row.source = nlSource;
+                const res = await supabase.from('newsletter_subscribers').insert(row);
+                // 서버에 source 칸이 아직 없으면(SQL 실행 전) source 없이 다시 저장
+                if (res && res.error && nlSource) {
+                    delete row.source;
+                    await supabase.from('newsletter_subscribers').insert(row);
+                }
             } catch (e) {
                 console.error('Subscription Error', e);
                 alert('앗! 등록 중에 오류가 발생했어요. 나중에 다시 시도해주세요.');
@@ -1109,6 +1125,7 @@ try {
 
         try { localStorage.setItem(NL_DONE_KEY, '1'); } catch (e) { /* noop */ }
         trackUse('newsletter_sub');
+        if (nlSource) trackUse('kit_waitlist');
 
         // 구독 완료 UI
         const body = document.getElementById('modal-body');
