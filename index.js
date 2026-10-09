@@ -4491,7 +4491,7 @@ ${fields}
         { id: 'eligibility', group: '주요 도구', icon: '💰', name: '수급판정 계산', desc: '기초수급·차상위 기준', tint: '#fef2f2', act: () => document.getElementById('calc-eligibility').click() },
         { id: 'dashboard', group: '주요 도구', icon: '📊', name: '핵심 지표', desc: '중위소득·장기요양 수가', tint: '#f1f5f9', act: () => document.getElementById('open-dashboard').click() },
         { id: 'newsletter', group: '주요 도구', icon: '💌', name: '비밀 편지', desc: '사복천재의 뉴스레터', tint: '#eff6ff', act: () => document.getElementById('open-newsletter-read').click() },
-        { id: 'support', group: '주요 도구', icon: '🔍', name: '지원정보 찾기', desc: '맞춤형 복지서비스 검색', tint: '#eff6ff', act: () => window.open('https://bok-jumoney.vercel.app', '_blank') },
+        { id: 'support', group: '주요 도구', icon: '🔍', name: '지원정보 찾기', desc: '맞춤형 복지서비스 검색', tint: '#eff6ff', act: () => window.open('/benefits/', '_blank') },
         { id: 'request', group: '주요 도구', icon: '🙋', name: '요청하기', desc: '필요한 프롬프트·용어 요청', tint: '#fefce8', act: () => document.getElementById('open-request-modal').click() },
         // 행정/회계 마스터 12개 계산기 (그룹으로 표시)
         ...ADMIN_SUBTOOLS.map(s => ({

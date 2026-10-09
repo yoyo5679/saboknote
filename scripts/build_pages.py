@@ -503,6 +503,7 @@ ABOUT = f"""        <div class="card">
             <h2>무엇을 할 수 있나요</h2>
             <a class="item" href="/guide/"><span class="ico">📚</span><span><span class="t">실무 가이드</span><span class="d">상담일지, 계획서, 결과보고서, 공문, 강사료 세금 쓰는 법</span></span></a>
             <a class="item" href="/prompts/"><span class="ico">🪄</span><span><span class="t">AI 프롬프트</span><span class="d">사례관리·행정·홍보 문서 초안을 AI로 쓰는 지시문 모음</span></span></a>
+            <a class="item" href="/benefits/"><span class="ico">🧧</span><span><span class="t">복주머니 · 지원금 찾기</span><span class="d">대상자 상황에 맞는 정부·지자체 혜택을 1분 만에 찾기</span></span></a>
             <a class="item" href="/tools/"><span class="ico">🧮</span><span><span class="t">실무 계산기</span><span class="d">부가세, 강사료 원천징수, 장기요양 한도액, 급여 일할 계산 등</span></span></a>
             <a class="item" href="/voca/"><span class="ico">📖</span><span><span class="t">생존 단어장</span><span class="d">신입이 헷갈리는 실무 용어를 쉬운 말로 풀이</span></span></a>
             <a class="item" href="/treasure.html"><span class="ico">🍯</span><span><span class="t">꿀자료 보물창고</span><span class="d">제미나이 노트북·안티그래비티 같은 AI 도구 활용 가이드</span></span></a>
@@ -676,6 +677,10 @@ GUIDES = ["notebooklm_2026_guide", "notebooklm_advanced1", "notebooklm_advanced2
           "finance_tips_guide", "NotebookLM Basic Guide"]
 
 
+# 다른 프로젝트를 이어 붙인 주소 (vercel.json의 rewrites) — 이 저장소에 파일이 없어 존재 확인에서 뺀다
+LINKED = ["/benefits/"]
+
+
 def sitemap(urls):
     today = datetime.date.today().isoformat()
     rows = "\n".join(f"  <url><loc>{SITE}{u}</loc><lastmod>{today}</lastmod></url>" for u in urls)
@@ -698,7 +703,7 @@ def main():
             f = f + "/index.html" if f else "index.html"
         if not os.path.exists(os.path.join(ROOT, f)):
             raise SystemExit(f"없는 페이지: {u}")
-    sitemap(urls)
+    sitemap(urls + LINKED)
     print(f"프롬프트 {len(data['prompts'])}개 · 단어 {len(data['voca'])}개 · 사이트맵 {len(urls)}개 주소")
 
 
