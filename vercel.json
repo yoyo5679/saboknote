@@ -5,6 +5,10 @@
       "has": [{ "type": "host", "value": "saboknote.vercel.app" }],
       "destination": "https://www.saboknote.com/$1",
       "permanent": true
-    }
+    },
+    { "source": "/benefits", "destination": "/benefits/", "permanent": true }
+  ],
+  "rewrites": [
+    { "source": "/benefits/:path*", "destination": "https://bok-jumoney.vercel.app/:path*" }
   ]
 }

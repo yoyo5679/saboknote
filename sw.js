@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sabok-note-cache-v22';
+const CACHE_NAME = 'sabok-note-cache-v23';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -18,6 +18,8 @@ self.addEventListener('install', (event) => {
 
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
+  // 복주머니(/benefits/)는 별도 프로젝트를 이어 붙인 주소라 캐시하지 않는다 (데이터가 자주 바뀜)
+  if (new URL(event.request.url).pathname.startsWith('/benefits')) return;
 
   const isNavigation = event.request.mode === 'navigate' ||
     (event.request.headers.get('accept') || '').includes('text/html');
