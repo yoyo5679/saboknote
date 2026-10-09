@@ -673,7 +673,7 @@ GUIDES = ["notebooklm_2026_guide", "notebooklm_advanced1", "notebooklm_advanced2
           "notebooklm_advanced4", "notebooklm_advanced5", "notebooklm_advanced6", "antigravity_guide",
           "antigravity_r1_webpage", "antigravity_r2_checklist", "antigravity_r3_excel_merge", "antigravity_r4_chart",
           "antigravity_r5_survey", "antigravity_r6_document", "antigravity_r7_thankyou", "antigravity_r8_report",
-          "finance_tips_guide"]
+          "finance_tips_guide", "NotebookLM Basic Guide"]
 
 
 def sitemap(urls):
@@ -691,9 +691,9 @@ def main():
     urls += guide_pages()
     urls += voca_page(data)
     urls += [u for u in policy_pages() if u not in urls]
-    urls += [f"/honeydata/{g}.html" for g in GUIDES]
+    urls += [f"/honeydata/{g.replace(' ', '%20')}.html" for g in GUIDES]
     for u in urls:   # 사이트맵에 넣는 페이지가 실제로 있는지
-        f = u.strip("/")
+        f = u.strip("/").replace("%20", " ")
         if u.endswith("/"):
             f = f + "/index.html" if f else "index.html"
         if not os.path.exists(os.path.join(ROOT, f)):
