@@ -330,17 +330,17 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--g5);color:var(--text
   <div class="course" id="premCard">
     <div class="course-thumb" style="background:linear-gradient(135deg,#064e3b 0%,#0c726c 45%,#10b981 100%);">
       <div class="ct-badges">
-        <span class="ct-badge new" id="premBadge">🔜 판매 예정</span>
-        <span class="ct-badge rename">📋 서식 팩</span>
+        <span class="ct-badge new" id="premBadge">🔜 11월 출시</span>
+        <span class="ct-badge rename">📋 결과보고서 키트</span>
       </div>
       <span class="ct-emoji">🗂️</span>
-      <div class="ct-title">사복쌤 서식 팩 · 사업계획서 + 결과보고서</div>
-      <div class="ct-sub">막막한 백지 대신, 바로 채워 쓰는 완성형 템플릿<br>예시 문구까지 들어있어 시간을 확 아껴줘요 👇</div>
+      <div class="ct-title">연말 결과보고서 키트</div>
+      <div class="ct-sub">작성 예시 2종(프로그램형·사례관리형), 빈 서식, 자동계산 엑셀 2종, 미달 사유 문장 예시 30까지. 연말 결과보고, 이걸로 끝내요 👇</div>
       <div class="ct-meta">
-        <span>📄 즉시 사용</span><span>✍️ 예시 포함</span><span>♻️ 계속 재사용</span>
+        <span>📄 예시 2종</span><span>📊 자동계산 엑셀</span><span>✍️ 문장 예시 30</span>
       </div>
-      <button class="ct-cta" id="premCta" onclick="parent.postMessage('openNewsletterModal', '*');">🔔 출시되면 알림 받기 <span class="arw">→</span></button>
-      <div class="ct-hint" id="premHint">결제 후 이메일·카톡으로 파일을 보내드려요</div>
+      <button class="ct-cta" id="premCta" onclick="notifyMe('kit_result_report');">🔔 출시 알림 받기 <span class="arw">→</span></button>
+      <div class="ct-hint" id="premHint">11월에 나오면 비밀편지로 가장 먼저 알려 드려요</div>
     </div>
   </div>
 
@@ -437,7 +437,7 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--g5);color:var(--text
     <div class="soon-emoji">🌿</div>
     <h3>사복쌤 마음 돌봄, 준비 중이에요</h3>
     <p>소진 예방, 감정노동 회복 루틴, 동료와 나누는 이야기.<br>"사회복지사가 행복해야 현장이 행복합니다."</p>
-    <button class="soon-btn" onclick="parent.postMessage('openNewsletterModal', '*');">📬 출시되면 알림 받기</button>
+    <button class="soon-btn" onclick="notifyMe();">📬 출시되면 알림 받기</button>
     <div class="soon-tags"><span class="soon-tag">소진 예방</span><span class="soon-tag">회복 루틴</span><span class="soon-tag">셀프 케어</span></div>
   </div>
 </div>
@@ -449,7 +449,7 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--g5);color:var(--text
     <div class="perk">📬 신규 클래스 출시 알림</div>
     <div class="perk">✉️ 사복쌤 전용 비밀편지</div>
   </div>
-  <button class="sub-btn" onclick="parent.postMessage('openNewsletterModal', '*');">구독하기 🌿</button>
+  <button class="sub-btn" onclick="notifyMe();">구독하기 🌿</button>
   <div style="font-size:11px;color:rgba(255,255,255,0.7);margin-top:10px;">스팸 절대 없음 · 언제든 구독 취소 가능 · 사복쌤만을 위한 편지예요 💚</div>
 </div>
 
@@ -476,7 +476,7 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--g5);color:var(--text
   <div class="pay-modal">
     <button class="pay-x" onclick="closePurchase()" aria-label="닫기">✕</button>
     <div class="pay-emoji">🗂️</div>
-    <div class="pay-title" id="payTitle">사복쌤 서식 팩</div>
+    <div class="pay-title" id="payTitle">사복노트 연말 결과보고서 키트</div>
     <div class="pay-price" id="payPrice">₩9,900</div>
     <div class="pay-steps">
       <div class="pay-step"><b>1</b><span>아래 <b>결제하기</b>를 눌러 안전하게 결제해요 (새 창)</span></div>
@@ -490,6 +490,13 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--g5);color:var(--text
 
 <script>
 function go(url){ window.open(url, '_blank'); }
+
+// 출시 알림: 앱 안(iframe)에서는 앱의 비밀편지 구독 창을, 이 페이지를 바로 열었을 때는 사복노트 구독 창으로
+// source: 어떤 상품 알림인지 (구독 기록에 남겨 상품별 수요를 센다)
+function notifyMe(source){
+  if (window.parent !== window) parent.postMessage({ type: 'openNewsletterModal', source: source || null }, '*');
+  else location.href = '/#home/newsletter';
+}
 
 // 베타 기간: 실전 레시피 8개를 무료로 바로 연다.
 // (유료 전환 시엔 결제 확인 수단이 없으므로 내용 대신 openPurchase('antigravity')로 보내고, 파일은 결제 후 전달)
@@ -529,9 +536,9 @@ function filterCat(cat, btn){
    ============================================================ */
 const PRODUCTS = {
   seosik: {
-    paymentLink: '',                     // ← 서식 팩 결제 링크
-    productName: '사복쌤 서식 팩 · 사회복지 실무 양식 22종',
-    price: '19,900',
+    paymentLink: '',                     // ← 결과보고서 키트 결제(또는 판매 마켓 상품) 링크
+    productName: '사복노트 연말 결과보고서 키트',
+    price: '9,900',                      // ← 가격 정하면 바꾸기
     contact: '사복노트 카카오채널 / saboknote.com'
   },
   antigravity: {
