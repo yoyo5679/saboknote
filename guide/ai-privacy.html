@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI에 사례 기록 넣기 전 개인정보 가리는 법 — 가명처리 예시 | 사복노트</title>
+    <meta name="description" content="ChatGPT·Claude·Gemini에 사례관리 기록을 넣기 전에 지울 것과 흐릴 것, 가명처리 전후 예시, AI 서비스의 학습 설정 끄기, 기관 지침 확인까지 정리했어요.">
+    <link rel="canonical" href="https://www.saboknote.com/guide/ai-privacy.html">
+    <meta property="og:type" content="article">
+    <meta property="og:site_name" content="사복노트">
+    <meta property="og:title" content="AI에 사례 기록 넣기 전 개인정보 가리는 법 — 가명처리 예시">
+    <meta property="og:description" content="ChatGPT·Claude·Gemini에 사례관리 기록을 넣기 전에 지울 것과 흐릴 것, 가명처리 전후 예시, AI 서비스의 학습 설정 끄기, 기관 지침 확인까지 정리했어요.">
+    <meta property="og:url" content="https://www.saboknote.com/guide/ai-privacy.html">
+    <meta property="og:image" content="https://www.saboknote.com/og-image.png">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔒</text></svg>">
+    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "AI 쓸 때 개인정보 가리는 법 — 사회복지 기록 가명처리 예시", "description": "ChatGPT·Claude·Gemini에 사례관리 기록을 넣기 전에 지울 것과 흐릴 것, 가명처리 전후 예시, AI 서비스의 학습 설정 끄기, 기관 지침 확인까지 정리했어요.", "dateModified": "2026-10-09", "inLanguage": "ko", "author": {"@type": "Organization", "name": "사복노트", "url": "https://www.saboknote.com/"}, "publisher": {"@type": "Organization", "name": "사복노트"}, "mainEntityOfPage": "https://www.saboknote.com/guide/ai-privacy.html"}</script>
+    <meta name="google-adsense-account" content="ca-pub-4943960812497979">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4943960812497979"
+        crossorigin="anonymous"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Pretendard', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; background: #f8fafc; color: #1e293b; line-height: 1.7; word-break: keep-all; overflow-wrap: anywhere; }
+        a { color: #2563eb; }
+        .top { background: linear-gradient(125deg, #0f2d6b 0%, #1e4eb5 45%, #3b7ef8 100%); color: #fff; padding: 28px 20px 32px; }
+        .top .site { font-size: 0.82rem; opacity: 0.85; margin-bottom: 10px; }
+        .top .site a { color: #fff; text-decoration: none; font-weight: 700; }
+        .top h1 { font-size: 1.5rem; font-weight: 900; letter-spacing: -0.02em; line-height: 1.35; }
+        .top p { font-size: 0.9rem; opacity: 0.9; margin-top: 6px; }
+        main { max-width: 680px; margin: 0 auto; padding: 20px 16px 60px; }
+        .card { background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); }
+        .card h2 { font-size: 1.08rem; font-weight: 800; margin-bottom: 12px; }
+        .card h3 { font-size: 0.98rem; font-weight: 800; margin: 18px 0 8px; }
+        .card p, .card li { font-size: 0.92rem; color: #334155; }
+        .card p + p { margin-top: 10px; }
+        .card ol, .card ul { padding-left: 20px; }
+        .card li + li { margin-top: 6px; }
+        .muted { color: #64748b !important; font-size: 0.84rem !important; }
+        .note { background: #fffbeb; border: 1px solid #fde68a; border-radius: 12px; padding: 12px 14px; font-size: 0.86rem; color: #78350f; margin-top: 12px; }
+        .chips a { display: inline-block; background: #eef2ff; color: #4338ca; border-radius: 20px; padding: 8px 14px; font-size: 0.85rem; font-weight: 700; text-decoration: none; margin: 0 6px 8px 0; }
+        .cta { display: block; text-align: center; background: linear-gradient(135deg, #2563eb, #4338ca); color: #fff !important; border-radius: 14px; padding: 15px; font-size: 0.95rem; font-weight: 800; text-decoration: none; margin: 4px 0 16px; }
+        .list a.item { display: flex; gap: 12px; align-items: flex-start; padding: 13px 0; border-top: 1px solid #f1f5f9; text-decoration: none; color: inherit; }
+        .list a.item:first-of-type { border-top: none; }
+        .list .ico { font-size: 1.5rem; line-height: 1.2; flex-shrink: 0; }
+        .list .t { display: block; font-size: 0.95rem; font-weight: 800; color: #1e293b; }
+        .list .d { display: block; font-size: 0.83rem; color: #64748b; margin-top: 2px; }
+        pre.prompt { white-space: pre-wrap; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px; font-family: inherit; font-size: 0.84rem; line-height: 1.65; color: #334155; max-height: 520px; overflow: auto; }
+        .copy { width: 100%; border: none; border-radius: 12px; padding: 13px; margin-bottom: 12px; background: #1e293b; color: #fff; font-family: inherit; font-size: 0.92rem; font-weight: 800; cursor: pointer; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
+        th, td { border: 1px solid #e2e8f0; padding: 9px 10px; text-align: left; vertical-align: top; color: #334155; }
+        th { background: #f1f5f9; font-weight: 800; white-space: nowrap; }
+        .bubble { background: #eff6ff; border-radius: 12px; padding: 10px 12px; font-size: 0.88rem; color: #1e3a8a; margin-top: 8px; }
+        .check li { list-style: none; position: relative; }
+        .check li::before { content: '☐'; position: absolute; left: -20px; color: #64748b; }
+        dl.voca dt { font-size: 0.98rem; font-weight: 800; margin-top: 16px; }
+        dl.voca dt:first-child { margin-top: 0; }
+        dl.voca dd { font-size: 0.9rem; color: #334155; }
+        dl.voca dd b { color: #1d4ed8; }
+        .box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px 14px; font-size: 0.88rem; color: #334155; margin-top: 10px; line-height: 1.75; }
+        .box.bad { background: #fef2f2; border-color: #fecaca; }
+        .box.good { background: #f0fdf4; border-color: #bbf7d0; }
+        .box.letter { white-space: pre-wrap; background: #fff; font-size: 0.84rem; }
+        .policy h2 { margin-top: 6px; }
+        .policy h3 { font-size: 0.95rem; }
+        .policy .scroll { margin: 4px 0 12px; }
+        .policy td:first-child { font-weight: 700; }
+        @media (max-width: 600px) {
+            .policy table, .policy tbody, .policy tr, .policy td { display: block; width: 100%; }
+            .policy tr:first-child { display: none; }
+            .policy tr { border: 1px solid #e2e8f0; border-radius: 12px; padding: 10px 12px; margin-bottom: 8px; }
+            .policy td { border: none; padding: 3px 0; }
+            .policy td[data-label]::before { content: attr(data-label); display: block; font-size: 0.75rem; font-weight: 800; color: #94a3b8; }
+            .policy td:first-child { font-size: 0.95rem; color: #1e293b; padding-bottom: 4px; }
+        }
+        footer { text-align: center; font-size: 0.78rem; color: #94a3b8; padding: 0 16px 40px; line-height: 2; }
+        footer a { color: #64748b; margin: 0 4px; }
+    </style>
+</head>
+
+<body>
+    <div class="top">
+        <div class="site"><a href="/">📔 사복노트</a> › <a href="/guide/">실무 가이드</a> › AI 쓸 때 개인정보 가리는 법</div>
+        <h1>🔒 AI 쓸 때 개인정보 가리는 법 — 사회복지 기록 가명처리 예시</h1>
+        <p>지울 것, 흐릴 것, 조합해서 드러나는 것까지</p>
+    </div>
+
+    <main>
+
+        <div class="card">
+            <p>AI에 상담 메모를 넣으면 기록 정리가 훨씬 빨라져요. 그런데 AI 채팅창에 입력한 내용은 서비스 회사의 서버로 전송되고, 설정에 따라 AI 학습에 쓰일 수도 있어요. 사회복지 기록에는 건강, 가족 관계, 경제 사정처럼 민감한 정보가 많아서 넣기 전에 가리는 습관이 꼭 필요해요.</p>
+        </div>
+
+        <div class="card">
+            <h2>1. 반드시 지울 것</h2>
+            <p>이름, 주민등록번호, 정확한 주소, 전화번호, 이메일, 사진, 사건·접수 번호, 전산시스템 화면 캡처는 넣지 않아요. 가족과 이웃, 다른 기관 담당자의 이름도 마찬가지예요.</p>
+        </div>
+
+        <div class="card">
+            <h2>2. 흐리게 바꿀 것</h2>
+            <ul>
+                <li>정확한 나이 → 연령대 (78세 → 70대 후반)</li>
+                <li>번지·동·호수 → 동 단위 또는 '지역'</li>
+                <li>날짜 → 필요하면 월 단위 (10월 6일 → 10월 초)</li>
+                <li>드문 질병, 특이한 직업, 언론에 나온 사건 → 일반적인 표현으로</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>3. 조합해서 드러나는 정보 조심하기</h2>
+            <p>하나하나는 괜찮아 보여도 합쳐지면 누군지 알 수 있어요. '70대 남성 + 행복동 + 전직 동장 + 아들은 시의원'처럼 조합되면 동네 사람은 바로 알아봐요. 기록 정리에 꼭 필요한 정보만 남기고 나머지는 빼요.</p>
+        </div>
+
+        <div class="card">
+            <h2>가명처리 전후 예시</h2>
+            <p class="muted">지어낸 예시예요.</p>
+            <div class="scroll"><table>
+                <tr><th>바꾸기 전</th><th>바꾼 뒤</th></tr>
+                <tr><td>홍길동 님(78세, 행복동 12-3), 010-0000-0000</td><td>대상자 A(70대 후반 남성), 행복동, 연락처 생략</td></tr>
+                <tr><td>아들 홍철수(52세, 회사원)가 주말마다 반찬을 가져다줌</td><td>아들(50대)이 주말마다 반찬을 가져다줌</td></tr>
+                <tr><td>행복동 주민센터 박지훈 주무관과 통화함</td><td>동 행정복지센터 담당 주무관과 통화함</td></tr>
+                <tr><td>가스요금 3개월 체납, 고지서 고객번호 1234-5678</td><td>가스요금 3개월 체납 (고객번호는 적지 않음)</td></tr>
+            </table></div>
+            <p>바꾼 뒤에도 기록에 필요한 맥락(가족 지원, 연계 기관, 체납 기간)은 그대로 남아 있어요.</p>
+        </div>
+
+        <div class="card">
+            <h2>AI 서비스 설정 확인하기</h2>
+            <p>대부분의 AI 서비스는 대화 내용을 모델 개선에 쓸지 고르는 설정이 있어요. ChatGPT는 데이터 제어의 '모두를 위한 모델 개선', Claude는 개인정보 설정의 'Claude 개선에 도움', Gemini는 'Gemini 앱 활동'에서 바꿀 수 있어요. 메뉴 이름은 바뀔 수 있으니 설정에서 '학습', '개선', '활동' 같은 항목을 찾아 꺼 두세요.</p>
+            <p>설정을 꺼도 입력한 내용이 서버로 전송되는 건 같아요. 그래서 설정보다 '처음부터 넣지 않기'가 먼저예요.</p>
+        </div>
+
+        <div class="card">
+            <h2>기관 지침이 먼저예요</h2>
+            <p>기관마다 AI 사용 지침이 있거나 업무용으로 허용한 서비스가 정해져 있을 수 있어요. 지침이 있으면 그걸 따르고, 없으면 팀에서 '무엇을 AI에 넣지 않을지' 먼저 정해 두는 게 좋아요. AI가 쓴 초안을 전산 시스템이나 공식 문서에 옮기기 전에는 담당자가 처음부터 끝까지 읽고 확인해요.</p>
+            <h3>넣기 전 점검</h3>
+            <ul class="check">
+                <li>이름·주민번호·주소·연락처를 모두 지웠다</li>
+                <li>나이와 지역을 흐리게 바꿨다</li>
+                <li>조합하면 누군지 알 수 있는 정보가 없다</li>
+                <li>AI 서비스의 학습 설정을 확인했다</li>
+                <li>기관 AI 사용 지침을 확인했다</li>
+            </ul>
+        </div>
+
+        <div class="card chips">
+            <h2>바로 쓰는 도구</h2>
+            <a href="/prompts/">🪄 AI 프롬프트 모음</a>
+            <a href="/guide/counseling-record.html">📝 상담일지 쓰는 법</a>
+            <a href="/#home/admin">🖼️ 사진 모자이크 도구</a>
+        </div>
+
+        <div class="card chips">
+            <h2>다른 실무 가이드</h2>
+            <a href="/guide/counseling-record.html">📝 상담일지 쓰는 법</a>
+            <a href="/guide/proposal-need.html">📄 공모사업 계획서 &#x27;필요성&#x27; 쓰는 법</a>
+            <a href="/guide/result-report.html">📊 사업 결과보고서 쓰는 법</a>
+            <a href="/guide/official-letter.html">📮 공문 작성 규칙</a>
+            <a href="/guide/lecture-fee-tax.html">👛 강사료 원천징수 3.3%와 8.8%</a>
+            <a href="/guide/case-conference.html">🗂️ 사례회의 안건지·회의록 쓰는 법</a>
+            <a href="/guide/first-month-paperwork.html">🗂️ 신입 사회복지사 첫 달 서류 흐름</a>
+        </div>
+        <p class="muted" style="text-align:center;">사복노트 · 2026-10-09 업데이트 · 실무 참고용이며, 기관 규정과 관계 기관 안내가 우선이에요.</p>
+
+    </main>
+
+    <footer>
+        <div><a href="/">📔 사복노트</a> · <a href="/about.html">소개</a> · <a href="/prompts/">AI 프롬프트</a> · <a href="/guide/">실무 가이드</a> · <a href="/voca/">생존 단어장</a> · <a href="/tools/">실무 도구</a> · <a href="/treasure.html">꿀자료</a></div>
+        <div><a href="/terms.html">이용약관</a> · <a href="/privacy.html"><b>개인정보처리방침</b></a> · 문의 <a href="mailto:saboknote@naver.com">saboknote@naver.com</a></div>
+    </footer>
+</body>
+
+</html>

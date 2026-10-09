@@ -5,6 +5,7 @@
   - AI_PROMPTS(프롬프트 23개)    → prompts/index.html, prompts/<key>.html
   - VOCABULARY_DATA(생존 단어장) → voca/index.html
   - 워크북 실습 6개(scripts/build_workbook.py의 LABS) → 해당 프롬프트 페이지의 '가상 예시'
+  - 실무 가이드 글(scripts/guides.py)      → guide/index.html, guide/<slug>.html
   - 소개·개인정보처리방침·이용약관 → about.html, privacy.html, terms.html
     (앱 마이페이지의 이용약관·개인정보처리방침 메뉴도 이 페이지를 연다)
   - sitemap.xml
@@ -19,6 +20,10 @@ import json
 import os
 import re
 import subprocess
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from guides import GUIDES as GUIDE_POSTS  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SITE = "https://www.saboknote.com"
@@ -130,6 +135,10 @@ CSS = """
         dl.voca dt:first-child { margin-top: 0; }
         dl.voca dd { font-size: 0.9rem; color: #334155; }
         dl.voca dd b { color: #1d4ed8; }
+        .box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px 14px; font-size: 0.88rem; color: #334155; margin-top: 10px; line-height: 1.75; }
+        .box.bad { background: #fef2f2; border-color: #fecaca; }
+        .box.good { background: #f0fdf4; border-color: #bbf7d0; }
+        .box.letter { white-space: pre-wrap; background: #fff; font-size: 0.84rem; }
         .policy h2 { margin-top: 6px; }
         .policy h3 { font-size: 0.95rem; }
         .policy .scroll { margin: 4px 0 12px; }
@@ -147,7 +156,7 @@ CSS = """
 """
 
 FOOTER = """    <footer>
-        <div><a href="/">📔 사복노트</a> · <a href="/about.html">소개</a> · <a href="/prompts/">AI 프롬프트</a> · <a href="/voca/">생존 단어장</a> · <a href="/tools/">실무 도구</a> · <a href="/treasure.html">꿀자료</a></div>
+        <div><a href="/">📔 사복노트</a> · <a href="/about.html">소개</a> · <a href="/prompts/">AI 프롬프트</a> · <a href="/guide/">실무 가이드</a> · <a href="/voca/">생존 단어장</a> · <a href="/tools/">실무 도구</a> · <a href="/treasure.html">꿀자료</a></div>
         <div><a href="/terms.html">이용약관</a> · <a href="/privacy.html"><b>개인정보처리방침</b></a> · 문의 <a href="mailto:%s">%s</a></div>
     </footer>""" % (CONTACT, CONTACT)
 
@@ -248,6 +257,9 @@ PROMPTS_INTRO = """        <div class="card">
 """
 
 
+GUIDE_OF_PROMPT = {k: g for g in GUIDE_POSTS for k in g["prompts"]}
+
+
 def prompt_pages(data, rules, labs):
     prompts, cats = data["prompts"], data["cats"]
     cat_of, written = {}, []
@@ -275,6 +287,7 @@ def prompt_pages(data, rules, labs):
         <a class="cta" href="/#home/prompt">✏️ 사복노트 앱에서 빈칸 미리 채우고 복사하기 →</a>
         <div class="card chips">
             <h2>함께 보면 좋아요</h2>
+            <a href="/guide/">📚 사회복지 실무 가이드</a>
             <a href="/#home/workbook">📘 프롬프트 워크북 (무료 PDF)</a>
             <a href="/voca/">📖 초보 사회복지사 생존 단어장</a>
             <a href="/treasure.html">🍯 AI 활용 꿀자료</a>
@@ -320,6 +333,13 @@ def prompt_pages(data, rules, labs):
             others = "\n".join(f'            <a href="/prompts/{o}.html">{prompts[o]["icon"]} {e(prompts[o]["title"])}</a>'
                                for o in c["keys"] if o != k)
             cat_name = re.sub(r"^\W+\s*", "", c["name"])
+            g = GUIDE_OF_PROMPT.get(k)
+            guide_html = (f"""        <div class="card list">
+            <h2>함께 읽으면 좋은 실무 가이드</h2>
+            <a class="item" href="/guide/{g['slug']}.html"><span class="ico">{g['icon']}</span><span><span class="t">{e(g['h1'])}</span><span class="d">{e(g['lead'])}</span></span></a>
+        </div>
+
+""" if g else "")
             body = f"""        <div class="card">
             <h2>이럴 때 쓰세요</h2>
             <p>{e(desc)}</p>
@@ -340,7 +360,7 @@ def prompt_pages(data, rules, labs):
         </div>
 
 {HOW_TO}
-        <a class="cta" href="/#home/prompt-{k}">✏️ 사복노트 앱에서 빈칸 미리 채우고 복사하기 →</a>
+{guide_html}        <a class="cta" href="/#home/prompt-{k}">✏️ 사복노트 앱에서 빈칸 미리 채우고 복사하기 →</a>
 
         <div class="card chips">
             <h2>{e(cat_name)}의 다른 프롬프트</h2>
@@ -395,6 +415,8 @@ def voca_page(data):
         <a class="cta" href="/#home/voca">📖 사복노트 앱에서 단어장 펼치기 →</a>
         <div class="card chips">
             <h2>함께 보면 좋아요</h2>
+            <a href="/guide/first-month-paperwork.html">🗂️ 신입 첫 달 서류 흐름</a>
+            <a href="/guide/">📚 사회복지 실무 가이드</a>
             <a href="/prompts/">🪄 사회복지사 AI 프롬프트</a>
             <a href="/tools/">🛠️ 실무 도구 모음</a>
             <a href="/treasure.html">🍯 AI 활용 꿀자료</a>
@@ -410,6 +432,66 @@ def voca_page(data):
     return ["/voca/"]
 
 
+# ---------------------------------------------------------------- 실무 가이드
+def guide_pages():
+    written = []
+    items = "\n".join(
+        f'            <a class="item" href="/guide/{g["slug"]}.html"><span class="ico">{g["icon"]}</span>'
+        f'<span><span class="t">{e(g["h1"])}</span><span class="d">{e(g["lead"])}</span></span></a>' for g in GUIDE_POSTS)
+    body = f"""        <div class="card">
+            <p>매일 쓰는 서류인데 아무도 제대로 알려 주지 않았던 것들을 모았어요. 예시는 모두 연습용으로 지어낸 사례이고, 글마다 바로 쓸 수 있는 AI 프롬프트와 계산기를 이어 두었어요.</p>
+        </div>
+
+        <div class="card list">
+            <h2>가이드 {len(GUIDE_POSTS)}편</h2>
+{items}
+        </div>
+
+        <div class="card chips">
+            <h2>함께 보면 좋아요</h2>
+            <a href="/prompts/">🪄 사회복지사 AI 프롬프트</a>
+            <a href="/voca/">📖 생존 단어장</a>
+            <a href="/tools/">🛠️ 실무 도구 모음</a>
+            <a href="/treasure.html">🍯 AI 활용 꿀자료</a>
+        </div>
+"""
+    write("guide/index.html", page(
+        "/guide/", f"사회복지 실무 가이드 {len(GUIDE_POSTS)}편 — 상담일지·계획서·결과보고서·공문 쓰는 법 | 사복노트",
+        "상담일지, 공모사업 계획서, 결과보고서, 공문, 사례회의 회의록, 강사료 원천징수까지. 사회복지사가 매일 쓰는 서류를 예시와 함께 정리한 실무 가이드예요.",
+        [("📔 사복노트", "/"), ("실무 가이드", None)],
+        "📚 사회복지 실무 가이드", "매일 쓰는 서류, 예시로 따라 하며 익혀요", body, "📚"))
+    written.append("/guide/")
+    today = datetime.date.today().isoformat()
+    for g in GUIDE_POSTS:
+        chips = "\n".join(f'            <a href="{u}">{e(n)}</a>' for n, u in g["related"])
+        others = "\n".join(f'            <a href="/guide/{o["slug"]}.html">{o["icon"]} {e(o["h1"].split(" — ")[0])}</a>'
+                            for o in GUIDE_POSTS if o is not g)
+        body = g["body"] + f"""
+        <div class="card chips">
+            <h2>바로 쓰는 도구</h2>
+{chips}
+        </div>
+
+        <div class="card chips">
+            <h2>다른 실무 가이드</h2>
+{others}
+        </div>
+        <p class="muted" style="text-align:center;">사복노트 · {today} 업데이트 · 실무 참고용이며, 기관 규정과 관계 기관 안내가 우선이에요.</p>
+"""
+        ld = json.dumps({"@context": "https://schema.org", "@type": "Article", "headline": g["h1"],
+                         "description": g["desc"], "dateModified": today, "inLanguage": "ko",
+                         "author": {"@type": "Organization", "name": "사복노트", "url": SITE + "/"},
+                         "publisher": {"@type": "Organization", "name": "사복노트"},
+                         "mainEntityOfPage": f"{SITE}/guide/{g['slug']}.html"}, ensure_ascii=False)
+        write(f"guide/{g['slug']}.html", page(
+            f"/guide/{g['slug']}.html", g["title"], g["desc"],
+            [("📔 사복노트", "/"), ("실무 가이드", "/guide/"), (g["h1"].split(" — ")[0], None)],
+            f'{g["icon"]} {e(g["h1"])}', e(g["lead"]), body, g["icon"],
+            extra_head=f'    <script type="application/ld+json">{ld}</script>\n'))
+        written.append(f"/guide/{g['slug']}.html")
+    return written
+
+
 # ---------------------------------------------------------------- 소개·방침·약관
 ABOUT = f"""        <div class="card">
             <h2>사복노트는 이런 곳이에요</h2>
@@ -419,6 +501,7 @@ ABOUT = f"""        <div class="card">
 
         <div class="card list">
             <h2>무엇을 할 수 있나요</h2>
+            <a class="item" href="/guide/"><span class="ico">📚</span><span><span class="t">실무 가이드</span><span class="d">상담일지, 계획서, 결과보고서, 공문, 강사료 세금 쓰는 법</span></span></a>
             <a class="item" href="/prompts/"><span class="ico">🪄</span><span><span class="t">AI 프롬프트</span><span class="d">사례관리·행정·홍보 문서 초안을 AI로 쓰는 지시문 모음</span></span></a>
             <a class="item" href="/tools/"><span class="ico">🧮</span><span><span class="t">실무 계산기</span><span class="d">부가세, 강사료 원천징수, 장기요양 한도액, 급여 일할 계산 등</span></span></a>
             <a class="item" href="/voca/"><span class="ico">📖</span><span><span class="t">생존 단어장</span><span class="d">신입이 헷갈리는 실무 용어를 쉬운 말로 풀이</span></span></a>
@@ -605,6 +688,7 @@ def main():
     rules = common_rules(read("index.js"))
     urls = list(STATIC)
     urls += prompt_pages(data, rules, workbook_labs())
+    urls += guide_pages()
     urls += voca_page(data)
     urls += [u for u in policy_pages() if u not in urls]
     urls += [f"/honeydata/{g}.html" for g in GUIDES]
