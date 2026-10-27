@@ -2287,6 +2287,16 @@ html.dark-mode .ps-fav.on { background: rgba(245, 158, 11, 0.14); color: #fcd34d
 .ps-preview { margin-top: 14px; }
 .ps-preview summary { cursor: pointer; font-size: 0.82rem; font-weight: 700; color: var(--text-5); }
 .ps-preview .prompt-text-area { margin-top: 8px; }
+.ps-form { margin-top: 12px; border-top: 1px dashed var(--border); padding-top: 10px; }
+.ps-form-h { font-weight: 800; color: var(--text-3); font-size: 0.86rem; }
+.ps-form-h span { font-weight: 600; color: var(--text-6); font-size: 0.78rem; }
+.ps-form-btn { display: inline-flex; align-items: center; justify-content: center; width: auto; cursor: pointer; }
+.ps-form-file { margin-top: 6px; font-size: 0.86rem; font-weight: 700; color: var(--text-2); word-break: break-all; }
+.ps-form-msg { margin: 6px 0 2px; font-size: 0.8rem; color: #b45309; line-height: 1.5; word-break: keep-all; }
+.ps-form-view { margin-top: 6px; }
+.ps-form-view summary { cursor: pointer; font-size: 0.8rem; font-weight: 700; color: var(--text-5); }
+.ps-form-view pre { margin-top: 6px; max-height: 220px; overflow: auto; padding: 10px; background: var(--surface-3); border-radius: 8px; font-size: 0.75rem; line-height: 1.5; white-space: pre-wrap; word-break: break-all; }
+.ps-form .ps-row { margin-top: 8px; align-items: center; }
 .ps-fill summary span { font-weight: 600; color: var(--text-6); font-size: 0.8rem; }
 .ps-note { margin: 10px 0 6px; font-size: 0.8rem; color: var(--text-5); line-height: 1.55; word-break: keep-all; }
 .ps-label { display: block; margin: 10px 0 4px; font-size: 0.8rem; font-weight: 700; color: var(--text-3); line-height: 1.4; word-break: keep-all; }
