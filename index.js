@@ -3764,28 +3764,30 @@ ${fields}
             <!-- 퍼센트 계산기 탭 내용 -->
             <div id="admin-content-percent" class="tab-content" style="display:none; animation: fadeIn 0.3s ease;">
                 <style>
-                    .percent-mode-card { background:var(--surface-2); border:1px solid var(--border); border-radius:12px; padding:16px; margin-bottom:16px; transition:all 0.2s; }
-                    .percent-mode-card:hover { border-color:#93c5fd; box-shadow:0 4px 12px rgba(59,130,246,0.1); }
-                    .percent-title { font-size:0.95rem; font-weight:800; color:#1e3a8a; margin-bottom:12px; display:flex; align-items:flex-start; gap:8px; line-height:1.4; word-break:keep-all; }
-                    .percent-title span { white-space:nowrap; flex:none; }
-                    /* 폰에서도 값이 다 보이게: 입력칸은 줄마다 넓게, 결과는 맨 아래 한 줄 전체 */
-                    .percent-inputs { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:8px 10px; align-items:center; }
-                    .percent-inputs > span { font-size:0.9rem !important; }
-                    .percent-inputs input { width:100%; min-width:0; padding:12px; border-radius:10px; border:1px solid var(--border-strong); font-size:16px; outline:none; text-align:right; color:var(--text-2); font-weight:700; }
+                    /* 4개 계산이 한 화면에 보이도록: 카드 컴팩트 + 한 줄 입력 */
+                    .percent-grid { display:grid; grid-template-columns:1fr; gap:10px; }
+                    .percent-mode-card { background:var(--surface-2); border:1px solid var(--border); border-radius:12px; padding:12px; transition:border-color 0.2s; }
+                    .percent-mode-card:hover { border-color:#93c5fd; }
+                    .percent-title { font-size:0.85rem; font-weight:800; color:#1e3a8a; margin-bottom:8px; display:flex; align-items:center; gap:6px; line-height:1.35; word-break:keep-all; }
+                    .percent-title span { white-space:nowrap; flex:none; font-size:0.72rem !important; padding:2px 6px !important; }
+                    .percent-inputs { display:flex; align-items:center; gap:4px; }
+                    .percent-inputs > span { flex:none; font-size:0.78rem !important; letter-spacing:-0.02em; }
+                    .percent-inputs input { flex:1; width:0; min-width:0; padding:8px 6px; border-radius:8px; border:1px solid var(--border-strong); font-size:16px; outline:none; text-align:right; color:var(--text-2); font-weight:700; }
                     .percent-inputs input:focus { border-color:#3b82f6; box-shadow:0 0 0 2px rgba(59,130,246,0.2); }
-                    .percent-result { grid-column:1 / -1; font-weight:900; color:#2563eb; font-size:1.3rem; text-align:right; background:#eff6ff; border-radius:10px; padding:10px 14px; overflow-wrap:anywhere; }
+                    .percent-result { margin-top:8px; font-weight:900; color:#2563eb; font-size:1.05rem; text-align:right; background:#eff6ff; border-radius:8px; padding:6px 10px; overflow-wrap:anywhere; }
                 </style>
                 <div class="step-card beautiful-card" style="padding:20px; border-color:#bfdbfe;">
                     <h4 style="color:#1e40af; font-weight:800; font-size:1.1rem; margin-bottom:8px; text-align:center;">📊 만능 퍼센트 계산기</h4>
-                    <p style="text-align:center; color:var(--text-5); font-size:0.85rem; margin-bottom:20px;">사업 실적, 예산 집행률을 쉽게 계산하세요 (네이버 스타일)</p>
+                    <p style="text-align:center; color:var(--text-5); font-size:0.85rem; margin-bottom:12px;">사업 실적, 예산 집행률을 쉽게 계산하세요</p>
                     
+                    <div class="percent-grid">
                     <div class="percent-mode-card">
                         <div class="percent-title"><span style="background:#dbeafe; padding:4px 6px; border-radius:6px; font-size:0.8rem;">1. 비율값</span> A의 B%는 얼마?</div>
                         <div class="percent-inputs">
                             <input type="number" id="pc-1-a" placeholder="10000" oninput="calcPercent(1)"> <span style="font-size:0.85rem; color:var(--text-5); white-space:nowrap;">의</span>
                             <input type="number" id="pc-1-b" placeholder="20" oninput="calcPercent(1)"> <span style="font-size:0.85rem; color:var(--text-5); white-space:nowrap;">%는</span>
-                            <div class="percent-result" id="pc-1-res">?</div>
                         </div>
+                        <div class="percent-result" id="pc-1-res">?</div>
                     </div>
 
                     <div class="percent-mode-card">
@@ -3793,8 +3795,8 @@ ${fields}
                         <div class="percent-inputs">
                             <input type="number" id="pc-2-a" placeholder="10000" oninput="calcPercent(2)"> <span style="font-size:0.85rem; color:var(--text-5); white-space:nowrap;">의</span>
                             <input type="number" id="pc-2-b" placeholder="2000" oninput="calcPercent(2)"> <span style="font-size:0.85rem; color:var(--text-5); white-space:nowrap;">은(는)</span>
-                            <div class="percent-result" id="pc-2-res">?</div>
                         </div>
+                        <div class="percent-result" id="pc-2-res">?</div>
                     </div>
 
                     <div class="percent-mode-card">
@@ -3802,17 +3804,18 @@ ${fields}
                         <div class="percent-inputs">
                             <input type="number" id="pc-3-a" placeholder="10000" oninput="calcPercent(3)"> <span style="font-size:0.85rem; color:var(--text-5); white-space:nowrap;">에서</span>
                             <input type="number" id="pc-3-b" placeholder="15000" oninput="calcPercent(3)"> <span style="font-size:0.85rem; color:var(--text-5); white-space:nowrap;">(으)로</span>
-                            <div class="percent-result" id="pc-3-res">?</div>
                         </div>
+                        <div class="percent-result" id="pc-3-res">?</div>
                     </div>
 
                     <div class="percent-mode-card">
                         <div class="percent-title"><span style="background:#dbeafe; padding:4px 6px; border-radius:6px; font-size:0.8rem;">4. 증감값</span> A가 B% 증가하면 얼마?</div>
                         <div class="percent-inputs">
-                            <input type="number" id="pc-4-a" placeholder="10000" oninput="calcPercent(4)"> <span style="font-size:0.85rem; color:var(--text-5); white-space:nowrap;">이(가)</span>
-                            <input type="number" id="pc-4-b" placeholder="20" oninput="calcPercent(4)"> <span style="font-size:0.85rem; color:var(--text-5); white-space:nowrap;">% 증가하면</span>
-                            <div class="percent-result" id="pc-4-res">?</div>
+                            <input type="number" id="pc-4-a" placeholder="10000" oninput="calcPercent(4)"> <span style="font-size:0.85rem; color:var(--text-5); white-space:nowrap;">이</span>
+                            <input type="number" id="pc-4-b" placeholder="20" oninput="calcPercent(4)"> <span style="font-size:0.85rem; color:var(--text-5); white-space:nowrap;">% 증가</span>
                         </div>
+                        <div class="percent-result" id="pc-4-res">?</div>
+                    </div>
                     </div>
                 </div>
             </div>

@@ -130,6 +130,12 @@
                     class="side-ico">🆘</span>도와줘요</button>
             <button class="side-item" id="snav-community" onclick="switchView('community')"><span
                     class="side-ico">💬</span>커뮤니티</button>
+            <div class="side-group-label">🛠️ 핵심 도구</div>
+            <button class="side-item side-tool" onclick="homeOpenPrompt()"><span
+                    class="side-ico">🪄</span>비밀 프롬프트</button>
+            <button class="side-item side-tool" onclick="document.getElementById('open-admin-calc').click()"><span
+                    class="side-ico">💸</span>행정/회계 마스터</button>
+            <div class="side-group-label">📚 더 보기</div>
             <button class="side-item" id="snav-treasure" onclick="switchView('treasure')"><span
                     class="side-ico">🍯</span>보물창고</button>
             <button class="side-item" id="snav-mypage" onclick="switchView('mypage')"><span
@@ -1418,7 +1424,7 @@
 
     </div><!-- /#app -->
 
-    <script src="index.js?v=50" charset="utf-8"></script>
+    <script src="index.js?v=51" charset="utf-8"></script>
     <script>
         // PWA Service Worker Registration
         if ('serviceWorker' in navigator) {
