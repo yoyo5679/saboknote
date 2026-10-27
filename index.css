@@ -2276,6 +2276,17 @@ html.dark-mode .ps-fav.on { background: rgba(245, 158, 11, 0.14); color: #fcd34d
   border-radius: 14px; background: var(--surface-2);
 }
 .ps-fill summary { cursor: pointer; font-weight: 800; color: var(--primary); font-size: 0.92rem; }
+.ps-fill-h { font-weight: 900; color: var(--primary); font-size: 0.95rem; }
+.ps-more { margin-top: 12px; border-top: 1px dashed var(--border); padding-top: 10px; }
+.ps-more summary { cursor: pointer; font-weight: 800; color: var(--text-3); font-size: 0.86rem; }
+.ps-more summary span { font-weight: 600; color: var(--text-6); font-size: 0.78rem; }
+.ps-fmt-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 8px; }
+.ps-fmt { border: 1px solid var(--border); background: var(--surface); border-radius: 10px; padding: 10px 4px; font-family: inherit; font-size: 0.85rem; font-weight: 800; color: var(--text-4); cursor: pointer; white-space: nowrap; }
+.ps-fmt.on { background: var(--primary); border-color: var(--primary); color: #fff; }
+.ps-fmt-help { margin: 8px 2px 0; font-size: 0.78rem; color: var(--text-5); line-height: 1.55; word-break: keep-all; }
+.ps-preview { margin-top: 14px; }
+.ps-preview summary { cursor: pointer; font-size: 0.82rem; font-weight: 700; color: var(--text-5); }
+.ps-preview .prompt-text-area { margin-top: 8px; }
 .ps-fill summary span { font-weight: 600; color: var(--text-6); font-size: 0.8rem; }
 .ps-note { margin: 10px 0 6px; font-size: 0.8rem; color: var(--text-5); line-height: 1.55; word-break: keep-all; }
 .ps-label { display: block; margin: 10px 0 4px; font-size: 0.8rem; font-weight: 700; color: var(--text-3); line-height: 1.4; word-break: keep-all; }
