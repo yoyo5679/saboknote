@@ -1472,6 +1472,8 @@ input[type="time"].calc-input::-webkit-date-and-time-value {
   }
 }
 
+.shred-stage { position: fixed; left: 0; top: 0; z-index: 10050; pointer-events: none; }
+
 .shred-strip {
   width: 6px;
   height: 80px;
