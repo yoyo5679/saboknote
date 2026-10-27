@@ -2388,12 +2388,51 @@ try {
         }
     };
 
+    // 프롬프트마다 꼭 필요한 입력 칸(나머지는 '더 자세히 (선택)'으로 접힘). 없으면 첫 칸만 핵심
+    const PROMPT_CORE = {
+        proposal: [0, 1], result_report: [0, 3], official_doc: [1, 2], data_analysis: [1, 2],
+        program_design: [0, 1], strategy: [0, 1], case_assessment: [0, 2], pie_records: [1],
+        crisis: [0, 1], strengths: [0], resource_map: [1, 2], case_closing: [1, 3], ethics: [0, 1],
+        case_conference: [0, 2], supervision_prep: [0, 2], card_news: [0], press_release: [0],
+        naming: [0], sns_content: [0, 1], donation: [0, 1], complaint: [0], thank_you_letter: [0, 1],
+        newsletter: [0],
+    };
+    Object.keys(AI_PROMPTS).forEach(k => { AI_PROMPTS[k]._key = k; });
+    function promptCore(data) { return PROMPT_CORE[data._key] || [0]; }
+
+    // 결과물을 어디에 붙여 넣을지 (한글 / 워드 / 채팅에서 보기). 기기에 기억해 둔다
+    const PS_FORMAT_KEY = 'saboknote_prompt_format';
+    function psFormat() { try { return localStorage.getItem(PS_FORMAT_KEY) || 'hwp'; } catch (e) { return 'hwp'; } }
+    const PS_FORMAT_RULES = {
+        hwp: `## 결과물 쓰는 법 (한글(HWP)에 바로 붙여 넣을 수 있게)
+- 마크다운 기호(#, *, **, -, >, |, \`\`\`)를 쓰지 마세요. 굵게·기울임 표시도 쓰지 마세요.
+- 항목 번호는 공문서 순서로 붙이세요: 1. → 가. → 1) → 가) → (1) → (가). 위 '결과물 형식'의 목록(-)도 이 번호로 바꿔 쓰세요.
+- 하위 항목은 앞에 공백 두 칸을 넣어 들여 쓰세요.
+- 표가 필요하면 칸 사이를 탭(Tab)으로 구분한 줄로 쓰고, 표 바로 위에 '[표] 표 제목'을 적으세요.
+- 문단 사이는 빈 줄 한 줄만 두세요.
+- [확인 필요] 목록 같은 덧붙임은 결과물과 섞지 말고, 맨 끝에 '----- 참고 -----' 줄을 긋고 그 아래에 쓰세요.`,
+        word: `## 결과물 쓰는 법 (워드(Word)에 바로 붙여 넣을 수 있게)
+- 마크다운 기호(#, *, **, -, >, |, \`\`\`)를 쓰지 마세요. 굵게·기울임 표시도 쓰지 마세요.
+- 항목 번호는 1. → 가. → 1) → 가) 순서로 붙이세요. 위 '결과물 형식'의 목록(-)도 이 번호로 바꿔 쓰세요.
+- 하위 항목은 앞에 공백 두 칸을 넣어 들여 쓰세요.
+- 표가 필요하면 칸 사이를 탭(Tab)으로 구분한 줄로 쓰고, 표 바로 위에 '[표] 표 제목'을 적으세요.
+- 문단 사이는 빈 줄 한 줄만 두세요.
+- [확인 필요] 목록 같은 덧붙임은 결과물과 섞지 말고, 맨 끝에 '----- 참고 -----' 줄을 긋고 그 아래에 쓰세요.`,
+        chat: '',
+    };
+
     // 모든 프롬프트에 공통 규칙과 입력 칸을 붙여 완성본을 만든다 (화면 표시와 복사가 같은 결과를 쓴다)
+    // <입력>에는 핵심 칸(빈칸이어도)과 채운 선택 칸만 넣어, 채팅창에서 채울 칸을 줄인다
     function buildPrompt(data, values) {
         const askRule = data.noQuestions
             ? '- 질문을 먼저 하지 말고 바로 답하세요. 더 확인할 정보는 답 안에 \'추가로 확인할 것\'으로 넣어 주세요.'
             : '- 결과가 크게 달라질 만큼 중요한 정보가 빠졌을 때만, 작성 전에 질문을 3개 이내로 해 주세요. 그 밖에는 합리적으로 가정하고 바로 작성하세요.';
-        const fields = data.fields.map((f, i) => `■ ${f}: ${values && values[i] ? String(values[i]).trim() : ''}`).join('\n');
+        const core = promptCore(data);
+        const val = (i) => values && values[i] ? String(values[i]).trim() : '';
+        const lines = data.fields.map((f, i) => (core.includes(i) || val(i)) ? `■ ${f}: ${val(i)}` : null).filter(Boolean);
+        lines.push(`■ 그 밖에 알려 줄 것 (선택, 기관 양식은 파일로 첨부해도 돼요): `);
+        const fields = lines.join('\n');
+        const fmtRule = PS_FORMAT_RULES[psFormat()] || '';
         return `${data.prompt}
 
 ## 공통 규칙
@@ -2405,7 +2444,7 @@ ${askRule}
 - 괄호 속 '예:' 안내만 남아 있는 칸은 비어 있는 것으로 봐 주세요.
 - 인사말이나 작업 설명 없이 결과물부터 바로 쓰세요.
 - 맨 끝에 짧게 덧붙여 주세요: ① [확인 필요] 목록 ② 가정한 내용 ③ 이어서 요청하면 좋은 것 2가지
-
+${fmtRule ? '\n' + fmtRule + '\n' : ''}
 ※ 입력 전 확인: 실명·주민등록번호·정확한 주소·연락처·사진·전산시스템 화면 캡처는 넣지 마세요. 가명, 연령대, 동 단위로 바꿔 넣으면 됩니다.
 <입력>
 ${fields}
@@ -2534,9 +2573,20 @@ ${fields}
         psSyncFromServer();
         const saved = psGet(type);
         const savedFields = saved.fields || {};
-        const fillHtml = data.fields.map((f, i) => `
+        const core = promptCore(data);
+        const fieldHtml = (f, i, rows) => `
                     <label class="ps-label" for="ps-in-${i}">${escapeHtml(f)}</label>
-                    <textarea id="ps-in-${i}" class="calc-input ps-input" data-i="${i}" rows="2" oninput="psOnInput('${type}')">${escapeHtml(savedFields[i] || '')}</textarea>`).join('');
+                    <textarea id="ps-in-${i}" class="calc-input ps-input" data-i="${i}" rows="${rows}" oninput="psOnInput('${type}')">${escapeHtml(savedFields[i] || '')}</textarea>`;
+        const coreHtml = core.map(i => fieldHtml(data.fields[i], i, 3)).join('');
+        const restIdx = data.fields.map((_, i) => i).filter(i => !core.includes(i));
+        const restFilled = restIdx.some(i => (savedFields[i] || '').trim());
+        const restHtml = restIdx.length ? `
+                <details class="ps-more"${restFilled ? ' open' : ''}>
+                    <summary>➕ 더 자세히 적기 <span>(선택 · 비워도 돼요)</span></summary>
+                    ${restIdx.map(i => fieldHtml(data.fields[i], i, 2)).join('')}
+                </details>` : '';
+        const fmt = psFormat();
+        const fmtBtn = (k, label) => `<button class="ps-fmt${fmt === k ? ' on' : ''}" data-fmt="${k}" onclick="setPromptFormat('${type}','${k}')">${label}</button>`;
 
         modalTitle.innerText = data.title;
         modalBody.innerHTML = `
@@ -2552,22 +2602,28 @@ ${fields}
                 <button id="ps-fav-btn" class="ps-fav${saved.fav ? ' on' : ''}" onclick="togglePromptFav('${type}')">${saved.fav ? '★ 보관함에 담겼어요' : '☆ 보관함에 담기'}</button>
             </div>
 
-            <details class="ps-fill" id="ps-fill"${psHasFields(saved) ? ' open' : ''}>
-                <summary>✏️ 빈칸 미리 채우기 <span>(선택)</span></summary>
-                <p class="ps-note">채운 내용은 복사할 때 &lt;입력&gt; 칸에 같이 들어가요. 실명·연락처·주민번호는 쓰지 마세요. 기관명·사업명처럼 자주 쓰는 내용을 저장해 두면 편해요.</p>
-                ${fillHtml}
+            <div class="ps-fill" id="ps-fill">
+                <div class="ps-fill-h">✏️ 여기만 채우면 돼요</div>
+                <p class="ps-note">실명·연락처·주민번호는 쓰지 마세요. 비워 두고 복사한 뒤 AI 채팅창에서 채워도 돼요.</p>
+                ${coreHtml}
+                ${restHtml}
                 <div class="ps-row">
-                    <button id="ps-save-btn" class="btn-primary" onclick="savePromptFields('${type}')">💾 내 입력 저장</button>
+                    <button id="ps-save-btn" class="btn-primary btn-outline" onclick="savePromptFields('${type}')">💾 내 입력 저장</button>
                     <button class="btn-primary btn-outline" onclick="clearPromptFields('${type}')">비우기</button>
                 </div>
-            </details>
+            </div>
             <div id="ps-status" class="ps-status"></div>
 
             <div class="prompt-content-box">
-                <div class="prompt-content-label">복사할 프롬프트 내용</div>
-                <div id="prompt-text" class="prompt-text-area">${escapeHtml(buildPrompt(data, savedFields))}</div>
-                <button class="btn-primary" style="margin-top:16px; width:100%; height:54px; font-size:1.1rem;" onclick="copyPromptToClipboard('${type}')">🪄 프롬프트 복사하기</button>
+                <div class="prompt-content-label">결과물을 어디에 붙여 넣을까요?</div>
+                <div class="ps-fmt-row">${fmtBtn('hwp', '📄 한글')}${fmtBtn('word', '📝 워드')}${fmtBtn('chat', '💬 채팅에서 보기')}</div>
+                <p class="ps-fmt-help" id="ps-fmt-help">${psFormatHelp(fmt)}</p>
+                <button class="btn-primary" style="margin-top:12px; width:100%; height:54px; font-size:1.1rem;" onclick="copyPromptToClipboard('${type}')">🪄 프롬프트 복사하기</button>
                 <div id="ps-after-copy"></div>
+                <details class="ps-preview">
+                    <summary>복사될 프롬프트 전체 보기</summary>
+                    <div id="prompt-text" class="prompt-text-area">${escapeHtml(buildPrompt(data, savedFields))}</div>
+                </details>
             </div>
 
             <div class="prompt-guide-box">
@@ -2577,8 +2633,8 @@ ${fields}
                 <ol style="padding-left:20px; font-size:0.85rem; color:var(--text-4); line-height:1.7;">
                     <li>위의 <b>[프롬프트 복사하기]</b> 버튼을 눌러요.</li>
                     <li>ChatGPT, Claude, Gemini 채팅창에 붙여넣어요.</li>
-                    <li>맨 아래 <b>&lt;입력&gt;</b> 칸을 채워서 보내요. 위에서 빈칸을 미리 채웠다면 그대로 보내면 돼요. 모르는 칸은 비워 둬도 되고, 기관 양식은 파일로 첨부해도 돼요.</li>
-                    <li>결과를 받은 뒤 "더 짧게", "표로 바꿔 줘"처럼 이어서 요청하면 더 좋아져요.</li>
+                    <li>위에서 칸을 채웠다면 그대로 보내요. 비워 뒀다면 맨 아래 <b>&lt;입력&gt;</b>의 ■ 칸만 채워서 보내요. 기관 양식은 파일로 첨부해도 돼요.</li>
+                    <li>답이 나오면 채팅의 <b>복사 버튼</b>으로 복사해 한글·워드에 붙여 넣어요. '----- 참고 -----' 아래는 확인용이라 문서에 넣지 않아도 돼요.</li>
                 </ol>
                 <div style="margin-top:10px; padding-top:10px; border-top:1px dashed var(--border); font-size:0.82rem; color:var(--text-4); line-height:1.65;">
                     <b>⚠ 꼭 지켜 주세요</b><br>
@@ -2716,6 +2772,19 @@ ${fields}
         for (const [re, name] of PII_PATTERNS) if (re.test(text)) return name;
         return null;
     }
+
+    function psFormatHelp(fmt) {
+        if (fmt === 'hwp') return '기호 없이 1. 가. 1) 번호로 써 달라고 해요. 표는 붙여 넣은 뒤 표 부분을 블록 지정하고 <b>[입력] → [표] → [문자열을 표로]</b>를 누르면 표가 돼요.';
+        if (fmt === 'word') return '기호 없이 1. 가. 1) 번호로 써 달라고 해요. 표는 붙여 넣은 뒤 표 부분을 선택하고 <b>[삽입] → [표] → [텍스트를 표로 변환]</b>을 누르면 표가 돼요.';
+        return 'AI 채팅 화면에서 보기 좋은 형식(제목·굵은 글씨·표)으로 받아요. 문서에 붙이면 기호가 섞일 수 있어요.';
+    }
+    window.setPromptFormat = function (type, fmt) {
+        try { localStorage.setItem(PS_FORMAT_KEY, fmt); } catch (e) { /* noop */ }
+        document.querySelectorAll('.ps-fmt').forEach(b => b.classList.toggle('on', b.dataset.fmt === fmt));
+        const help = document.getElementById('ps-fmt-help');
+        if (help) help.innerHTML = psFormatHelp(fmt);
+        if (AI_PROMPTS[type]) psOnInput(type);
+    };
 
     function psFieldsFromInputs() {
         const out = {};
