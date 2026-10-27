@@ -368,7 +368,7 @@ try {
         g.beginPath(); g.ellipse(0, s * 0.35, s * 0.22, s * 0.4, 0, 0, 6.29); g.fill();
     }
 
-    // 쓴 글이 한 글자씩 바람에 떨어져 나가 꽃잎으로 바뀌어 흩날린다 (소리·진동 없음)
+    // 쓴 글이 한 글자씩 바람에 떨어져 나가 꽃잎으로 바뀌어 흩날린다 (소리 없음, 진동은 톡톡 가볍게)
     function runPetalAnimation(ta, r, showSuccess, done) {
         const dpr = Math.min(window.devicePixelRatio || 1, 2);
         const W = window.innerWidth, H = window.innerHeight;
@@ -423,6 +423,13 @@ try {
             color: COLORS[i % COLORS.length], start: T_SWAY + Math.random() * (T_SPAN + 400),
         }));
         const T_ALL = T_SWAY + T_SPAN + 120;
+        // 글자가 떨어져 나가는 동안 톡톡, 점점 간격이 벌어지며 잦아든다 (지원 기기만)
+        setTimeout(() => {
+            if (!navigator.vibrate) return;
+            const taps = [];
+            for (let gap = 70; gap < 260; gap *= 1.35) taps.push(10, Math.round(gap));
+            try { navigator.vibrate(taps.concat(10)); } catch (e) { /* noop */ }
+        }, T_SWAY);
         let shown = false;
         const t0 = performance.now();
         let last = t0;
