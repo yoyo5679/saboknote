@@ -327,8 +327,167 @@ try {
         } catch (e) { /* 소리는 없어도 된다 */ }
     }
 
+    // 날려 보내는 방식: 'shred'(파쇄) | 'petal'(벚꽃). 마지막 선택을 기억한다
+    const SHRED_MODE_KEY = 'saboknote_shred_mode';
+    function shredMode() { try { return localStorage.getItem(SHRED_MODE_KEY) === 'petal' ? 'petal' : 'shred'; } catch (e) { return 'shred'; } }
+    window.setShredMode = function (mode) {
+        try { localStorage.setItem(SHRED_MODE_KEY, mode); } catch (e) { /* noop */ }
+        renderShredMode();
+    };
+    function renderShredMode() {
+        const mode = shredMode();
+        document.querySelectorAll('.shred-mode-btn').forEach(b => {
+            const on = b.dataset.mode === mode;
+            b.classList.toggle('on', on);
+            b.setAttribute('aria-checked', on ? 'true' : 'false');
+        });
+        const btn = document.getElementById('shredder-btn');
+        if (btn) {
+            btn.innerHTML = mode === 'petal' ? '🌸 바람에 날려 보내기' : '🗑️ 감정 파쇄하기';
+            btn.style.background = mode === 'petal' ? 'linear-gradient(135deg,#f472b6,#db2777)' : 'linear-gradient(135deg,#ef4444,#dc2626)';
+            btn.style.boxShadow = mode === 'petal' ? '0 4px 14px rgba(219,39,119,0.28)' : '0 4px 14px rgba(220,38,38,0.28)';
+        }
+        const ta = document.getElementById('shredder-textarea');
+        if (ta) { ta.style.borderColor = mode === 'petal' ? '#f9a8d4' : '#fca5a5'; ta.style.background = mode === 'petal' ? '#fdf2f8' : '#fff5f5'; }
+        const snd = document.getElementById('shredder-sound-btn');
+        if (snd) snd.style.display = mode === 'petal' ? 'none' : 'block'; // 벚꽃은 소리 없음
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', renderShredMode); else renderShredMode();
+
+    // 벚꽃 꽃잎 하나 (끝이 살짝 갈라진 모양)
+    function drawPetal(g, s, color) {
+        g.beginPath();
+        g.moveTo(0, s);
+        g.bezierCurveTo(-s * 0.95, s * 0.35, -s * 0.75, -s * 0.85, -s * 0.18, -s);
+        g.lineTo(0, -s * 0.72);
+        g.lineTo(s * 0.18, -s);
+        g.bezierCurveTo(s * 0.75, -s * 0.85, s * 0.95, s * 0.35, 0, s);
+        g.fillStyle = color;
+        g.fill();
+        g.fillStyle = 'rgba(255,255,255,0.45)';
+        g.beginPath(); g.ellipse(0, s * 0.35, s * 0.22, s * 0.4, 0, 0, 6.29); g.fill();
+    }
+
+    // 쓴 글이 한 글자씩 바람에 떨어져 나가 꽃잎으로 바뀌어 흩날린다 (소리·진동 없음)
+    function runPetalAnimation(ta, r, showSuccess, done) {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const W = window.innerWidth, H = window.innerHeight;
+        const cv = document.createElement('canvas');
+        cv.className = 'shred-stage';
+        cv.width = W * dpr; cv.height = H * dpr;
+        cv.style.width = W + 'px'; cv.style.height = H + 'px';
+        document.body.appendChild(cv);
+        const g = cv.getContext('2d');
+        const paper = shredPaperCanvas(ta, r.width, r.height, dpr, false);
+        ta.style.visibility = 'hidden';
+
+        // 글자 위치 계산 (종이 그림과 같은 줄바꿈)
+        const font = '600 15px "Pretendard", "Noto Sans KR", sans-serif';
+        g.font = font;
+        const maxW = r.width - 46;
+        const chars = [];
+        let y = 30;
+        outer: for (const para of ta.value.split('\n')) {
+            let line = '';
+            const push = (text) => {
+                let x = 0;
+                for (const ch of text) {
+                    const w = g.measureText(ch).width;
+                    if (ch.trim()) chars.push({ ch, hx: r.left + 36 + x + w / 2, hy: r.top + y - 5 });
+                    x += w;
+                }
+            };
+            for (const ch of para) {
+                if (g.measureText(line + ch).width > maxW) { push(line); y += 26; line = ch; if (y > r.height) break outer; }
+                else line += ch;
+            }
+            push(line); y += 26;
+            if (y > r.height) break;
+        }
+        const COLORS = ['#fbcfe8', '#f9a8d4', '#fecdd3', '#fda4af', '#f5d0fe'];
+        const n = chars.length || 1;
+        const T_SWAY = 450, T_SPAN = Math.min(1300, 500 + n * 12); // 글자가 다 떨어져 나가는 데 걸리는 시간
+        chars.forEach((c, i) => {
+            const order = (c.hx - r.left) / r.width * 0.55 + (i / n) * 0.45; // 왼쪽 위부터 차례로
+            Object.assign(c, {
+                x: c.hx, y: c.hy, start: T_SWAY + order * T_SPAN + Math.random() * 120,
+                vx: 0, vy: 0, rot: 0, vr: (Math.random() - 0.5) * 0.12, spin: Math.random() * 6.28,
+                size: 6 + Math.random() * 5, color: COLORS[i % COLORS.length], gone: false,
+            });
+        });
+        // 바람에 함께 실려 오는 꽃잎
+        const extra = Array.from({ length: 36 }, (_, i) => ({
+            x: -20 - Math.random() * W * 0.6, y: r.top - 80 + Math.random() * (r.height + 220),
+            vx: 2.2 + Math.random() * 2.4, vy: -0.6 + Math.random() * 1.2, rot: Math.random() * 6.28,
+            vr: (Math.random() - 0.5) * 0.1, spin: Math.random() * 6.28, size: 5 + Math.random() * 6,
+            color: COLORS[i % COLORS.length], start: T_SWAY + Math.random() * (T_SPAN + 400),
+        }));
+        const T_ALL = T_SWAY + T_SPAN + 120;
+        let shown = false;
+        const t0 = performance.now();
+        let last = t0;
+
+        const frame = (now) => {
+            const t = now - t0, dt = Math.min(40, now - last) / 16.67;
+            last = now;
+            g.setTransform(dpr, 0, 0, dpr, 0, 0);
+            g.clearRect(0, 0, W, H);
+
+            // 종이: 글자가 떠나는 동안 옅어진다
+            const pa = t < T_SWAY ? 1 : Math.max(0, 1 - (t - T_SWAY) / (T_SPAN * 0.9));
+            if (pa > 0) {
+                g.globalAlpha = pa;
+                g.drawImage(paper, r.left, r.top, r.width, r.height);
+                g.globalAlpha = 1;
+            }
+
+            const gust = Math.sin(now / 700) * 0.4 + 1; // 바람 세기가 조금씩 바뀐다
+            let alive = 0;
+            const fly = (p, morph) => {
+                p.vx += (0.09 + 0.05 * gust) * dt; p.vy += (-0.035 + Math.sin(now / 260 + p.spin) * 0.06) * dt;
+                p.vx *= 0.992; p.vy *= 0.99;
+                p.x += p.vx * dt; p.y += p.vy * dt + Math.sin(now / 300 + p.spin) * 0.5;
+                p.rot += p.vr * dt;
+                if (p.x > W + 40 || p.y < -40 || p.y > H + 40) { p.gone = true; return; }
+                alive++;
+                g.save();
+                g.translate(p.x, p.y); g.rotate(p.rot);
+                g.scale(Math.cos(now / 240 + p.spin) * 0.85 + 0.15 * Math.sign(Math.cos(now / 240 + p.spin) || 1), 1); // 팔랑임
+                if (morph < 1) { // 글자 → 꽃잎으로 바뀌는 중
+                    g.globalAlpha = 1 - morph;
+                    g.fillStyle = '#831843'; g.font = font; g.textAlign = 'center'; g.textBaseline = 'middle';
+                    g.fillText(p.ch, 0, 0);
+                }
+                g.globalAlpha = Math.max(0, morph);
+                drawPetal(g, p.size * (0.6 + 0.4 * morph), p.color);
+                g.restore();
+                g.globalAlpha = 1;
+            };
+
+            chars.forEach(c => {
+                if (c.gone) return;
+                if (t < c.start) { // 떨어지기 전: 살랑살랑
+                    const s = t < T_SWAY ? t / T_SWAY : 1;
+                    const dx = Math.sin(now / 160 + c.spin) * 1.2 * s;
+                    alive++;
+                    g.fillStyle = '#1f2937'; g.font = font; g.textAlign = 'center'; g.textBaseline = 'middle';
+                    g.fillText(c.ch, c.x + dx, c.y);
+                    return;
+                }
+                if (!c.launched) { c.launched = true; c.vx = 1 + Math.random() * 2; c.vy = -1.2 - Math.random() * 1.6; }
+                fly(c, Math.min(1, (t - c.start) / 380));
+            });
+            extra.forEach(p => { if (!p.gone && t >= p.start) fly(p, 1); else if (!p.gone) alive++; });
+
+            if (!shown && t > T_ALL) { shown = true; showSuccess(); }
+            if ((shown && !alive) || t > 7000) { cv.remove(); done(); return; }
+            requestAnimationFrame(frame);
+        };
+        requestAnimationFrame(frame);
+    }
+
     // 텍스트 영역과 같은 크기의 '종이' 그림 (줄 노트 + 쓴 글)
-    function shredPaperCanvas(ta, w, h, dpr) {
+    function shredPaperCanvas(ta, w, h, dpr, withText = true) {
         const c = document.createElement('canvas');
         c.width = Math.round(w * dpr); c.height = Math.round(h * dpr);
         const g = c.getContext('2d');
@@ -337,6 +496,7 @@ try {
         g.strokeStyle = 'rgba(96,165,250,0.35)'; g.lineWidth = 1;
         for (let y = 34; y < h; y += 26) { g.beginPath(); g.moveTo(0, y); g.lineTo(w, y); g.stroke(); }
         g.strokeStyle = 'rgba(239,68,68,0.45)'; g.beginPath(); g.moveTo(26, 0); g.lineTo(26, h); g.stroke();
+        if (!withText) return c;
         g.fillStyle = '#1f2937'; g.font = '600 15px "Pretendard", "Noto Sans KR", sans-serif'; g.textBaseline = 'alphabetic';
         const maxW = w - 46;
         let y = 30;
@@ -372,6 +532,10 @@ try {
             return;
         }
         if (btn) btn.disabled = true;
+        if (shredMode() === 'petal') {
+            runPetalAnimation(ta, r, showSuccess, () => { ta.style.visibility = ''; if (btn) btn.disabled = false; });
+            return;
+        }
 
         const dpr = Math.min(window.devicePixelRatio || 1, 2);
         const W = window.innerWidth, H = window.innerHeight;
@@ -545,7 +709,7 @@ try {
                 ta.style.borderColor = '#ef4444';
                 ta.placeholder = '먼저 힘든 일을 적어주세요!';
                 ta.focus();
-                setTimeout(() => { ta.style.borderColor = '#fca5a5'; }, 1500);
+                setTimeout(() => { ta.style.borderColor = shredMode() === 'petal' ? '#f9a8d4' : '#fca5a5'; }, 1500);
             }
             return null;
         }
