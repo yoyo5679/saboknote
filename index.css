@@ -2297,6 +2297,11 @@ html.dark-mode .ps-fav.on { background: rgba(245, 158, 11, 0.14); color: #fcd34d
 .ps-form-view summary { cursor: pointer; font-size: 0.8rem; font-weight: 700; color: var(--text-5); }
 .ps-form-view pre { margin-top: 6px; max-height: 220px; overflow: auto; padding: 10px; background: var(--surface-3); border-radius: 8px; font-size: 0.75rem; line-height: 1.5; white-space: pre-wrap; word-break: break-all; }
 .ps-form .ps-row { margin-top: 8px; align-items: center; }
+.ps-doc { margin-top: 16px; padding: 16px; border: 1.5px solid var(--border); border-radius: 16px; background: var(--surface); }
+.ps-doc-h { font-weight: 900; color: var(--text-dark); font-size: 0.98rem; }
+.ps-answer { margin-top: 6px; min-height: 120px; font-size: 0.85rem; }
+.ps-doc-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+.ps-doc-row .btn-primary { width: 100%; min-height: 46px; padding: 0 6px; font-size: 0.88rem; }
 .ps-fill summary span { font-weight: 600; color: var(--text-6); font-size: 0.8rem; }
 .ps-note { margin: 10px 0 6px; font-size: 0.8rem; color: var(--text-5); line-height: 1.55; word-break: keep-all; }
 .ps-label { display: block; margin: 10px 0 4px; font-size: 0.8rem; font-weight: 700; color: var(--text-3); line-height: 1.4; word-break: keep-all; }
