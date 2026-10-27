@@ -1150,7 +1150,7 @@ try {
                 <div style="font-size:3.2rem; margin-bottom:12px;">🎉</div>
                 <h3 style="font-size:1.15rem; font-weight:900; color:#1e40af; margin-bottom:8px;">${already ? '다시 받으러 오셨군요!' : '신청 완료! 바로 받아가세요'}</h3>
                 <p style="font-size:0.88rem; color:var(--text-5); line-height:1.6; margin-bottom:20px;">정식 출시되면 베타 참여자에게<br>가장 먼저 알려드릴게요 💙</p>
-                <a href="${EBOOK_PDF_URL}" download="사복노트_안티그래비티IDE_실전마스터_베타.pdf"
+                <a href="${EBOOK_PDF_URL}" download="saboknote-antigravity-ide-beta.pdf"
                    style="display:block; text-decoration:none; background:linear-gradient(135deg,#2563eb,#1e40af); color:#fff; font-weight:900; font-size:1.05rem; padding:16px; border-radius:12px; box-shadow:0 4px 14px rgba(37,99,235,0.3);">📥 PDF 전자책 다운로드</a>
                 <p style="font-size:0.75rem; color:var(--text-6); margin-top:12px;">휴대폰에서 안 열리면 '파일' 앱이나 다운로드 폴더를 확인해 주세요.</p>
             </div>`;
@@ -1229,7 +1229,7 @@ try {
                 <div style="font-size:3.2rem; margin-bottom:12px;">📘</div>
                 <h3 style="font-size:1.15rem; font-weight:900; color:#1e40af; margin-bottom:8px;">${title}</h3>
                 <p style="font-size:0.88rem; color:var(--text-5); line-height:1.6; margin-bottom:20px;">강의 교재로 써도 좋아요.<br>우리 기관도 함께 배우고 싶다면 교육 문의를 남겨 주세요.</p>
-                <a href="${WORKBOOK_PDF_URL}" download="사복노트_AI프롬프트워크북_초안.pdf"
+                <a href="${WORKBOOK_PDF_URL}" download="saboknote-ai-prompt-workbook.pdf"
                    style="display:block; text-decoration:none; background:linear-gradient(135deg,#2563eb,#1e40af); color:#fff; font-weight:900; font-size:1.05rem; padding:16px; border-radius:12px; box-shadow:0 4px 14px rgba(37,99,235,0.3);">📥 워크북 PDF 다운로드</a>
                 <button class="btn-primary btn-outline" onclick="openEduModal()" style="margin-top:10px; width:100%; padding:13px; border-radius:12px;">🏫 기관 교육 문의</button>
                 <p style="font-size:0.75rem; color:var(--text-6); margin-top:12px;">휴대폰에서 안 열리면 '파일' 앱이나 다운로드 폴더를 확인해 주세요.</p>
