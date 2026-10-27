@@ -1219,7 +1219,7 @@ try {
 
     /* --- AI 프롬프트 워크북 PDF: 이메일 남기면 바로 다운로드 (비밀편지 구독자로 함께 저장) ---
        비밀편지를 이미 구독한 기기는 이메일을 다시 묻지 않는다. */
-    const WORKBOOK_PDF_URL = '/downloads/saboknote-prompt-workbook.pdf';
+    const WORKBOOK_PDF_URL = '/downloads/saboknote-prompt-workbook.pdf?v=2';
     const WORKBOOK_DONE_KEY = 'saboknote_workbook_done';
 
     function workbookDownloadHtml(mode) {
@@ -1228,10 +1228,9 @@ try {
             <div style="text-align:center; padding:24px 0 8px;">
                 <div style="font-size:3.2rem; margin-bottom:12px;">📘</div>
                 <h3 style="font-size:1.15rem; font-weight:900; color:#1e40af; margin-bottom:8px;">${title}</h3>
-                <p style="font-size:0.88rem; color:var(--text-5); line-height:1.6; margin-bottom:20px;">강의 교재로 써도 좋아요.<br>우리 기관도 함께 배우고 싶다면 교육 문의를 남겨 주세요.</p>
+                <p style="font-size:0.88rem; color:var(--text-5); line-height:1.6; margin-bottom:20px;">옆에 두고 빈칸을 채우며 따라 해 보세요.</p>
                 <a href="${WORKBOOK_PDF_URL}" download="saboknote-ai-prompt-workbook.pdf"
                    style="display:block; text-decoration:none; background:linear-gradient(135deg,#2563eb,#1e40af); color:#fff; font-weight:900; font-size:1.05rem; padding:16px; border-radius:12px; box-shadow:0 4px 14px rgba(37,99,235,0.3);">📥 워크북 PDF 다운로드</a>
-                <button class="btn-primary btn-outline" onclick="openEduModal()" style="margin-top:10px; width:100%; padding:13px; border-radius:12px;">🏫 기관 교육 문의</button>
                 <p style="font-size:0.75rem; color:var(--text-6); margin-top:12px;">휴대폰에서 안 열리면 '파일' 앱이나 다운로드 폴더를 확인해 주세요.</p>
             </div>`;
     }
@@ -1301,105 +1300,6 @@ try {
         trackUse('workbook_get');
         const body = document.getElementById('modal-body');
         if (body) body.innerHTML = workbookDownloadHtml('new');
-    };
-
-    /* --- 기관 AI 교육 문의: 문의 내용은 edu_inquiries 표에 저장 (보내기만 가능, 읽기는 대시보드에서만) --- */
-    window.openEduModal = function () {
-        trackUse('edu_open');
-        const input = 'class="calc-input edu-input"';
-        const content = `
-        <div class="edu-wrap">
-            <div style="text-align:center; padding:6px 0 14px;">
-                <div style="font-size:2.8rem; margin-bottom:8px;">🏫</div>
-                <h3 style="font-size:1.2rem; color:var(--text-dark); margin-bottom:8px; font-weight:900;">우리 기관 AI 실무 교육</h3>
-                <p style="font-size:0.88rem; color:var(--text-5); line-height:1.6; word-break:keep-all;">참여자가 각자 노트북이나 휴대폰으로 사복노트 프롬프트를 따라 하며,<br>가상 사례로 기록 초안을 직접 써 보는 교육이에요.</p>
-            </div>
-            <div class="edu-course">
-                <div class="edu-course-t">대표 과정 · 사례관리 기록·사업계획서, AI로 반나절 줄이기</div>
-                <div class="edu-row"><b>대상</b><span>사회복지 기관 실무자</span></div>
-                <div class="edu-row"><b>시간</b><span>2시간 실습 (기관 일정에 맞춰 조정)</span></div>
-                <div class="edu-row"><b>내용</b><span>개인정보 가리는 원칙 → 프롬프트로 기록·계획서 초안 쓰기 → [확인 필요] 표시 검토 → 우리 기관 서식에 맞추기</span></div>
-                <div class="edu-row"><b>방식</b><span>기관 출강 또는 온라인(줌)</span></div>
-                <div class="edu-row"><b>교재</b><span>AI 프롬프트 워크북 제공</span></div>
-            </div>
-            <div class="edu-form">
-                <label for="edu-org">기관명 <em>*</em></label>
-                <input id="edu-org" ${input} maxlength="80" placeholder="예: 행복종합사회복지관">
-                <label for="edu-name">담당자 성함 <em>*</em></label>
-                <input id="edu-name" ${input} maxlength="40" placeholder="예: 홍길동">
-                <label for="edu-contact">연락처 (이메일 또는 전화) <em>*</em></label>
-                <input id="edu-contact" ${input} maxlength="100" placeholder="예: edu@welfare.or.kr 또는 02-000-0000">
-                <div class="edu-2col">
-                    <div>
-                        <label for="edu-type">교육 방식</label>
-                        <select id="edu-type" ${input}><option value="출강">기관 출강</option><option value="온라인">온라인(줌)</option><option value="미정" selected>아직 미정</option></select>
-                    </div>
-                    <div>
-                        <label for="edu-count">예상 인원</label>
-                        <input id="edu-count" ${input} maxlength="20" placeholder="예: 15명">
-                    </div>
-                </div>
-                <label for="edu-when">희망 시기</label>
-                <input id="edu-when" ${input} maxlength="40" placeholder="예: 11월 중순, 평일 오후">
-                <label for="edu-msg">궁금한 점 (선택)</label>
-                <textarea id="edu-msg" ${input} maxlength="1000" rows="3" placeholder="예: 신입 직원 대상으로 기록 위주로 하고 싶어요"></textarea>
-                <label id="edu-agree-label" class="edu-agree">
-                    <input type="checkbox" id="edu-agree">
-                    <span>[필수] <strong>개인정보 수집·이용</strong>에 동의해요<br><small>수집 항목: 기관명, 담당자 이름, 연락처 · 목적: 교육 문의 답변 · 보관: 문의 처리 후 1년 (요청하면 바로 삭제)</small></span>
-                </label>
-                <button class="btn-primary" id="edu-submit" onclick="submitEduInquiry()">📨 교육 문의 보내기</button>
-            </div>
-        </div>`;
-        openModal('🏫 기관 AI 교육 문의', content, 'edu');
-    };
-
-    window.submitEduInquiry = async function () {
-        const val = id => { const el = document.getElementById(id); return el ? el.value.trim() : ''; };
-        const org = val('edu-org'), name = val('edu-name'), contact = val('edu-contact');
-        const missing = [['edu-org', org], ['edu-name', name], ['edu-contact', contact.length >= 5 ? contact : '']].find(([, v]) => !v);
-        if (missing) {
-            const el = document.getElementById(missing[0]);
-            if (el) { el.style.borderColor = '#ef4444'; el.focus(); setTimeout(() => { el.style.borderColor = ''; }, 1500); }
-            return;
-        }
-        const agree = document.getElementById('edu-agree');
-        if (!agree || !agree.checked) {
-            const label = document.getElementById('edu-agree-label');
-            if (label) { label.style.borderColor = '#ef4444'; setTimeout(() => { label.style.borderColor = ''; }, 1500); }
-            return;
-        }
-        if (!supabase) { alert('네트워크 연결을 확인한 뒤 다시 시도해 주세요.'); return; }
-        const btn = document.getElementById('edu-submit');
-        if (btn) { btn.disabled = true; btn.textContent = '보내는 중...'; }
-        try {
-            await ensureAnonSession();
-            const type = val('edu-type');
-            const { error } = await withTimeout(supabase.from('edu_inquiries').insert({
-                org_name: org.slice(0, 80),
-                contact_name: name.slice(0, 40),
-                contact: contact.slice(0, 100),
-                edu_type: ['출강', '온라인', '미정'].includes(type) ? type : '미정',
-                headcount: val('edu-count').slice(0, 20) || null,
-                preferred_date: val('edu-when').slice(0, 40) || null,
-                message: val('edu-msg').slice(0, 1000) || null,
-                agreed: true
-            }));
-            if (error) throw error;
-        } catch (e) {
-            console.error('Edu inquiry error', e);
-            if (btn) { btn.disabled = false; btn.textContent = '📨 교육 문의 보내기'; }
-            alert('문의를 보내지 못했어요. 잠시 후 다시 시도해 주세요.');
-            return;
-        }
-        trackUse('edu_inquiry');
-        const body = document.getElementById('modal-body');
-        if (body) body.innerHTML = `
-            <div style="text-align:center; padding:30px 0;">
-                <div style="font-size:3.5rem; margin-bottom:16px;">📨</div>
-                <h3 style="font-size:1.15rem; font-weight:900; color:#1e40af; margin-bottom:10px;">문의가 접수됐어요</h3>
-                <p style="font-size:0.9rem; color:var(--text-5); line-height:1.6; margin-bottom:20px;">남겨 주신 연락처로 연락드릴게요.<br>그동안 워크북을 먼저 살펴보셔도 좋아요.</p>
-                <button class="btn-primary" onclick="openWorkbookGate()" style="width:100%; padding:14px; border-radius:12px;">📘 워크북 받기</button>
-            </div>`;
     };
 
     window.submitRequest = async function () {
@@ -2585,7 +2485,6 @@ ${fields}
             </div>
             <div class="ps-foot">
                 <button onclick="openWorkbookGate()">📘 6개를 실습지로 묶은 워크북 받기</button>
-                <button onclick="openEduModal()">🏫 기관 교육 문의</button>
             </div>
         `;
             openModal('사복천재의 비밀 프롬프트', content, 'prompt');
@@ -7186,7 +7085,6 @@ ${fields}
             'quiz':         () => window.showPlaygroundContent && window.showPlaygroundContent('quiz'),
             'balance':      () => window.showPlaygroundContent && window.showPlaygroundContent('balance'),
             'workbook':     () => window.openWorkbookGate && window.openWorkbookGate(),
-            'edu':          () => window.openEduModal && window.openEduModal(),
         };
         // 프롬프트 바로 열기 (워크북 QR·SNS 링크용): #home/prompt-pie_records
         Object.keys(AI_PROMPTS).forEach(k => {

@@ -286,7 +286,7 @@ doc = f"""<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>사�
 
 <section class="page">
   <h1>이 워크북 쓰는 법</h1>
-  <p class="lead">상담 기록, 사업계획서, 공문. 쓸 건 많은데 시간은 늘 모자라죠. 이 워크북은 사복노트 '비밀 프롬프트' 가운데 기록과 문서 작업에 쓰는 6개를 골라 빈칸 채우기 실습지로 묶었어요. 강의 교재로 써도 되고, 혼자 익힐 때 옆에 두고 써도 돼요.</p>
+  <p class="lead">상담 기록, 사업계획서, 공문. 쓸 건 많은데 시간은 늘 모자라죠. 이 워크북은 사복노트 '비밀 프롬프트' 가운데 기록과 문서 작업에 쓰는 6개를 골라 빈칸 채우기 실습지로 묶었어요. 팀 회의에서 함께 써도 되고, 혼자 익힐 때 옆에 두고 써도 돼요.</p>
   <div class="steps">
     <div class="step"><div class="n">1</div><div><div class="t">프롬프트 복사</div>사복노트에서 프롬프트를 열고 [복사하기]를 눌러요. 실습 쪽마다 바로 가는 QR이 있어요.</div></div>
     <div class="step"><div class="n">2</div><div><div class="t">빈칸 채우기</div>이 워크북에 먼저 적어 보고 AI 채팅창의 &lt;입력&gt; 칸에 옮겨요. 모르는 칸은 비워 둬도 돼요.</div></div>
@@ -340,7 +340,6 @@ doc = f"""<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>사�
 <section class="back">
   <h1>다음은 이렇게 이어 가요</h1>
   <div class="card"><div class="tx"><div class="tt">더 많은 프롬프트는 사복노트에서</div><div class="dd">사례관리·행정·홍보 프롬프트 23개, 행정 계산기, 사진 속 개인정보 가리기 도구까지 무료로 써요.</div><div class="url">saboknote.com</div></div><img src="{qr(SITE + '/?utm_source=workbook')}" alt=""></div>
-  <div class="card"><div class="tx"><div class="tt">우리 기관도 함께 배우고 싶다면</div><div class="dd">기관 출강·온라인 실습 2시간. 이 워크북을 교재로 써요.</div><div class="url">saboknote.com/#home/edu</div></div><img src="{qr(SITE + '/?utm_source=workbook#home/edu')}" alt=""></div>
   <div class="card"><div class="tx"><div class="tt">새 프롬프트 소식 받기</div><div class="dd">사복노트 홈에서 비밀편지를 구독하면 새 프롬프트와 자료를 먼저 보내 드려요.</div></div></div>
   <div class="foot">이 워크북은 초안이에요. 고쳤으면 하는 점은 사복노트 홈의 '사복천재님, 이것 좀 만들어주세요!'에 남겨 주세요.<br>© 2026 사복노트 · 이 워크북의 사례는 모두 연습용 가상 사례예요.</div>
 </section>
