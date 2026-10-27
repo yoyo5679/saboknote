@@ -271,27 +271,260 @@ try {
     ];
 
     /* ===== 정서 동반자: 파쇄 애니메이션 공통 ===== */
+    // 쓴 글이 적힌 종이가 파쇄기 칼날에 빨려 들어가 띠로 잘려 나오고, 마지막에 종이 가루로 터진다.
+    // 화면 흔들림·불꽃·진동(지원 기기)·효과음(켰을 때)으로 '시원함'을 준다. 움직임 줄이기 설정이면 짧게 사라지기만 한다.
+    const SHRED_SOUND_KEY = 'saboknote_shred_sound';
+    function shredSoundOn() { try { return localStorage.getItem(SHRED_SOUND_KEY) === '1'; } catch (e) { return false; } }
+    window.toggleShredSound = function () {
+        const on = !shredSoundOn();
+        try { localStorage.setItem(SHRED_SOUND_KEY, on ? '1' : '0'); } catch (e) { /* noop */ }
+        renderShredSoundBtn();
+        if (on) shredSound('click');
+    };
+    function renderShredSoundBtn() {
+        const b = document.getElementById('shredder-sound-btn');
+        if (b) b.textContent = shredSoundOn() ? '🔊 효과음 켜짐' : '🔇 효과음 꺼짐';
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', renderShredSoundBtn); else renderShredSoundBtn();
+
+    let shredAudio = null;
+    function shredSound(kind, dur) {
+        if (!shredSoundOn()) return;
+        try {
+            shredAudio = shredAudio || new (window.AudioContext || window.webkitAudioContext)();
+            const ac = shredAudio, t = ac.currentTime;
+            if (ac.state === 'suspended') ac.resume();
+            const noise = (sec) => {
+                const buf = ac.createBuffer(1, Math.floor(ac.sampleRate * sec), ac.sampleRate);
+                const d = buf.getChannelData(0);
+                for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+                const src = ac.createBufferSource(); src.buffer = buf; return src;
+            };
+            const gain = ac.createGain();
+            gain.connect(ac.destination);
+            if (kind === 'grind') { // 드르륵 갈리는 소리: 노이즈를 빠르게 끊어 준다
+                const src = noise(dur), bp = ac.createBiquadFilter(), lfo = ac.createOscillator(), lg = ac.createGain();
+                bp.type = 'bandpass'; bp.frequency.value = 1400; bp.Q.value = 0.8;
+                lfo.frequency.value = 38; lg.gain.value = 0.18;
+                gain.gain.setValueAtTime(0.0001, t); gain.gain.linearRampToValueAtTime(0.22, t + 0.08);
+                gain.gain.setValueAtTime(0.22, t + dur - 0.1); gain.gain.linearRampToValueAtTime(0.0001, t + dur);
+                lfo.connect(lg); lg.connect(gain.gain);
+                src.connect(bp); bp.connect(gain);
+                src.start(t); lfo.start(t); src.stop(t + dur); lfo.stop(t + dur);
+            } else if (kind === 'burst') { // 펑 + 사르륵
+                const src = noise(0.7), lp = ac.createBiquadFilter(), o = ac.createOscillator(), og = ac.createGain();
+                lp.type = 'lowpass'; lp.frequency.setValueAtTime(5000, t); lp.frequency.exponentialRampToValueAtTime(300, t + 0.6);
+                gain.gain.setValueAtTime(0.4, t); gain.gain.exponentialRampToValueAtTime(0.001, t + 0.7);
+                src.connect(lp); lp.connect(gain); src.start(t);
+                o.type = 'sine'; o.frequency.setValueAtTime(140, t); o.frequency.exponentialRampToValueAtTime(40, t + 0.3);
+                og.gain.setValueAtTime(0.5, t); og.gain.exponentialRampToValueAtTime(0.001, t + 0.35);
+                o.connect(og); og.connect(ac.destination); o.start(t); o.stop(t + 0.4);
+            } else {
+                const o = ac.createOscillator();
+                o.frequency.value = 880; gain.gain.setValueAtTime(0.12, t); gain.gain.exponentialRampToValueAtTime(0.001, t + 0.08);
+                o.connect(gain); o.start(t); o.stop(t + 0.09);
+            }
+        } catch (e) { /* 소리는 없어도 된다 */ }
+    }
+
+    // 텍스트 영역과 같은 크기의 '종이' 그림 (줄 노트 + 쓴 글)
+    function shredPaperCanvas(ta, w, h, dpr) {
+        const c = document.createElement('canvas');
+        c.width = Math.round(w * dpr); c.height = Math.round(h * dpr);
+        const g = c.getContext('2d');
+        g.scale(dpr, dpr);
+        g.fillStyle = '#fffdf7'; g.fillRect(0, 0, w, h);
+        g.strokeStyle = 'rgba(96,165,250,0.35)'; g.lineWidth = 1;
+        for (let y = 34; y < h; y += 26) { g.beginPath(); g.moveTo(0, y); g.lineTo(w, y); g.stroke(); }
+        g.strokeStyle = 'rgba(239,68,68,0.45)'; g.beginPath(); g.moveTo(26, 0); g.lineTo(26, h); g.stroke();
+        g.fillStyle = '#1f2937'; g.font = '600 15px "Pretendard", "Noto Sans KR", sans-serif'; g.textBaseline = 'alphabetic';
+        const maxW = w - 46;
+        let y = 30;
+        for (const para of ta.value.split('\n')) {
+            let line = '';
+            for (const ch of para) {
+                if (g.measureText(line + ch).width > maxW) { g.fillText(line, 36, y); y += 26; line = ch; if (y > h) break; }
+                else line += ch;
+            }
+            if (y > h) break;
+            g.fillText(line, 36, y); y += 26;
+        }
+        return c;
+    }
+
     function runShredAnimation(renderSuccess) {
         trackUse('shred');
         const ta = document.getElementById('shredder-textarea');
-        const stripped = document.getElementById('shredder-strips');
         const writeArea = document.getElementById('shredder-write-area');
         const successArea = document.getElementById('shredder-success');
-
-        ta.style.animation = 'shredSlide 0.6s ease-in forwards';
-        const colors = ['#ef4444', '#f97316', '#dc2626', '#fb923c', '#b91c1c', '#fca5a5', '#fed7aa'];
-        stripped.style.display = 'flex';
-        stripped.innerHTML = Array.from({ length: 22 }, (_, i) => {
-            const delay = (i * 0.03).toFixed(2);
-            const h = 60 + Math.random() * 50;
-            return `<div class="shred-strip" style="background:${colors[i % colors.length]}; height:${h}px; animation-delay:${delay}s;"></div>`;
-        }).join('');
-
-        setTimeout(() => {
+        const btn = document.getElementById('shredder-btn');
+        const showSuccess = () => {
             writeArea.style.display = 'none';
             successArea.style.display = 'block';
+            successArea.style.animation = 'successPop 0.5s cubic-bezier(.2,1.4,.4,1) both';
             renderSuccess(successArea);
-        }, 800);
+        };
+        const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const r = ta.getBoundingClientRect();
+        if (reduce || !r.width || !r.height) {
+            ta.style.animation = 'shredSlide 0.5s ease-in forwards';
+            setTimeout(showSuccess, 500);
+            return;
+        }
+        if (btn) btn.disabled = true;
+
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const W = window.innerWidth, H = window.innerHeight;
+        const cv = document.createElement('canvas');
+        cv.className = 'shred-stage';
+        cv.width = W * dpr; cv.height = H * dpr;
+        cv.style.width = W + 'px'; cv.style.height = H + 'px';
+        document.body.appendChild(cv);
+        const g = cv.getContext('2d');
+        const paper = shredPaperCanvas(ta, r.width, r.height, dpr);
+        ta.style.visibility = 'hidden';
+
+        // 파쇄기 입구는 종이 아래쪽 1/3 지점(화면 안쪽으로 제한)
+        const px = r.left, pw = r.width, ph = r.height;
+        const mouthY = Math.min(r.top + ph * 0.62, H * 0.62);
+        const startY = mouthY - ph - 6;
+        const N = Math.max(14, Math.round(pw / 14)); // 띠 개수
+        const sw = pw / N;
+        const strips = Array.from({ length: N }, (_, i) => ({ i, phase: Math.random() * 6.28, curl: (Math.random() - 0.5) * 0.5 }));
+        const sparks = [], bits = [];
+        const T_WIND = 260, T_FEED = 1250, T_HOLD = 140; // ms
+        const T_BURST = T_WIND + T_FEED + T_HOLD;
+        let burst = false, shownAt = 0, t0 = performance.now(), last = t0;
+
+        if (navigator.vibrate) { try { navigator.vibrate([20, 30, 20, 30, 20, 30, 20, 30, 20, 30, 20, 30, 20, 30, 20]); } catch (e) { /* noop */ } }
+        setTimeout(() => shredSound('grind', T_FEED / 1000), T_WIND);
+
+        const drawMachine = (shake, time) => {
+            const mx = px - 18, mw = pw + 36, mh = 30, my = mouthY - mh / 2;
+            g.save(); g.translate(shake.x, shake.y);
+            g.fillStyle = 'rgba(0,0,0,0.18)'; g.fillRect(mx + 4, my + mh - 2, mw - 8, 8);
+            const grd = g.createLinearGradient(0, my, 0, my + mh);
+            grd.addColorStop(0, '#475569'); grd.addColorStop(0.5, '#1e293b'); grd.addColorStop(1, '#0f172a');
+            g.fillStyle = grd; g.beginPath(); g.roundRect ? g.roundRect(mx, my, mw, mh, 10) : g.rect(mx, my, mw, mh); g.fill();
+            // 도는 칼날
+            g.fillStyle = '#cbd5e1';
+            const off = (time * 0.25) % 10;
+            for (let x = mx + 10 - off; x < mx + mw - 10; x += 10) g.fillRect(x, mouthY - 2, 5, 4);
+            g.fillStyle = '#0b1120'; g.fillRect(mx + 10, mouthY - 1, mw - 20, 2);
+            // 작동 표시등
+            const on = Math.floor(time / 120) % 2 === 0;
+            g.fillStyle = on ? '#ef4444' : '#7f1d1d'; g.beginPath(); g.arc(mx + 14, my + 8, 3.5, 0, 6.29); g.fill();
+            g.restore();
+        };
+
+        const frame = (now) => {
+            const t = now - t0, dt = Math.min(40, now - last) / 16.67;
+            last = now;
+            g.setTransform(dpr, 0, 0, dpr, 0, 0);
+            g.clearRect(0, 0, W, H);
+
+            // 화면 흔들림: 갈리는 동안 점점 세지고, 터질 때 가장 크다
+            let amp = 0;
+            if (t < T_WIND) amp = 2.5 * Math.sin((t / T_WIND) * Math.PI);
+            else if (t < T_WIND + T_FEED) amp = 1.2 + 2.8 * ((t - T_WIND) / T_FEED);
+            else if (t < T_BURST + 260) amp = Math.max(0, 9 * (1 - (t - T_BURST) / 260));
+            const shake = { x: (Math.random() - 0.5) * amp * 2, y: (Math.random() - 0.5) * amp * 2 };
+
+            if (!burst) {
+                const p = t < T_WIND ? 0 : Math.min(1, (t - T_WIND) / T_FEED);
+                const feed = (ph + 12) * (p * p * (3 - 2 * p)) * 0.35 + (ph + 12) * p * 0.65; // 처음엔 버티다 쭉 빨려 들어감
+                const top = startY + (r.top - startY) * (1 - Math.min(1, t / T_WIND)) + feed;
+                const wob = t < T_WIND ? Math.sin(t / 22) * 3 : 0;
+                g.save(); g.translate(shake.x, shake.y);
+                // 아직 안 잘린 위쪽
+                const visH = Math.max(0, Math.min(ph, mouthY - top));
+                if (visH > 0) {
+                    g.save(); g.translate(px + pw / 2, top); g.rotate(wob * 0.004);
+                    g.shadowColor = 'rgba(0,0,0,0.18)'; g.shadowBlur = 14; g.shadowOffsetY = 6;
+                    g.drawImage(paper, 0, 0, paper.width, visH * dpr, -pw / 2 + wob, 0, pw, visH);
+                    g.restore();
+                }
+                // 잘려 나온 띠: 아래로 늘어지며 살짝 벌어지고 흔들린다
+                const cutH = Math.max(0, Math.min(ph, top + ph - mouthY));
+                if (cutH > 0) {
+                    const srcY = ph - cutH;
+                    strips.forEach(s => {
+                        const spread = (s.i - (N - 1) / 2) * (cutH / ph) * 3.2;
+                        const ang = Math.sin(now / 90 + s.phase) * 0.05 * (cutH / ph) + s.curl * (cutH / ph) * 0.35;
+                        g.save();
+                        g.translate(px + s.i * sw + sw / 2 + spread, mouthY + 2);
+                        g.rotate(ang);
+                        g.drawImage(paper, s.i * sw * dpr, srcY * dpr, sw * dpr, cutH * dpr, -sw / 2 + 0.6, 0, sw - 1.2, cutH);
+                        g.restore();
+                    });
+                    // 불꽃
+                    for (let k = 0; k < 3; k++) sparks.push({ x: px + Math.random() * pw, y: mouthY, vx: (Math.random() - 0.5) * 7, vy: -2 - Math.random() * 5, life: 1, c: Math.random() < 0.5 ? '#fbbf24' : '#f97316' });
+                }
+                g.restore();
+                if (t >= T_BURST) {
+                    burst = true;
+                    // 띠를 종이 조각으로 쪼개 사방으로 터뜨린다
+                    const pieces = 7;
+                    strips.forEach(s => {
+                        for (let k = 0; k < pieces; k++) {
+                            const ph2 = ph / pieces;
+                            bits.push({
+                                sx: s.i * sw, sy: k * ph2, sw, sh: ph2,
+                                x: px + s.i * sw + sw / 2, y: mouthY + 4 + k * ph2 * 0.9,
+                                vx: (Math.random() - 0.5) * 16, vy: -6 - Math.random() * 12,
+                                rot: Math.random() * 6.28, vr: (Math.random() - 0.5) * 0.5, life: 1,
+                            });
+                        }
+                    });
+                    for (let k = 0; k < 60; k++) {
+                        const a = Math.random() * 6.28, sp = 4 + Math.random() * 10;
+                        sparks.push({ x: px + pw / 2, y: mouthY, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - 4, life: 1.2, c: ['#fbbf24', '#f97316', '#ef4444', '#fde68a'][k % 4] });
+                    }
+                    shredSound('burst');
+                    if (navigator.vibrate) { try { navigator.vibrate(140); } catch (e) { /* noop */ } }
+                    setTimeout(() => { showSuccess(); shownAt = performance.now(); }, 380);
+                }
+            }
+
+            // 터질 때 번쩍
+            if (burst && t - T_BURST < 220) {
+                g.fillStyle = `rgba(255,247,237,${0.75 * (1 - (t - T_BURST) / 220)})`;
+                g.fillRect(0, 0, W, H);
+            }
+            // 터진 뒤 파쇄기는 빠르게 사라져 위로 문구를 가리지 않게 한다
+            const machineAlpha = burst ? 1 - (t - T_BURST) / 260 : 1;
+            if (machineAlpha > 0) { g.globalAlpha = machineAlpha; drawMachine(shake, now); g.globalAlpha = 1; }
+
+            // 종이 조각: 중력 + 공기 저항으로 팔랑이며 떨어진다
+            bits.forEach(b => {
+                b.vy += 0.42 * dt; b.vx *= 0.985; b.vy *= 0.99;
+                b.x += b.vx * dt + Math.sin(now / 160 + b.rot) * 0.6; b.y += b.vy * dt;
+                b.rot += b.vr * dt;
+                if (t - T_BURST > 700) b.life -= 0.02 * dt;
+                g.save(); g.globalAlpha = Math.max(0, b.life);
+                g.translate(b.x, b.y); g.rotate(b.rot); g.scale(1, Math.cos(now / 120 + b.rot)); // 팔랑임
+                g.drawImage(paper, b.sx * dpr, b.sy * dpr, b.sw * dpr, b.sh * dpr, -b.sw / 2, -b.sh / 2, b.sw, b.sh);
+                g.restore();
+            });
+            sparks.forEach(s => {
+                s.vy += 0.3 * dt; s.x += s.vx * dt; s.y += s.vy * dt; s.life -= 0.035 * dt;
+                if (s.life <= 0) return;
+                g.globalAlpha = Math.min(1, s.life); g.fillStyle = s.c;
+                g.fillRect(s.x, s.y, 3, 3);
+            });
+            g.globalAlpha = 1;
+            for (let i = sparks.length - 1; i >= 0; i--) if (sparks[i].life <= 0) sparks.splice(i, 1);
+
+            const done = burst && shownAt && bits.every(b => b.life <= 0 || b.y > H + 60) && !sparks.length;
+            if (done || t > 6000) {
+                cv.remove();
+                ta.style.visibility = '';
+                if (btn) btn.disabled = false;
+                return;
+            }
+            requestAnimationFrame(frame);
+        };
+        requestAnimationFrame(frame);
     }
 
     window.resetShredder = function () {

@@ -56,7 +56,7 @@
     <link rel="icon"
         href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>">
 
-    <link rel="stylesheet" href="index.css?v=15">
+    <link rel="stylesheet" href="index.css?v=16">
     <link rel="stylesheet" as="style" crossorigin
         href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -1076,6 +1076,8 @@
                         <button id="shredder-btn" onclick="doShred()"
                             style="width: 100%; padding: 18px; background: linear-gradient(135deg,#ef4444,#dc2626); color: white; border: none; border-radius: 16px; font-size: 1.1rem; font-weight: 800; cursor: pointer; margin-top: 16px; transition: transform 0.1s, box-shadow 0.2s; box-shadow: 0 4px 14px rgba(220,38,38,0.28);">🗑️
                             감정 파쇄하기</button>
+                        <button id="shredder-sound-btn" type="button" onclick="toggleShredSound()"
+                            style="display:block; margin:10px auto 0; padding:6px 12px; background:none; border:1px solid var(--border); border-radius:999px; font-size:0.78rem; font-weight:700; color:var(--text-5); cursor:pointer;">🔇 효과음 꺼짐</button>
                         <p
                             style="text-align:center; font-size:0.72rem; color:var(--text-6); margin-top:14px; line-height:1.5;">
                             이 기능은 전문 심리상담을 대체하지 않습니다.<br>쓴 글은 어디에도 저장되지 않고, 파쇄하는 순간 완전히 사라져요.</p>
@@ -1410,7 +1412,7 @@
 
     </div><!-- /#app -->
 
-    <script src="index.js?v=57" charset="utf-8"></script>
+    <script src="index.js?v=58" charset="utf-8"></script>
     <script>
         // PWA Service Worker Registration
         if ('serviceWorker' in navigator) {
