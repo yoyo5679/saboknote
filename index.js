@@ -1609,32 +1609,44 @@ try {
 3. 기존 공공·민간 서비스로 채워지지 않는 빈틈을 짚고, 이 사업이 그 빈틈을 어떻게 메우는지 구체적으로 연결하세요.
 4. 투입 → 활동 → 산출 → 성과가 한 줄로 이어지게 짜세요. 산출목표(무엇을 몇 회·몇 명에게)와 성과목표(참여자에게 생길 변화)를 나누고, 성과목표마다 측정 도구와 측정 시기를 적으세요. 측정 도구는 실제로 있는 표준화 척도만 제안하고, 한국판 여부나 사용 승인이 불확실하면 [확인 필요]로 표시하세요.
 5. 실천 이론(강점관점, 임파워먼트, 지역사회조직 모델 등)은 사업 설계와 실제로 연결될 때만 쓰고, 이름만 나열하지 마세요.
-6. 공모 양식 목차나 분량 제한이 있으면 그대로 따르세요.
+6. 공모 양식 목차나 분량 제한이 있으면 그대로 따르세요. 양식이 없으면 아래 '결과물 형식'(민간 배분·공모사업 신청서에서 공통으로 묻는 구성)으로 쓰세요.
+7. 참여자는 '핵심 참여자'(변화를 측정할 사람)와 '주변 참여자'(가족, 이웃, 자원봉사자처럼 핵심 참여자의 변화를 돕는 사람)로 나누세요.
+8. 성과목표는 3개 이내로, 중요한 순서대로 쓰세요. 숫자로 드러내기 어려운 변화도 하나쯤 넣고 어떻게 보여 줄지 적으세요.
+9. 사업 기간이 2년 이상이면 '다년 총괄 계획'을 먼저 쓰고, 그 아래 1년차 계획을 쓰세요. 1년차 성과목표는 최종 목표로 가는 중간목표로 쓰세요. 기간이 없으면 단년(12개월)으로 보세요.
 
 ## 결과물 형식
-- 사업명 후보 3개와 슬로건
-- 추진 배경 및 필요성 (현황 → 문제의 심각성 → 기존 서비스의 한계)
-- 사업 대상과 선정 기준, 모집 방법
-- 사업 목적과 목표 (산출목표 / 성과목표, SMART로)
-- 논리모델 표 (투입 | 활동 | 산출 | 성과 | 측정 방법)
-- 세부 추진 내용과 월별 일정, 협력 기관과 역할
-- 예산안 (항목 | 산출 근거(단가×수량) | 금액) — 공모처 예산 기준(인건비 비율 등)은 [확인 필요]
-- 평가 계획 (성과목표별 측정 도구, 시기, 방법)
-- 사업이 끝난 뒤에도 이어 갈 방안
-- 예상 위험(모집 저조, 중도 탈락 등)과 대응
-- 기대효과
+- 사업명 후보 3개 (대상 + 목적 + 방법이 드러나게, 슬로건은 부제로)
+- 신청서 요약 (1쪽 분량)
+  사업명, 사업 기간, 대상 지역, 참여자 구분과 핵심 참여자 수, 사업 분야(공모처 분류는 양식대로, 모르면 [확인 필요]), 성과목표 3개 이내, 주요 사업내용 표 (세부 사업명 | 주요 내용), 예산 요약 (총사업비 | 신청금액 | 자부담, 신청금액 중 인건비·사업비·관리운영비 금액과 비율)
+- 기관 소개 요약 (<입력>에 있는 내용만. 설립 목적, 주요 사업, 최근 3년 비슷한 사업 수행 경험 표 (연도 | 사업명 | 지원 기관 | 지원 금액), 운영 투명성을 위한 노력. 없으면 칸만 남기고 [확인 필요])
+- 다년 총괄 계획 (2년 이상일 때만): 연차별 참여자 표 (구분 | 1년차 | 2년차 | 3년차, 핵심·주변 참여자), 연차별 특징과 핵심 내용, 연차별 협력망 변화, 연차별 예산 표, 최종 성과목표
+- 1. 사업의 필요성
+  계획 배경 (현황 → 그동안 어떤 상태였는지 → 기존 서비스의 한계), 기존 사업과 다른 점, 우리 기관이 해야 하는 이유 (사전 조사, 수행 경험, 준비 상황)
+- 2. 사업 지향성 (참여자의 권리와 강점 관점에서 이 사업이 지향하는 변화)
+- 3. 사업 참여자
+  참여자 표 (구분 | 정의 | 인원 | 변화 목표), 선정 기준, 모집 방법과 그 방법을 고른 이유
+- 4. 사업 내용과 추진 전략
+  세부 사업 표 (세부 사업명 | 활동 내용: 방법, 시기, 횟수, 인원), 월별 추진 일정 표 (세부 사업 | 1월~12월, 진행하는 달에 ●), 수행 인력 표 (이름 | 소속·직위 | 역할 | 관련 경력, 미정이면 채용 자격 기준), 협력 기관 표 (기관 | 협력 내용 | 우리 기관 역할)
+- 5. 목표와 평가
+  산출목표 표 (세부 사업 | 산출목표 | 모니터링 방법), 성과목표 표 (성과목표 | 평가 도구와 방법 | 측정 시기), 과정 평가 (선택, 어떤 과정을 거쳐 성과가 났는지 보여 줄 방법)
+- 6. 사업 수행 위험 요인과 대응 (모집 저조, 중도 탈락, 인력 변동 등)
+- 7. 예산
+  예산 표 (구분: 인건비·사업비·관리운영비 | 세목 | 세세목 | 산출 근거: 단가×수량×횟수 | 신청금액 | 자부담 | 계), 구분별 소계와 총계, 신청금액 중 구분별 비율. 인건비 비율 상한, 회계감사비처럼 공모처가 정하는 항목은 [확인 필요]
+- 8. 기대 효과, 결과 활용 계획, 지원이 끝난 뒤 이어 갈 방안 (재원 마련 포함)
 - 심사위원 눈으로 본 약점 3가지와 보완 방법
 
 ## 다 쓴 뒤 점검
 - 필요성 → 목표 → 활동 → 성과가 서로 맞물리는가
-- 모든 성과목표에 측정 방법이 있는가
+- 모든 성과목표에 평가 도구와 측정 시기가 있는가
+- 신청서 요약, 본문, 예산 표의 금액·인원이 서로 같은가
 - 근거 없는 숫자가 들어가지 않았는가`,
             fields: [
                 "사업 아이디어·키워드",
                 "대상과 지역 (예: OO구 독거 어르신 30명)",
-                "공모처와 지원 규모 (예: 사회복지공동모금회, 1,000만 원)",
+                "공모처와 지원 규모 (예: OO재단 배분사업, 1,000만 원)",
                 "우리 기관의 근거 자료 (예: 욕구조사 결과, 대기자 수, 실제 사례)",
-                "공모 양식 목차·분량 제한 (있으면 붙여넣기)"
+                "공모 양식 목차·분량 제한 (있으면 붙여넣기)",
+                "사업 기간 (예: 단년 2027년 1~12월 / 3년 중 1년차)"
             ]
         },
         result_report: {
@@ -1651,19 +1663,29 @@ try {
 4. 사전·사후 점수가 있으면 변화량을 계산하세요. 통계 검정 결과가 없으면 '유의미하다'고 쓰지 말고 '평균 ○점 상승'처럼 사실만 쓰세요.
 5. 표나 그래프로 보여 주면 좋은 데이터는 어떤 차트가 맞는지 제안하세요.
 6. 이번 결과에서 나온 과제를 다음 사업으로 이어지게 정리하세요.
+7. 표의 '계획' 칸은 사업계획서에 쓴 내용을 그대로 옮기고, '결과' 칸에 실제로 한 일을 쓰세요. 계획 내용이 <입력>에 없으면 [확인 필요: 사업계획서 내용]으로 두세요.
+8. 참여 인원은 실인원으로 쓰고, 달성률은 결과 ÷ 계획 × 100, 집행률은 집행액 ÷ 예산(또는 지원받은 금액) × 100으로 계산하세요.
+9. 지원기관 보고서 양식이 없으면 아래 '결과물 형식'(민간 배분·공모사업 결과보고서에서 공통으로 묻는 구성)으로 쓰세요. 내부 결재용이면 1번 결재용 요약과 4~6번 위주로 줄여도 됩니다.
 
 ## 결과물 형식
 - 결재용 요약 (5줄 이내)
-- 사업 개요 (목적, 대상, 기간, 예산)
-- 목표 대비 실적표 (지표 | 목표 | 실적 | 달성률 | 비고)
-- 예산 집행 실적표 (항목 | 예산 | 집행액 | 집행률 | 비고)
-- 성과 분석 (정량 / 정성 사례)
-- 잘된 점, 아쉬운 점과 개선 방향
-- 차기 사업 제언
-- 넣으면 좋은 차트 제안
+- 사업 개요 표 (사업명 | 총 사업기간 | 보고 기간 | 총 지원액 | 집행액 | 집행률)
+- 1. 사업 추진 내용
+  참여자 표 (구분: 핵심·주변 참여자 | 계획 | 결과 | 달성률), 선정 기준과 모집 방법 (계획 | 결과), 세부 사업별 계획 대비 결과 표 (세부 사업 | 계획 | 결과: 방법, 시기, 횟수, 참여 인원), 월별 수행 현황 표 (세부 사업 | 1월~12월, 계획한 달 ○ · 실제 한 달 ●), 수행 인력 표 (성명 | 소속·직위 | 역할 | 참여 기간 | 관련 경력), 협력 기관 표 (기관 | 계획 | 결과)
+- 2. 계획 대비 달라진 점과 이유 (참여자, 추진 내용, 수행 인력, 협력 기관별. 없으면 '해당 없음')
+- 3. 목표와 평가
+  산출목표 표 (세부 사업 | 산출목표 | 결과 | 달성률), 성과목표 표 (성과목표 | 평가 도구와 방법 | 평가 결과: 사전·사후 변화량), 미달 항목은 사유와 개선 방안
+- 4. 사업의 효과와 향후 계획
+  참여자·지역사회에 생긴 변화 (근거 자료와 함께), 주요 성공 사례 (<입력>에 있는 것만, [동의 확인] 표시), 결과물 활용과 사업을 이어 갈 방안
+- 5. 사업·예산 변경 현황 표 (항목 | 변경 내용 | 변경 금액 | 승인 여부). 변경이 없으면 '해당 없음'
+- 6. 잘된 점, 아쉬운 점과 개선 방향, 차기 사업 제언
+- 7. 예산 집행 실적 (정산)
+  총괄표 (항목: 지원금·이자수입·자부담 | 예산 | 집행액 | 잔액 | 집행률), 세부 집행 표 (구분: 인건비·사업비·관리운영비 | 세목 | 예산 | 집행액 | 집행률), 잔액이 크거나 초과 집행한 이유
+- 첨부 안내: 넣으면 좋은 사진 5장 내외와 사진 설명 예시, 넣으면 좋은 차트
 
 ## 다 쓴 뒤 점검
 - 표의 숫자와 본문의 숫자가 서로 같은가
+- 달성률·집행률 계산이 맞는가
 - 미달 항목에 사유와 개선 방안이 있는가`,
             fields: [
                 "사업명·기간·대상",
@@ -1671,7 +1693,8 @@ try {
                 "예산과 항목별 집행액",
                 "실제 실적 (숫자 그대로)",
                 "참여자 변화 사례·소감 (실제 들은 말)",
-                "보고서 양식이나 제출처 (있으면)"
+                "보고서 양식이나 제출처 (있으면)",
+                "계획과 달라진 점과 이유 (예: 모집 지연, 담당자 변경)"
             ]
         },
         official_doc: {
@@ -2433,9 +2456,14 @@ try {
         lines.push(`■ 그 밖에 알려 줄 것 (선택, 기관 양식은 파일로 첨부해도 돼요): `);
         const fields = lines.join('\n');
         const fmtRule = PS_FORMAT_RULES[psFormat()] || '';
+        const form = psFormGet(data._key);
+        const formRule = form ? `
+- 맨 아래 <기관 양식>은 실제로 제출할 양식이에요. 그 양식의 목차, 항목 이름, 순서, 표 칸을 그대로 따르세요. 위 '결과물 형식'은 양식에 없는 내용을 채울 때만 참고하세요.
+- 양식에 남아 있는 작성 안내·예시 문구는 지우고 실제 내용으로 채우세요. <입력>에 없어 채울 수 없는 칸은 [확인 필요]로 두세요.` : '';
+        const formBlock = form ? `\n\n<기관 양식 파일="${form.name}">\n${form.text}\n</기관 양식>` : '';
         return `${data.prompt}
 
-## 공통 규칙
+## 공통 규칙${formRule}
 - 통계·수치·법 조항 번호·지역 기관명·연락처·인용문 같은 구체적 사실은 <입력>, 첨부 파일, 이 지시문에 있는 것만 쓰세요. 없으면 지어내지 말고 [확인 필요: 무엇을 확인할지]로 표시하세요.
 - 실천 이론이나 제도 이름 같은 일반 지식은 써도 됩니다. 다만 선정 기준·지원 금액·신청 요건처럼 해마다 바뀌는 정보는 [확인 필요]로 표시하세요.
 - <입력>의 내용을 부풀리거나, 적히지 않은 세부(사례 내용, 비율, 대사, 장면)를 덧붙이지 마세요.
@@ -2448,7 +2476,7 @@ ${fmtRule ? '\n' + fmtRule + '\n' : ''}
 ※ 입력 전 확인: 실명·주민등록번호·정확한 주소·연락처·사진·전산시스템 화면 캡처는 넣지 마세요. 가명, 연령대, 동 단위로 바꿔 넣으면 됩니다.
 <입력>
 ${fields}
-</입력>`;
+</입력>${formBlock}`;
     }
 
     function initAIPrompter() {
@@ -2607,6 +2635,7 @@ ${fields}
                 <p class="ps-note">실명·연락처·주민번호는 쓰지 마세요. 비워 두고 복사한 뒤 AI 채팅창에서 채워도 돼요.</p>
                 ${coreHtml}
                 ${restHtml}
+                ${PS_FORM_PROMPTS.includes(type) ? `<div class="ps-form" id="ps-form">${psFormBoxHtml(type)}</div>` : ''}
                 <div class="ps-row">
                     <button id="ps-save-btn" class="btn-primary btn-outline" onclick="savePromptFields('${type}')">💾 내 입력 저장</button>
                     <button class="btn-primary btn-outline" onclick="clearPromptFields('${type}')">비우기</button>
@@ -2785,6 +2814,211 @@ ${fields}
         if (help) help.innerHTML = psFormatHelp(fmt);
         if (AI_PROMPTS[type]) psOnInput(type);
     };
+
+    /* ===== 우리 기관 양식 올리기 =====
+       한글(hwp·hwpx)·워드(docx)·PDF·txt 빈 양식을 브라우저에서 바로 읽어 글자만 뽑는다.
+       파일은 서버로 보내지 않고, 뽑은 글자만 이 기기(localStorage)에 프롬프트별로 둔다. */
+    const PS_FORM_PROMPTS = ['proposal', 'result_report', 'official_doc', 'program_design', 'data_analysis', 'strategy',
+        'complaint', 'case_assessment', 'pie_records', 'case_closing', 'case_conference', 'supervision_prep', 'crisis',
+        'press_release', 'newsletter'];
+    const PS_FORM_KEY = 'saboknote_prompt_forms';
+    const PS_FORM_MAX = 20000; // 프롬프트에 넣는 양식 글자 수 상한 (넘으면 앞부분만)
+    const PS_LIB = {
+        jszip: 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js',
+        cfb: 'https://cdn.jsdelivr.net/npm/cfb@1.2.2/dist/cfb.min.js',
+        pako: 'https://cdnjs.cloudflare.com/ajax/libs/pako/2.1.0/pako_inflate.min.js',
+        pdf: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js',
+        pdfWorker: 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js',
+    };
+
+    function psFormAll() { try { return JSON.parse(localStorage.getItem(PS_FORM_KEY) || '{}') || {}; } catch (e) { return {}; } }
+    function psFormGet(key) { const f = key && psFormAll()[key]; return f && f.text ? f : null; }
+    function psFormSet(key, form) {
+        const all = psFormAll();
+        if (form) all[key] = form; else delete all[key];
+        try { localStorage.setItem(PS_FORM_KEY, JSON.stringify(all)); return true; } catch (e) { return false; }
+    }
+
+    function psFormBoxHtml(type, msg) {
+        const form = psFormGet(type);
+        const pick = (label) => `<label class="btn-primary btn-outline ps-form-btn">${label}<input type="file" accept=".hwp,.hwpx,.docx,.pdf,.txt" onchange="psFormPick('${type}', this)" hidden></label>`;
+        const note = msg ? `<p class="ps-form-msg">${msg}</p>` : '';
+        if (!form) return `
+            <div class="ps-form-h">📎 우리 기관 양식 올리기 <span>(선택)</span></div>
+            <p class="ps-note">한글(hwp·hwpx)·워드·PDF 빈 양식을 올리면, 그 목차와 칸에 맞춰 써 달라는 내용이 프롬프트에 같이 들어가요. 파일은 서버로 보내지 않고 이 기기에서만 읽어요.</p>
+            ${note}${pick('파일 고르기')}`;
+        return `
+            <div class="ps-form-h">📎 우리 기관 양식 <span>(프롬프트에 들어가요)</span></div>
+            <div class="ps-form-file">✅ ${escapeHtml(form.name)} · ${form.text.length.toLocaleString()}자${form.cut ? ' (길어서 앞부분만)' : ''}</div>
+            ${form.cut ? '<p class="ps-note">양식이 길어서 앞부분만 넣었어요. 더 정확하게 하려면 AI 채팅창에 원본 파일도 같이 첨부해 주세요.</p>' : ''}
+            ${note}
+            <details class="ps-form-view"><summary>읽은 내용 보기</summary><pre>${escapeHtml(form.text)}</pre></details>
+            <div class="ps-row">${pick('다른 파일로 바꾸기')}<button class="btn-primary btn-outline" onclick="psFormRemove('${type}')">양식 빼기</button></div>`;
+    }
+    function psFormRender(type, msg) {
+        const box = document.getElementById('ps-form');
+        if (box) box.innerHTML = psFormBoxHtml(type, msg);
+        psOnInput(type);
+    }
+
+    window.psFormRemove = function (type) { psFormSet(type, null); psFormRender(type); };
+
+    window.psFormPick = async function (type, input) {
+        const file = input.files && input.files[0];
+        if (!file) return;
+        const box = document.getElementById('ps-form');
+        if (box) box.innerHTML = '<div class="ps-form-h">📎 양식 읽는 중...</div>';
+        try {
+            let text = psCleanFormText(await psReadFormFile(file));
+            if (text.length < 20) throw new Error('글자를 거의 못 읽었어요. 스캔한 이미지 파일이면 AI 채팅창에 파일을 직접 첨부해 주세요.');
+            const cut = text.length > PS_FORM_MAX;
+            if (cut) text = text.slice(0, PS_FORM_MAX);
+            if (!psFormSet(type, { name: file.name, text, cut, t: Date.now() })) throw new Error('이 기기에 저장할 공간이 부족해요. 다른 프롬프트의 양식을 빼고 다시 올려 주세요.');
+            trackUse('prompt_form');
+            psFormRender(type);
+        } catch (e) {
+            psFormRender(type, '⚠️ ' + escapeHtml(e && e.message ? e.message : '파일을 읽지 못했어요.'));
+        }
+    };
+
+    function psLoadScript(src) {
+        PS_LIB._p = PS_LIB._p || {};
+        if (!PS_LIB._p[src]) PS_LIB._p[src] = new Promise((resolve, reject) => {
+            const s = document.createElement('script');
+            s.src = src;
+            s.onload = resolve;
+            s.onerror = () => { delete PS_LIB._p[src]; reject(new Error('파일 읽기 도구를 불러오지 못했어요. 인터넷 연결을 확인해 주세요.')); };
+            document.head.appendChild(s);
+        });
+        return PS_LIB._p[src];
+    }
+
+    async function psReadFormFile(file) {
+        const ext = (file.name.split('.').pop() || '').toLowerCase();
+        if (file.size > 20 * 1024 * 1024) throw new Error('20MB보다 큰 파일은 읽을 수 없어요.');
+        if (ext === 'txt') return await file.text();
+        const buf = await file.arrayBuffer();
+        if (ext === 'hwp') return await psReadHwp(buf);
+        if (ext === 'hwpx' || ext === 'docx') return await psReadZipXml(buf, ext);
+        if (ext === 'pdf') return await psReadPdf(buf);
+        throw new Error('hwp, hwpx, docx, pdf, txt 파일만 올릴 수 있어요.');
+    }
+
+    // 옛 한글 파일(HWP 5): OLE 묶음 안 BodyText/Section* 의 문단 글자(PARA_TEXT)만 꺼낸다
+    async function psReadHwp(buf) {
+        await psLoadScript(PS_LIB.cfb);
+        await psLoadScript(PS_LIB.pako);
+        let cfb;
+        try { cfb = window.CFB.read(new Uint8Array(buf), { type: 'array' }); } catch (e) { throw new Error('한글 파일 형식이 아니에요. hwpx나 PDF로 저장해서 올려 주세요.'); }
+        const head = window.CFB.find(cfb, 'FileHeader');
+        if (!head) throw new Error('한글 파일 형식이 아니에요. hwpx나 PDF로 저장해서 올려 주세요.');
+        const flags = head.content[36] | (head.content[37] << 8);
+        if (flags & 2) throw new Error('암호가 걸린 한글 파일이에요. 암호를 풀고 다시 올려 주세요.');
+        if (flags & 4) throw new Error('배포용(보호된) 한글 파일이라 읽을 수 없어요. 한글에서 PDF로 저장해서 올려 주세요.');
+        const sections = [];
+        cfb.FullPaths.forEach((p, i) => {
+            const m = /BodyText\/Section(\d+)$/.exec(p);
+            if (m) sections.push([+m[1], cfb.FileIndex[i].content]);
+        });
+        sections.sort((a, b) => a[0] - b[0]);
+        const out = [];
+        sections.forEach(([, raw]) => {
+            let d = raw instanceof Uint8Array ? raw : new Uint8Array(raw);
+            if (flags & 1) d = window.pako.inflateRaw(d);
+            const dv = new DataView(d.buffer, d.byteOffset, d.byteLength);
+            let i = 0;
+            while (i + 4 <= d.length) {
+                const h = dv.getUint32(i, true); i += 4;
+                const tag = h & 0x3ff;
+                let size = h >>> 20;
+                if (size === 0xfff) { size = dv.getUint32(i, true); i += 4; }
+                if (tag === 67) { // HWPTAG_PARA_TEXT
+                    let s = '';
+                    for (let j = i; j + 1 < i + size;) {
+                        const c = dv.getUint16(j, true);
+                        if ((c >= 1 && c <= 9) || (c >= 11 && c <= 12) || (c >= 14 && c <= 23)) { j += 16; continue; } // 조판 부호(8글자 크기)
+                        if (c < 32) { if (c === 10) s += '\n'; j += 2; continue; }
+                        s += String.fromCharCode(c); j += 2;
+                    }
+                    out.push(s);
+                }
+                i += size;
+            }
+        });
+        return out.join('\n');
+    }
+
+    // 워드(docx)·새 한글(hwpx): 압축 안 XML에서 문단은 줄로, 표는 칸을 탭으로 이어 한 줄로
+    async function psReadZipXml(buf, ext) {
+        await psLoadScript(PS_LIB.jszip);
+        let zip;
+        try { zip = await window.JSZip.loadAsync(buf); } catch (e) { throw new Error('파일이 손상됐거나 형식이 달라요.'); }
+        const names = ext === 'docx'
+            ? ['word/document.xml']
+            : Object.keys(zip.files).filter(n => /^Contents\/section\d+\.xml$/i.test(n))
+                .sort((a, b) => parseInt(a.replace(/\D/g, ''), 10) - parseInt(b.replace(/\D/g, ''), 10));
+        if (!names.length || !zip.file(names[0])) throw new Error('문서 내용을 찾지 못했어요.');
+        const out = [];
+        for (const n of names) out.push(psXmlToText(await zip.file(n).async('string')));
+        return out.join('\n');
+    }
+    function psXmlToText(xml) {
+        const doc = new DOMParser().parseFromString(xml, 'application/xml');
+        const out = [];
+        const all = (el, name) => Array.from(el.getElementsByTagNameNS('*', name));
+        const owner = (el, name) => { let p = el.parentElement; while (p && p.localName !== name) p = p.parentElement; return p; };
+        const textOf = (el) => all(el, 't').map(t => t.textContent).join('');
+        const walk = (node) => {
+            Array.from(node.children).forEach(c => {
+                if (c.localName === 'tbl') {
+                    all(c, 'tr').filter(tr => owner(tr, 'tbl') === c).forEach(tr => {
+                        const cells = all(tr, 'tc').filter(tc => owner(tc, 'tr') === tr)
+                            .map(tc => all(tc, 'p').filter(p => owner(p, 'tc') === tc).map(textOf).join(' ').trim());
+                        if (cells.some(Boolean)) out.push(cells.join('\t'));
+                    });
+                } else if (c.localName === 'p' && !all(c, 'tbl').length) {
+                    out.push(textOf(c));
+                } else walk(c);
+            });
+        };
+        walk(doc.documentElement);
+        return out.join('\n');
+    }
+
+    async function psReadPdf(buf) {
+        if (!window.pdfjsLib) await psLoadScript(PS_LIB.pdf);
+        if (!window.pdfjsLib.GlobalWorkerOptions.workerSrc) window.pdfjsLib.GlobalWorkerOptions.workerSrc = PS_LIB.pdfWorker;
+        const pdf = await window.pdfjsLib.getDocument({ data: new Uint8Array(buf) }).promise;
+        const out = [];
+        for (let p = 1; p <= Math.min(pdf.numPages, 40); p++) {
+            const tc = await (await pdf.getPage(p)).getTextContent();
+            out.push(tc.items.map(it => it.str + (it.hasEOL ? '\n' : '')).join(''));
+        }
+        return out.join('\n');
+    }
+
+    // 빈 줄·쪽 번호·되풀이되는 긴 안내문을 걷어 내고, 세로쓰기 표 제목(신/청/단/체)은 한 줄로 붙인다
+    function psCleanFormText(text) {
+        const lines = [];
+        const seen = new Set();
+        let vert = [];
+        const flush = () => {
+            if (vert.length >= 3 && new Set(vert).size > 1) lines.push(vert.join(''));
+            else vert.forEach(v => { if (lines[lines.length - 1] !== v) lines.push(v); });
+            vert = [];
+        };
+        String(text || '').replace(/\r/g, '').split('\n').forEach(l => {
+            const s = l.replace(/[  　]+/g, ' ').replace(/ *\t */g, '\t').trim();
+            if (!s || /^-\s*\d+\s*-$/.test(s) || /^[•·]+$/.test(s)) return;
+            if (/^[가-힣]$/.test(s)) { vert.push(s); return; }
+            flush();
+            if (lines[lines.length - 1] === s) return;
+            if (s.length >= 15) { if (seen.has(s)) return; seen.add(s); }
+            lines.push(s);
+        });
+        flush();
+        return lines.join('\n');
+    }
 
     function psFieldsFromInputs() {
         const out = {};
