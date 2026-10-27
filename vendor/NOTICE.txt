@@ -1,0 +1,8 @@
+vendor/hwpx-base.hwpx
+
+빈 HWPX 문서 틀. python-hwpx(https://github.com/airmang/python-hwpx)의 Skeleton.hwpx를 바탕으로
+표 테두리(borderFill 3)와 굵은 글자(charPr 7, 8) 스타일을 더해 만들었다.
+
+python-hwpx
+Copyright 2025-2026 airmang
+Licensed under the Apache License, Version 2.0 (http://www.apache.org/licenses/LICENSE-2.0)

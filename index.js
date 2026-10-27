@@ -2654,6 +2654,17 @@ ${fields}
                     <div id="prompt-text" class="prompt-text-area">${escapeHtml(buildPrompt(data, savedFields))}</div>
                 </details>
             </div>
+            ${PS_FORM_PROMPTS.includes(type) ? `
+            <div class="ps-doc" id="ps-doc">
+                <div class="ps-doc-h">📥 AI 답을 문서 파일로 받기</div>
+                <p class="ps-note">AI가 쓴 답을 채팅의 복사 버튼으로 복사해 아래에 붙여 넣으세요. 탭으로 나뉜 줄은 표로 바뀌고, '----- 참고 -----' 아래는 문서에서 빠져요.</p>
+                <textarea id="ps-answer" class="calc-input ps-answer" rows="5" placeholder="여기에 AI 답 붙여 넣기"></textarea>
+                <div class="ps-doc-row">
+                    <button class="btn-primary" onclick="psDownloadDoc('${type}','hwpx')">📄 한글 파일</button>
+                    <button class="btn-primary btn-outline" onclick="psDownloadDoc('${type}','docx')">📝 워드 파일</button>
+                </div>
+                <p class="ps-fmt-help" id="ps-doc-msg">한글 2014 이상에서 hwpx가 열려요. 옛날 hwp 파일이 꼭 필요하면 한글에서 연 뒤 [다른 이름으로 저장]에서 hwp를 고르면 돼요. 붙여 넣은 내용은 저장되지 않아요.</p>
+            </div>` : ''}
 
             <div class="prompt-guide-box">
                 <div style="font-weight:800; color:#1e40af; margin-bottom:8px; display:flex; align-items:center; gap:6px;">
@@ -2663,7 +2674,7 @@ ${fields}
                     <li>위의 <b>[프롬프트 복사하기]</b> 버튼을 눌러요.</li>
                     <li>ChatGPT, Claude, Gemini 채팅창에 붙여넣어요.</li>
                     <li>위에서 칸을 채웠다면 그대로 보내요. 비워 뒀다면 맨 아래 <b>&lt;입력&gt;</b>의 ■ 칸만 채워서 보내요. 기관 양식은 파일로 첨부해도 돼요.</li>
-                    <li>답이 나오면 채팅의 <b>복사 버튼</b>으로 복사해 한글·워드에 붙여 넣어요. '----- 참고 -----' 아래는 확인용이라 문서에 넣지 않아도 돼요.</li>
+                    <li>답이 나오면 채팅의 <b>복사 버튼</b>으로 복사해 한글·워드에 붙여 넣어요. '----- 참고 -----' 아래는 확인용이라 문서에 넣지 않아도 돼요.${PS_FORM_PROMPTS.includes(type) ? ' 위 <b>[AI 답을 문서 파일로 받기]</b>에 붙여 넣으면 표까지 만든 한글·워드 파일로 받을 수 있어요.' : ''}</li>
                 </ol>
                 <div style="margin-top:10px; padding-top:10px; border-top:1px dashed var(--border); font-size:0.82rem; color:var(--text-4); line-height:1.65;">
                     <b>⚠ 꼭 지켜 주세요</b><br>
@@ -3019,6 +3030,134 @@ ${fields}
         flush();
         return lines.join('\n');
     }
+
+    /* ===== AI 답 → 문서 파일(hwpx·docx) =====
+       붙여 넣은 답을 문단과 표로 나눈 뒤 브라우저에서 바로 파일을 만든다 (서버로 보내지 않음).
+       hwpx는 vendor/hwpx-base.hwpx(빈 문서 틀, 표 테두리 borderFill 3 · 굵은 글자 charPr 7·8) 위에 본문만 채운다. */
+    const PS_HWPX_BASE = '/vendor/hwpx-base.hwpx?v=1';
+
+    // 결과: [{ type:'p', text, bold, title } | { type:'table', rows:[[...]] }]
+    function psParseAnswer(text) {
+        const blocks = [];
+        let table = null;
+        let blank = false;
+        const endTable = () => {
+            if (!table) return;
+            const n = Math.max(...table.map(r => r.length));
+            blocks.push({ type: 'table', rows: table.map(r => r.concat(Array(n - r.length).fill(''))) });
+            table = null;
+        };
+        const plain = (s) => s.replace(/\*\*(.+?)\*\*/g, '$1').replace(/__(.+?)__/g, '$1').replace(/`([^`]+)`/g, '$1');
+        const lines = String(text || '').replace(/\r/g, '').split('\n');
+        for (const raw of lines) {
+            const line = raw.replace(/\s+$/, '');
+            const t = line.trim();
+            if (/^-{3,}\s*참고\s*-{3,}$/.test(t)) break; // 확인용 덧붙임은 문서에서 뺀다
+            if (/^```/.test(t)) continue;
+            if (/^\|.*\|$/.test(t)) { // 마크다운 표
+                if (/^\|[\s:|-]+\|$/.test(t)) continue;
+                (table = table || []).push(t.slice(1, -1).split('|').map(c => plain(c.trim())));
+                blank = false;
+                continue;
+            }
+            if (line.includes('\t')) {
+                (table = table || []).push(t.split('\t').map(c => plain(c.trim())));
+                blank = false;
+                continue;
+            }
+            endTable();
+            if (!t) { if (blocks.length && !blank) { blocks.push({ type: 'p', text: '' }); blank = true; } continue; }
+            blank = false;
+            const indent = (line.match(/^ */) || [''])[0];
+            const h = /^(#{1,6})\s+(.*)$/.exec(t);
+            if (h) { blocks.push({ type: 'p', text: plain(h[2]), bold: true, title: h[1].length === 1 }); continue; }
+            let body = plain(t.replace(/^>\s?/, '').replace(/^[-*]\s+/, '· '));
+            const isHead = !indent && (/^\d+\.\s/.test(body) || /^\[표\]/.test(body) || /^[ⅠⅡⅢⅣⅤⅥⅦⅧⅨⅩ]\.?\s/.test(body));
+            blocks.push({ type: 'p', text: indent + body, bold: isHead || /^\*\*.+\*\*$/.test(t) });
+        }
+        endTable();
+        while (blocks.length && blocks[blocks.length - 1].type === 'p' && !blocks[blocks.length - 1].text) blocks.pop();
+        return blocks;
+    }
+
+    const psXml = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+        .replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, '');
+
+    function psDocxXml(blocks) {
+        const run = (text, bold, size) => `<w:r>${bold || size ? `<w:rPr>${bold ? '<w:b/>' : ''}${size ? `<w:sz w:val="${size}"/>` : ''}</w:rPr>` : ''}<w:t xml:space="preserve">${psXml(text)}</w:t></w:r>`;
+        const para = (text, bold, size) => `<w:p>${text ? run(text, bold, size) : ''}</w:p>`;
+        const border = ['top', 'left', 'bottom', 'right', 'insideH', 'insideV'].map(b => `<w:${b} w:val="single" w:sz="4" w:space="0" w:color="000000"/>`).join('');
+        const body = blocks.map(b => {
+            if (b.type === 'p') return para(b.text, b.bold, b.title ? 28 : 0);
+            const cols = b.rows[0].length;
+            const rows = b.rows.map((r, ri) => `<w:tr>${r.map(c => `<w:tc><w:tcPr><w:tcW w:w="${Math.floor(5000 / cols)}" w:type="pct"/>${ri === 0 ? '<w:shd w:val="clear" w:color="auto" w:fill="F2F2F2"/>' : ''}</w:tcPr><w:p><w:pPr><w:spacing w:before="40" w:after="40"/></w:pPr>${c ? run(c, ri === 0) : ''}</w:p></w:tc>`).join('')}</w:tr>`).join('');
+            return `<w:tbl><w:tblPr><w:tblW w:w="5000" w:type="pct"/><w:tblBorders>${border}</w:tblBorders><w:tblCellMar><w:left w:w="100" w:type="dxa"/><w:right w:w="100" w:type="dxa"/></w:tblCellMar></w:tblPr><w:tblGrid>${'<w:gridCol/>'.repeat(cols)}</w:tblGrid>${rows}</w:tbl><w:p/>`;
+        }).join('');
+        return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>${body}<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1440" w:right="1304" w:bottom="1440" w:left="1304" w:header="851" w:footer="992" w:gutter="0"/></w:sectPr></w:body></w:document>`;
+    }
+
+    async function psBuildDocx(blocks) {
+        await psLoadScript(PS_LIB.jszip);
+        const zip = new window.JSZip();
+        zip.file('[Content_Types].xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/><Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/></Types>');
+        zip.file('_rels/.rels', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>');
+        zip.file('word/_rels/document.xml.rels', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>');
+        zip.file('word/styles.xml', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:docDefaults><w:rPrDefault><w:rPr><w:rFonts w:ascii="맑은 고딕" w:hAnsi="맑은 고딕" w:eastAsia="맑은 고딕" w:cs="맑은 고딕"/><w:sz w:val="21"/><w:szCs w:val="21"/><w:lang w:val="ko-KR" w:eastAsia="ko-KR"/></w:rPr></w:rPrDefault><w:pPrDefault><w:pPr><w:spacing w:after="80" w:line="300" w:lineRule="auto"/></w:pPr></w:pPrDefault></w:docDefaults><w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/></w:style></w:styles>');
+        zip.file('word/document.xml', psDocxXml(blocks));
+        return zip.generateAsync({ type: 'blob', mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+    }
+
+    function psHwpxBody(blocks) {
+        let id = 1000;
+        const para = (inner) => `<hp:p id="${id++}" paraPrIDRef="0" styleIDRef="0" pageBreak="0" columnBreak="0" merged="0">${inner}</hp:p>`;
+        const run = (text, cp) => `<hp:run charPrIDRef="${cp}">${text ? `<hp:t>${psXml(text)}</hp:t>` : '<hp:t/>'}</hp:run>`;
+        const W = 42520, H = 282, M = 'left="510" right="510" top="141" bottom="141"';
+        return blocks.map(b => {
+            if (b.type === 'p') return para(run(b.text, b.title ? 8 : b.bold ? 7 : 0));
+            const cols = b.rows[0].length;
+            const cw = Math.floor(W / cols);
+            const rows = b.rows.map((r, ri) => `<hp:tr>${r.map((c, ci) => `<hp:tc name="" header="${ri === 0 ? 1 : 0}" hasMargin="0" protect="0" editable="0" dirty="0" borderFillIDRef="3"><hp:subList id="" textDirection="HORIZONTAL" lineWrap="BREAK" vertAlign="CENTER" linkListIDRef="0" linkListNextIDRef="0" textWidth="0" textHeight="0" hasTextRef="0" hasNumRef="0">${para(run(c, ri === 0 ? 7 : 0))}</hp:subList><hp:cellAddr colAddr="${ci}" rowAddr="${ri}"/><hp:cellSpan colSpan="1" rowSpan="1"/><hp:cellSz width="${ci === cols - 1 ? W - cw * (cols - 1) : cw}" height="${H}"/><hp:cellMargin ${M}/></hp:tc>`).join('')}</hp:tr>`).join('');
+            const tbl = `<hp:tbl id="${id++}" zOrder="0" numberingType="TABLE" textWrap="TOP_AND_BOTTOM" textFlow="BOTH_SIDES" lock="0" dropcapstyle="None" pageBreak="CELL" repeatHeader="1" rowCnt="${b.rows.length}" colCnt="${cols}" cellSpacing="0" borderFillIDRef="3" noAdjust="0"><hp:sz width="${W}" widthRelTo="ABSOLUTE" height="${H * b.rows.length}" heightRelTo="ABSOLUTE" protect="0"/><hp:pos treatAsChar="1" affectLSpacing="0" flowWithText="1" allowOverlap="0" holdAnchorAndSO="0" vertRelTo="PARA" horzRelTo="COLUMN" vertAlign="TOP" horzAlign="LEFT" vertOffset="0" horzOffset="0"/><hp:outMargin left="0" right="0" top="0" bottom="0"/><hp:inMargin ${M}/>${rows}</hp:tbl>`;
+            return para(`<hp:run charPrIDRef="0">${tbl}</hp:run>`) + para(run('', 0));
+        }).join('');
+    }
+
+    async function psBuildHwpx(blocks) {
+        await psLoadScript(PS_LIB.jszip);
+        const res = await fetch(PS_HWPX_BASE);
+        if (!res.ok) throw new Error('한글 문서 틀을 불러오지 못했어요.');
+        const zip = await window.JSZip.loadAsync(await res.arrayBuffer());
+        const sec = await zip.file('Contents/section0.xml').async('string');
+        zip.file('Contents/section0.xml', sec.replace('</hs:sec>', psHwpxBody(blocks) + '</hs:sec>'));
+        zip.file('mimetype', 'application/hwp+zip', { compression: 'STORE' }); // 맨 앞·무압축이어야 한글이 연다
+        return zip.generateAsync({ type: 'blob', mimeType: 'application/hwp+zip', compression: 'DEFLATE' });
+    }
+
+    window.psDownloadDoc = async function (type, kind) {
+        const box = document.getElementById('ps-answer');
+        const msg = document.getElementById('ps-doc-msg');
+        const say = (t) => { if (msg) msg.innerHTML = t; };
+        const blocks = psParseAnswer(box ? box.value : '');
+        if (!blocks.length) { say('⚠️ 먼저 AI 답을 붙여 넣어 주세요.'); if (box) box.focus(); return; }
+        say('파일 만드는 중...');
+        try {
+            const blob = kind === 'hwpx' ? await psBuildHwpx(blocks) : await psBuildDocx(blocks);
+            const d = new Date();
+            const stamp = `${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, '0')}${String(d.getDate()).padStart(2, '0')}`;
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `saboknote-${type.replace(/_/g, '-')}-${stamp}.${kind}`;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+            trackUse('prompt_doc_' + kind);
+            const tables = blocks.filter(b => b.type === 'table').length;
+            say(`✅ ${kind === 'hwpx' ? '한글' : '워드'} 파일을 받았어요 (표 ${tables}개). 글꼴·칸 너비는 열어서 기관 양식에 맞게 다듬어 주세요.`);
+        } catch (e) {
+            say('⚠️ ' + escapeHtml(e && e.message ? e.message : '파일을 만들지 못했어요.'));
+        }
+    };
 
     function psFieldsFromInputs() {
         const out = {};
