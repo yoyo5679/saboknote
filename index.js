@@ -3389,6 +3389,17 @@ ${fields}
                         </div>
                     </div>
 
+                        <!-- 결과 바로 아래 항상 보이는 안내 (기관마다 달라 실제 급여와 다를 수 있음) -->
+                        <div id="payroll-notice" style="margin-top:14px; padding:14px 16px; background:#fff7ed; border:1px solid #fed7aa; border-radius:14px;">
+                            <div style="font-size:0.88rem; font-weight:900; color:#c2410c; margin-bottom:6px;">⚠️ 실제 급여와 다를 수 있어요</div>
+                            <ul style="margin:0; padding-left:18px; font-size:0.8rem; color:#9a3412; line-height:1.65;">
+                                <li><b>기관마다</b> 보수규정·호봉표·수당 종류와 지급 기준이 달라요.</li>
+                                <li>소득세는 간이세액표 기준 <b>추정치</b>라 부양가족 수, 비과세 항목에 따라 달라져요.</li>
+                                <li>4대보험 요율과 최저임금은 <b>해마다 바뀌어요.</b></li>
+                                <li>정확한 금액은 <b>기관 회계·인사 담당자</b>나 급여명세서로 꼭 확인해 주세요.</li>
+                            </ul>
+                        </div>
+
                         <!-- 🤓 신입을 위한 급여 계산 설명 토글 -->
                         <div style="margin-top:20px; text-align:center;">
                             <button onclick="togglePayrollGuide()" id="btn-payroll-guide" style="background:linear-gradient(135deg, #f0abfc 0%, #60a5fa 100%); color:white; border:none; border-radius:12px; padding:12px 24px; font-size:0.9rem; font-weight:800; cursor:pointer; transition:all 0.3s; box-shadow:0 4px 12px rgba(129,140,248,0.3);">
@@ -5252,32 +5263,6 @@ ${fields}
         if (ratioEl) ratioEl.innerText = ratio + '%';
         if (barEl) barEl.style.width = ratio + '%';
 
-        // 법적 면책 조항 주입 (이미 결과 카드가 렌더링된 곳의 컨테이너를 찾아서 하단에 추가)
-        const payrollContentDiv = document.getElementById('admin-content-payroll');
-        if (payrollContentDiv && !document.getElementById('payroll-disclaimer')) {
-            const disclaimerHtml = `
-            <div id = "payroll-disclaimer" style = "margin-top:24px; padding:16px; background:#fff1f2; border-radius:12px; border:1px solid #ffe4e6; display:block; visibility:visible; opacity:1;" >
-                <div style="display:flex; align-items:flex-start; gap:8px;">
-                    <span style="font-size:1.2rem; flex-shrink:0;">⚠️</span>
-                    <div>
-                        <div style="font-size:0.8rem; font-weight:800; color:#e11d48; margin-bottom:4px;">법적 책임 한계 안내</div>
-                        <div style="font-size:0.75rem; color:#be123c; line-height:1.5;">
-                            본 계산기의 결과는 사용자가 입력한 값을 바탕으로 산출된 <b>참고용 추정치</b>입니다. 실제 급여 제공 및 정산 과정에서 기관의 세부 운영 지침, 근무 조건, 정책 변동 등에 따라 <b>실제 수령액 및 청구액과 차이</b>가 발생할 수 있습니다. 본 결과값은 어떠한 법적 증빙 효력도 갖지 못하며, 해당 계산 결과를 근거로 한 사용자의 결정이나 계약에 대해 <b>본 서비스는 일체의 법적 책임을 지지 않습니다.</b> 정확한 정산 금액은 소속 기관의 회계 담당자 또는 관할 관청을 통해 반드시 최종 확인하시기 바랍니다.
-                        </div>
-                    </div>
-                </div>
-            </div> `;
-
-            // 기존 결과 Dashboard div 찾기
-            const dashboards = payrollContentDiv.querySelectorAll('.step-card > div[style*="display:grid;"]');
-            if (dashboards.length > 0) {
-                const dashboardContainer = dashboards[dashboards.length - 1]; // Results Dashboard
-                // 기존에 면책조항이 없다면 뒤에 붙임
-                if (!dashboardContainer.nextElementSibling || dashboardContainer.nextElementSibling.id !== 'payroll-disclaimer') {
-                    dashboardContainer.insertAdjacentHTML('afterend', disclaimerHtml);
-                }
-            }
-        }
     };
 
     window.checkBudget = function () {
