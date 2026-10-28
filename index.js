@@ -213,9 +213,28 @@ try {
                 </label>
                 <button class="btn-primary" style="background:linear-gradient(135deg, #2563eb 0%, #1e40af 100%); padding:16px; font-size:1.1rem; border-radius:12px; box-shadow:0 4px 14px rgba(37, 99, 235,0.3)" onclick="subscribeNewsletter()">💌 나도 이 편지 받을래!</button>
             </div>
+            <a href="/newsletter/" target="_blank" rel="noopener" style="display:inline-block; margin-top:14px; font-size:0.88rem; font-weight:700; color:var(--primary);">📖 구독 전에 지난 편지 먼저 읽어 보기</a>
         </div>`;
         openModal(kit ? `${kit.name} 출시 알림` : '비밀 편지 구독 신청', modalContent, 'newsletter');
     };
+
+    // 홈 띠 배너: 아직이면 구독 창, 이미 구독한 기기면 지난 편지 보기
+    function nlSubscribed() { try { return localStorage.getItem(NL_DONE_KEY) === '1'; } catch (e) { return false; } }
+    window.nlStripClick = function (ev) {
+        if (nlSubscribed()) return true; // 링크(href)가 지난 편지로 바뀌어 있음
+        if (ev) ev.preventDefault();
+        trackUse('nl_strip');
+        window.openNewsletterSubModal();
+        return false;
+    };
+    function renderNlStrip() {
+        const a = document.getElementById('nl-strip'), cta = document.getElementById('nl-strip-cta');
+        if (!a || !cta) return;
+        const done = nlSubscribed();
+        a.href = done ? '/newsletter/001/' : '/#home/newsletter';
+        cta.textContent = done ? '1호 읽기 →' : '구독하기 →';
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', renderNlStrip); else renderNlStrip();
 
     function initNewsletterReader() {
         const btn = document.getElementById('open-newsletter-read');
@@ -1527,7 +1546,7 @@ try {
             }
         }
 
-        try { localStorage.setItem(NL_DONE_KEY, '1'); } catch (e) { /* noop */ }
+        try { localStorage.setItem(NL_DONE_KEY, '1'); } catch (e) { /* noop */ } renderNlStrip();
         trackUse('newsletter_sub');
         if (nlSource) trackUse('kit_waitlist');
 
@@ -1614,7 +1633,7 @@ try {
                 if (error) console.error('Ebook gate save error', error);
             } catch (e) { console.error('Ebook gate save error', e); }
         }
-        try { localStorage.setItem(EBOOK_DONE_KEY, '1'); localStorage.setItem(NL_DONE_KEY, '1'); } catch (e) { /* noop */ }
+        try { localStorage.setItem(EBOOK_DONE_KEY, '1'); localStorage.setItem(NL_DONE_KEY, '1'); } catch (e) { /* noop */ } renderNlStrip();
         trackUse('ebook_get');
 
         const body = document.getElementById('modal-body');
@@ -1700,7 +1719,7 @@ try {
                 if (error) console.error('Workbook gate save error', error);
             } catch (e) { console.error('Workbook gate save error', e); }
         }
-        try { localStorage.setItem(WORKBOOK_DONE_KEY, '1'); localStorage.setItem(NL_DONE_KEY, '1'); } catch (e) { /* noop */ }
+        try { localStorage.setItem(WORKBOOK_DONE_KEY, '1'); localStorage.setItem(NL_DONE_KEY, '1'); } catch (e) { /* noop */ } renderNlStrip();
         trackUse('workbook_get');
         const body = document.getElementById('modal-body');
         if (body) body.innerHTML = workbookDownloadHtml('new');
@@ -3726,7 +3745,7 @@ ${fields}
                 return;
             }
         }
-        try { localStorage.setItem(NL_DONE_KEY, '1'); } catch (e) { /* noop */ }
+        try { localStorage.setItem(NL_DONE_KEY, '1'); } catch (e) { /* noop */ } renderNlStrip();
         trackUse('newsletter_sub');
         const card = document.getElementById('ps-sub-card');
         if (card) card.innerHTML = '<div class="ps-card-t">💌 구독했어요! 새 소식이 생기면 보내 드릴게요.</div>';
@@ -5291,7 +5310,7 @@ ${fields}
         { id: 'voca', group: '주요 도구', icon: '📖', name: '생존 단어장', desc: '초보 복지사 용어 사전', tint: '#fffbeb', act: () => document.getElementById('open-voca-dict').click() },
         { id: 'eligibility', group: '주요 도구', icon: '💰', name: '수급판정 계산', desc: '기초수급·차상위 기준', tint: '#fef2f2', act: () => document.getElementById('calc-eligibility').click() },
         { id: 'dashboard', group: '주요 도구', icon: '📊', name: '핵심 지표', desc: '중위소득·장기요양 수가', tint: '#f1f5f9', act: () => document.getElementById('open-dashboard').click() },
-        { id: 'newsletter', group: '주요 도구', icon: '💌', name: '비밀 편지', desc: '사복천재의 뉴스레터', tint: '#eff6ff', act: () => document.getElementById('open-newsletter-read').click() },
+        { id: 'newsletter', group: '주요 도구', icon: '💌', name: '비밀 편지', desc: '구독하고 서류 꿀팁 받기', tint: '#eff6ff', act: () => document.getElementById('open-newsletter-read').click() },
         { id: 'support', group: '주요 도구', icon: '🔍', name: '지원정보 찾기', desc: '맞춤형 복지서비스 검색', tint: '#eff6ff', act: () => window.open('/benefits/', '_blank') },
         { id: 'request', group: '주요 도구', icon: '🙋', name: '요청하기', desc: '필요한 프롬프트·용어 요청', tint: '#fefce8', act: () => document.getElementById('open-request-modal').click() },
         // 행정/회계 마스터 12개 계산기 (그룹으로 표시)
