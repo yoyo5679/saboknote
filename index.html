@@ -56,7 +56,7 @@
     <link rel="icon"
         href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>">
 
-    <link rel="stylesheet" href="index.css?v=24">
+    <link rel="stylesheet" href="index.css?v=25">
     <link rel="stylesheet" as="style" crossorigin
         href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -303,6 +303,15 @@
                         </div>
                         <button class="sec-link"
                             onclick="document.getElementById('open-dashboard').click()">지표 보기</button>
+                    </div>
+
+                    <div class="home-metric-card home-stats-card" onclick="openStatsFinder()">
+                        <span style="font-size:1.5rem;">📈</span>
+                        <div style="flex:1; min-width:0;">
+                            <div class="hm-k">사업 근거 통계</div>
+                            <div class="hm-v hm-v-sm">계획서에 쓸 공식 통계</div>
+                        </div>
+                        <button class="sec-link" onclick="event.stopPropagation(); openStatsFinder()">통계 찾기</button>
                     </div>
                 </aside>
 
@@ -1425,7 +1434,7 @@
 
     </div><!-- /#app -->
 
-    <script src="index.js?v=71" charset="utf-8"></script>
+    <script src="index.js?v=72" charset="utf-8"></script>
     <script>
         // PWA Service Worker Registration
         if ('serviceWorker' in navigator) {
