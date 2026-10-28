@@ -2112,6 +2112,12 @@ try {
         if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(c.s).then(done).catch(() => prompt('이 문장을 복사하세요', c.s));
         else prompt('이 문장을 복사하세요', c.s);
     };
+    // 홈 오른쪽 카드에서 바로 '사업 근거 통계'로
+    window.openStatsFinder = function () {
+        trackUse('stats_open');
+        const b = document.getElementById('open-dashboard');
+        if (b) { b.click(); switchKpiSec('stats'); }
+    };
     window.switchKpiSec = function (sec) {
         document.querySelectorAll('.kpi-sec').forEach(b => b.classList.toggle('on', b.dataset.sec === sec));
         const money = document.getElementById('kpi-sec-money'), stats = document.getElementById('kpi-sec-stats');

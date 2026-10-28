@@ -2491,3 +2491,7 @@ html.dark-mode .ps-level-card.pro { background: rgba(37, 99, 235, 0.1); }
 .nl-when b { display: block; font-size: 0.9rem; color: #b45309; margin-bottom: 4px; }
 .nl-when small { color: var(--text-6); font-size: 0.78rem; }
 html.dark-mode .nl-when { background: rgba(245, 158, 11, 0.1); border-color: rgba(245, 158, 11, 0.35); }
+
+/* 홈 오른쪽: 사업 근거 통계 카드 */
+.home-stats-card { margin-top: 10px; cursor: pointer; }
+.hm-v-sm { font-size: 0.86rem !important; }
