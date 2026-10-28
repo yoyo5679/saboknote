@@ -3449,6 +3449,8 @@ ${fields}
                     <button id="ps-save-btn" class="btn-primary btn-outline" onclick="savePromptFields('${type}')">💾 내 입력 저장</button>
                     <button class="btn-primary btn-outline" onclick="clearPromptFields('${type}')">비우기</button>
                 </div>
+                <div id="ps-saved-note">${psHasFields(saved) ? `<p class="ps-saved-note">💾 저장해 둔 입력을 불러왔어요. <button onclick="clearPromptFields('${type}', true)">저장한 입력 지우기</button></p>` : ''}
+                </div>
             </div>
             <div id="ps-status" class="ps-status"></div>
 
@@ -3609,8 +3611,23 @@ ${fields}
         const keys = Object.keys(all).filter(k => AI_PROMPTS[k] && (all[k].fav || psHasFields(all[k])));
         if (!keys.length) return '<div class="ps-box ps-empty">⭐ 자주 쓰는 프롬프트는 보관함에 담아 두세요. 빈칸을 미리 채워 저장할 수도 있어요.</div>';
         const chips = keys.map(k => `<button class="ps-chip" onclick="renderPromptDetail('${k}')">${AI_PROMPTS[k].icon} ${escapeHtml(AI_PROMPTS[k].title)}${psHasFields(all[k]) ? ' <span class="ps-chip-tag">입력 저장됨</span>' : ''}</button>`).join('');
-        return `<div class="ps-box"><div class="ps-box-t">⭐ 내 보관함</div><div class="ps-chips">${chips}</div></div>`;
+        const anySaved = keys.some(k => psHasFields(all[k]));
+        const clearAll = anySaved ? '<button class="ps-clear-all" onclick="psClearAllFields()">🗑️ 저장한 입력 모두 지우기 <span>(즐겨찾기는 남아요)</span></button>' : '';
+        return `<div class="ps-box"><div class="ps-box-t">⭐ 내 보관함</div><div class="ps-chips">${chips}</div>${clearAll}</div>`;
     }
+
+    // 저장해 둔 입력을 모든 프롬프트에서 지운다 (이 기기 + 서버). 즐겨찾기 표시는 남긴다
+    window.psClearAllFields = async function () {
+        const all = psAll();
+        const keys = Object.keys(all).filter(k => psHasFields(all[k]));
+        if (!keys.length) return;
+        if (!confirm(`저장해 둔 입력 ${keys.length}개를 모두 지울까요?\n이 기기와 계정에서 함께 지워지고, 되돌릴 수 없어요.`)) return;
+        for (const k of keys) await psPut(k, { fav: !!all[k].fav, fields: {} });
+        trackUse('prompt_clear_all');
+        const box = document.getElementById('ps-box');
+        if (box) box.innerHTML = psBoxHtml();
+        alert('저장한 입력을 모두 지웠어요.');
+    };
 
     // 저장·복사 전에 개인정보로 보이는 패턴을 찾는다 (완벽하진 않아서 안내 문구도 함께 둔다)
     const PII_PATTERNS = [
@@ -4021,8 +4038,11 @@ ${fields}
         else psShowSaveStatus(where, 'cleared');
     };
 
-    window.clearPromptFields = async function (type) {
+    window.clearPromptFields = async function (type, askFirst) {
+        if (askFirst && !confirm('이 프롬프트에 저장해 둔 입력을 지울까요?\n이 기기와 계정에서 함께 지워져요.')) return;
         document.querySelectorAll('#ps-fill .ps-input').forEach(el => { el.value = ''; });
+        const note = document.getElementById('ps-saved-note');
+        if (note) note.innerHTML = '';
         window.psOnInput(type);
         const cur = psGet(type);
         if (psHasFields(cur)) {
