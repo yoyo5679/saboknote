@@ -3098,8 +3098,7 @@ try {
     window.setPromptLevel = function (lv) {
         try { localStorage.setItem(PS_LEVEL_KEY, lv); } catch (e) { /* noop */ }
         trackUse('prompt_level_' + lv);
-        const b = document.getElementById('open-ai-prompter');
-        if (b) b.click();
+        if (window.openPromptList) window.openPromptList();
     };
     const PS_AIS = [
         ['chatgpt', 'ChatGPT', 'https://chatgpt.com/'],
@@ -3108,17 +3107,19 @@ try {
     ];
 
     function psLevelPickerHtml() {
+        const last = psLevel();
+        const tag = (lv) => last === lv ? '<em class="ps-level-last">지난번 선택</em>' : '';
         return `
             <div class="ps-level">
                 <h3>AI, 얼마나 써 보셨어요?</h3>
-                <p>고르신 화면으로 보여 드릴게요. 나중에 언제든 바꿀 수 있어요.</p>
+                <p>고르신 화면으로 보여 드릴게요. 목록 위에서도 언제든 바꿀 수 있어요.</p>
                 <button class="ps-level-card easy" onclick="setPromptLevel('beginner')">
                     <span class="ps-level-ico">🐣</span>
-                    <span><b>AI가 처음이에요</b><span>칸 한두 개만 채우고 버튼 하나 누르면 끝나요</span></span>
+                    <span><b>AI가 처음이에요 ${tag('beginner')}</b><span>칸 한두 개만 채우고 버튼 하나 누르면 끝나요</span></span>
                 </button>
                 <button class="ps-level-card pro" onclick="setPromptLevel('pro')">
                     <span class="ps-level-ico">🚀</span>
-                    <span><b>AI 써 봤어요</b><span>모든 칸·결과 형식·기관 양식 올리기까지</span></span>
+                    <span><b>AI 써 봤어요 ${tag('pro')}</b><span>모든 칸·결과 형식·기관 양식 올리기까지</span></span>
                 </button>
             </div>`;
     }
@@ -3138,7 +3139,7 @@ try {
         modalBody.innerHTML = `
             <div class="ps-easy" style="animation: slideInRight 0.3s ease;">
                 <div class="ps-easy-top">
-                    <button class="btn-primary btn-outline" onclick="document.getElementById('open-ai-prompter').click()" style="padding:6px 12px; font-size:0.85rem; width:auto">← 목록으로</button>
+                    <button class="btn-primary btn-outline" onclick="openPromptList()" style="padding:6px 12px; font-size:0.85rem; width:auto">← 목록으로</button>
                     <button class="ps-easy-switch" onclick="setPromptLevel('pro')">🚀 기본 화면으로</button>
                 </div>
                 <div class="ps-easy-head"><span>${data.icon}</span><div><b>${escapeHtml(easy.t)}</b><small>이럴 때 써요: ${escapeHtml(easy.w)}</small></div></div>
@@ -3210,6 +3211,7 @@ try {
         trackUse('prompt_easy_go');
         const done = document.getElementById('ps-easy-done');
         if (done) done.innerHTML = `<div class="ps-done">✅ 복사했어요! ${target ? target[1] + ' 창에' : 'AI 입력창에'} 붙여 넣으세요.</div>`;
+        else if (document.getElementById('ps-after-copy')) psRenderAfterCopy(); // 기본 화면: 복사 뒤 안내·구독 카드
     };
 
     // 결과물을 어디에 붙여 넣을지 (한글 / 워드 / 채팅에서 보기). 기기에 기억해 둔다
@@ -3273,7 +3275,10 @@ ${fields}
         const btn = document.getElementById('open-ai-prompter');
         const btn2 = document.getElementById('open-ai-prompter-2');
 
-        const openPrompterModal = () => {
+        // 비밀 프롬프트를 열 때마다 '쉬운 화면 / 기본 화면'을 먼저 고르게 한다.
+        // 목록으로 돌아가기·화면 전환처럼 안에서 다시 그릴 때는 listOnly=true로 바로 목록을 보여 준다.
+        const openPrompterModal = (listOnly) => {
+            const showList = listOnly === true;
             const categories = [
                 {
                     id: 'counsel',
@@ -3352,16 +3357,18 @@ ${fields}
             </div>
         `;
             // 처음 여는 사람에게는 수준부터 묻는다
-            openModal('사복천재의 비밀 프롬프트', psLevel() ? content : psLevelPickerHtml(), 'prompt');
-            if (!psLevel()) return;
+            openModal('사복천재의 비밀 프롬프트', showList ? content : psLevelPickerHtml(), 'prompt');
+            if (!showList) return;
+            if (window._psPendingTab) { const t = window._psPendingTab; window._psPendingTab = null; switchPrompterTab(t); }
             psSyncFromServer().then(() => {
                 const box = document.getElementById('ps-box');
                 if (box) box.innerHTML = psBoxHtml();
             });
         };
 
-        if (btn) btn.onclick = openPrompterModal;
-        if (btn2) btn2.onclick = openPrompterModal;
+        if (btn) btn.onclick = () => openPrompterModal(false);
+        if (btn2) btn2.onclick = () => openPrompterModal(false);
+        window.openPromptList = () => openPrompterModal(true);
     }
 
     window.switchPrompterTab = function(tabName) {
@@ -3420,7 +3427,7 @@ ${fields}
         modalBody.innerHTML = `
             <div class="prompt-detail-view" style = "animation: slideInRight 0.3s ease;" >
             <div style="margin-bottom:20px;">
-                <button class="btn-primary btn-outline" onclick="document.getElementById('open-ai-prompter').click()" style="padding:6px 12px; font-size:0.85rem; width:auto">← 목록으로</button>
+                <button class="btn-primary btn-outline" onclick="openPromptList()" style="padding:6px 12px; font-size:0.85rem; width:auto">← 목록으로</button>
             </div>
             
             <div class="prompt-header-box">
@@ -3447,7 +3454,9 @@ ${fields}
                 <div class="prompt-content-label">결과물을 어디에 붙여 넣을까요?</div>
                 <div class="ps-fmt-row">${fmtBtn('hwp', '📄 한글')}${fmtBtn('word', '📝 워드')}${fmtBtn('chat', '💬 채팅에서 보기')}</div>
                 <p class="ps-fmt-help" id="ps-fmt-help">${psFormatHelp(fmt)}</p>
-                <button class="btn-primary" style="margin-top:12px; width:100%; height:54px; font-size:1.1rem;" onclick="copyPromptToClipboard('${type}')">🪄 프롬프트 복사하기</button>
+                <p class="ps-easy-tip" style="margin-top:14px;">쓰는 AI를 누르면 <b>자동으로 복사</b>되고 AI가 새 창으로 열려요.</p>
+                <div class="ps-easy-ais">${PS_AIS.map(([k, name]) => `<button class="ps-easy-ai ai-${k}" onclick="psEasyGo('${type}','${k}')">${name}</button>`).join('')}</div>
+                <button class="btn-primary btn-outline" style="margin-top:8px; width:100%; height:48px; font-size:0.95rem;" onclick="copyPromptToClipboard('${type}')">🪄 다른 AI를 써요 → 복사만 하기</button>
                 <div id="ps-after-copy"></div>
                 <details class="ps-preview">
                     <summary>복사될 프롬프트 전체 보기</summary>
@@ -3471,8 +3480,8 @@ ${fields}
                     <span>💡</span> 사용 방법
                 </div>
                 <ol style="padding-left:20px; font-size:0.85rem; color:var(--text-4); line-height:1.7;">
-                    <li>위의 <b>[프롬프트 복사하기]</b> 버튼을 눌러요.</li>
-                    <li>ChatGPT, Claude, Gemini 채팅창에 붙여넣어요.</li>
+                    <li>쓰는 AI 버튼(<b>ChatGPT·Gemini·Claude</b>)을 누르면 복사되고 그 AI가 열려요. 다른 AI면 <b>[복사만 하기]</b>를 눌러요.</li>
+                    <li>AI 입력창에 붙여넣어요. (휴대폰은 꾹 눌러 붙여넣기, 컴퓨터는 Ctrl+V)</li>
                     <li>위에서 칸을 채웠다면 그대로 보내요. 비워 뒀다면 맨 아래 <b>&lt;입력&gt;</b>의 ■ 칸만 채워서 보내요. 기관 양식은 파일로 첨부해도 돼요.</li>
                     <li>답이 나오면 채팅의 <b>복사 버튼</b>으로 복사해 한글·워드에 붙여 넣어요. '----- 참고 -----' 아래는 확인용이라 문서에 넣지 않아도 돼요.${PS_FORM_PROMPTS.includes(type) ? ' 위 <b>[AI 답을 문서 파일로 받기]</b>에 붙여 넣으면 표까지 만든 한글·워드 파일로 받을 수 있어요.' : ''}</li>
                 </ol>
@@ -5764,13 +5773,9 @@ ${fields}
 
     // 프롬프트 칩: 모달을 열고 해당 카테고리 탭으로 바로 이동
     window.homeOpenPrompt = function (tab) {
+        window._psPendingTab = tab || null; // 수준을 고른 뒤 목록이 열리면 이 탭으로
         const b = document.getElementById('open-ai-prompter');
         if (b) b.click();
-        if (tab) {
-            setTimeout(() => {
-                if (window.switchPrompterTab) window.switchPrompterTab(tab);
-            }, 250);
-        }
     };
 
     // 히어로 인사말에 익명 닉네임 반영
