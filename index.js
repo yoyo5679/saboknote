@@ -1838,6 +1838,11 @@ try {
                 });
 
                 const content = `
+                <div class="kpi-secs">
+                    <button class="kpi-sec on" data-sec="money" onclick="switchKpiSec('money')">💰 기준 금액</button>
+                    <button class="kpi-sec" data-sec="stats" onclick="switchKpiSec('stats')">📈 사업 근거 통계</button>
+                </div>
+                <div id="kpi-sec-money">
                 <div class="admin-tabs" style="display:grid; grid-template-columns: repeat(4, 1fr); gap:6px; margin-bottom:20px; padding:4px; background:var(--surface-3); border-radius:12px;">
                     <button class="tab-btn active" id="kpi-tab-wage" onclick="switchKpiTab('wage')" style="padding:10px 4px; border:none; border-radius:8px; background:var(--surface); font-weight:700; color:var(--primary); box-shadow:0 2px 4px rgba(0,0,0,0.05); font-size:0.75rem; transition:all 0.2s; white-space:nowrap;">💰 최저임금</button>
                     <button class="tab-btn" id="kpi-tab-income" onclick="switchKpiTab('income')" style="padding:10px 4px; border:none; border-radius:8px; background:transparent; font-weight:600; color:var(--text-5); font-size:0.75rem; transition:all 0.2s; white-space:nowrap;">🌳 중위소득</button>
@@ -1913,6 +1918,8 @@ try {
                 <div style="margin-top:24px; padding:16px; background:var(--surface-3); border-radius:16px; font-size:0.75rem; color:var(--text-5); line-height:1.5">
                     💡 위 지표는 보건복지부 고시 정보를 바탕으로 구성되었으며, 구체적인 자격 판정은 각각의 전용 계산기를 이용해 주세요.
                 </div>
+                                </div>
+                <div id="kpi-sec-stats" style="display:none;"></div>
                 `;
                 openModal('2026 핵심 지표 대시보드', content, 'ltc');
                 if (typeof switchKpiTab === 'function') switchKpiTab('wage');
@@ -1940,6 +1947,168 @@ try {
                 }
             }
         });
+    };
+
+    /* ===== 사업 근거 통계 =====
+       계획서 '필요성'에 쓸 공식 통계를 주제별로 모았다. 2026년 10월에 공식 발표·보도로 확인한 값만 숫자로 넣고,
+       확인 못 한 지표는 숫자 없이 찾는 곳만 안내한다. 해마다 새 발표가 나오면 값과 연도를 함께 바꿀 것. */
+    const KOSIS_URL = 'https://kosis.kr';
+    const STATS_TOPICS = [
+        { id: 'youth_leaving', emoji: '🏠', name: '자립준비청년', kw: ['자립', '보호종료', '보호 종료', '그룹홈', '위탁', '양육시설', '퇴소'],
+          cards: [
+            { t: '연간 보호종료 인원', v: '매년 약 2천 명', y: '최근 추세', src: '한국사회보장정보원', url: 'http://ssis.or.kr/lay1/bbs/S1T1912C1913/1/612/view.do?article_seq=126453&cpage=1&rows=9&condition=&keyword=',
+              s: '한국사회보장정보원에 따르면 아동양육시설·공동생활가정·가정위탁에서 보호가 끝나는 자립준비청년은 매년 약 2천 명에 이른다.' },
+            { t: '전국 자립준비청년 수', v: '9,970명', y: '2024년 12월 기준', src: '보건복지부·아동권리보장원 자료 (국회 제출, 보도 인용)', url: 'https://biz.heraldcorp.com/article/10477567',
+              s: '보건복지부·아동권리보장원 자료에 따르면 2024년 12월 기준 전국의 자립준비청년은 9,970명이다.' },
+          ], find: '우리 지역 인원은 시·도 자립지원전담기관에 문의하면 알 수 있어요.' },
+        { id: 'elder_suicide', emoji: '🕯️', name: '노인 자살', kw: ['자살', '생명', '노인 자살', '우울', '자살예방'],
+          cards: [
+            { t: '전체 자살률', v: '인구 10만 명당 29.1명', y: '2024년', src: '통계청 「2024년 사망원인통계」', url: 'https://www.mohw.go.kr/board.es?mid=a10503000000&bid=0027&list_no=1487496&act=view',
+              s: '통계청 「2024년 사망원인통계」에 따르면 2024년 자살률은 인구 10만 명당 29.1명으로 2011년 이후 가장 높았다.' },
+            { t: '65세 이상 자살률', v: null, y: '연령별', src: '통계청 「사망원인통계」 연령별 자살률', url: KOSIS_URL,
+              s: '', note: '연령별 자살률은 KOSIS에서 \'사망원인통계\'를 검색해 연령별 표를 보세요. 보도마다 값이 달라 숫자는 넣지 않았어요.' },
+          ], find: 'KOSIS에서 시·도, 시·군·구별 자살률도 볼 수 있어요.' },
+        { id: 'living_alone', emoji: '🧓', name: '독거노인·고령화', kw: ['독거', '1인 가구', '1인가구', '홀몸', '고령', '노인 인구', '어르신'],
+          cards: [
+            { t: '65세 이상 인구', v: '1,051만 명 (전체의 20.3%)', y: '2025년', src: '통계청 「2025 고령자 통계」', url: 'https://www.newsis.com/view/NISX20250929_0003347644',
+              s: '통계청 「2025 고령자 통계」에 따르면 2025년 65세 이상 인구는 1,051만 명으로 전체 인구의 20.3%를 차지해 처음으로 20%를 넘었다.' },
+            { t: '65세 이상 1인 가구', v: '245만 6천 가구 (일반가구의 10.9%)', y: '2025년', src: '국가데이터처 「2025 인구주택총조사」', url: KOSIS_URL,
+              s: '국가데이터처 「2025 인구주택총조사」에 따르면 65세 이상 1인 가구는 245만 6천 가구로 일반가구의 10.9%를 차지한다.' },
+          ], find: '우리 동네 독거노인 수는 KOSIS 인구주택총조사(시·군·구)나 지자체 통계연보에서 찾을 수 있어요.' },
+        { id: 'lonely_death', emoji: '🚪', name: '고독사·사회적 고립', kw: ['고독사', '고립', '외로움', '사회적 고립', '1인 가구'],
+          cards: [
+            { t: '고독사 사망자', v: '3,924명 (전년보다 7.2% 증가)', y: '2024년', src: '보건복지부 「2024년도 고독사 발생 실태조사」', url: 'https://www.newsis.com/view/NISX20251127_0003419323',
+              s: '보건복지부 「2024년도 고독사 발생 실태조사」에 따르면 2024년 고독사 사망자는 3,924명으로 전년보다 7.2% 늘었고, 인구 10만 명당 7.7명으로 집계됐다.' },
+            { t: '고독사 중 남성 비율', v: '약 80%', y: '2024년', src: '보건복지부 「2024년도 고독사 발생 실태조사」', url: 'https://www.newsis.com/view/NISX20251127_0003419323',
+              s: '같은 조사에서 고독사 사망자의 약 80%가 남성이었고, 50~60대 남성이 절반 이상을 차지했다.' },
+          ], find: '시·도별 고독사 수도 같은 실태조사에 나와 있어요.' },
+        { id: 'dementia', emoji: '🧠', name: '치매', kw: ['치매', '인지', '기억'],
+          cards: [
+            { t: '65세 이상 치매 유병률', v: '9.25%', y: '2023년 치매역학조사', src: '보건복지부 「2023 치매역학조사」', url: 'https://weekly.khan.co.kr/article/202503121436001',
+              s: '보건복지부 「2023 치매역학조사」에 따르면 65세 이상 노인의 치매 유병률은 9.25%다.' },
+            { t: '치매 환자 수 추정', v: '약 97만 명 (2026년 100만 명 넘을 전망)', y: '2025년 추정', src: '보건복지부 「2023 치매역학조사」 추계', url: 'https://weekly.khan.co.kr/article/202503121436001',
+              s: '같은 조사 추계에 따르면 2025년 치매 환자는 약 97만 명이며, 2026년에는 100만 명을 넘을 것으로 전망된다.' },
+          ], find: '시·군·구별 추정 치매 환자 수는 중앙치매센터 자료에서 찾을 수 있어요.' },
+        { id: 'child_abuse', emoji: '🧸', name: '아동학대', kw: ['아동학대', '학대', '아동', '방임'],
+          cards: [
+            { t: '아동학대 신고·판단 건수', v: '신고 50,242건 · 학대 판단 24,492건', y: '2024년', src: '보건복지부 「2024 아동학대 연차보고서」', url: 'https://www.khan.co.kr/article/202508291441001/',
+              s: '보건복지부 「2024 아동학대 연차보고서」에 따르면 2024년 아동학대 신고는 50,242건, 학대로 판단된 사례는 24,492건이었다.' },
+            { t: '부모에 의한 학대 비율', v: '84%', y: '2024년', src: '보건복지부 「2024 아동학대 연차보고서」', url: 'https://www.khan.co.kr/article/202508291441001/',
+              s: '같은 보고서에서 학대 행위자의 84%가 부모였다.' },
+          ], find: '시·도별 통계는 아동학대 연차보고서에 있어요.' },
+        { id: 'elder_poverty', emoji: '💸', name: '노인 빈곤', kw: ['빈곤', '노인 빈곤', '저소득', '기초연금', '생계'],
+          cards: [
+            { t: '66세 이상 상대적 빈곤율', v: '39.8%', y: '2023년', src: '통계청 「2025 고령자 통계」', url: 'https://www.newsis.com/view/NISX20250929_0003347644',
+              s: '통계청 「2025 고령자 통계」에 따르면 2023년 66세 이상 은퇴연령층의 상대적 빈곤율은 39.8%로, 18~65세(9.8%)의 4배에 이른다.' },
+            { t: 'OECD 비교', v: '39.7% · OECD 가장 높음 (평균 14.8%)', y: '2022년', src: 'OECD 「Pensions at a Glance 2025」', url: 'https://www.newsis.com/view/NISX20250929_0003347644',
+              s: 'OECD 비교가 가능한 2022년 기준 한국 노인의 상대적 빈곤율은 39.7%로 회원국 가운데 가장 높다.' },
+          ] },
+        { id: 'reclusive', emoji: '🫥', name: '고립·은둔 청년', kw: ['은둔', '고립', '청년', '니트', '쉬었음'],
+          cards: [
+            { t: '거의 집에만 있는 청년 비율', v: '5.2% (2022년 2.4%)', y: '2024년', src: '국무조정실 「2024년 청년의 삶 실태조사」', url: 'https://www.segye.com/newsView/20250311516141',
+              s: '국무조정실 「2024년 청년의 삶 실태조사」에 따르면 거의 집에만 있는 고립·은둔 청년은 5.2%로 2022년(2.4%)보다 두 배 이상 늘었다.' },
+            { t: '은둔 이유 1위', v: '취업이 어려워서 41.1%', y: '2024년', src: '국무조정실 「2024년 청년의 삶 실태조사」', url: 'https://www.segye.com/newsView/20250311516141',
+              s: '같은 조사에서 은둔 이유로 \'취업이 어려워서\'(41.1%)가 가장 많았다.' },
+          ] },
+        { id: 'young_carer', emoji: '🤲', name: '가족돌봄청년', kw: ['가족돌봄', '영케어러', '돌봄 청년', '간병'],
+          cards: [
+            { t: '주당 평균 돌봄 시간', v: '21.6시간 (주돌봄자는 32.8시간)', y: '2022년 조사', src: '보건복지부 「가족돌봄청년 실태조사」', url: 'https://www.newsis.com/view/NISX20230426_0002281149',
+              s: '보건복지부 「가족돌봄청년 실태조사」(2022)에 따르면 가족돌봄청년은 일주일에 평균 21.6시간을 돌봄에 쓴다.' },
+            { t: '우울감 유병률', v: '61.5% (일반 청년 8.5%)', y: '2022년 조사', src: '보건복지부 「가족돌봄청년 실태조사」', url: 'https://www.newsis.com/view/NISX20230426_0002281149',
+              s: '같은 조사에서 가족돌봄청년의 우울감 유병률은 61.5%로 일반 청년(8.5%)의 7배가 넘었다.' },
+          ] },
+        { id: 'multicultural', emoji: '🌏', name: '다문화', kw: ['다문화', '이주', '결혼이민', '외국인'],
+          cards: [
+            { t: '다문화 출생아', v: '13,416명 (전체 출생의 5.6%)', y: '2024년', src: '국가데이터처 「2024년 다문화 인구동태 통계」', url: 'https://mobile.newsis.com/view/NISX20251106_0003392639',
+              s: '국가데이터처 「2024년 다문화 인구동태 통계」에 따르면 2024년 다문화 출생아는 13,416명으로 전체 출생아의 5.6%였다.' },
+            { t: '다문화 혼인', v: '21,450건 (전년보다 5.0% 증가)', y: '2024년', src: '국가데이터처 「2024년 다문화 인구동태 통계」', url: 'https://mobile.newsis.com/view/NISX20251106_0003392639',
+              s: '같은 통계에서 2024년 다문화 혼인은 21,450건으로 전년보다 5.0% 늘었다.' },
+          ], find: '다문화 학생 수는 교육부 교육기본통계에서 찾을 수 있어요.' },
+        { id: 'teen_mental', emoji: '🌧️', name: '청소년 정신건강', kw: ['청소년', '우울', '자살', '정신건강', '학생'],
+          cards: [
+            { t: '청소년 우울감 경험률', v: '27.7% (남 23.1%, 여 32.5%)', y: '2024년', src: '교육부·질병관리청 「청소년건강행태조사」', url: 'https://www.khan.co.kr/article/202411221816001',
+              s: '교육부·질병관리청 「2024년 청소년건강행태조사」에 따르면 청소년 우울감 경험률은 27.7%로 전년(26.0%)보다 높아졌다.' },
+            { t: '자살 생각률', v: '중학생 13.9% · 고등학생 11.5%', y: '2024년', src: '교육부·질병관리청 「청소년건강행태조사」', url: 'https://www.khan.co.kr/article/202411221816001',
+              s: '같은 조사에서 자살 생각률은 중학생 13.9%, 고등학생 11.5%였다.' },
+          ] },
+        { id: 'disability_job', emoji: '♿', name: '장애인 고용', kw: ['장애인', '고용', '일자리', '직업재활'],
+          cards: [
+            { t: '장애인 고용률·경제활동참가율', v: null, y: '연 2회 조사', src: '한국장애인고용공단 「장애인경제활동실태조사」', url: KOSIS_URL,
+              s: '', note: '공식 보고서 수치를 확인하지 못해 숫자는 넣지 않았어요. KOSIS에서 \'장애인경제활동실태조사\'를 검색해 보세요.' },
+          ] },
+    ];
+
+    // 주제 이름·키워드가 많이 겹치는 주제만 보여 준다 ('노인 자살예방'이면 청소년 정신건강은 빼고 노인 자살만)
+    function statsMatch(q) {
+        q = (q || '').trim();
+        if (!q) return [];
+        const scored = STATS_TOPICS.map(tp => {
+            let sc = (q.includes(tp.name) || tp.name.includes(q)) ? 3 : 0;
+            tp.kw.forEach(k => { if (q.includes(k) || (q.length >= 2 && k.includes(q))) sc += 1; });
+            return [tp, sc];
+        }).filter(([, sc]) => sc > 0);
+        const top = Math.max(0, ...scored.map(([, sc]) => sc));
+        return scored.filter(([, sc]) => sc === top).map(([tp]) => tp);
+    }
+    function statsCardHtml(c, i, tid) {
+        return `
+            <div class="st-card">
+                <div class="st-t">${c.t}</div>
+                ${c.v ? `<div class="st-v">${c.v}</div>` : '<div class="st-v st-none">숫자 대신 찾는 곳 안내</div>'}
+                <div class="st-y">기준: ${c.y}</div>
+                <div class="st-src">출처: ${c.src}</div>
+                ${c.note ? `<div class="st-note">${c.note}</div>` : ''}
+                <div class="st-row">
+                    ${c.s ? `<button class="st-copy" onclick="copyStatSentence('${tid}', ${i}, this)">📋 출처 포함 문장 복사</button>` : ''}
+                    <a class="st-link" href="${c.url}" target="_blank" rel="noopener">${c.url === KOSIS_URL ? 'KOSIS 열기' : '자료 보기'} ↗</a>
+                </div>
+            </div>`;
+    }
+    window.renderStats = function (q) {
+        const box = document.getElementById('kpi-sec-stats');
+        if (!box) return;
+        const query = typeof q === 'string' ? q : '';
+        const found = query ? statsMatch(query) : [];
+        const chips = STATS_TOPICS.map(tp => `<button class="st-chip${found.length === 1 && found[0].id === tp.id ? ' on' : ''}" onclick="pickStatsTopic('${tp.id}')">${tp.emoji} ${tp.name}</button>`).join('');
+        let result = '';
+        if (query && !found.length) {
+            result = `<div class="st-empty">'${escapeHtml(query)}' 주제는 아직 없어요.<br>KOSIS(<a href="${KOSIS_URL}" target="_blank" rel="noopener">kosis.kr</a>)에서 주제어로 검색하거나, 지자체 '지역사회보장계획'의 지역 현황을 찾아보세요.</div>`;
+        } else if (found.length) {
+            result = found.map(tp => `
+                <div class="st-topic">
+                    <div class="st-topic-h">${tp.emoji} ${tp.name}</div>
+                    ${tp.cards.map((c, i) => statsCardHtml(c, i, tp.id)).join('')}
+                    ${tp.find ? `<div class="st-find">📍 ${tp.find}</div>` : ''}
+                </div>`).join('');
+        }
+        box.innerHTML = `
+            <p class="st-lead">계획서 <b>추진 배경·필요성</b>에 쓸 공식 통계를 모았어요. 문장 복사 버튼을 누르면 출처까지 붙은 문장이 복사돼요.</p>
+            <div class="st-search"><input id="st-q" type="search" placeholder="사업 주제 입력 (예: 자립준비청년 생필품 지원)" value="${escapeHtml(query)}" onkeydown="if(event.key==='Enter'){renderStats(this.value); const f=document.querySelector('#kpi-sec-stats .st-topic, #kpi-sec-stats .st-empty'); if(f) f.scrollIntoView({behavior:'smooth', block:'start'});}"><button onclick="renderStats(document.getElementById('st-q').value)">찾기</button></div>
+            <div class="st-chips">${chips}</div>
+            ${result || '<div class="st-hint">👆 주제를 누르거나 사업 이름을 입력해 보세요.</div>'}
+            <div class="st-warn">⚠️ 2026년 10월에 확인한 공식 발표·보도 기준이에요. 계획서에 쓰기 전에 원자료에서 최신 값과 연도를 한 번 더 확인해 주세요. 우리 지역 수치는 KOSIS에서 시·군·구로 바꿔 보면 더 설득력 있어요.</div>`;
+    };
+    window.pickStatsTopic = function (id) {
+        const tp = STATS_TOPICS.find(t => t.id === id);
+        if (!tp) return;
+        trackUse('stats_topic');
+        renderStats(tp.name);
+        const first = document.querySelector('#kpi-sec-stats .st-topic');
+        if (first) first.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+    window.copyStatSentence = function (tid, i, btn) {
+        const tp = STATS_TOPICS.find(t => t.id === tid);
+        const c = tp && tp.cards[i];
+        if (!c || !c.s) return;
+        const done = () => { trackUse('stats_copy'); if (btn) { const o = btn.textContent; btn.textContent = '✅ 복사했어요'; setTimeout(() => { btn.textContent = o; }, 1800); } };
+        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(c.s).then(done).catch(() => prompt('이 문장을 복사하세요', c.s));
+        else prompt('이 문장을 복사하세요', c.s);
+    };
+    window.switchKpiSec = function (sec) {
+        document.querySelectorAll('.kpi-sec').forEach(b => b.classList.toggle('on', b.dataset.sec === sec));
+        const money = document.getElementById('kpi-sec-money'), stats = document.getElementById('kpi-sec-stats');
+        if (money) money.style.display = sec === 'money' ? 'block' : 'none';
+        if (stats) { stats.style.display = sec === 'stats' ? 'block' : 'none'; if (sec === 'stats' && !stats.innerHTML) renderStats(''); }
     };
 
     window.showLTCUpdateDetails = function () {
@@ -5323,7 +5492,7 @@ ${fields}
         { id: 'admin', group: '주요 도구', icon: '💸', name: '행정/회계 마스터', desc: '계산기 12가지 + 의무교육 체크', tint: '#ecfdf5', act: () => document.getElementById('open-admin-calc').click() },
         { id: 'voca', group: '주요 도구', icon: '📖', name: '생존 단어장', desc: '초보 복지사 용어 사전', tint: '#fffbeb', act: () => document.getElementById('open-voca-dict').click() },
         { id: 'eligibility', group: '주요 도구', icon: '💰', name: '수급판정 계산', desc: '기초수급·차상위 기준', tint: '#fef2f2', act: () => document.getElementById('calc-eligibility').click() },
-        { id: 'dashboard', group: '주요 도구', icon: '📊', name: '핵심 지표', desc: '중위소득·장기요양 수가', tint: '#f1f5f9', act: () => document.getElementById('open-dashboard').click() },
+        { id: 'dashboard', group: '주요 도구', icon: '📊', name: '핵심 지표', desc: '중위소득·수가 + 사업 근거 통계', tint: '#f1f5f9', act: () => document.getElementById('open-dashboard').click() },
         { id: 'newsletter', group: '주요 도구', icon: '💌', name: '비밀 편지', desc: '구독하고 서류 꿀팁 받기', tint: '#eff6ff', act: () => document.getElementById('open-newsletter-read').click() },
         { id: 'support', group: '주요 도구', icon: '🔍', name: '지원정보 찾기', desc: '맞춤형 복지서비스 검색', tint: '#eff6ff', act: () => window.open('/benefits/', '_blank') },
         { id: 'request', group: '주요 도구', icon: '🙋', name: '요청하기', desc: '필요한 프롬프트·용어 요청', tint: '#fefce8', act: () => document.getElementById('open-request-modal').click() },
@@ -8093,6 +8262,7 @@ ${fields}
             'alltools':     () => window.openAllToolsModal && window.openAllToolsModal(),
             'eligibility':  () => { const b = document.getElementById('calc-eligibility'); if (b) b.click(); },
             'ltc':          () => { const b = document.getElementById('open-dashboard'); if (b) b.click(); },
+            'stats':        () => { const b = document.getElementById('open-dashboard'); if (b) { b.click(); switchKpiSec('stats'); } },
             'prompt':       () => { const b = document.getElementById('open-ai-prompter'); if (b) b.click(); },
             'voca':         () => { const b = document.getElementById('open-voca-dict'); if (b) b.click(); },
             'admin':        () => { const b = document.getElementById('open-admin-calc'); if (b) b.click(); },
