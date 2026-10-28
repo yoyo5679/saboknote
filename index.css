@@ -2501,3 +2501,18 @@ html.dark-mode .nl-when { background: rgba(245, 158, 11, 0.1); border-color: rgb
 .ps-clear-all span { color: var(--text-6); font-weight: 600; }
 .ps-saved-note { margin: 10px 0 0; font-size: 0.8rem; color: var(--text-5); background: var(--surface-2); border-radius: 10px; padding: 8px 10px; }
 .ps-saved-note button { border: none; background: none; color: #dc2626; font-weight: 800; font-size: 0.8rem; cursor: pointer; padding: 0; text-decoration: underline; font-family: inherit; }
+
+/* 3번째 방문부터: 바탕화면에 꺼내기 안내 */
+.install-nudge { position: fixed; left: 12px; right: 12px; bottom: calc(84px + env(safe-area-inset-bottom, 0px)); z-index: 9000; max-width: 420px; margin: 0 auto; background: var(--surface); border: 1.5px solid #bfdbfe; border-radius: 20px; box-shadow: 0 14px 40px rgba(15, 23, 42, 0.22); padding: 16px 16px 10px; transform: translateY(24px); opacity: 0; transition: transform 0.3s ease, opacity 0.3s ease; }
+.install-nudge.show { transform: none; opacity: 1; }
+.install-nudge .in-x { position: absolute; top: 8px; right: 10px; border: none; background: none; font-size: 1rem; color: var(--text-6); cursor: pointer; }
+.install-nudge .in-top { display: flex; gap: 12px; align-items: flex-start; padding-right: 18px; }
+.install-nudge .in-ico { font-size: 2rem; line-height: 1; }
+.install-nudge b { font-size: 0.95rem; font-weight: 900; color: var(--text-dark); line-height: 1.4; }
+.install-nudge p { margin: 4px 0 0; font-size: 0.84rem; color: var(--text-4); line-height: 1.55; }
+.install-nudge p b { font-size: inherit; color: var(--primary); }
+.install-nudge .in-btns { display: grid; grid-template-columns: 1.6fr 1fr; gap: 8px; margin-top: 12px; }
+.install-nudge .in-go { border: none; background: var(--primary); color: #fff; border-radius: 12px; min-height: 44px; font-weight: 900; font-size: 0.92rem; cursor: pointer; font-family: inherit; }
+.install-nudge .in-later { border: 1px solid var(--border); background: var(--surface); color: var(--text-4); border-radius: 12px; min-height: 44px; font-weight: 700; font-size: 0.88rem; cursor: pointer; font-family: inherit; }
+.install-nudge .in-never { display: block; margin: 6px auto 0; border: none; background: none; color: var(--text-6); font-size: 0.75rem; text-decoration: underline; cursor: pointer; font-family: inherit; }
+@media (min-width: 900px) { .install-nudge { left: auto; right: 24px; bottom: 24px; width: 380px; } }

@@ -10626,6 +10626,85 @@ ${fields}
     document.addEventListener('DOMContentLoaded', checkPWAStatus);
     window.addEventListener('load', checkPWAStatus);
 
+    /* ===== 3번째 방문부터 '바탕화면에 꺼내기' 안내 =====
+       방문은 브라우저 세션당 1번으로 센다. 앱으로 실행 중이거나, 설치했거나, '다시 안 볼래요'를 누르면 안 띄운다.
+       '다음에요'는 7일 뒤에 다시. 다른 창(모달)이 열려 있으면 기다렸다가 띄운다. */
+    const VISIT_KEY = 'saboknote_visits';
+    const NUDGE_KEY = 'saboknote_install_nudge'; // 'never' | 다시 보여 줄 시각(ms)
+    const isStandaloneApp = () => window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+    function countVisit() {
+        try {
+            if (sessionStorage.getItem('saboknote_visit_counted')) return parseInt(localStorage.getItem(VISIT_KEY) || '0', 10) || 0;
+            sessionStorage.setItem('saboknote_visit_counted', '1');
+            const n = (parseInt(localStorage.getItem(VISIT_KEY) || '0', 10) || 0) + 1;
+            localStorage.setItem(VISIT_KEY, String(n));
+            return n;
+        } catch (e) { return 0; }
+    }
+    function nudgeAllowed() {
+        try {
+            const v = localStorage.getItem(NUDGE_KEY);
+            if (v === 'never') return false;
+            return !v || Date.now() > (parseInt(v, 10) || 0);
+        } catch (e) { return false; }
+    }
+    function showInstallNudge(visits) {
+        if (document.getElementById('install-nudge')) return;
+        const el = document.createElement('div');
+        el.id = 'install-nudge';
+        el.className = 'install-nudge';
+        el.innerHTML = `
+            <button class="in-x" aria-label="닫기" onclick="installNudgeLater()">✕</button>
+            <div class="in-top"><span class="in-ico">📲</span><div>
+                <b>벌써 ${visits}번째 방문! 이 정도면 단골이잖아요 😎</b>
+                <p>사복노트를 바탕화면에 꺼내 두면 주소 칠 필요 없이 <b>아이콘 한 번</b>이면 열려요. 서류 지옥 탈출 속도 2배 🏃‍♀️💨</p>
+            </div></div>
+            <div class="in-btns">
+                <button class="in-go" onclick="installNudgeGo()">1초 만에 꺼내기</button>
+                <button class="in-later" onclick="installNudgeLater()">다음에요</button>
+            </div>
+            <button class="in-never" onclick="installNudgeNever()">다시 안 볼래요</button>`;
+        document.body.appendChild(el);
+        requestAnimationFrame(() => el.classList.add('show'));
+        trackUse('install_nudge_show');
+    }
+    function hideInstallNudge() {
+        const el = document.getElementById('install-nudge');
+        if (!el) return;
+        el.classList.remove('show');
+        setTimeout(() => el.remove(), 300);
+    }
+    window.installNudgeGo = function () {
+        trackUse('install_nudge_click');
+        try { localStorage.setItem(NUDGE_KEY, String(Date.now() + 30 * 864e5)); } catch (e) { /* noop */ }
+        hideInstallNudge();
+        showPWAInstallGuide();
+    };
+    window.installNudgeLater = function () {
+        try { localStorage.setItem(NUDGE_KEY, String(Date.now() + 7 * 864e5)); } catch (e) { /* noop */ }
+        hideInstallNudge();
+    };
+    window.installNudgeNever = function () {
+        try { localStorage.setItem(NUDGE_KEY, 'never'); } catch (e) { /* noop */ }
+        hideInstallNudge();
+    };
+    window.addEventListener('appinstalled', () => {
+        try { localStorage.setItem(NUDGE_KEY, 'never'); } catch (e) { /* noop */ }
+        hideInstallNudge();
+    });
+    (function initInstallNudge() {
+        const visits = countVisit();
+        if (visits < 3 || isStandaloneApp() || !nudgeAllowed()) return;
+        let tries = 0;
+        const tryShow = () => {
+            const overlay = document.getElementById('modal-overlay');
+            const busy = overlay && overlay.classList.contains('active');
+            if (busy && tries++ < 20) { setTimeout(tryShow, 3000); return; } // 다른 창을 보는 중이면 조금 뒤에
+            if (!busy) showInstallNudge(visits);
+        };
+        setTimeout(tryShow, 4000);
+    })();
+
 
     /* ===== 당겨서 새로고침 (Pull-to-Refresh) — .app-main 스크롤 최상단에서 아래로 당기면 reload ===== */
     (function initPullToRefresh() {
