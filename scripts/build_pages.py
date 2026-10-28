@@ -2,7 +2,7 @@
 """사복노트 검색용 정적 페이지 만들기
 
 앱(index.js) 안에만 있던 내용을 구글이 읽을 수 있는 별도 페이지로 꺼낸다.
-  - AI_PROMPTS(프롬프트 23개)    → prompts/index.html, prompts/<key>.html
+  - AI_PROMPTS(프롬프트 24개)    → prompts/index.html, prompts/<key>.html
   - VOCABULARY_DATA(생존 단어장) → voca/index.html
   - 워크북 실습 6개(scripts/build_workbook.py의 LABS) → 해당 프롬프트 페이지의 '가상 예시'
   - 실무 가이드 글(scripts/guides.py)      → guide/index.html, guide/<slug>.html
@@ -68,7 +68,7 @@ process.stdout.write(JSON.stringify({
 def common_rules(src):
     """앱의 buildPrompt()가 프롬프트 뒤에 붙이는 공통 규칙 (앱에서 복사하는 글과 똑같게)."""
     m = re.search(r"function buildPrompt\(data, values\) \{.*?const askRule = data\.noQuestions\s*\? '(.*?)'\s*: '(.*?)';"
-                  r".*?return `\$\{data\.prompt\}(.*?)<입력>\n\$\{fields\}\n</입력>`;", src, re.S)
+                  r".*?return `\$\{data\.prompt\}(.*?)<입력>\n\$\{fields\}\n</입력>\$\{formBlock\}`;", src, re.S)
     if not m:
         raise SystemExit("index.js의 buildPrompt 모양이 바뀌었어요. build_pages.py의 common_rules()를 맞춰 주세요.")
     ask_no, ask_yes, body = (x.replace("\\'", "'") for x in m.groups())
@@ -78,6 +78,9 @@ def common_rules(src):
 def full_prompt(p, rules):
     ask_no, ask_yes, body = rules
     body = body.replace("${askRule}", ask_no if p.get("noQuestions") else ask_yes)
+    # 앱에서만 붙는 부분(올린 파일 규칙, 한글·워드 붙여 넣기 규칙)은 공개 페이지에서 뺀다
+    body = body.replace("${formRule}", "")
+    body = re.sub(r"\$\{fmtRule.*?\}\n", "", body, flags=re.S)
     fields = "\n".join(f"■ {f}: " for f in p["fields"])
     return f"{p['prompt']}{body}<입력>\n{fields}\n</입력>"
 
