@@ -3906,6 +3906,7 @@ ${fields}
                     <button class="admin-cat active" data-cat="acct" onclick="switchAdminCat('acct')">💰 회계·급여</button>
                     <button class="admin-cat" data-cat="biz" onclick="switchAdminCat('biz')">📊 사업·통계</button>
                     <button class="admin-cat" data-cat="file" onclick="switchAdminCat('file')">🗂️ 사진·문서</button>
+                    <button class="admin-cat" data-cat="edu" onclick="switchAdminCat('edu')">📋 의무교육</button>
                 </div>
                 <div class="admin-group" data-cat="acct" style="display:grid; grid-template-columns: repeat(4, 1fr); gap:6px; padding:4px; background:var(--surface-3); border-radius:10px;">
                     <button class="tab-btn active" id="tab-vat" onclick="switchAdminTab('vat')" style="padding:10px 4px; border:none; border-radius:6px; background:var(--surface); font-weight:700; color:var(--primary); box-shadow:0 2px 4px rgba(0,0,0,0.05); font-size:0.72rem; transition:all 0.2s; white-space:nowrap;">부가세</button>
@@ -3924,6 +3925,9 @@ ${fields}
                     <button class="tab-btn" id="tab-compressor" onclick="switchAdminTab('compressor')" style="padding:10px 4px; border:none; border-radius:6px; background:transparent; font-weight:600; color:var(--text-5); font-size:0.72rem; transition:all 0.2s; white-space:nowrap;">사진 압축</button>
                     <button class="tab-btn" id="tab-converter" onclick="switchAdminTab('converter')" style="padding:10px 4px; border:none; border-radius:6px; background:transparent; font-weight:600; color:var(--text-5); font-size:0.72rem; transition:all 0.2s; white-space:nowrap;">포맷 변환</button>
                     <button class="tab-btn" id="tab-pdf" onclick="switchAdminTab('pdf')" style="padding:10px 4px; border:none; border-radius:6px; background:transparent; font-weight:600; color:var(--text-5); font-size:0.72rem; transition:all 0.2s; white-space:nowrap;">PDF 압축</button>
+                </div>
+                <div class="admin-group" data-cat="edu" style="display:none; grid-template-columns: 1fr; gap:6px; padding:4px; background:var(--surface-3); border-radius:10px;">
+                    <button class="tab-btn" id="tab-edu" onclick="switchAdminTab('edu')" style="padding:10px 4px; border:none; border-radius:6px; background:transparent; font-weight:600; color:var(--text-5); font-size:0.72rem; transition:all 0.2s; white-space:nowrap;">2026 법정 의무교육 체크리스트</button>
                 </div>
             </div>
             </div>
@@ -4752,6 +4756,9 @@ ${fields}
                 </div>
             </div>
 
+            <!-- 법정 의무교육 체크리스트 (renderEduChecklist가 채움) -->
+            <div id="admin-content-edu" class="tab-content" style="display:none; animation: fadeIn 0.3s ease;"></div>
+
             <!-- 사진 모자이크 탭 내용 -->
             <div id="admin-content-mosaic" class="tab-content" style="display:none; animation: fadeIn 0.3s ease;">
                 <style>
@@ -5313,7 +5320,7 @@ ${fields}
     ];
     const ALL_TOOLS = [
         { id: 'prompter', group: '주요 도구', icon: '🪄', name: '비밀 프롬프트', desc: '사례기록·보고서 AI 주문', tint: '#eff6ff', act: () => document.getElementById('open-ai-prompter').click() },
-        { id: 'admin', group: '주요 도구', icon: '💸', name: '행정/회계 마스터', desc: '12가지 계산기 모두 열기', tint: '#ecfdf5', act: () => document.getElementById('open-admin-calc').click() },
+        { id: 'admin', group: '주요 도구', icon: '💸', name: '행정/회계 마스터', desc: '계산기 12가지 + 의무교육 체크', tint: '#ecfdf5', act: () => document.getElementById('open-admin-calc').click() },
         { id: 'voca', group: '주요 도구', icon: '📖', name: '생존 단어장', desc: '초보 복지사 용어 사전', tint: '#fffbeb', act: () => document.getElementById('open-voca-dict').click() },
         { id: 'eligibility', group: '주요 도구', icon: '💰', name: '수급판정 계산', desc: '기초수급·차상위 기준', tint: '#fef2f2', act: () => document.getElementById('calc-eligibility').click() },
         { id: 'dashboard', group: '주요 도구', icon: '📊', name: '핵심 지표', desc: '중위소득·장기요양 수가', tint: '#f1f5f9', act: () => document.getElementById('open-dashboard').click() },
@@ -5535,6 +5542,7 @@ ${fields}
         const contentPdf = document.getElementById('admin-content-pdf');
         const contentConverter = document.getElementById('admin-content-converter');
         const contentMosaic = document.getElementById('admin-content-mosaic');
+        const contentEdu = document.getElementById('admin-content-edu');
 
         if (contentVat) contentVat.style.display = tabName === 'vat' ? 'block' : 'none';
         if (contentTax) contentTax.style.display = tabName === 'tax' ? 'block' : 'none';
@@ -5548,6 +5556,7 @@ ${fields}
         if (contentPdf) contentPdf.style.display = tabName === 'pdf' ? 'block' : 'none';
         if (contentConverter) contentConverter.style.display = tabName === 'converter' ? 'block' : 'none';
         if (contentMosaic) contentMosaic.style.display = tabName === 'mosaic' ? 'block' : 'none';
+        if (contentEdu) { contentEdu.style.display = tabName === 'edu' ? 'block' : 'none'; if (tabName === 'edu') renderEduChecklist(); }
 
         const btnVat = document.getElementById('tab-vat');
         const btnTax = document.getElementById('tab-tax');
@@ -5561,6 +5570,7 @@ ${fields}
         const btnPdf = document.getElementById('tab-pdf');
         const btnConverter = document.getElementById('tab-converter');
         const btnMosaic = document.getElementById('tab-mosaic');
+        const btnEdu = document.getElementById('tab-edu');
 
         const setActive = (btn) => {
             if (!btn) return;
@@ -5578,7 +5588,7 @@ ${fields}
             btn.style.boxShadow = 'none';
         };
 
-        setInactive(btnVat); setInactive(btnTax); setInactive(btnLtc); setInactive(btnPayroll); setInactive(btnBudget); setInactive(btnYouth); setInactive(btnTarget); setInactive(btnCompressor); setInactive(btnPercent); setInactive(btnPdf); setInactive(btnConverter); setInactive(btnMosaic);
+        setInactive(btnVat); setInactive(btnTax); setInactive(btnLtc); setInactive(btnPayroll); setInactive(btnBudget); setInactive(btnYouth); setInactive(btnTarget); setInactive(btnCompressor); setInactive(btnPercent); setInactive(btnPdf); setInactive(btnConverter); setInactive(btnMosaic); setInactive(btnEdu);
 
         if (tabName === 'vat') setActive(btnVat);
         else if (tabName === 'tax') setActive(btnTax);
@@ -5592,6 +5602,102 @@ ${fields}
         else if (tabName === 'pdf') setActive(btnPdf);
         else if (tabName === 'converter') setActive(btnConverter);
         else if (tabName === 'mosaic') setActive(btnMosaic);
+        else if (tabName === 'edu') setActive(btnEdu);
+    };
+
+    /* ===== 법정 의무교육 체크리스트 (2026) =====
+       2026년 10월 공개 자료(법령·보건복지부 보도자료·지자체 안내)로 정리했다. 해마다 바뀌므로 연초에 다시 확인할 것.
+       체크 상태는 이 기기(localStorage)에 연도별로 둔다. */
+    const EDU_YEAR = 2026;
+    const EDU_KEY = 'saboknote_edu_check_' + EDU_YEAR;
+    const EDU_TYPE_KEY = 'saboknote_edu_facility';
+    const EDU_GROUPS = [
+        { id: 'common', title: '🏢 모든 기관 공통', sub: '기관장이 전 직원에게 실시해요' },
+        { id: 'report', title: '🚨 신고의무자 교육', sub: '사회복지시설 종사자는 신고의무자예요. 기관장이 연 1시간 이상 실시하고 결과를 제출해요' },
+        { id: 'person', title: '🎓 사회복지사 개인', sub: '자격을 가진 사람이 직접 들어요' },
+        { id: 'facility', title: '🏠 시설 유형별', sub: '우리 시설 유형에 해당할 때만' },
+        { id: 'check', title: '🔎 해당 여부 확인', sub: '기관 성격·사업에 따라 대상이 달라요' },
+    ];
+    const EDU_ITEMS = [
+        { id: 'harass', g: 'common', name: '직장 내 성희롱 예방교육', cycle: '연 1회 이상', who: '전 직원 (기관장 포함)', law: '남녀고용평등법 제13조' },
+        { id: 'disaware', g: 'common', name: '직장 내 장애인 인식개선 교육', cycle: '연 1회 · 1시간 이상', who: '전 직원', law: '장애인고용촉진법 제5조의2', where: '한국장애인고용공단 등' },
+        { id: 'privacy', g: 'common', name: '개인정보보호 교육', cycle: '정기적 (연 1회 이상 권장)', who: '개인정보를 다루는 직원', law: '개인정보 보호법 제28조' },
+        { id: 'suicide', g: 'common', name: '자살예방교육 (생명지킴이)', cycle: '연 1회 · 결과 제출', who: '전 직원', law: '자살예방법 제17조 (2024. 7. 12. 시행)' },
+        { id: 'pension', g: 'common', name: '퇴직연금 가입자 교육', cycle: '연 1회 이상', who: '퇴직연금(DB·DC) 가입 직원', law: '근로자퇴직급여 보장법', where: '퇴직연금 사업자(금융기관)가 대신 해 주기도 해요' },
+        { id: 'fire', g: 'common', name: '소방 교육·훈련', cycle: '연 1회 이상', who: '근무자', law: '화재예방법 (소방안전관리대상물)', badge: '건물 기준 확인' },
+        { id: 'child', g: 'report', name: '아동학대 신고의무자 교육', cycle: '연 1회 · 1시간 이상', who: '신고의무자 (종사자)', law: '아동복지법 제26조' },
+        { id: 'elder', g: 'report', name: '노인학대 신고의무자 교육', cycle: '연 1회 · 1시간 이상', who: '신고의무자 (종사자)', law: '노인복지법 제39조의6' },
+        { id: 'disabuse', g: 'report', name: '장애인학대 신고의무자 교육', cycle: '연 1회 · 1시간 이상', who: '신고의무자 (종사자)', law: '장애인복지법 제59조의4' },
+        { id: 'emergency', g: 'report', name: '긴급복지지원 신고의무자 교육', cycle: '연 1회 · 1시간 이상', who: '신고의무자 (종사자)', law: '긴급복지지원법 제7조' },
+        { id: 'swcpd', g: 'person', name: '사회복지사 보수교육', cycle: '연 8시간 이상', who: '법인·시설에서 일하는 사회복지사 (의료·학교사회복지사는 12시간)', law: '사회복지사업법 제13조 · 시행규칙', where: '한국사회복지사협회 보수교육센터' },
+        { id: 'elderrights', g: 'facility', t: 'elder', name: '노인인권교육', cycle: '연 4시간', who: '노인복지시설 운영자·종사자', law: '노인복지법 제6조의3' },
+        { id: 'disrights', g: 'facility', t: 'disabled', name: '장애인 인권교육', cycle: '연 1회 이상', who: '장애인복지시설 운영자·종사자', law: '장애인복지법', badge: '시간은 관할 안내 확인' },
+        { id: 'mental', g: 'facility', t: 'mental', name: '정신건강증진시설 종사자 인권교육', cycle: '연 4시간', who: '정신건강증진시설 종사자', law: '정신건강복지법' },
+        { id: 'safety', g: 'check', name: '산업안전보건교육', cycle: '사무직 반기 6시간 · 그 외 반기 12시간', who: '근로자', law: '산업안전보건법 제29조 · 시행령 별표1', badge: '적용 여부 확인', note: '사회복지서비스업은 일부 적용이 빠지지만, 급식·일자리 사업 등 하는 일에 따라 대상일 수 있어요. 관할 노동청에 확인해 주세요.' },
+        { id: 'bully', g: 'check', name: '직장 내 괴롭힘 예방교육', cycle: '연 1회 권장', who: '전 직원', law: '근로기준법 (취업규칙 기재 사항)', badge: '법정 의무 아님', note: '2026년 10월 기준 법정 의무교육은 아니에요. 취업규칙에 정해 뒀다면 지켜야 해요.' },
+        { id: 'public4', g: 'check', name: '성폭력·성매매·가정폭력 예방교육, 청렴교육', cycle: '연 1회 이상', who: '국가·지자체·공공기관(공직유관단체)이 운영하는 곳', law: '성폭력방지법 등', badge: '해당 기관만' },
+        { id: 'evalrights', g: 'check', name: '시설평가 대비 인권교육', cycle: '평가 지표 기준', who: '평가 대상 시설 종사자', law: '사회복지시설 평가 지표', badge: '평가 대비', where: '국가인권위원회 인권교육센터 등' },
+    ];
+    const EDU_TYPES = [['all', '전체 보기'], ['general', '복지관·기타'], ['elder', '노인'], ['disabled', '장애인'], ['mental', '정신건강']];
+
+    function eduChecks() { try { return JSON.parse(localStorage.getItem(EDU_KEY) || '{}') || {}; } catch (e) { return {}; } }
+    function eduType() { try { return localStorage.getItem(EDU_TYPE_KEY) || 'all'; } catch (e) { return 'all'; } }
+
+    window.renderEduChecklist = function () {
+        const box = document.getElementById('admin-content-edu');
+        if (!box) return;
+        const checks = eduChecks(), type = eduType();
+        const visible = EDU_ITEMS.filter(it => !it.t || type === 'all' || it.t === type);
+        const required = visible.filter(it => it.g !== 'check');
+        const done = required.filter(it => checks[it.id]).length;
+        const pct = required.length ? Math.round(done / required.length * 100) : 0;
+        const row = (it) => `
+            <label class="edu-item${checks[it.id] ? ' done' : ''}">
+                <input type="checkbox" ${checks[it.id] ? 'checked' : ''} onchange="toggleEduCheck('${it.id}', this.checked)">
+                <span class="edu-body">
+                    <span class="edu-name">${it.name}${it.badge ? ` <em class="edu-badge">${it.badge}</em>` : ''}</span>
+                    <span class="edu-cycle">${it.cycle}</span>
+                    <span class="edu-meta">대상: ${it.who}<br>근거: ${it.law}${it.where ? `<br>어디서: ${it.where}` : ''}</span>
+                    ${it.note ? `<span class="edu-note">${it.note}</span>` : ''}
+                </span>
+            </label>`;
+        const groups = EDU_GROUPS.map(gr => {
+            const items = visible.filter(it => it.g === gr.id);
+            if (!items.length) return '';
+            return `<div class="edu-group"><div class="edu-group-h">${gr.title}</div><div class="edu-group-sub">${gr.sub}</div>${items.map(row).join('')}</div>`;
+        }).join('');
+        box.innerHTML = `
+            <div class="step-card beautiful-card" style="padding:18px;">
+                <h4 style="color:var(--text-1); font-weight:800; font-size:1.1rem; margin-bottom:6px;">📋 ${EDU_YEAR} 의무교육 체크리스트</h4>
+                <p style="font-size:0.82rem; color:var(--text-5); line-height:1.55; margin-bottom:12px;">사회복지시설에서 해마다 챙겨야 하는 교육이에요. 들은 교육에 체크하면 이 기기에 저장돼요.</p>
+                <div class="edu-types">${EDU_TYPES.map(([k, l]) => `<button class="edu-type${type === k ? ' on' : ''}" onclick="setEduType('${k}')">${l}</button>`).join('')}</div>
+                <div class="edu-progress"><div class="edu-progress-bar" style="width:${pct}%"></div></div>
+                <div class="edu-progress-t">필수 ${required.length}개 중 <b>${done}개</b> 완료 (${pct}%)${done === required.length && required.length ? ' 🎉' : ''}</div>
+                ${groups}
+                <div class="edu-warn">
+                    <b>⚠️ 꼭 확인해 주세요</b><br>
+                    · ${EDU_YEAR}년 10월 공개된 법령·보건복지부·지자체 안내로 정리했어요. 법이 바뀌면 달라질 수 있어요.<br>
+                    · 기관 유형·규모·건물에 따라 대상이 달라요. 이수 시간·제출 기한·제출 방법은 <b>관할 시·군·구 공문</b>이 우선이에요. (대부분 12월 말 마감)<br>
+                    · 수료증·출석부·교육 사진은 지도점검과 시설평가 때 필요하니 연도별로 모아 두세요.
+                </div>
+                <button class="btn-primary btn-outline" style="width:100%; margin-top:12px;" onclick="resetEduChecks()">체크 모두 지우기</button>
+            </div>`;
+    };
+    window.toggleEduCheck = function (id, on) {
+        const c = eduChecks();
+        if (on) c[id] = Date.now(); else delete c[id];
+        try { localStorage.setItem(EDU_KEY, JSON.stringify(c)); } catch (e) { /* noop */ }
+        if (on) trackUse('edu_check');
+        renderEduChecklist();
+    };
+    window.setEduType = function (t) {
+        try { localStorage.setItem(EDU_TYPE_KEY, t); } catch (e) { /* noop */ }
+        renderEduChecklist();
+    };
+    window.resetEduChecks = function () {
+        if (!confirm('체크한 내용을 모두 지울까요?')) return;
+        try { localStorage.removeItem(EDU_KEY); } catch (e) { /* noop */ }
+        renderEduChecklist();
     };
 
     window.calcPercent = function (mode) {
