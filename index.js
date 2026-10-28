@@ -3061,6 +3061,154 @@ try {
     Object.keys(AI_PROMPTS).forEach(k => { AI_PROMPTS[k]._key = k; });
     function promptCore(data) { return PROMPT_CORE[data._key] || [0]; }
 
+    /* ===== 쉬운 화면 (AI 초급자용) =====
+       같은 프롬프트를 쓰되, 쉬운 제목·질문형 칸·예시만 보여 주고 버튼 한 번에 복사 + AI 열기까지 한다.
+       t: 쉬운 제목, w: 이럴 때 써요, f: { 칸 번호: [쉬운 질문, 예시] } (칸 번호는 PROMPT_CORE와 같다) */
+    const PS_EASY = {
+        pie_records: { t: '상담 메모를 상담일지로 바꾸기', w: '수첩에 대충 적은 상담 메모를 정리된 상담일지로', f: { 1: ['상담하면서 적은 메모를 그대로 붙여 넣어 주세요', '"요즘 잠을 못 잔다" 반복. 면담 중 두 번 울먹임. 아들은 주말에만 옴. 약봉투 정리 안 됨. 경로당 안 나간 지 한 달.'] } },
+        case_assessment: { t: '초기상담 정리해서 개입계획 세우기', w: '처음 만난 대상자 이야기를 사정 표와 계획으로', f: { 0: ['어떤 분인가요? (실명 말고)', '70대 남성, 혼자 사심'], 2: ['상담·방문에서 알게 된 것', '집에 쓰레기가 쌓여 있음. 당뇨약이 많이 남아 있음. 본인은 "혼자 잘 지낸다"고 함'] } },
+        case_conference: { t: '사례회의 안건지·회의록 만들기', w: '회의 전 안건지, 회의 뒤 회의록이 필요할 때', f: { 0: ['무엇을 만들까요?', '회의 뒤 회의록'], 2: ['회의 내용이나 메모', '주거 이전과 집수리 논의 → 수리로 가닥. 집수리 신청은 동 행정복지센터가 하기로 함'] } },
+        crisis: { t: '위기 상황 대응 순서 정리하기', w: '자살 위험, 학대 의심처럼 급한 상황에서 할 일을 순서대로', f: { 0: ['어떤 위기인가요?', '자살 위험'], 1: ['지금 상황을 적어 주세요', '전화 상담 중 "다 끝내고 싶다"고 말함. 혼자 있음'] } },
+        strengths: { t: '대상자 강점 찾기', w: '문제만 보이는 사례에서 강점과 자원을 찾고 싶을 때', f: { 0: ['대상자 상황을 적어 주세요', '50대 여성, 실직 후 집 밖에 잘 안 나옴. 예전에 요리를 잘했다고 함'] } },
+        resource_map: { t: '연계할 자원 찾기', w: '대상자에게 필요한 지원을 어디서 받을지 정리', f: { 1: ['대상자 상황', '80대 부부 가구, 기초연금만 받음'], 2: ['가장 급한 것', '보일러 고장, 겨울 난방비'] } },
+        case_closing: { t: '사례 종결 보고서 쓰기', w: '사례를 마무리하며 종결 보고서와 사후관리 계획이 필요할 때', f: { 1: ['목표별로 어떻게 됐나요?', '주거 안정: 달성. 병원 정기 진료: 월 1회 다니고 있음'], 3: ['왜 종결하나요?', '목표 달성'] } },
+        ethics: { t: '윤리적 딜레마 정리하기', w: '이렇게 해도 되나 고민될 때 선택지를 비교', f: { 0: ['어떤 상황인가요?', '대상자가 비밀로 해 달라고 했는데 가족에게 알려야 할 것 같음'], 1: ['생각하는 선택지', '1) 비밀 유지 2) 대상자 설득 후 가족에게 알림'] } },
+        supervision_prep: { t: '슈퍼비전 준비하기', w: '슈퍼비전 받기 전 고민을 정리하고 싶을 때', f: { 0: ['어떤 사례나 고민인가요?', '대상자가 약속을 계속 안 지켜서 지침'], 2: ['가장 궁금한 것', '어디까지 기다려야 하는지'] } },
+        proposal: { t: '공모사업 계획서 쓰기', w: '사업 아이디어를 공모사업 계획서로', f: { 0: ['어떤 사업을 하고 싶나요?', '독거 어르신 디지털 안부 모임'], 1: ['누구를 대상으로, 어디서?', 'OO구 독거 어르신 30명'] } },
+        result_report: { t: '사업 결과보고서 쓰기', w: '끝난 사업의 결과보고서가 필요할 때', f: { 0: ['사업 이름·기간·대상', '어르신 건강 요리교실, 2026년 4~9월, 20명'], 3: ['실제로 한 것 (숫자 그대로)', '12회 운영, 평균 참여 15명'] } },
+        annual_rewrite: { t: '작년 계획서를 새 문장으로 바꾸기', w: '매년 같은 사업이라 작년 문장을 새로 써야 할 때', f: { 0: ['작년 계획서 문장을 붙여 넣어 주세요', '지역 내 독거 어르신의 사회적 고립 문제가 심화되고 있어 관계망 형성 지원이 필요함'], 1: ['올해 달라진 점', '대상 20명 → 40명, 작년 만족도 4.5점'] } },
+        official_doc: { t: '공문 쓰기', w: '다른 기관에 보낼 협조 요청·안내 공문이 필요할 때', f: { 1: ['어떤 공문인가요?', '협조 요청'], 2: ['무엇을, 언제, 어디서?', '10월 마지막 주 어르신 건강강좌에 쓸 2층 회의실 대관'] } },
+        data_analysis: { t: '설문·욕구조사 결과 정리하기', w: '설문 결과를 보고서용으로 정리하고 싶을 때', f: { 1: ['결과를 붙여 넣어 주세요 (표 그대로)', '만족 45명, 보통 12명, 불만족 3명'], 2: ['어디에 쓸 건가요?', '내년 사업계획 필요성 근거'] } },
+        program_design: { t: '프로그램 회기별 활동안 짜기', w: '몇 회짜리 프로그램 활동을 짜야 할 때', f: { 0: ['누구를 위한 프로그램인가요?', '초등 고학년 10명'], 1: ['무엇이 달라지길 바라나요?', '친구와 갈등을 말로 푸는 힘'] } },
+        strategy: { t: '기관 중장기 계획 세우기', w: '기관의 몇 년 계획이나 운영 전략이 필요할 때', f: { 0: ['어떤 기관인가요?', '중소도시 종합사회복지관, 직원 20명'], 1: ['잘하는 것과 고민', '노인 사업은 강한데 청년 이용자가 거의 없음'] } },
+        complaint: { t: '민원 응대 말하기 준비', w: '강한 민원에 뭐라고 말할지 막막할 때', f: { 0: ['어떤 민원인가요?', '대기 순서가 왜 늦냐며 큰 소리로 항의함'] } },
+        card_news: { t: '카드뉴스 글 쓰기', w: '홍보용 카드뉴스 장면별 글이 필요할 때', f: { 0: ['무엇을 알리고 싶나요?', '어르신 스마트폰 교실 수강생 모집'] } },
+        press_release: { t: '보도자료 쓰기', w: '기자에게 보낼 보도자료가 필요할 때', f: { 0: ['무엇을, 언제, 어디서, 누가?', '11월 15일 OO복지관 김장 나눔, 자원봉사자 50명'] } },
+        naming: { t: '사업 이름·슬로건 짓기', w: '눈에 띄는 사업 이름이 필요할 때', f: { 0: ['어떤 사업인가요?', '혼자 사는 중장년 남성 요리 모임'] } },
+        sns_content: { t: '블로그·인스타 글 쓰기', w: '기관 소식을 SNS에 올릴 때', f: { 0: ['알릴 소식', '어르신 그림 전시회 개최'], 1: ['어디에 올리나요?', '인스타그램'] } },
+        donation: { t: '후원 제안서 쓰기', w: '기업이나 단체에 후원을 부탁할 때', f: { 0: ['무엇이 얼마나 필요한가요?', '자립준비청년 생필품 꾸러미 30세트, 300만 원'], 1: ['어떤 곳에 부탁하나요?', '지역 마트 체인'] } },
+        thank_you_letter: { t: '후원자 감사 편지 쓰기', w: '후원자·봉사자에게 감사 편지를 보낼 때', f: { 0: ['누구에게 보내나요?', '10년 정기 후원자'], 1: ['어떤 도움을 주셨나요?', '2016년부터 매달 3만 원 후원'] } },
+        newsletter: { t: '소식지 글 쓰기', w: '후원자에게 보낼 소식지가 필요할 때', f: { 0: ['이번 소식들을 적어 주세요', '김장 나눔 300포기, 어르신 그림 전시회, 신규 봉사자 12명'] } },
+    };
+    const PS_LEVEL_KEY = 'saboknote_prompt_level';
+    function psLevel() { try { return localStorage.getItem(PS_LEVEL_KEY) || ''; } catch (e) { return ''; } }
+    window.setPromptLevel = function (lv) {
+        try { localStorage.setItem(PS_LEVEL_KEY, lv); } catch (e) { /* noop */ }
+        trackUse('prompt_level_' + lv);
+        const b = document.getElementById('open-ai-prompter');
+        if (b) b.click();
+    };
+    const PS_AIS = [
+        ['chatgpt', 'ChatGPT', 'https://chatgpt.com/'],
+        ['gemini', 'Gemini', 'https://gemini.google.com/app'],
+        ['claude', 'Claude', 'https://claude.ai/new'],
+    ];
+
+    function psLevelPickerHtml() {
+        return `
+            <div class="ps-level">
+                <h3>AI, 얼마나 써 보셨어요?</h3>
+                <p>고르신 화면으로 보여 드릴게요. 나중에 언제든 바꿀 수 있어요.</p>
+                <button class="ps-level-card easy" onclick="setPromptLevel('beginner')">
+                    <span class="ps-level-ico">🐣</span>
+                    <span><b>AI가 처음이에요</b><span>칸 한두 개만 채우고 버튼 하나 누르면 끝나요</span></span>
+                </button>
+                <button class="ps-level-card pro" onclick="setPromptLevel('pro')">
+                    <span class="ps-level-ico">🚀</span>
+                    <span><b>AI 써 봤어요</b><span>모든 칸·결과 형식·기관 양식 올리기까지</span></span>
+                </button>
+            </div>`;
+    }
+
+    function renderPromptEasy(type) {
+        const data = AI_PROMPTS[type], easy = PS_EASY[type];
+        const modalBody = document.getElementById('modal-body');
+        const modalTitle = document.getElementById('modal-title');
+        if (!data || !easy || !modalBody || !modalTitle) return false;
+        trackUse('prompt_open');
+        const saved = psGet(type).fields || {};
+        const fieldsHtml = Object.entries(easy.f).map(([i, [q, ex]]) => `
+            <label class="ps-easy-q" for="ps-in-${i}">${escapeHtml(q)}</label>
+            <textarea id="ps-in-${i}" class="calc-input ps-input" data-i="${i}" rows="3" placeholder="예: ${escapeHtml(ex)}" oninput="psOnInput('${type}')">${escapeHtml(saved[i] || '')}</textarea>
+            <button class="ps-easy-ex" onclick="psEasyExample('${type}', ${i})">✨ 예시 넣어 보기</button>`).join('');
+        modalTitle.innerText = easy.t;
+        modalBody.innerHTML = `
+            <div class="ps-easy" style="animation: slideInRight 0.3s ease;">
+                <div class="ps-easy-top">
+                    <button class="btn-primary btn-outline" onclick="document.getElementById('open-ai-prompter').click()" style="padding:6px 12px; font-size:0.85rem; width:auto">← 목록으로</button>
+                    <button class="ps-easy-switch" onclick="setPromptLevel('pro')">🚀 기본 화면으로</button>
+                </div>
+                <div class="ps-easy-head"><span>${data.icon}</span><div><b>${escapeHtml(easy.t)}</b><small>이럴 때 써요: ${escapeHtml(easy.w)}</small></div></div>
+
+                <div class="ps-easy-step"><span class="n">1</span>아래 칸을 채워요</div>
+                <div class="ps-fill ps-easy-fill" id="ps-fill">${fieldsHtml}
+                    <p class="ps-note">실명·연락처·주민번호는 쓰지 마세요. "김OO", "70대 여성"처럼 바꿔 쓰면 돼요.</p>
+                </div>
+
+                <div class="ps-easy-step"><span class="n">2</span>쓰는 AI를 눌러요</div>
+                <p class="ps-easy-tip">누르면 <b>자동으로 복사</b>되고 AI가 새 창으로 열려요.</p>
+                <div class="ps-easy-ais">${PS_AIS.map(([k, name]) => `<button class="ps-easy-ai ai-${k}" onclick="psEasyGo('${type}','${k}')">${name}</button>`).join('')}</div>
+                <button class="ps-easy-copyonly" onclick="psEasyGo('${type}', '')">다른 AI를 써요 → 복사만 하기</button>
+                <div id="ps-easy-done"></div>
+
+                <div class="ps-easy-step"><span class="n">3</span>AI 입력창에 붙여 넣고 보내요</div>
+                <div class="ps-easy-how">
+                    <div>📱 <b>휴대폰</b>: 입력창을 <b>꾹</b> 누르고 → <b>붙여넣기</b> → 보내기(↑)</div>
+                    <div>💻 <b>컴퓨터</b>: 입력창 클릭 → <b>Ctrl + V</b> → Enter</div>
+                </div>
+                <p class="ps-easy-tip">답이 나오면 [확인 필요]라고 표시된 부분만 직접 확인해 주세요. AI 답은 초안이에요.</p>
+
+                ${PS_FORM_PROMPTS.includes(type) ? `
+                <details class="ps-easy-more">
+                    <summary>📄 (선택) AI 답을 한글 파일로 받기</summary>
+                    <p class="ps-note">AI 답을 복사해서 아래에 붙여 넣고 버튼을 누르면 표까지 들어간 한글 파일이 받아져요.</p>
+                    <textarea id="ps-answer" class="calc-input ps-answer" rows="4" placeholder="여기에 AI 답 붙여 넣기"></textarea>
+                    <div class="ps-doc-row">
+                        <button class="btn-primary" onclick="psDownloadDoc('${type}','hwpx')">📄 한글 파일</button>
+                        <button class="btn-primary btn-outline" onclick="psDownloadDoc('${type}','docx')">📝 워드 파일</button>
+                    </div>
+                    <p class="ps-fmt-help" id="ps-doc-msg"></p>
+                </details>` : ''}
+                <div id="prompt-text" style="display:none;"></div>
+            </div>`;
+        modalBody.scrollTop = 0;
+        return true;
+    }
+
+    window.psEasyExample = function (type, i) {
+        const easy = PS_EASY[type];
+        const el = document.getElementById('ps-in-' + i);
+        if (!easy || !el || !easy.f[i]) return;
+        el.value = easy.f[i][1];
+        psOnInput(type);
+        el.focus();
+    };
+
+    // 복사(사용자 클릭 안에서 바로) → AI 새 창 열기. 칸을 비우고 보내도 AI가 되묻도록 프롬프트가 짜여 있다.
+    window.psEasyGo = function (type, ai) {
+        const data = AI_PROMPTS[type];
+        if (!data) return;
+        const values = psFieldsFromInputs();
+        const pii = findPII(Object.values(values).join('\n'));
+        if (pii && !confirm(`${pii}로 보이는 내용이 들어 있어요.\nAI에는 개인정보를 넣지 않는 게 안전해요.\n\n그래도 복사할까요?`)) return;
+        const text = buildPrompt(data, values);
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.cssText = 'position:fixed; top:0; left:0; opacity:0; font-size:16px;';
+        document.body.appendChild(ta);
+        ta.select(); ta.setSelectionRange(0, text.length);
+        let ok = false;
+        try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+        document.body.removeChild(ta);
+        if (!ok && navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).catch(() => {});
+        const target = PS_AIS.find(a => a[0] === ai);
+        if (target) window.open(target[2], '_blank', 'noopener');
+        trackUse('prompt_copy');
+        trackUse('prompt_easy_go');
+        const done = document.getElementById('ps-easy-done');
+        if (done) done.innerHTML = `<div class="ps-done">✅ 복사했어요! ${target ? target[1] + ' 창에' : 'AI 입력창에'} 붙여 넣으세요.</div>`;
+    };
+
     // 결과물을 어디에 붙여 넣을지 (한글 / 워드 / 채팅에서 보기). 기기에 기억해 둔다
     const PS_FORMAT_KEY = 'saboknote_prompt_format';
     function psFormat() { try { return localStorage.getItem(PS_FORMAT_KEY) || 'hwp'; } catch (e) { return 'hwp'; } }
@@ -3153,15 +3301,17 @@ ${fields}
             
             categories.forEach((category, index) => {
                 let optionsHtml = '';
+                const easyMode = psLevel() === 'beginner';
                 category.keys.forEach(key => {
                     const data = AI_PROMPTS[key];
                     if (data) {
+                        const easy = easyMode && PS_EASY[key];
                         optionsHtml += `
                         <div class="prompt-option-card" onclick="renderPromptDetail('${key}')" style="margin-bottom:10px;">
                             <div class="prompt-option-icon">${data.icon}</div>
                             <div class="prompt-option-info">
-                                <div class="prompt-option-title">${data.title}</div>
-                                <div class="prompt-option-desc">${data.description}</div>
+                                <div class="prompt-option-title">${easy ? easy.t : data.title}</div>
+                                <div class="prompt-option-desc">${easy ? easy.w : data.description}</div>
                             </div>
                             <div class="prompt-option-arrow">→</div>
                         </div>
@@ -3184,6 +3334,11 @@ ${fields}
                 <h3>사복천재의 비밀 프롬프트 🪄</h3>
                 <p>현장 업무 흐름에 맞춰 최신 작성법으로 다시 짠 프롬프트예요. 빈칸만 채우면 되고, 입력에 없는 사실은 지어내지 않게 만들었어요.</p>
             </div>
+            <div class="ps-level-bar">
+                <span>보기</span>
+                <button class="${psLevel() === 'beginner' ? 'on' : ''}" onclick="setPromptLevel('beginner')">🐣 쉬운 화면</button>
+                <button class="${psLevel() !== 'beginner' ? 'on' : ''}" onclick="setPromptLevel('pro')">🚀 기본 화면</button>
+            </div>
             <div id="ps-box">${psBoxHtml()}</div>
             ${tabsHtml}
             <div class="prompt-options-list">
@@ -3193,7 +3348,9 @@ ${fields}
                 <button onclick="openWorkbookGate()">📘 6개를 실습지로 묶은 워크북 받기</button>
             </div>
         `;
-            openModal('사복천재의 비밀 프롬프트', content, 'prompt');
+            // 처음 여는 사람에게는 수준부터 묻는다
+            openModal('사복천재의 비밀 프롬프트', psLevel() ? content : psLevelPickerHtml(), 'prompt');
+            if (!psLevel()) return;
             psSyncFromServer().then(() => {
                 const box = document.getElementById('ps-box');
                 if (box) box.innerHTML = psBoxHtml();
@@ -3232,6 +3389,7 @@ ${fields}
     }
 
     window.renderPromptDetail = function (type) {
+        if (psLevel() === 'beginner' && renderPromptEasy(type)) return;
         const data = AI_PROMPTS[type];
         const modalBody = document.getElementById('modal-body');
         const modalTitle = document.getElementById('modal-title');
