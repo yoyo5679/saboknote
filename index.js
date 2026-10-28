@@ -1708,16 +1708,23 @@ try {
         const btn = document.getElementById('wb-submit');
         if (btn) { btn.innerText = '준비 중...'; btn.disabled = true; }
         // 저장에 실패해도 다운로드는 막지 않는다 (무료 자료이므로 사용자 경험 우선)
+        // 워크북 신청 기록(workbook_requests)과 비밀편지 구독자(source='workbook')에 함께 저장한다
         if (supabase) {
-            try {
-                const { error } = await withTimeout(supabase.from('newsletter_subscribers').insert({
-                    email: email,
-                    user_id: getOrCreateUserId() || 'anonymous',
-                    agreed_to_terms: true,
-                    created_at: new Date().toISOString()
-                }));
-                if (error) console.error('Workbook gate save error', error);
-            } catch (e) { console.error('Workbook gate save error', e); }
+            const deviceId = getOrCreateUserId() || 'anonymous';
+            const saveRequest = withTimeout(supabase.from('workbook_requests').insert({ email, device_id: deviceId, agreed: true }))
+                .then(({ error }) => { if (error) console.error('Workbook request save error', error); })   // 표가 아직 없으면(SQL 실행 전) 기록만 건너뜀
+                .catch(e => console.error('Workbook request save error', e));
+            const saveSubscriber = (async () => {
+                const row = { email, user_id: deviceId, agreed_to_terms: true, created_at: new Date().toISOString(), source: 'workbook' };
+                let { error } = await withTimeout(supabase.from('newsletter_subscribers').insert(row));
+                // 이미 구독한 이메일(23505)은 그대로 두고, source 칸이 없는 예전 서버면 source 없이 다시 저장
+                if (error && error.code !== '23505') {
+                    delete row.source;
+                    ({ error } = await withTimeout(supabase.from('newsletter_subscribers').insert(row)));
+                    if (error && error.code !== '23505') console.error('Workbook gate save error', error);
+                }
+            })().catch(e => console.error('Workbook gate save error', e));
+            await Promise.all([saveRequest, saveSubscriber]);
         }
         try { localStorage.setItem(WORKBOOK_DONE_KEY, '1'); localStorage.setItem(NL_DONE_KEY, '1'); } catch (e) { /* noop */ } renderNlStrip();
         trackUse('workbook_get');
