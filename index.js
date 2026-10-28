@@ -3211,6 +3211,7 @@ try {
         trackUse('prompt_easy_go');
         const done = document.getElementById('ps-easy-done');
         if (done) done.innerHTML = `<div class="ps-done">✅ 복사했어요! ${target ? target[1] + ' 창에' : 'AI 입력창에'} 붙여 넣으세요.</div>`;
+        else if (document.getElementById('ps-after-copy')) psRenderAfterCopy(); // 기본 화면: 복사 뒤 안내·구독 카드
     };
 
     // 결과물을 어디에 붙여 넣을지 (한글 / 워드 / 채팅에서 보기). 기기에 기억해 둔다
@@ -3453,7 +3454,9 @@ ${fields}
                 <div class="prompt-content-label">결과물을 어디에 붙여 넣을까요?</div>
                 <div class="ps-fmt-row">${fmtBtn('hwp', '📄 한글')}${fmtBtn('word', '📝 워드')}${fmtBtn('chat', '💬 채팅에서 보기')}</div>
                 <p class="ps-fmt-help" id="ps-fmt-help">${psFormatHelp(fmt)}</p>
-                <button class="btn-primary" style="margin-top:12px; width:100%; height:54px; font-size:1.1rem;" onclick="copyPromptToClipboard('${type}')">🪄 프롬프트 복사하기</button>
+                <p class="ps-easy-tip" style="margin-top:14px;">쓰는 AI를 누르면 <b>자동으로 복사</b>되고 AI가 새 창으로 열려요.</p>
+                <div class="ps-easy-ais">${PS_AIS.map(([k, name]) => `<button class="ps-easy-ai ai-${k}" onclick="psEasyGo('${type}','${k}')">${name}</button>`).join('')}</div>
+                <button class="btn-primary btn-outline" style="margin-top:8px; width:100%; height:48px; font-size:0.95rem;" onclick="copyPromptToClipboard('${type}')">🪄 다른 AI를 써요 → 복사만 하기</button>
                 <div id="ps-after-copy"></div>
                 <details class="ps-preview">
                     <summary>복사될 프롬프트 전체 보기</summary>
@@ -3477,8 +3480,8 @@ ${fields}
                     <span>💡</span> 사용 방법
                 </div>
                 <ol style="padding-left:20px; font-size:0.85rem; color:var(--text-4); line-height:1.7;">
-                    <li>위의 <b>[프롬프트 복사하기]</b> 버튼을 눌러요.</li>
-                    <li>ChatGPT, Claude, Gemini 채팅창에 붙여넣어요.</li>
+                    <li>쓰는 AI 버튼(<b>ChatGPT·Gemini·Claude</b>)을 누르면 복사되고 그 AI가 열려요. 다른 AI면 <b>[복사만 하기]</b>를 눌러요.</li>
+                    <li>AI 입력창에 붙여넣어요. (휴대폰은 꾹 눌러 붙여넣기, 컴퓨터는 Ctrl+V)</li>
                     <li>위에서 칸을 채웠다면 그대로 보내요. 비워 뒀다면 맨 아래 <b>&lt;입력&gt;</b>의 ■ 칸만 채워서 보내요. 기관 양식은 파일로 첨부해도 돼요.</li>
                     <li>답이 나오면 채팅의 <b>복사 버튼</b>으로 복사해 한글·워드에 붙여 넣어요. '----- 참고 -----' 아래는 확인용이라 문서에 넣지 않아도 돼요.${PS_FORM_PROMPTS.includes(type) ? ' 위 <b>[AI 답을 문서 파일로 받기]</b>에 붙여 넣으면 표까지 만든 한글·워드 파일로 받을 수 있어요.' : ''}</li>
                 </ol>
