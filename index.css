@@ -2380,3 +2380,12 @@ html.dark-mode .edu-form .edu-agree { background: var(--tint-primary); border-co
 .edu-agree strong { color: #2563eb; }
 .edu-agree small { color: var(--text-6); font-size: 0.74rem; }
 #edu-submit { margin-top: 10px; padding: 15px; font-size: 1.02rem; border-radius: 12px; }
+
+/* 홈 비밀편지 띠 배너 */
+.nl-strip { display: flex; align-items: center; gap: 10px; margin: 12px 16px 0; padding: 11px 14px; border-radius: 14px; background: linear-gradient(90deg, #eff6ff, #ecfdf5); border: 1px solid #bfdbfe; text-decoration: none; color: var(--text-2); }
+.nl-strip-ico { font-size: 1.35rem; flex: none; }
+.nl-strip-text { flex: 1; min-width: 0; display: flex; flex-direction: column; line-height: 1.35; }
+.nl-strip-text b { font-size: 0.9rem; font-weight: 800; color: var(--text-dark); }
+.nl-strip-text span { font-size: 0.78rem; color: var(--text-5); }
+.nl-strip-cta { flex: none; font-size: 0.82rem; font-weight: 800; color: #fff; background: var(--primary); border-radius: 999px; padding: 7px 12px; }
+html.dark-mode .nl-strip { background: rgba(37, 99, 235, 0.12); border-color: rgba(96, 165, 250, 0.3); }

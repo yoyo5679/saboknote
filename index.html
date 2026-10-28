@@ -56,7 +56,7 @@
     <link rel="icon"
         href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>">
 
-    <link rel="stylesheet" href="index.css?v=17">
+    <link rel="stylesheet" href="index.css?v=18">
     <link rel="stylesheet" as="style" crossorigin
         href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -135,6 +135,8 @@
                     class="side-ico">🪄</span>비밀 프롬프트</button>
             <button class="side-item side-tool" onclick="document.getElementById('open-admin-calc').click()"><span
                     class="side-ico">💸</span>행정/회계 마스터</button>
+            <button class="side-item side-tool" onclick="openNewsletterSubModal()"><span
+                    class="side-ico">💌</span>비밀편지 구독</button>
             <div class="side-group-label">📚 더 보기</div>
             <button class="side-item" id="snav-treasure" onclick="switchView('treasure')"><span
                     class="side-ico">🍯</span>보물창고</button>
@@ -192,6 +194,13 @@
                         <div class="hero-v2-badge" onclick="showPWAInstallGuide()">📱 1초 만에 바탕화면에 꺼내기</div>
                     </div>
                 </div>
+
+                <!-- ①-2 비밀편지 띠 배너 (구독한 기기에선 '지난 편지 보기'로 바뀜) -->
+                <a class="nl-strip" id="nl-strip" href="/#home/newsletter" onclick="return nlStripClick(event)">
+                    <span class="nl-strip-ico">📮</span>
+                    <span class="nl-strip-text"><b>비밀편지 1호 나왔어요</b><span>출근길 3분 서류 꿀팁</span></span>
+                    <span class="nl-strip-cta" id="nl-strip-cta">구독하기 →</span>
+                </a>
 
                 <!-- ② 핵심 도구 2종 (비밀 프롬프트 · 행정/회계 마스터) — 나란히 놓인 흰 카드 -->
                 <section class="sec">
@@ -1416,7 +1425,7 @@
 
     </div><!-- /#app -->
 
-    <script src="index.js?v=61" charset="utf-8"></script>
+    <script src="index.js?v=62" charset="utf-8"></script>
     <script>
         // PWA Service Worker Registration
         if ('serviceWorker' in navigator) {

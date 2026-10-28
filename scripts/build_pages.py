@@ -159,7 +159,7 @@ CSS = """
 """
 
 FOOTER = """    <footer>
-        <div><a href="/">📔 사복노트</a> · <a href="/about.html">소개</a> · <a href="/prompts/">AI 프롬프트</a> · <a href="/guide/">실무 가이드</a> · <a href="/voca/">생존 단어장</a> · <a href="/tools/">실무 도구</a> · <a href="/treasure.html">꿀자료</a></div>
+        <div><a href="/">📔 사복노트</a> · <a href="/about.html">소개</a> · <a href="/prompts/">AI 프롬프트</a> · <a href="/guide/">실무 가이드</a> · <a href="/voca/">생존 단어장</a> · <a href="/tools/">실무 도구</a> · <a href="/treasure.html">꿀자료</a> · <a href="/newsletter/">비밀편지</a></div>
         <div><a href="/terms.html">이용약관</a> · <a href="/privacy.html"><b>개인정보처리방침</b></a> · 문의 <a href="mailto:%s">%s</a></div>
     </footer>""" % (CONTACT, CONTACT)
 
@@ -679,6 +679,79 @@ GUIDES = ["notebooklm_2026_guide", "notebooklm_advanced1", "notebooklm_advanced2
 
 
 # 다른 프로젝트를 이어 붙인 주소 (vercel.json의 rewrites) — 이 저장소에 파일이 없어 존재 확인에서 뺀다
+# ---------------------------------------------------------------- 비밀편지 (뉴스레터 지난 호)
+# 메일 원본은 newsletter/<호>/email.html (스티비에 붙여 넣는 파일). 사이트용 보기 페이지는 여기서 그 원본을 고쳐 만든다.
+NEWSLETTERS = [
+    {"no": "001", "title": "계획서 시즌인데… 할 말이 작년이랑 똑같음", "when": "2026년 11월",
+     "desc": "매년 같은 사업, 작년 계획서 문장을 올해 새 문장으로 바꾸는 법 · 한글 표 3초 변환 꿀팁 · 사복 밸런스게임",
+     "hero": "/newsletter/001/hero.jpg?v=2"},
+]
+SUBSCRIBE_URL = "/#home/newsletter"
+
+
+def newsletter_pages():
+    urls = []
+    for n in NEWSLETTERS:
+        src = read(f"newsletter/{n['no']}/email.html")
+        url = f"{SITE}/newsletter/{n['no']}/"
+        head = (f'<link rel="canonical" href="{url}">\n'
+                f'<meta name="description" content="{e(n["desc"])}">\n'
+                f'<meta property="og:type" content="article">\n<meta property="og:site_name" content="사복노트">\n'
+                f'<meta property="og:title" content="{e(n["title"])} | 사복노트 비밀편지">\n'
+                f'<meta property="og:description" content="{e(n["desc"])}">\n<meta property="og:url" content="{url}">\n'
+                f'<meta property="og:image" content="{SITE}{n["hero"]}">\n')
+        web = src.replace('<meta name="robots" content="noindex">\n', head)
+        web = web.replace("utm_source=stibee&amp;utm_medium=email", "utm_source=newsletter_web&amp;utm_medium=web")
+        # 받은편지함 미리보기 문구는 웹에선 필요 없다
+        web = re.sub(r'<!-- 받은편지함 미리보기 문구.*?</div>\n', '', web, flags=re.S)
+        # 맨 위: 지난 편지 목록으로
+        top = ('<tr><td align="center" style="padding:18px 16px 12px;"><table role="presentation" class="container" width="600" cellpadding="0" cellspacing="0" border="0" style="width:600px; max-width:600px;"><tr>'
+               '<td style="padding:0 4px; font-family:\'Apple SD Gothic Neo\',\'Malgun Gothic\',sans-serif; font-size:14px;"><a href="/newsletter/" style="color:#2563eb; font-weight:700; text-decoration:none;">← 지난 편지 목록</a></td>'
+               '<td align="right" style="padding:0 4px; font-family:\'Apple SD Gothic Neo\',\'Malgun Gothic\',sans-serif; font-size:14px;"><a href="/" style="color:#64748b; text-decoration:none;">사복노트 홈</a></td>'
+               '</tr></table></td></tr>\n<tr>')
+        web = web.replace('<tr><td align="center" style="padding:24px 12px;">', top + '<td align="center" style="padding:0 12px 24px;">', 1)
+        web = web.replace('<td align="center" style="padding:24px 12px;">', '<td align="center" style="padding:24px 12px;">', 1)
+        # 맨 아래: 구독 취소 대신 구독하기
+        foot = re.search(r'  <!-- 푸터 -->.*?</td></tr>\n', web, re.S)
+        if not foot:
+            raise SystemExit(f"newsletter/{n['no']}/email.html에서 <!-- 푸터 --> 부분을 못 찾음")
+        cta = f"""  <!-- 구독하기 (사이트 보기 전용) -->
+  <tr><td align="center" style="padding:26px 32px 30px; background:#eff6ff; border-top:1px solid #bfdbfe;">
+    <div style="font-size:17px; font-weight:800; color:#0f172a;">📮 이런 편지, 메일로 받아 볼래요?</div>
+    <div style="font-size:14.5px; color:#475569; margin-top:6px; line-height:1.6;">출근길 3분 서류 꿀팁을 보내 드려요. 언제든 구독을 취소할 수 있어요.</div>
+    <a href="{SUBSCRIBE_URL}" style="display:inline-block; margin-top:14px; padding:14px 30px; background:#2563eb; color:#ffffff; font-size:16px; font-weight:800; text-decoration:none; border-radius:12px;">💌 비밀편지 구독하기</a>
+  </td></tr>
+"""
+        web = web[:foot.start()] + cta + web[foot.end():]
+        write(f"newsletter/{n['no']}/index.html", web)
+        urls.append(f"/newsletter/{n['no']}/")
+
+    cards = "\n".join(f"""        <a class="card nl-card" href="/newsletter/{n['no']}/">
+            <img src="{n['hero']}" alt="{e(n['title'])}" loading="lazy">
+            <div class="nl-meta">{int(n['no'])}호 · {e(n['when'])}</div>
+            <h2>{e(n['title'])}</h2>
+            <p>{e(n['desc'])}</p>
+        </a>""" for n in reversed(NEWSLETTERS))
+    body = f"""        <a class="cta" href="{SUBSCRIBE_URL}" style="background:#2563eb;">💌 비밀편지 구독하고 다음 호 먼저 받기</a>
+{cards}
+"""
+    style = """    <style>
+        .nl-card { display: block; text-decoration: none; color: inherit; padding: 0; overflow: hidden; }
+        .nl-card img { display: block; width: 100%; height: auto; }
+        .nl-card .nl-meta { margin: 14px 18px 0; font-size: 0.8rem; font-weight: 800; color: #2563eb; }
+        .nl-card h2 { margin: 4px 18px 0; font-size: 1.1rem; }
+        .nl-card p { margin: 6px 18px 18px; font-size: 0.9rem; color: #64748b; line-height: 1.6; }
+    </style>
+"""
+    write("newsletter/index.html", page(
+        "/newsletter/", "사복노트 비밀편지 지난 호 | 사회복지사 서류 꿀팁 뉴스레터",
+        "사회복지사를 위한 출근길 3분 뉴스레터 '비밀편지'의 지난 호를 모았어요. AI 프롬프트, 한글·워드 서류 꿀팁, 사복 밸런스게임까지.",
+        [("사복노트", "/"), ("비밀편지", None)], "📮 비밀편지 지난 호",
+        "출근길 3분, 서류 꿀팁 뉴스레터. 구독 전에 먼저 읽어 보세요.", body, "📮", extra_head=style))
+    urls.insert(0, "/newsletter/")
+    return urls
+
+
 LINKED = ["/benefits/"]
 
 
@@ -698,6 +771,7 @@ def main():
     urls += voca_page(data)
     urls += [u for u in policy_pages() if u not in urls]
     urls += [f"/honeydata/{g.replace(' ', '%20')}.html" for g in GUIDES]
+    urls += newsletter_pages()
     for u in urls:   # 사이트맵에 넣는 페이지가 실제로 있는지
         f = u.strip("/").replace("%20", " ")
         if u.endswith("/"):
