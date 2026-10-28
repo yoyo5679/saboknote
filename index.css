@@ -2485,3 +2485,9 @@ html.dark-mode .ps-level-card.easy, html.dark-mode .ps-easy-head { background: r
 html.dark-mode .ps-level-card.pro { background: rgba(37, 99, 235, 0.1); }
 .st-kosis { display: block; text-align: center; background: #0f4c81; color: #fff !important; border-radius: 12px; padding: 12px; font-size: 0.88rem; font-weight: 800; text-decoration: none; margin: 4px 0 10px; }
 .ps-level-last { font-style: normal; font-size: 0.7rem; font-weight: 800; color: #fff; background: var(--teal-700); border-radius: 999px; padding: 2px 7px; margin-left: 4px; vertical-align: 2px; }
+
+/* 비밀편지 구독 창: 발송 일정 안내 */
+.nl-when { text-align: left; background: #fffbeb; border: 1.5px dashed #fcd34d; border-radius: 14px; padding: 12px 14px; margin: -8px 0 20px; font-size: 0.84rem; color: var(--text-3); line-height: 1.65; }
+.nl-when b { display: block; font-size: 0.9rem; color: #b45309; margin-bottom: 4px; }
+.nl-when small { color: var(--text-6); font-size: 0.78rem; }
+html.dark-mode .nl-when { background: rgba(245, 158, 11, 0.1); border-color: rgba(245, 158, 11, 0.35); }
