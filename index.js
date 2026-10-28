@@ -201,6 +201,11 @@ try {
             <div style="font-size:3rem; margin-bottom:12px; animation: bounce 2s infinite">💌</div>
             <h3 style="font-size:1.4rem; color:var(--text-dark); margin-bottom:8px; font-weight:900">팀장님 몰래 보는 비밀편지</h3>
             <p style="font-size:0.95rem; color:var(--text-5); margin-bottom:24px; line-height:1.6;"><strong>"쉿! 사복천재가 이메일로 직접 배달 갑니다."</strong><br>막히는 서류 업무 뚫어주는 AI 꼼수부터 최신 복지 트렌드까지! 출퇴근길 3분이면 칼퇴 쌉가능 😎 메일 주소만 쓱 남겨주세요!</p>
+            <div class="nl-when">
+                <b>📅 언제 오냐고요?</b>
+                <span>솔직히… 저도 몰라요 🫠<br>주인장도 현역 사회복지사라 결과보고서 시즌·평가 시즌엔 편지보다 서류가 먼저예요.
+                대신 칼퇴한 날, 진짜 쓸모 있는 것만 꾹꾹 담아 보낼게요.<br><small>(스팸은 안 보내요. 너무 바빠서 못 보내는 쪽이 더 걱정이에요 😅)</small></span>
+            </div>
             
             <div style="display:flex; flex-direction:column; gap:12px; text-align:left;">
                 <input type="email" id="newsletter-email" class="calc-input" placeholder="칼퇴를 도와줄 이메일 주소 입력" style="font-size:1rem; padding:14px; border:2px solid var(--border); border-radius:12px;">
