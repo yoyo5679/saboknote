@@ -2101,6 +2101,45 @@ try {
                 "계획과 달라진 점과 이유 (예: 모집 지연, 담당자 변경)"
             ]
         },
+        annual_rewrite: {
+            title: "작년 계획서, 올해 새 문장으로 고쳐 쓰기",
+            icon: "🔄",
+            description: "사용 상황: 매년 하는 같은 사업이라 추진 배경·목적·기대효과는 작년과 내용이 똑같은데, 작년 문장을 그대로 내면 '복붙했네' 소리 들을까 봐 걱정될 때. 내용은 그대로 두고 문장만 새 옷을 입히고 싶을 때 쓰세요.",
+            fileLabel: '작년 계획서',
+            fileHint: '작년 계획서 파일(hwp·hwpx·워드·PDF)을 올리면 그 문장을 원문으로 삼아 고쳐 써요. 칸에 붙여 넣지 않아도 돼요.',
+            fileRule: `
+- 맨 아래 <작년 계획서>는 고쳐 쓸 원문이에요. 항목 구성과 순서는 그대로 두고, 각 항목의 문장을 위 '작성 원칙'대로 새로 쓰세요. 표의 숫자·명칭은 그대로 옮기세요.`,
+            prompt: `당신은 사회복지 사업계획서를 오래 다듬어 온 편집자입니다.
+사회복지사가 매년 반복하는 사업의 계획서를 올해 버전으로 고쳐 쓰도록 돕습니다. 사업 내용은 작년과 같지만, 심사자나 결재권자가 "작년 걸 그대로 냈다"고 느끼지 않게 문장과 전개를 새로 써야 합니다.
+
+## 작성 원칙
+1. 사실은 그대로 지키세요. 작년 문장에 있는 대상, 숫자, 근거 자료, 사업명, 기관명, 법·제도 이름은 바꾸거나 빼거나 부풀리지 마세요.
+2. 올해 달라진 점은 <입력>에 적힌 것만 반영하세요. 작년 숫자를 올해 숫자로 짐작해 고치지 마세요. 연도가 지난 통계나 '작년 기준' 표현은 그대로 두고 [확인 필요: 올해 기준 수치로 바꾸기]로 표시하세요.
+3. 문장은 새로 쓰세요. 문장 구조, 첫머리, 문단 순서, 연결어를 바꾸고, 사업명·기관명·법령명 같은 고유한 이름을 빼면 작년 문장과 4어절 이상 똑같이 이어지는 구절이 없게 하세요.
+4. 전개 방식도 바꿔 보세요. 예: '현황 → 문제 → 필요성'이었다면 '현장에서 만난 변화 → 근거 → 이 사업의 역할'처럼. 단, 없는 사례나 장면을 지어내지 마세요.
+5. 계속 사업이라는 점을 강점으로 쓰세요. <입력>에 작년 성과나 보완점이 있으면 "지난해 운영 결과 ~해서 올해는 ~를 보완한다"처럼 이어 주세요. 없으면 그 자리에 [확인 필요: 작년 성과 한 줄]을 남기세요.
+6. 원문 문체를 따르세요. 개조식(~함, ~임)이면 개조식으로, 서술식이면 서술식으로 쓰고, 분량은 원문과 비슷하게(±20%) 맞추세요.
+7. 항목 이름(추진 배경, 사업 목적, 기대 효과 등)과 순서는 원문 그대로 두세요.
+
+## 결과물 형식
+- 항목별 새 문장 (원문 항목 순서대로)
+  항목마다 두 가지 안: 안 A (원문 흐름은 살리고 표현을 새로), 안 B (전개 방식까지 새로)
+- 바뀐 점 요약 표 (항목 | 작년 전개 | 올해 전개 | 반영한 올해 변화)
+- 작년 문장과 겹치는 구절 점검: 4어절 이상 겹치는 구절이 남았으면 목록 (고유한 이름 제외). 없으면 '없음'
+- 올해 기준으로 다시 확인할 숫자·통계 목록
+
+## 다 쓴 뒤 점검
+- 원문의 사실(대상, 숫자, 근거)이 하나도 바뀌거나 빠지지 않았는가
+- <입력>에 없는 올해 변화나 성과를 지어내지 않았는가
+- 분량과 문체가 원문과 비슷한가`,
+            fields: [
+                "작년 계획서 문장 (추진 배경·목적·기대효과 등 그대로 붙여 넣기)",
+                "올해 달라진 점 (예: 대상 30명→40명, 작년 만족도 4.5점, 새 프로그램 추가)",
+                "올해 강조하고 싶은 방향 (예: 지역 연계, 자립, 디지털 역량)",
+                "제출처와 분량 (예: 구청 보조사업, 항목당 10줄 이내)",
+                "꼭 넣을 말·피하고 싶은 표현"
+            ]
+        },
         official_doc: {
             title: "행정 문서 및 격식 있는 공문서 작성 마스터",
             icon: "📝",
@@ -2817,7 +2856,7 @@ try {
 
     // 프롬프트마다 꼭 필요한 입력 칸(나머지는 '더 자세히 (선택)'으로 접힘). 없으면 첫 칸만 핵심
     const PROMPT_CORE = {
-        proposal: [0, 1], result_report: [0, 3], official_doc: [1, 2], data_analysis: [1, 2],
+        proposal: [0, 1], result_report: [0, 3], annual_rewrite: [0, 1], official_doc: [1, 2], data_analysis: [1, 2],
         program_design: [0, 1], strategy: [0, 1], case_assessment: [0, 2], pie_records: [1],
         crisis: [0, 1], strengths: [0], resource_map: [1, 2], case_closing: [1, 3], ethics: [0, 1],
         case_conference: [0, 2], supervision_prep: [0, 2], card_news: [0], press_release: [0],
@@ -2861,10 +2900,11 @@ try {
         const fields = lines.join('\n');
         const fmtRule = PS_FORMAT_RULES[psFormat()] || '';
         const form = psFormGet(data._key);
-        const formRule = form ? `
+        const fileLabel = data.fileLabel || '기관 양식';
+        const formRule = form && data.fileRule ? data.fileRule : form ? `
 - 맨 아래 <기관 양식>은 실제로 제출할 양식이에요. 그 양식의 목차, 항목 이름, 순서, 표 칸을 그대로 따르세요. 위 '결과물 형식'은 양식에 없는 내용을 채울 때만 참고하세요.
 - 양식에 남아 있는 작성 안내·예시 문구는 지우고 실제 내용으로 채우세요. <입력>에 없어 채울 수 없는 칸은 [확인 필요]로 두세요.` : '';
-        const formBlock = form ? `\n\n<기관 양식 파일="${form.name}">\n${form.text}\n</기관 양식>` : '';
+        const formBlock = form ? `\n\n<${fileLabel} 파일="${form.name}">\n${form.text}\n</${fileLabel}>` : '';
         return `${data.prompt}
 
 ## 공통 규칙${formRule}
@@ -2897,7 +2937,7 @@ ${fields}
                 {
                     id: 'admin',
                     name: '💡 사업기획 및 행정',
-                    keys: ['proposal', 'result_report', 'official_doc', 'data_analysis', 'program_design', 'strategy', 'complaint']
+                    keys: ['proposal', 'result_report', 'annual_rewrite', 'official_doc', 'data_analysis', 'program_design', 'strategy', 'complaint']
                 },
                 {
                     id: 'marketing',
@@ -3233,7 +3273,7 @@ ${fields}
     /* ===== 우리 기관 양식 올리기 =====
        한글(hwp·hwpx)·워드(docx)·PDF·txt 빈 양식을 브라우저에서 바로 읽어 글자만 뽑는다.
        파일은 서버로 보내지 않고, 뽑은 글자만 이 기기(localStorage)에 프롬프트별로 둔다. */
-    const PS_FORM_PROMPTS = ['proposal', 'result_report', 'official_doc', 'program_design', 'data_analysis', 'strategy',
+    const PS_FORM_PROMPTS = ['proposal', 'result_report', 'annual_rewrite', 'official_doc', 'program_design', 'data_analysis', 'strategy',
         'complaint', 'case_assessment', 'pie_records', 'case_closing', 'case_conference', 'supervision_prep', 'crisis',
         'press_release', 'newsletter'];
     const PS_FORM_KEY = 'saboknote_prompt_forms';
@@ -3256,16 +3296,18 @@ ${fields}
 
     function psFormBoxHtml(type, msg) {
         const form = psFormGet(type);
+        const data = AI_PROMPTS[type] || {};
+        const label = data.fileLabel || '우리 기관 양식';
         const pick = (label) => `<label class="btn-primary btn-outline ps-form-btn">${label}<input type="file" accept=".hwp,.hwpx,.docx,.pdf,.txt" onchange="psFormPick('${type}', this)" hidden></label>`;
         const note = msg ? `<p class="ps-form-msg">${msg}</p>` : '';
         if (!form) return `
-            <div class="ps-form-h">📎 우리 기관 양식 올리기 <span>(선택)</span></div>
-            <p class="ps-note">한글(hwp·hwpx)·워드·PDF 빈 양식을 올리면, 그 목차와 칸에 맞춰 써 달라는 내용이 프롬프트에 같이 들어가요. 파일은 서버로 보내지 않고 이 기기에서만 읽어요.</p>
+            <div class="ps-form-h">📎 ${label} 올리기 <span>(선택)</span></div>
+            <p class="ps-note">${data.fileHint || '한글(hwp·hwpx)·워드·PDF 빈 양식을 올리면, 그 목차와 칸에 맞춰 써 달라는 내용이 프롬프트에 같이 들어가요.'} 파일은 서버로 보내지 않고 이 기기에서만 읽어요.</p>
             ${note}${pick('파일 고르기')}`;
         return `
-            <div class="ps-form-h">📎 우리 기관 양식 <span>(프롬프트에 들어가요)</span></div>
+            <div class="ps-form-h">📎 ${label} <span>(프롬프트에 들어가요)</span></div>
             <div class="ps-form-file">✅ ${escapeHtml(form.name)} · ${form.text.length.toLocaleString()}자${form.cut ? ' (길어서 앞부분만)' : ''}</div>
-            ${form.cut ? '<p class="ps-note">양식이 길어서 앞부분만 넣었어요. 더 정확하게 하려면 AI 채팅창에 원본 파일도 같이 첨부해 주세요.</p>' : ''}
+            ${form.cut ? '<p class="ps-note">파일이 길어서 앞부분만 넣었어요. 더 정확하게 하려면 AI 채팅창에 원본 파일도 같이 첨부해 주세요.</p>' : ''}
             ${note}
             <details class="ps-form-view"><summary>읽은 내용 보기</summary><pre>${escapeHtml(form.text)}</pre></details>
             <div class="ps-row">${pick('다른 파일로 바꾸기')}<button class="btn-primary btn-outline" onclick="psFormRemove('${type}')">양식 빼기</button></div>`;
