@@ -2516,3 +2516,20 @@ html.dark-mode .nl-when { background: rgba(245, 158, 11, 0.1); border-color: rgb
 .install-nudge .in-later { border: 1px solid var(--border); background: var(--surface); color: var(--text-4); border-radius: 12px; min-height: 44px; font-weight: 700; font-size: 0.88rem; cursor: pointer; font-family: inherit; }
 .install-nudge .in-never { display: block; margin: 6px auto 0; border: none; background: none; color: var(--text-6); font-size: 0.75rem; text-decoration: underline; cursor: pointer; font-family: inherit; }
 @media (min-width: 900px) { .install-nudge { left: auto; right: 24px; bottom: 24px; width: 380px; } }
+
+/* 놀이터: 야근탈출 TOP 6 */
+.esc-rank { width: 100%; max-width: 360px; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 12px 14px; margin-top: -4px; box-sizing: border-box; }
+.esc-rank-h { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 8px; }
+.esc-rank-h b { font-size: 0.92rem; color: var(--text-dark); }
+.esc-rank-tabs { display: flex; gap: 4px; }
+.esc-rank-tabs button { border: 1px solid var(--border); background: var(--surface); color: var(--text-5); border-radius: 999px; padding: 4px 9px; font-size: 0.72rem; font-weight: 700; cursor: pointer; font-family: inherit; }
+.esc-rank-tabs button.on { background: #1d4ed8; border-color: #1d4ed8; color: #fff; }
+.esc-rank-row { display: flex; align-items: center; gap: 10px; padding: 7px 4px; border-top: 1px solid var(--border); font-size: 0.86rem; }
+.esc-rank-row:first-child { border-top: none; }
+.esc-rank-row .m { width: 24px; text-align: center; font-weight: 800; color: var(--text-5); }
+.esc-rank-row .n { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text-2); }
+.esc-rank-row .n b { color: #16a34a; }
+.esc-rank-row .s { font-weight: 800; color: #1d4ed8; }
+.esc-rank-row.me { background: #f0fdf4; border-radius: 8px; }
+.esc-rank-empty { font-size: 0.82rem; color: var(--text-5); text-align: center; padding: 10px 0; }
+html.dark-mode .esc-rank-row.me { background: rgba(22, 163, 74, 0.12); }

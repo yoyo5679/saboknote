@@ -632,7 +632,7 @@ body.rotated .ovExit { left:max(10px, env(safe-area-inset-top)); }
   async function loadRanksServer() {
     if (!supabase) return;
     try {
-      var res = await supabase.from('escape_ranks').select('*').order('best_score', { ascending: false }).limit(5);
+      var res = await supabase.from('escape_ranks').select('*').order('best_score', { ascending: false }).limit(6);
       if (res.data && !res.error) { rankCache = res.data; renderRanks(); }
     } catch(e) {}
   }
@@ -663,7 +663,7 @@ body.rotated .ovExit { left:max(10px, env(safe-area-inset-top)); }
   async function loadDailyServer() {
     if (!supabase) return;
     try {
-      var res = await supabase.from('escape_daily_ranks').select('*').eq('day', todayKey()).order('best_score', { ascending: false }).limit(5);
+      var res = await supabase.from('escape_daily_ranks').select('*').eq('day', todayKey()).order('best_score', { ascending: false }).limit(6);
       if (res.data && !res.error) { dailyCache = res.data; renderRanks(); }
     } catch (e) {}
   }
@@ -679,7 +679,7 @@ body.rotated .ovExit { left:max(10px, env(safe-area-inset-top)); }
     } catch (e) { console.warn('daily save:', e); return null; }
   }
   function renderRanks() {
-    var medals = ['🥇','🥈','🥉','4위','5위'];
+    var medals = ['🥇','🥈','🥉','4위','5위','6위'];
     var el = document.getElementById('rankList');
     var myUid = getUid();
     if (rankTab === 'daily') {
