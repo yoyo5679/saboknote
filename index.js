@@ -9260,7 +9260,8 @@ ${fields}
 
     function bgShareUrl() {
         const name = (localStorage.getItem('saboks_anonymous_name') || '사복쌤').slice(0, 12);
-        return location.origin + location.pathname + '?bg=' + bgState.answers.join('') + '&bgn=' + encodeURIComponent(name) + '#playground/balance';
+        // /balance/ 전용 주소: SNS 미리보기(og)가 밸런스 게임으로 뜨고, 열면 친구 답을 들고 게임으로 이동한다
+        return location.origin + '/balance/?bg=' + bgState.answers.join('') + '&bgn=' + encodeURIComponent(name);
     }
 
     function bgRenderResult() {
@@ -9724,7 +9725,7 @@ ${fields}
                 canvas,
                 `나의_사복_유형_${t.name.replace(/\s+/g, '_')}.png`,
                 `나는 "${t.name}" 유형 사회복지사래요 ${t.emoji} 당신은 어떤 유형?`,
-                'https://www.saboknote.com/#playground/quiz'
+                'https://www.saboknote.com/sabokcae/'
             );
             if (btn && mode === 'downloaded') {
                 btn.innerHTML = '✅ 이미지 저장 + 공유 문구 복사됨!';
