@@ -8403,7 +8403,6 @@ ${fields}
         // 놀이터 메뉴 초기화 (놀이터 탭 진입 시 메뉴화면 먼저 보여주기)
         if (view === 'playground') {
             pgShowAllSteps('menu');
-            loadEscapeRank();
         }
 
         // 커뮤니티 탭 진입 시 데이터 로딩
@@ -8418,39 +8417,6 @@ ${fields}
         // 내 정보 탭 진입 시 내 글 로딩
         if (view === 'mypage') {
             initMypage();
-        }
-    };
-
-    /* ===== 놀이터: 야근탈출 TOP 6 =====
-       게임(sabok-game/sabok-escape)이 저장하는 escape_ranks(전체 최고점)·escape_daily_ranks(오늘의 챌린지)를 그대로 읽는다. */
-    let escRankTab = 'all';
-    window.loadEscapeRank = async function (tab) {
-        if (tab) escRankTab = tab;
-        document.querySelectorAll('.esc-rank-tabs button').forEach(b => b.classList.toggle('on', b.dataset.t === escRankTab));
-        const list = document.getElementById('esc-rank-list');
-        if (!list) return;
-        if (!supabase) { list.innerHTML = '<div class="esc-rank-empty">랭킹을 불러오지 못했어요.</div>'; return; }
-        const d = new Date();
-        const day = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
-        try {
-            let q = supabase.from(escRankTab === 'daily' ? 'escape_daily_ranks' : 'escape_ranks').select('nickname, best_score, user_id');
-            if (escRankTab === 'daily') q = q.eq('day', day);
-            const { data, error } = await withTimeout(q.order('best_score', { ascending: false }).limit(6), 8000);
-            if (error) throw error;
-            if (!data || !data.length) {
-                list.innerHTML = `<div class="esc-rank-empty">${escRankTab === 'daily' ? '오늘 첫 기록의 주인공이 되어 보세요! 🏃' : '아직 기록이 없어요. 1등 자리 비어 있어요!'}</div>`;
-                return;
-            }
-            const me = getOrCreateUserId();
-            const medals = ['🥇', '🥈', '🥉', '4', '5', '6'];
-            list.innerHTML = data.map((r, i) => `
-                <div class="esc-rank-row${r.user_id === me ? ' me' : ''}">
-                    <span class="m">${medals[i]}</span>
-                    <span class="n">${r.user_id === me ? '<b>[나]</b> ' : ''}${escapeHtml(r.nickname || '익명의 사복')}</span>
-                    <span class="s">${Number(r.best_score || 0).toLocaleString()}점</span>
-                </div>`).join('');
-        } catch (e) {
-            list.innerHTML = '<div class="esc-rank-empty">랭킹을 불러오지 못했어요. 잠시 뒤 다시 들어와 주세요.</div>';
         }
     };
 
