@@ -182,6 +182,8 @@ body {
 .startRank .srHead h4 { margin:0; }
 .startRank .srTabs { display:flex; gap:4px; }
 .startRank .rt { font-size:0.75rem; padding:2px 8px; }
+.startRank .srNote { margin:8px 0 0; font-size:0.74rem; color:var(--dim); line-height:1.5; }
+.startRank .srNote b { color:var(--accent); font-weight:normal; }
 .mrow { display:flex; justify-content:space-between; gap:8px; font-size:0.8rem; color:var(--white); padding:2px 0; }
 .mrow.done { color:var(--green); }
 .mrow .mc { color:var(--dim); flex-shrink:0; }
@@ -340,6 +342,7 @@ body.rotated .ovExit { left:max(10px, env(safe-area-inset-top)); }
     <div class="box startRank">
       <div class="srHead"><h4>🏆 막차 탈출 TOP 6</h4><span class="srTabs"><button class="rt on" data-t="all">전체</button><button class="rt" data-t="daily">오늘</button></span></div>
       <div id="startRankList"><div class="rr"><span>불러오는 중…</span><span class="rs">-</span></div></div>
+      <p class="srNote">📅 <b>오늘</b> 탭은 매일 0시에 새로 시작돼요. 오늘 1등 자리, 아직 비어 있을지도? 👀</p>
     </div>
     <div class="og">
       <div class="oi">📄 서류·팀장님 → ⬆ 점프</div>
