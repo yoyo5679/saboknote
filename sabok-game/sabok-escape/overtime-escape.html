@@ -626,6 +626,16 @@ body.rotated .ovExit { left:max(10px, env(safe-area-inset-top)); }
   function getUname() {
     return localStorage.getItem('saboks_anonymous_name') || '익명의 열혈사복';
   }
+  // 랭킹 시즌: 값을 바꾸면 각 기기에 남은 예전 기록(ynRanks·오늘 최고점)을 한 번 비운다.
+  // 서버 랭킹 표는 Supabase에서 따로 비운다. 캐릭터 해금·미션 진행(esc_progress)은 그대로 둔다.
+  var RANK_SEASON = '2026-11-03';
+  try {
+    if (localStorage.getItem('esc_rank_season') !== RANK_SEASON) {
+      localStorage.removeItem('ynRanks');
+      Object.keys(localStorage).forEach(function (k) { if (k.indexOf('esc_daily_') === 0) localStorage.removeItem(k); });
+      localStorage.setItem('esc_rank_season', RANK_SEASON);
+    }
+  } catch (e) {}
   function loadRanksLocally() {
     try { return JSON.parse(localStorage.getItem('ynRanks') || '[]'); } catch(e) { return []; }
   }
