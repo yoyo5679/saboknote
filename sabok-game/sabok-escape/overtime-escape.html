@@ -178,6 +178,10 @@ body {
 .char .cd { font-size:0.62rem; color:var(--dim); line-height:1.3; margin-top:2px; }
 .box { background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:14px; padding:10px 12px; text-align:left; }
 .box h4 { font-size:0.82rem; color:var(--accent); margin-bottom:6px; font-weight:normal; }
+.startRank .srHead { display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; }
+.startRank .srHead h4 { margin:0; }
+.startRank .srTabs { display:flex; gap:4px; }
+.startRank .rt { font-size:0.75rem; padding:2px 8px; }
 .mrow { display:flex; justify-content:space-between; gap:8px; font-size:0.8rem; color:var(--white); padding:2px 0; }
 .mrow.done { color:var(--green); }
 .mrow .mc { color:var(--dim); flex-shrink:0; }
@@ -311,7 +315,7 @@ body.rotated .ovExit { left:max(10px, env(safe-area-inset-top)); }
 
   <div id="rankWrap">
     <div id="rankTabs">
-      <button class="rt on" data-t="all">🏅 전체 TOP5</button>
+      <button class="rt on" data-t="all">🏅 전체 TOP6</button>
       <button class="rt" data-t="daily">📅 오늘의 챌린지</button>
     </div>
     <div id="rankList"><div class="rr"><span>기록 없음</span><span class="rs">-</span></div></div>
@@ -333,6 +337,10 @@ body.rotated .ovExit { left:max(10px, env(safe-area-inset-top)); }
     <div class="chars" id="charList"></div>
     <div class="box"><h4>🎯 이번 판 미션</h4><div id="missionList"></div></div>
     <button class="btn" id="startBtn">🔖 퇴근 도장 찍고 출발!</button>
+    <div class="box startRank">
+      <div class="srHead"><h4>🏆 막차 탈출 TOP 6</h4><span class="srTabs"><button class="rt on" data-t="all">전체</button><button class="rt" data-t="daily">오늘</button></span></div>
+      <div id="startRankList"><div class="rr"><span>불러오는 중…</span><span class="rs">-</span></div></div>
+    </div>
     <div class="og">
       <div class="oi">📄 서류·팀장님 → ⬆ 점프</div>
       <div class="oi">💢 민원·잔소리 → ⬇ 슬라이드</div>
@@ -678,7 +686,13 @@ body.rotated .ovExit { left:max(10px, env(safe-area-inset-top)); }
       return (cnt && typeof cnt.count === 'number') ? { rank: cnt.count + 1, best: myBest } : null;
     } catch (e) { console.warn('daily save:', e); return null; }
   }
+  // 게임 아래 랭킹과 시작 화면 TOP 6에 같은 내용을 그린다
   function renderRanks() {
+    renderRanksInner();
+    var src = document.getElementById('rankList'), dst = document.getElementById('startRankList');
+    if (src && dst) dst.innerHTML = src.innerHTML;
+  }
+  function renderRanksInner() {
     var medals = ['🥇','🥈','🥉','4위','5위','6위'];
     var el = document.getElementById('rankList');
     var myUid = getUid();
