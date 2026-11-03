@@ -2,13 +2,35 @@
   "redirects": [
     {
       "source": "/(.*)",
-      "has": [{ "type": "host", "value": "saboknote.vercel.app" }],
+      "has": [
+        {
+          "type": "host",
+          "value": "saboknote.vercel.app"
+        }
+      ],
       "destination": "https://www.saboknote.com/$1",
       "permanent": true
     },
-    { "source": "/benefits", "destination": "/benefits/", "permanent": true }
+    {
+      "source": "/benefits",
+      "destination": "/benefits/",
+      "permanent": true
+    },
+    {
+      "source": "/balance",
+      "destination": "/balance/",
+      "permanent": true
+    },
+    {
+      "source": "/sabokcae",
+      "destination": "/sabokcae/",
+      "permanent": true
+    }
   ],
   "rewrites": [
-    { "source": "/benefits/(.*)", "destination": "https://bok-jumoney.vercel.app/$1" }
+    {
+      "source": "/benefits/(.*)",
+      "destination": "https://bok-jumoney.vercel.app/$1"
+    }
   ]
 }
