@@ -2516,3 +2516,20 @@ html.dark-mode .nl-when { background: rgba(245, 158, 11, 0.1); border-color: rgb
 .install-nudge .in-later { border: 1px solid var(--border); background: var(--surface); color: var(--text-4); border-radius: 12px; min-height: 44px; font-weight: 700; font-size: 0.88rem; cursor: pointer; font-family: inherit; }
 .install-nudge .in-never { display: block; margin: 6px auto 0; border: none; background: none; color: var(--text-6); font-size: 0.75rem; text-decoration: underline; cursor: pointer; font-family: inherit; }
 @media (min-width: 900px) { .install-nudge { left: auto; right: 24px; bottom: 24px; width: 380px; } }
+
+/* ---- 문의하기 (대표 메일) ---- */
+.contact-wrap { text-align:center; padding:4px 0; }
+.contact-hero { font-size:2.6rem; margin-bottom:6px; }
+.contact-lead { font-size:0.95rem; color:var(--text-4); line-height:1.6; margin-bottom:16px; }
+.contact-mailbox { display:flex; align-items:center; justify-content:space-between; gap:8px; padding:12px 14px; border:1.5px dashed var(--border-strong); border-radius:12px; background:var(--surface-2); margin-bottom:16px; }
+.contact-addr { font-weight:900; font-size:1rem; color:var(--text-dark); word-break:break-all; text-align:left; }
+.contact-copy { flex-shrink:0; border:none; border-radius:8px; padding:8px 12px; font-weight:800; font-size:0.85rem; background:#f59e0b; color:#fff; cursor:pointer; }
+.contact-list { display:flex; flex-direction:column; gap:8px; text-align:left; }
+.contact-row { display:flex; align-items:center; gap:12px; padding:12px 14px; border:1px solid var(--border); border-radius:12px; background:var(--surface); text-decoration:none; color:inherit; transition:transform .15s, border-color .15s; }
+.contact-row:hover { transform:translateY(-1px); border-color:#f59e0b; }
+.contact-ico { font-size:1.4rem; }
+.contact-txt { flex:1; display:flex; flex-direction:column; gap:2px; }
+.contact-txt b { font-size:0.95rem; color:var(--text-dark); }
+.contact-txt small { font-size:0.8rem; color:var(--text-6); }
+.contact-go { font-size:1.3rem; color:var(--text-6); }
+.contact-note { margin-top:16px; font-size:0.8rem; color:var(--text-6); line-height:1.6; }
