@@ -1458,6 +1458,45 @@ try {
     }
     syncSabokAccount();
 
+    /* --- 문의하기 (대표 메일) --- */
+    const CONTACT_EMAIL = 'saboknote@naver.com';
+    window.openContactModal = function () {
+        const mail = (subj) => 'mailto:' + CONTACT_EMAIL + '?subject=' + encodeURIComponent('[사복노트 문의] ' + subj);
+        const row = (ico, title, desc, subj) => `
+            <a href="${mail(subj)}" class="contact-row">
+                <span class="contact-ico">${ico}</span>
+                <span class="contact-txt"><b>${title}</b><small>${desc}</small></span>
+                <span class="contact-go">›</span>
+            </a>`;
+        const content = `
+            <div class="contact-wrap">
+                <div class="contact-hero">📮</div>
+                <p class="contact-lead">궁금한 거, 고장 난 거, 같이 하고 싶은 거<br>전부 여기로 보내 주세요.</p>
+                <div class="contact-mailbox">
+                    <span class="contact-addr">${CONTACT_EMAIL}</span>
+                    <button type="button" class="contact-copy" onclick="copyContactEmail(this)">복사</button>
+                </div>
+                <div class="contact-list">
+                    ${row('🐞', '오류 제보', '버튼이 안 눌려요, 화면이 이상해요', '오류 제보')}
+                    ${row('💡', '기능·자료 요청', '이런 도구·프롬프트 있으면 좋겠어요', '기능 요청')}
+                    ${row('🤝', '제휴·강의·협업', '기관 교육, 강의, 콘텐츠 협업 제안', '제휴·협업')}
+                    ${row('💬', '그냥 하고 싶은 말', '응원도 환영이에요 (진짜로)', '기타')}
+                </div>
+                <p class="contact-note">주인장도 현직 사복이라 답장이 며칠 걸릴 수 있어요. 그래도 꼭 읽어요 🙏<br>오류 제보는 어떤 화면에서, 폰인지 PC인지 같이 적어 주시면 더 빨리 고쳐요.</p>
+            </div>`;
+        openModal('문의하기', content, 'contact');
+    };
+    window.copyContactEmail = function (btn) {
+        const done = () => { if (btn) { btn.textContent = '복사됨 ✓'; setTimeout(() => { btn.textContent = '복사'; }, 1600); } };
+        try {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(CONTACT_EMAIL).then(done, () => { window.prompt('메일 주소를 복사해 주세요', CONTACT_EMAIL); });
+                return;
+            }
+        } catch (_) { /* noop */ }
+        window.prompt('메일 주소를 복사해 주세요', CONTACT_EMAIL);
+    };
+
     /* --- User Request Modal (무엇이든 요청해보살) --- */
     function initRequestModal() {
         const btn = document.getElementById('open-request-modal');
@@ -1489,6 +1528,7 @@ try {
                     </div>
 
                     <button class="btn-primary" style="width:100%; background:linear-gradient(135deg, #f59e0b 0%, #d97706 100%); padding:16px; font-size:1.1rem; border-radius:12px; box-shadow:0 4px 14px rgba(245,158,11,0.3); border:none;" onclick="submitRequest()">🪔 램프 문지르기 (요청 전송)</button>
+                    <p style="margin-top:14px; font-size:0.8rem; color:var(--text-6); line-height:1.6;">답장이 필요하거나 파일을 같이 보내고 싶다면<br>📮 <a href="mailto:saboknote@naver.com?subject=${encodeURIComponent('[사복노트 문의] 요청')}" style="color:var(--text-4); font-weight:700;">saboknote@naver.com</a> 으로 보내 주세요.</p>
                 </div>
             `;
                 openModal('사복천재 소환하기', content, 'request');
@@ -5688,6 +5728,7 @@ ${fields}
         { id: 'newsletter', group: '주요 도구', icon: '💌', name: '비밀 편지', desc: '구독하고 서류 꿀팁 받기', tint: '#eff6ff', act: () => document.getElementById('open-newsletter-read').click() },
         { id: 'support', group: '주요 도구', icon: '🔍', name: '지원정보 찾기', desc: '맞춤형 복지서비스 검색', tint: '#eff6ff', act: () => window.open('/benefits/', '_blank') },
         { id: 'request', group: '주요 도구', icon: '🙋', name: '요청하기', desc: '필요한 프롬프트·용어 요청', tint: '#fefce8', act: () => document.getElementById('open-request-modal').click() },
+        { id: 'contact', group: '주요 도구', icon: '📮', name: '문의하기', desc: '오류 제보·제휴는 메일로', tint: '#fff7ed', act: () => window.openContactModal() },
         // 행정/회계 마스터 12개 계산기 (그룹으로 표시)
         ...ADMIN_SUBTOOLS.map(s => ({
             id: 'adm-' + s.key,
@@ -8447,6 +8488,7 @@ ${fields}
         window._modalRegistry = {
             'newsletter':   () => window.openNewsletterSubModal && window.openNewsletterSubModal(),
             'request':      () => { const b = document.getElementById('open-request-modal'); if (b) b.click(); },
+            'contact':      () => window.openContactModal && window.openContactModal(),
             'alltools':     () => window.openAllToolsModal && window.openAllToolsModal(),
             'eligibility':  () => { const b = document.getElementById('calc-eligibility'); if (b) b.click(); },
             'ltc':          () => { const b = document.getElementById('open-dashboard'); if (b) b.click(); },
