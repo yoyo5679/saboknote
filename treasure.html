@@ -145,7 +145,6 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--g5);color:var(--text
 <div class="cat-nav" id="catNav">
   <button class="cat-chip active" data-cat="all" onclick="filterCat('all',this)">🗂️ 전체</button>
   <button class="cat-chip" data-cat="ai" onclick="filterCat('ai',this)">🤖 AI 활용 <span class="cnt">9</span></button>
-  <button class="cat-chip" data-cat="form" onclick="filterCat('form',this)">📋 사복 서식 <span class="cnt">1</span></button>
   <button class="cat-chip" data-cat="tip" onclick="filterCat('tip',this)">💡 실무 꿀팁 <span class="cnt">5</span></button>
   <button class="cat-chip" data-cat="care" onclick="filterCat('care',this)">🌿 마음 충전 <span class="cnt">준비중</span></button>
 </div>
@@ -154,7 +153,7 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--g5);color:var(--text
 <div class="cat-section" data-cat="ai">
   <div class="sec-head">
     <h2>🤖 AI 활용 클래스</h2>
-    <span class="sec-cnt">2개 클래스 · 무료 9강 ＋ 프리미엄</span>
+    <span class="sec-cnt">2개 클래스 · 무료 9강</span>
   </div>
   <div class="sec-desc">서류의 늪에서 칼퇴하는 그날까지, AI를 실무에 녹이는 법.</div>
 
@@ -263,11 +262,11 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--g5);color:var(--text
       <div class="ct-badges">
         <span class="ct-badge new">🎁 무료 입문 공개</span>
         <span class="ct-badge rename">🚀 신도구</span>
-        <span class="ct-badge free">🎉 베타 전체 무료</span>
+        <span class="ct-badge free">🎉 전체 무료</span>
       </div>
       <span class="ct-emoji">🚀</span>
       <div class="ct-title">구글 안티그래비티 IDE (사복쌤용)</div>
-      <div class="ct-sub">노트북LM 다음 단계 — AI에게 시켜서 나만의 업무 도구 만들기<br>지금은 <b style="color:#fff;">베타 기간</b>이라 입문편 + 실전 레시피 8개 <b style="color:#fff;">전부 무료</b> 🎉</div>
+      <div class="ct-sub">노트북LM 다음 단계 — AI에게 시켜서 나만의 업무 도구 만들기<br>입문편 + 실전 레시피 8개 <b style="color:#fff;">전부 무료</b> 🎉</div>
       <div class="ct-meta">
         <span>🎁 무료 입문</span><span>🎉 실전 레시피 8</span><span>🧗 따라하기</span>
       </div>
@@ -275,13 +274,13 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--g5);color:var(--text
       <div class="ct-hint">코딩 몰라도 OK · 지금 무료로 바로 시작하세요</div>
     </div>
 
-    <!-- 베타 무료 공개 배너: 레시피는 무료 열람, PDF 정리본은 이메일 남기면 바로 다운로드 -->
+    <!-- 무료 공개 배너: 레시피는 무료 열람, PDF 정리본은 이메일 남기면 바로 다운로드 -->
     <div style="margin:4px 14px 8px; background:linear-gradient(135deg,#0e3a6e,#1e40af); border-radius:14px; padding:16px 16px 14px; color:#fff;">
       <div style="display:flex; align-items:center; gap:8px; margin-bottom:5px; flex-wrap:wrap;">
-        <span style="font-size:11px;font-weight:800;background:#fde68a;color:#78350f;border-radius:20px;padding:3px 9px;">🎉 베타 무료 공개</span>
+        <span style="font-size:11px;font-weight:800;background:#fde68a;color:#78350f;border-radius:20px;padding:3px 9px;">🎉 무료 공개</span>
         <span style="font-size:14px;font-weight:800;">IDE 실전 활용 가이드 · 레시피 8</span>
       </div>
-      <div style="font-size:11.5px;opacity:.9;line-height:1.6;margin-bottom:12px;">신청 웹페이지·명단 자동취합·통계 그래프·만족도 집계·결과보고서 초안까지, <b style="color:#bfdbfe;">업무에 바로 쓰는 실전 레시피 8개</b>를 베타 기간 동안 무료로 열어뒀어요. 이메일을 남기면 <b style="color:#fde68a;">보기 좋게 정리한 PDF 전자책</b>도 바로 받을 수 있어요.</div>
+      <div style="font-size:11.5px;opacity:.9;line-height:1.6;margin-bottom:12px;">신청 웹페이지·명단 자동취합·통계 그래프·만족도 집계·결과보고서 초안까지, <b style="color:#bfdbfe;">업무에 바로 쓰는 실전 레시피 8개</b>를 무료로 열어뒀어요. 이메일을 남기면 <b style="color:#fde68a;">보기 좋게 정리한 PDF 전자책</b>도 바로 받을 수 있어요.</div>
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
         <button class="ct-cta" style="margin:0; font-size:13.5px; padding:12px 6px; white-space:nowrap; justify-content:center;" onclick="openBetaRecipes()">📚 레시피 보기</button>
         <button class="ct-cta" style="margin:0; font-size:13.5px; padding:12px 6px; white-space:nowrap; justify-content:center; background:#fde68a; color:#78350f;" onclick="parent.postMessage('openEbookGate', '*');">📥 PDF 받기</button>
@@ -290,7 +289,7 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--g5);color:var(--text
 
     <button class="cur-toggle" onclick="toggleCur(this)" aria-expanded="false">
       <span>📚 전체 커리큘럼</span>
-      <span class="ct-count">전부 무료 (베타)</span>
+      <span class="ct-count">전부 무료</span>
       <span class="chev">▾</span>
     </button>
     <div class="curriculum" hidden>
@@ -299,53 +298,22 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--g5);color:var(--text
         <div class="lesson-no" style="background:linear-gradient(135deg,#12a594,#0c726c);">무료</div>
         <div class="lesson-body">
           <div class="lesson-title">입문편 — 안티그래비티 IDE 완전정복 <span class="mini rep" style="background:#e4faf8;color:#0c726c;border-color:#b5e5df;">무료 공개</span></div>
-          <div class="lesson-sub">정체·노트북LM 비교·IDE 화면구성·채팅으로 첫 작업·안전수칙 11챕터 (지금 무료)</div>
+          <div class="lesson-sub">정체·노트북LM 비교·IDE 화면구성·채팅으로 첫 작업·안전수칙 11챕터 </div>
         </div>
         <div class="lesson-go">▶</div>
       </div>
 
-      <div class="lesson" onclick="openRecipe('./honeydata/antigravity_r1_webpage.html')"><div class="lesson-no">R1</div><div class="lesson-body"><div class="lesson-title">프로그램 신청 안내 웹페이지 <span class="mini rep" style="background:#fff7d6;color:#92400e;border-color:#fde68a;">베타 무료</span></div><div class="lesson-sub">IDE 채팅에 복붙 → 카톡 링크로 홍보 + 무료 배포법</div></div><div class="lesson-go">▶</div></div>
-      <div class="lesson" onclick="openRecipe('./honeydata/antigravity_r2_checklist.html')"><div class="lesson-no">R2</div><div class="lesson-body"><div class="lesson-title">대상자 선정 자가진단 도구 <span class="mini rep" style="background:#fff7d6;color:#92400e;border-color:#fde68a;">베타 무료</span></div><div class="lesson-sub">채팅 한 줄로 만드는 체크리스트 · 문의전화·헛걸음 줄이기</div></div><div class="lesson-go">▶</div></div>
-      <div class="lesson" onclick="openRecipe('./honeydata/antigravity_r3_excel_merge.html')"><div class="lesson-no">R3</div><div class="lesson-body"><div class="lesson-title">흩어진 명단·엑셀 자동 취합 <span class="mini rep" style="background:#fff7d6;color:#92400e;border-color:#fde68a;">베타 무료</span></div><div class="lesson-sub">채팅으로 파일 넣고 시키기 · 중복 제거·형식 통일 자동화</div></div><div class="lesson-go">▶</div></div>
-      <div class="lesson" onclick="openRecipe('./honeydata/antigravity_r4_chart.html')"><div class="lesson-no">R4</div><div class="lesson-body"><div class="lesson-title">이용자 현황 → 월간 통계 그래프 <span class="mini rep" style="background:#fff7d6;color:#92400e;border-color:#fde68a;">베타 무료</span></div><div class="lesson-sub">엑셀 넣고 채팅에 시키면 → 보고서용 그래프 자동 생성</div></div><div class="lesson-go">▶</div></div>
-      <div class="lesson" onclick="openRecipe('./honeydata/antigravity_r5_survey.html')"><div class="lesson-no">R5</div><div class="lesson-body"><div class="lesson-title">만족도 설문 자동 집계 리포트 <span class="mini rep" style="background:#fff7d6;color:#92400e;border-color:#fde68a;">베타 무료</span></div><div class="lesson-sub">설문 데이터 넣고 채팅 한 줄 → 평균·분포·주관식 요약 자동</div></div><div class="lesson-go">▶</div></div>
-      <div class="lesson" onclick="openRecipe('./honeydata/antigravity_r6_document.html')"><div class="lesson-no">R6</div><div class="lesson-body"><div class="lesson-title">반복 안내문·공문 자동 생성기 <span class="mini rep" style="background:#fff7d6;color:#92400e;border-color:#fde68a;">베타 무료</span></div><div class="lesson-sub">이름·날짜만 바꿔 한 번에 · 토큰 아끼는 프롬프트 포함</div></div><div class="lesson-go">▶</div></div>
-      <div class="lesson" onclick="openRecipe('./honeydata/antigravity_r7_thankyou.html')"><div class="lesson-no">R7</div><div class="lesson-body"><div class="lesson-title">후원자 감사 문자·메일 일괄 생성 <span class="mini rep" style="background:#fff7d6;color:#92400e;border-color:#fde68a;">베타 무료</span></div><div class="lesson-sub">채팅으로 명단 넣으면 → 후원내용 맞춤 진심 메시지</div></div><div class="lesson-go">▶</div></div>
-      <div class="lesson" onclick="openRecipe('./honeydata/antigravity_r8_report.html')"><div class="lesson-no">R8</div><div class="lesson-body"><div class="lesson-title">사업 결과보고서 초안 자동화 <span class="mini rep" style="background:#fff7d6;color:#92400e;border-color:#fde68a;">베타 무료</span></div><div class="lesson-sub">백지 부담 제거 + IDE용 프롬프트집 부록</div></div><div class="lesson-go">▶</div></div>
+      <div class="lesson" onclick="openRecipe('./honeydata/antigravity_r1_webpage.html')"><div class="lesson-no">R1</div><div class="lesson-body"><div class="lesson-title">프로그램 신청 안내 웹페이지 <span class="mini rep" style="background:#fff7d6;color:#92400e;border-color:#fde68a;">무료</span></div><div class="lesson-sub">IDE 채팅에 복붙 → 카톡 링크로 홍보 + 무료 배포법</div></div><div class="lesson-go">▶</div></div>
+      <div class="lesson" onclick="openRecipe('./honeydata/antigravity_r2_checklist.html')"><div class="lesson-no">R2</div><div class="lesson-body"><div class="lesson-title">대상자 선정 자가진단 도구 <span class="mini rep" style="background:#fff7d6;color:#92400e;border-color:#fde68a;">무료</span></div><div class="lesson-sub">채팅 한 줄로 만드는 체크리스트 · 문의전화·헛걸음 줄이기</div></div><div class="lesson-go">▶</div></div>
+      <div class="lesson" onclick="openRecipe('./honeydata/antigravity_r3_excel_merge.html')"><div class="lesson-no">R3</div><div class="lesson-body"><div class="lesson-title">흩어진 명단·엑셀 자동 취합 <span class="mini rep" style="background:#fff7d6;color:#92400e;border-color:#fde68a;">무료</span></div><div class="lesson-sub">채팅으로 파일 넣고 시키기 · 중복 제거·형식 통일 자동화</div></div><div class="lesson-go">▶</div></div>
+      <div class="lesson" onclick="openRecipe('./honeydata/antigravity_r4_chart.html')"><div class="lesson-no">R4</div><div class="lesson-body"><div class="lesson-title">이용자 현황 → 월간 통계 그래프 <span class="mini rep" style="background:#fff7d6;color:#92400e;border-color:#fde68a;">무료</span></div><div class="lesson-sub">엑셀 넣고 채팅에 시키면 → 보고서용 그래프 자동 생성</div></div><div class="lesson-go">▶</div></div>
+      <div class="lesson" onclick="openRecipe('./honeydata/antigravity_r5_survey.html')"><div class="lesson-no">R5</div><div class="lesson-body"><div class="lesson-title">만족도 설문 자동 집계 리포트 <span class="mini rep" style="background:#fff7d6;color:#92400e;border-color:#fde68a;">무료</span></div><div class="lesson-sub">설문 데이터 넣고 채팅 한 줄 → 평균·분포·주관식 요약 자동</div></div><div class="lesson-go">▶</div></div>
+      <div class="lesson" onclick="openRecipe('./honeydata/antigravity_r6_document.html')"><div class="lesson-no">R6</div><div class="lesson-body"><div class="lesson-title">반복 안내문·공문 자동 생성기 <span class="mini rep" style="background:#fff7d6;color:#92400e;border-color:#fde68a;">무료</span></div><div class="lesson-sub">이름·날짜만 바꿔 한 번에 · 토큰 아끼는 프롬프트 포함</div></div><div class="lesson-go">▶</div></div>
+      <div class="lesson" onclick="openRecipe('./honeydata/antigravity_r7_thankyou.html')"><div class="lesson-no">R7</div><div class="lesson-body"><div class="lesson-title">후원자 감사 문자·메일 일괄 생성 <span class="mini rep" style="background:#fff7d6;color:#92400e;border-color:#fde68a;">무료</span></div><div class="lesson-sub">채팅으로 명단 넣으면 → 후원내용 맞춤 진심 메시지</div></div><div class="lesson-go">▶</div></div>
+      <div class="lesson" onclick="openRecipe('./honeydata/antigravity_r8_report.html')"><div class="lesson-no">R8</div><div class="lesson-body"><div class="lesson-title">사업 결과보고서 초안 자동화 <span class="mini rep" style="background:#fff7d6;color:#92400e;border-color:#fde68a;">무료</span></div><div class="lesson-sub">백지 부담 제거 + IDE용 프롬프트집 부록</div></div><div class="lesson-go">▶</div></div>
     </div>
   </div>
 
-  <!-- 오너 전용 안내(고객 노출 X). 결제 링크 넣는 법은 스크립트 PRODUCTS 주석 참고 -->
-  <div class="note-old" id="agOwnerNote" style="display:none;">🎁 <b>무료 입문편</b>은 지금 바로 열람할 수 있어요. <b>실전편(레시피 8)</b>은 지금 베타 무료 공개 중이에요. 유료로 바꿀 땐 openRecipe·배너를 구매 흐름으로 되돌려야 해요.</div>
-</div>
-
-<!-- ===== 사복 서식 ===== -->
-<div class="cat-section" data-cat="form" style="display:none;">
-  <div class="sec-head">
-    <h2>📋 사복 서식 클래스</h2>
-    <span class="sec-cnt">유료 · 즉시 다운</span>
-  </div>
-  <div class="sec-desc">복붙만 하면 끝나는 완성형 서식. 야근 줄여주는 실무 템플릿을 합리적인 가격에.</div>
-
-  <div class="course" id="premCard">
-    <div class="course-thumb" style="background:linear-gradient(135deg,#064e3b 0%,#0c726c 45%,#10b981 100%);">
-      <div class="ct-badges">
-        <span class="ct-badge new" id="premBadge">🔜 11월 출시</span>
-        <span class="ct-badge rename">📋 결과보고서 키트</span>
-      </div>
-      <span class="ct-emoji">🗂️</span>
-      <div class="ct-title">연말 결과보고서 키트</div>
-      <div class="ct-sub">작성 예시 2종(프로그램형·사례관리형), 빈 서식, 자동계산 엑셀 2종, 미달 사유 문장 예시 30까지. 연말 결과보고, 이걸로 끝내요 👇</div>
-      <div class="ct-meta">
-        <span>📄 예시 2종</span><span>📊 자동계산 엑셀</span><span>✍️ 문장 예시 30</span>
-      </div>
-      <button class="ct-cta" id="premCta" onclick="notifyMe('kit_result_report');">🔔 출시 알림 받기 <span class="arw">→</span></button>
-      <div class="ct-hint" id="premHint">11월에 나오면 비밀편지로 가장 먼저 알려 드려요</div>
-    </div>
-  </div>
-
-  <!-- 오너 전용 안내(고객 노출 X). 결제 링크 넣는 법은 스크립트 PRODUCTS 주석 참고 -->
-  <div class="note-old" id="premOwnerNote" style="display:none;">💳 <b>사장님용 안내:</b> 아래 스크립트의 <b>PRODUCTS.seosik.paymentLink</b>에 결제 링크(토스·카카오페이·페이앱)를 넣으면, 이 카드가 자동으로 <b>'구매하기'</b>로 바뀌어요.</div>
 </div>
 
 <!-- ===== 실무 꿀팁 ===== -->
@@ -453,40 +421,6 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--g5);color:var(--text
   <div style="font-size:11px;color:rgba(255,255,255,0.7);margin-top:10px;">스팸 절대 없음 · 언제든 구독 취소 가능 · 사복쌤만을 위한 편지예요 💚</div>
 </div>
 
-<!-- ===== 구매 모달 ===== -->
-<style>
-.pay-overlay{position:fixed;inset:0;background:rgba(15,23,42,0.55);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;z-index:50;padding:20px;}
-.pay-overlay.on{display:flex;}
-.pay-modal{background:#fff;border-radius:20px;max-width:400px;width:100%;padding:26px 22px 22px;position:relative;box-shadow:0 20px 60px rgba(0,0,0,0.3);text-align:center;animation:payin .22s ease;}
-@keyframes payin{from{opacity:0;transform:translateY(14px) scale(.97);}to{opacity:1;transform:none;}}
-.pay-x{position:absolute;top:12px;right:14px;background:none;border:none;font-size:18px;color:var(--sub);cursor:pointer;}
-.pay-emoji{font-size:38px;margin-bottom:6px;}
-.pay-title{font-size:18px;font-weight:800;color:var(--text);margin-bottom:4px;line-height:1.3;}
-.pay-price{font-family:'Gaegu',cursive;font-size:30px;font-weight:700;color:#0c726c;margin-bottom:16px;}
-.pay-steps{text-align:left;background:var(--g5);border:1px solid var(--g3);border-radius:12px;padding:14px 15px;margin-bottom:16px;}
-.pay-step{font-size:13px;color:var(--text);line-height:1.55;display:flex;gap:9px;align-items:flex-start;margin-bottom:8px;}
-.pay-step:last-child{margin-bottom:0;}
-.pay-step > b{flex:0 0 auto;width:20px;height:20px;background:#0c726c;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;margin-top:1px;}
-.pay-step span b{color:#0c726c;}
-.pay-go{width:100%;background:linear-gradient(135deg,#0c726c,#10b981);color:#fff;border:none;border-radius:12px;padding:14px;font-size:16px;font-weight:800;cursor:pointer;font-family:'Noto Sans KR',sans-serif;box-shadow:0 6px 18px rgba(16,185,129,0.32);}
-.pay-go:active{transform:scale(.98);}
-.pay-note{font-size:11.5px;color:var(--sub);margin-top:12px;line-height:1.55;}
-</style>
-<div class="pay-overlay" id="payOverlay" onclick="if(event.target===this)closePurchase()">
-  <div class="pay-modal">
-    <button class="pay-x" onclick="closePurchase()" aria-label="닫기">✕</button>
-    <div class="pay-emoji">🗂️</div>
-    <div class="pay-title" id="payTitle">사복노트 연말 결과보고서 키트</div>
-    <div class="pay-price" id="payPrice">₩9,900</div>
-    <div class="pay-steps">
-      <div class="pay-step"><b>1</b><span>아래 <b>결제하기</b>를 눌러 안전하게 결제해요 (새 창)</span></div>
-      <div class="pay-step"><b>2</b><span>결제 완료 화면(또는 영수증)을 캡처해 두세요</span></div>
-      <div class="pay-step"><b>3</b><span><b>이메일·카톡</b>으로 자료 파일을 보내드려요 — 빠르게 전달돼요</span></div>
-    </div>
-    <button class="pay-go" id="payGo" onclick="pay()">💳 결제하기</button>
-    <div class="pay-note" id="payNote">결제 전 상품·환불 안내를 확인해 주세요 · 문의 saboknote@naver.com</div>
-  </div>
-</div>
 
 <script>
 function go(url){ window.open(url, '_blank'); }
@@ -498,15 +432,14 @@ function notifyMe(source){
   else location.href = '/#home/newsletter';
 }
 
-// 베타 기간: 실전 레시피 8개를 무료로 바로 연다.
-// (유료 전환 시엔 결제 확인 수단이 없으므로 내용 대신 openPurchase('antigravity')로 보내고, 파일은 결제 후 전달)
+// 실전 레시피 8개는 무료로 바로 연다.
 function openRecipe(url){
   go(url);
 }
 
 // 배너의 '레시피 보기' → 커리큘럼 펼치고 그 위치로 스크롤
 function openBetaRecipes(){
-  const btn = document.querySelector('.ct-count') && [...document.querySelectorAll('.cur-toggle')].find(b => b.textContent.includes('전부 무료 (베타)'));
+  const btn = document.querySelector('.ct-count') && [...document.querySelectorAll('.cur-toggle')].find(b => b.textContent.includes('전부 무료'));
   if(!btn) return;
   if(btn.getAttribute('aria-expanded') !== 'true') toggleCur(btn);
   btn.scrollIntoView({behavior:'smooth', block:'start'});
@@ -528,60 +461,6 @@ function filterCat(cat, btn){
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-/* ============================================================
-   💳 유료 상품 설정 (결제링크 MVP)
-   ─ 사장님: 각 상품의 paymentLink 에 토스/카카오페이/페이앱 결제 링크만
-     붙여넣으면 해당 카드가 자동으로 '구매하기'로 바뀌어 판매가 시작돼요.
-     비워두면 '출시 알림' 상태로 안전하게 노출됩니다.
-   ============================================================ */
-const PRODUCTS = {
-  seosik: {
-    paymentLink: '',                     // ← 결과보고서 키트 결제(또는 판매 마켓 상품) 링크
-    productName: '사복노트 연말 결과보고서 키트',
-    price: '9,900',                      // ← 가격 정하면 바꾸기
-    contact: 'saboknote@naver.com'
-  },
-  antigravity: {
-    paymentLink: '',                     // ← 안티그래비티 실전 강의 결제 링크
-    productName: '[프리미엄] 안티그래비티 IDE 실전 활용 가이드 · 레시피 8',
-    price: '14,900',
-    contact: 'saboknote@naver.com'
-  }
-};
-let _curProduct = 'seosik';
-
-function initPremium(){
-  applyProductBtn('seosik', 'premCta', 'premBadge', 'premOwnerNote');
-  applyProductBtn('antigravity', 'agCta', null, 'agOwnerNote');
-}
-function applyProductBtn(key, ctaId, badgeId, ownerNoteId){
-  const cta = document.getElementById(ctaId);
-  if(!cta) return;
-  const p = PRODUCTS[key];
-  if(p.paymentLink && p.paymentLink.trim()){
-    if(badgeId){ const b=document.getElementById(badgeId); if(b) b.textContent='🔒 유료'; }
-    cta.innerHTML = '🛒 ₩' + p.price + ' · 구매하기 <span class="arw">→</span>';
-    cta.setAttribute('onclick', "openPurchase('" + key + "')");
-    if(ownerNoteId){ const o=document.getElementById(ownerNoteId); if(o) o.style.display='none'; }
-  }
-  // 링크 없으면 HTML 기본값(출시 알림) 그대로 유지
-}
-
-function openPurchase(key){
-  _curProduct = key || 'seosik';
-  const p = PRODUCTS[_curProduct];
-  document.getElementById('payTitle').textContent = p.productName;
-  document.getElementById('payPrice').textContent = '₩' + p.price;
-  document.getElementById('payNote').innerHTML = '결제 전 상품·환불 안내를 확인해 주세요 · 문의: ' + p.contact;
-  document.getElementById('payOverlay').classList.add('on');
-}
-function closePurchase(){ document.getElementById('payOverlay').classList.remove('on'); }
-function pay(){
-  const p = PRODUCTS[_curProduct];
-  if(p && p.paymentLink){ window.open(p.paymentLink, '_blank'); }
-}
-
-document.addEventListener('DOMContentLoaded', initPremium);
 </script>
 
 </body>

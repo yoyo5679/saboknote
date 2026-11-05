@@ -1617,7 +1617,7 @@ try {
             <div style="text-align:center; padding:24px 0 8px;">
                 <div style="font-size:3.2rem; margin-bottom:12px;">🎉</div>
                 <h3 style="font-size:1.15rem; font-weight:900; color:#1e40af; margin-bottom:8px;">${already ? '다시 받으러 오셨군요!' : '신청 완료! 바로 받아가세요'}</h3>
-                <p style="font-size:0.88rem; color:var(--text-5); line-height:1.6; margin-bottom:20px;">정식 출시되면 베타 참여자에게<br>가장 먼저 알려드릴게요 💙</p>
+                <p style="font-size:0.88rem; color:var(--text-5); line-height:1.6; margin-bottom:20px;">새 레시피가 나오면<br>비밀편지로 먼저 알려드릴게요 💙</p>
                 <a href="${EBOOK_PDF_URL}" download="saboknote-antigravity-ide-beta.pdf"
                    style="display:block; text-decoration:none; background:linear-gradient(135deg,#2563eb,#1e40af); color:#fff; font-weight:900; font-size:1.05rem; padding:16px; border-radius:12px; box-shadow:0 4px 14px rgba(37,99,235,0.3);">📥 PDF 전자책 다운로드</a>
                 <p style="font-size:0.75rem; color:var(--text-6); margin-top:12px;">휴대폰에서 안 열리면 '파일' 앱이나 다운로드 폴더를 확인해 주세요.</p>
@@ -1631,7 +1631,7 @@ try {
         const content = `
         <div style="text-align:center; padding:12px 0 4px;">
             <div style="font-size:3rem; margin-bottom:10px;">📘</div>
-            <h3 style="font-size:1.2rem; color:var(--text-dark); margin-bottom:8px; font-weight:900; word-break:keep-all;">안티그래비티 IDE 실전 마스터 <span style="white-space:nowrap;">(베타)</span></h3>
+            <h3 style="font-size:1.2rem; color:var(--text-dark); margin-bottom:8px; font-weight:900; word-break:keep-all;">안티그래비티 IDE 실전 마스터</h3>
             <p style="font-size:0.9rem; color:var(--text-5); margin-bottom:20px; line-height:1.6;">레시피 8개 + 프롬프트 40개 + 치트시트를<br>한 권으로 정리한 <b>PDF 전자책</b>이에요.<br>이메일만 남기면 <b>바로 다운로드</b>돼요.</p>
             <div style="display:flex; flex-direction:column; gap:12px; text-align:left;">
                 <input type="email" id="ebook-email" class="calc-input" placeholder="이메일 주소 입력" style="font-size:1rem; padding:14px; border:2px solid var(--border); border-radius:12px;">
