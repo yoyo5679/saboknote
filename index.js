@@ -9377,6 +9377,17 @@ ${fields}
             const el = document.getElementById('pg-step-' + s);
             if (el) el.style.display = (s === stepName) ? 'block' : 'none';
         });
+        // 주소창도 지금 보는 게임으로 맞춘다 → 복사해서 공유하면 그 게임으로 바로 열린다
+        const PG_HASH = { menu: '', intro: 'quiz', quiz: 'quiz', loading: 'quiz', result: 'quiz', balance: 'balance' };
+        const pv = window.location.hash.replace('#', '').split('/')[0];
+        if (pv === 'playground' && stepName in PG_HASH) {
+            const sub = PG_HASH[stepName];
+            const want = '#playground' + (sub ? '/' + sub : '');
+            if (window.location.hash !== want) {
+                // ?bg(친구 비교) 같은 쿼리는 그대로 둔다 — 게임 화면이 열릴 때 읽어야 한다
+                try { history.replaceState(null, '', window.location.pathname + window.location.search + want); } catch (e) { /* noop */ }
+            }
+        }
         pgResetScroll();
     }
 
